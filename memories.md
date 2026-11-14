@@ -38,3 +38,4 @@ Cada cambio se apunta aquí con fecha. Complementa a `history.md` (lo imprescind
 ## 2026-11-14 — Publicación Git en rama `skyo-ui-3d`
 - `.gitignore`: excluye carpetas locales de agentes (`.agents/`, `.claude/`, `.opencode/`).
 - Inicializado Git y publicado el proyecto en `https://github.com/NotMetrx/SKYO` en la rama `skyo-ui-3d` (conservando intacto `main`).
+- Corregido `user.email` en git local de `...gmail.comm` a `...gmail.com` y re-enlazado el commit `9437774` al usuario GitHub `@aronemilio`.
