@@ -140,7 +140,7 @@ function renderThumbnail(index) {
 
   // Tinte sutil de banda infrarroja SPHEREx sobre el recorte 0.05°
   const glow = tCtx.createRadialGradient(w * 0.56, h * 0.48, 4, w * 0.56, h * 0.48, w * 0.6);
-  glow.addColorStop(0, isIRLong ? 'rgba(255, 122, 26, 0.18)' : 'rgba(91, 184, 255, 0.18)');
+  glow.addColorStop(0, isIRLong ? 'rgba(181, 123, 255, 0.18)' : 'rgba(91, 184, 255, 0.18)');
   glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
   tCtx.fillStyle = glow;
   tCtx.fillRect(0, 0, w, h);
@@ -153,7 +153,7 @@ function renderThumbnail(index) {
   }
 
   // Retícula ICRS del recorte
-  tCtx.strokeStyle = isIRLong ? 'rgba(255, 122, 26, 0.22)' : 'rgba(91, 184, 255, 0.22)';
+  tCtx.strokeStyle = isIRLong ? 'rgba(181, 123, 255, 0.22)' : 'rgba(91, 184, 255, 0.22)';
   tCtx.lineWidth = 1;
   tCtx.beginPath();
   tCtx.moveTo(0, h * 0.5);
@@ -172,7 +172,7 @@ function renderThumbnail(index) {
   const y1 = y0 - (o[8] > 0 ? Math.min(16, elapsed * 0.65) : 0);
 
   if (shiftX > 1) {
-    tCtx.strokeStyle = '#ff7a1a';
+    tCtx.strokeStyle = '#b57bff';
     tCtx.lineWidth = 1.6;
     tCtx.setLineDash([3, 3]);
     tCtx.beginPath();
@@ -181,7 +181,7 @@ function renderThumbnail(index) {
     tCtx.stroke();
     tCtx.setLineDash([]);
 
-    tCtx.fillStyle = '#ff7a1a';
+    tCtx.fillStyle = '#b57bff';
     tCtx.beginPath();
     tCtx.arc(x0, y0, 2.8, 0, 6.283);
     tCtx.fill();
@@ -602,30 +602,13 @@ function updateTemporalDescription() {
   const ep = EPOCAS[currentEpoch];
   const mo = MESES[currentMonth];
   const bd = BANDAS[currentBand];
-  const st = ETAPAS_EXPLORACION[currentStage];
   const blinkNote = blinkMode ? ' · Parpadeo Época 1 ⇄ 4 activo' : '';
-
-  if (currentMode === 'vuelo') {
-    descEl.textContent = `${st.question} — ${ep.label}, ${mo.label}${blinkNote}${compareMode ? ' · Vector naranja visible.' : '.'}`;
-  } else if (currentMode === 'cientifico') {
-    descEl.textContent = `[${st.num} ${st.title}] ${ep.label} (${ep.span}) · ${mo.name} · ICRS + HEALPix + ${bd.range}${blinkNote}${compareMode ? ' · Δθ > 2"' : ''}`;
-  } else {
-    descEl.textContent = `${st.num} ${st.question} ${ep.label} (${ep.span}) · ${mo.label} · ${bd.label} (${bd.range})${blinkNote}${compareMode ? ' · Vectores visibles' : ''}`;
-  }
+  descEl.textContent = `${ep.label} (${ep.span}) · ${bd.label} (${bd.range})${blinkNote}${compareMode ? ' · Vector morado visible' : ''}`;
 }
 
 function syncUI() {
-  document.querySelectorAll('#stage-tabs button').forEach(b => {
-    b.classList.toggle('on', Number(b.dataset.st) === currentStage);
-  });
-  document.querySelectorAll('#modebar button').forEach(b => {
-    b.classList.toggle('on', b.dataset.mode === currentMode);
-  });
   document.querySelectorAll('#epocas button').forEach(b => {
     b.classList.toggle('on', Number(b.dataset.ep) === currentEpoch);
-  });
-  document.querySelectorAll('#meses button').forEach(b => {
-    b.classList.toggle('on', Number(b.dataset.mo) === currentMonth);
   });
   document.querySelectorAll('#bandas button').forEach(b => {
     b.classList.toggle('on', Number(b.dataset.ba) === currentBand);
@@ -666,54 +649,18 @@ function syncUI() {
 }
 
 function buildExplorarUI() {
-  const stageEl = document.getElementById('stage-tabs');
-  const modeEl = document.getElementById('modebar');
   const epEl = document.getElementById('epocas');
-  const moEl = document.getElementById('meses');
   const baEl = document.getElementById('bandas');
   const cmpBtn = document.getElementById('cmp');
   const blinkBtn = document.getElementById('blink');
   const fltEl = document.getElementById('flt');
 
-  if (stageEl && !stageEl.hasChildNodes()) {
-    ETAPAS_EXPLORACION.forEach((st, i) => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = i === currentStage ? 'st-btn on' : 'st-btn';
-      b.dataset.st = String(i);
-      b.innerHTML = `<span class="st-n">${st.num}</span><span>${st.question}</span>`;
-      stageEl.appendChild(b);
-    });
-    stageEl.onclick = e => {
-      const b = e.target.closest('button[data-st]');
-      if (!b) return;
-      currentStage = Number(b.dataset.st);
-      syncUI();
-    };
-  }
-
-  if (modeEl && !modeEl.hasChildNodes()) {
-    Object.values(MODOS_LECTURA).forEach(m => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.textContent = m.label;
-      b.title = m.note;
-      b.dataset.mode = m.id;
-      modeEl.appendChild(b);
-    });
-    modeEl.onclick = e => {
-      const b = e.target.closest('button[data-mode]');
-      if (!b) return;
-      currentMode = b.dataset.mode;
-      syncUI();
-    };
-  }
-
   if (epEl && !epEl.hasChildNodes()) {
     EPOCAS.forEach((ep, i) => {
       const b = document.createElement('button');
       b.type = 'button';
-      b.textContent = `${ep.label} (${ep.span})`;
+      b.textContent = ep.label;
+      b.title = ep.span;
       b.dataset.ep = String(i);
       epEl.appendChild(b);
     });
@@ -722,28 +669,8 @@ function buildExplorarUI() {
       if (!b) return;
       blinkMode = false;
       currentEpoch = Number(b.dataset.ep);
-      currentStage = 1;
       syncUI();
       evaluateMission(false);
-    };
-  }
-
-  if (moEl && !moEl.hasChildNodes()) {
-    MESES.forEach((m, i) => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.textContent = m.label;
-      b.title = m.name;
-      b.dataset.mo = String(i);
-      moEl.appendChild(b);
-    });
-    moEl.onclick = e => {
-      const b = e.target.closest('button[data-mo]');
-      if (!b) return;
-      blinkMode = false;
-      currentMonth = Number(b.dataset.mo);
-      currentStage = 1;
-      syncUI();
     };
   }
 
@@ -759,7 +686,6 @@ function buildExplorarUI() {
       const b = e.target.closest('button[data-ba]');
       if (!b) return;
       currentBand = Number(b.dataset.ba);
-      currentStage = 2;
       syncUI();
       evaluateMission(false);
     };

@@ -62,7 +62,7 @@ export const BANDAS = [
     id: 'ir2',
     label: 'IR Largo (D4–D6)',
     range: '2.42–5.01 µm',
-    hex: '#ff7a1a',
+    hex: '#b57bff',
     desc: 'Destaca hielos, comas cometarias y emisión térmica.'
   }
 ];
@@ -101,7 +101,7 @@ export const MISIONES_HERA = [
     prompt: 'Activa «Parpadear épocas» (o compara Época 1 y 4) y toca el candidato sin cruce JPL que más se desplazó.',
     hints: [
       'Pista 1: Pulsa «Parpadear épocas (Blink)» abajo para ver qué puntos saltan frente a las estrellas fijas.',
-      'Pista 2: Filtra por «Asteroides» arriba y busca el objeto resaltado en naranja llamado SPX-26.'
+      'Pista 2: Filtra por «Asteroides» arriba y busca el objeto resaltado en morado llamado SPX-26.'
     ],
     check: ({ object, epoch, blinkUsed, compare }) =>
       object && object[0] === 'Candidato SPX-26' && (blinkUsed || compare || epoch >= 1),
@@ -124,7 +124,7 @@ export const MISIONES_HERA = [
     title: 'Estrella fija vs cuerpo cercano',
     prompt: 'Activa «Comparar épocas» en Época 4 e inspecciona una estrella fija para ver cómo calibramos el cielo.',
     hints: [
-      'Pista 1: Selecciona Época 4 y activa «Comparar épocas». Verás que algunas fuentes no trazan vector naranja.',
+      'Pista 1: Selecciona Época 4 y activa «Comparar épocas». Verás que algunas fuentes no trazan vector morado.',
       'Pista 2: Toca Sirius, Polaris o Betelgeuse para confirmar su deriva nula.'
     ],
     check: ({ object, epoch, compare }) =>
@@ -159,7 +159,7 @@ export const FASES_PROYECTO = [
     route: '#inicio',
     routeLabel: 'Ir a Inicio',
     etapas: [
-      { tag: 'Etapa 0.1', name: 'Identidad negro cosmos', detail: 'Fondo #000000 absoluto con acento azul SPHEREx (#5bb8ff) y naranja H.E.R.A 7 (#ff7a1a).' },
+      { tag: 'Etapa 0.1', name: 'Identidad negro cosmos', detail: 'Fondo #000000 absoluto con acento azul SPHEREx (#5bb8ff) y morado H.E.R.A 7 (#b57bff).' },
       { tag: 'Etapa 0.2', name: 'Motor Three.js unificado', detail: 'Escena WebGL viva en las 4 vistas sin duplicar contextos gráficos ni despertar la CPU en reposo.' },
       { tag: 'Etapa 0.3', name: 'Divulgación progresiva', detail: 'Niveles Vuelo, Explorador y Científico pensados para móvil primero y accesibilidad AA.' }
     ]
@@ -286,7 +286,7 @@ export const OBJ = [
   ['Bennu', 'Asteroide', 0.50, 5.5, '#c4b8a8', 'Asteroide cercano a la Tierra; OSIRIS-REx trajo una muestra en 2023.', 'Rico en carbono y agua', 'Confirmado', 0.045],
   ['Eros', 'Asteroide', 0.25, 2.8, '#d9be9c', 'Primer asteroide orbitado y aterrizado por una sonda (NEAR Shoemaker).', 'Forma alargada de cacahuate', 'Confirmado', 0.038],
   ['Ceres', 'Asteroide', 0.72, 0.9, '#e0dbd0', 'El objeto más grande del cinturón de asteroides; planeta enano.', 'Tiene depósitos brillantes de sal', 'Confirmado', 0.018],
-  ['Candidato SPX-26', 'Asteroide', 0.60, 4.1, '#ff7a1a', 'Fuente tenue con desplazamiento propio entre épocas; en verificación.', 'Desplazamiento ilustrativo · Sin cruce JPL', 'Candidato', 0.052]
+  ['Candidato SPX-26', 'Asteroide', 0.60, 4.1, '#b57bff', 'Fuente tenue con desplazamiento propio entre épocas; en verificación.', 'Desplazamiento ilustrativo · Sin cruce JPL', 'Candidato', 0.052]
 ];
 
 export const PLANETAS = [

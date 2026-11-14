@@ -1,6 +1,6 @@
 /* ==========================================================================
    SKYO — Hoja de Estilos Principal
-   Fondo Negro Puro (#000000) | Acentos SPHEREx (#5bb8ff) + H.E.R.A 7 (#ff7a1a)
+   Fondo Negro Puro (#000000) | Acentos SPHEREx (#5bb8ff) + H.E.R.A 7 (#b57bff)
    Tipografía local Space Grotesk + Space Mono | Motor Three.js vivo por panel
    ========================================================================== */
 
@@ -69,7 +69,7 @@
   --fg: #eef3ff;
   --mut: #a4b2ca;
   --ac: #5bb8ff;
-  --ac2: #ff7a1a;
+  --ac2: #b57bff;
   --ok: #4ade80;
   --font-ui: 'Space Grotesk', system-ui, -apple-system, sans-serif;
   --font-mono: 'Space Mono', ui-monospace, monospace;
@@ -291,8 +291,8 @@ body.anim-ready .sec.on {
 }
 
 /* Transición Zoom (Enter / Espacio desde #inicio hacia #explorar) */
-body.warp-zoom #inicio .eclipse-wordmark {
-  transform: scale(3.2);
+body.warp-zoom #inicio .eclipse-wordmark .letters {
+  transform: scale(3.2) translate3d(-16%, 0, 0);
   opacity: 0;
   filter: blur(8px);
   transition:
@@ -546,9 +546,9 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
 }
 
 .modebar button.on {
-  background: rgba(255, 122, 26, 0.22);
-  color: #ffd3b3;
-  box-shadow: inset 0 0 0 1px rgba(255, 122, 26, 0.55);
+  background: rgba(181, 123, 255, 0.22);
+  color: #ecdcff;
+  box-shadow: inset 0 0 0 1px rgba(181, 123, 255, 0.55);
 }
 
 .hover-pill {
@@ -647,7 +647,7 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
   background: var(--gl-strong);
   backdrop-filter: var(--gl-filter);
   -webkit-backdrop-filter: var(--gl-filter);
-  border: 1px solid rgba(255, 166, 94, 0.42);
+  border: 1px solid rgba(201, 162, 255, 0.42);
   box-shadow: var(--gl-glass-shadow);
   border-radius: 16px;
   padding: 7px 12px;
@@ -659,7 +659,7 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
   font-size: 10.5px;
   font-weight: 700;
   color: var(--ac2);
-  background: rgba(255, 122, 26, 0.14);
+  background: rgba(181, 123, 255, 0.14);
   padding: 3px 8px;
   border-radius: 999px;
 }
@@ -797,9 +797,9 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
 }
 
 .cmp-btn[aria-pressed="true"] {
-  background: rgba(255, 122, 26, 0.24);
-  border-color: rgba(255, 122, 26, 0.72);
-  color: #ffe0c7;
+  background: rgba(181, 123, 255, 0.24);
+  border-color: rgba(181, 123, 255, 0.72);
+  color: #ecdcff;
 }
 
 .tdesc {
@@ -883,7 +883,7 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
 }
 
 .info-panel .tg.cand {
-  background: rgba(255, 122, 26, 0.2);
+  background: rgba(181, 123, 255, 0.2);
   color: var(--ac2);
 }
 
@@ -904,7 +904,7 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--fg);
-  background: rgba(255, 122, 26, 0.1);
+  background: rgba(181, 123, 255, 0.1);
   border-left: 2px solid var(--ac2);
   padding: 7px 9px;
   border-radius: 6px;
@@ -1383,7 +1383,7 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
 
 .status-ok { color: var(--ok); background: rgba(74, 222, 128, 0.1); }
 .status-ac { color: var(--ac); background: rgba(91, 184, 255, 0.12); }
-.status-ac2 { color: var(--ac2); background: rgba(255, 122, 26, 0.14); }
+.status-ac2 { color: var(--ac2); background: rgba(181, 123, 255, 0.14); }
 .status-mut { color: var(--mut); background: rgba(152, 164, 188, 0.1); }
 
 .phase-summary {
@@ -1813,9 +1813,9 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.5px;
-  background: rgba(255, 122, 26, 0.22);
-  color: #ff9d54;
-  border: 1px solid rgba(255, 122, 26, 0.55);
+  background: rgba(181, 123, 255, 0.22);
+  color: #c9a2ff;
+  border: 1px solid rgba(181, 123, 255, 0.55);
   border-radius: 4px;
   padding: 1px 5px;
   line-height: 1.2;
@@ -1923,8 +1923,8 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  background: rgba(255, 122, 26, 0.08);
-  border: 1px solid rgba(255, 122, 26, 0.3);
+  background: rgba(181, 123, 255, 0.08);
+  border: 1px solid rgba(181, 123, 255, 0.3);
   padding: 12px 16px;
   border-radius: 12px;
   color: #ffc99e;

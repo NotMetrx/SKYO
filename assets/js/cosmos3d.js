@@ -7,6 +7,7 @@
  */
 
 import { OBJ, PLANETAS, BANDAS, FASES_PROYECTO, FI, rng } from './data.js';
+import { loadGlbGroup } from './glb-lite.js';
 
 let T = null;
 let canvas = null;
@@ -35,6 +36,16 @@ let lastPinchDist = 0;
 let cursorParallax = { x: 0, y: 0 };
 let warpBoost = 0;
 let isWarpingFromInicio = false;
+
+// Eclipse 3D (Blender GLB) como la "O" de SKYO y protagonista de la transición
+let eclipseRig = null;
+let eclipseModelPivot = null;
+let eclipseHalo = null;
+let eclipseMixer = null;
+const eclipseMats = [];
+let eclipsePhase = 'idle'; // 'idle' | 'transition' | 'done'
+let eclipseWarpT = 0;
+const eclipseSlot = { cx: 0, cy: 0, size: 0 };
 
 // Grupos por panel
 let starField = null;
@@ -126,6 +137,190 @@ function makeGlowTexture(innerColor, midColor) {
   return new T.CanvasTexture(c);
 }
 
+const _eclipseRay = { v: null, fwd: null, initialized: false };
+
+function updateEclipseSlotRect() {
+  const el = document.querySelector('#inicio .eclipse-o');
+  if (!el) return;
+  const r = el.getBoundingClientRect();
+  if (r.width > 4 && r.height > 4) {
+    eclipseSlot.cx = r.left + r.width * 0.5;
+    eclipseSlot.cy = r.top + r.height * 0.5;
+    eclipseSlot.size = Math.min(r.width, r.height);
+  }
+}
+
+function resetEclipseMaterials() {
+  for (const entry of eclipseMats) {
+    entry.mat.opacity = entry.baseOpacity;
+    if (entry.mat.emissiveIntensity !== undefined) {
+      entry.mat.emissiveIntensity = entry.baseEmissive;
+    }
+  }
+  if (eclipseHalo) eclipseHalo.material.opacity = 0.62;
+  if (eclipseModelPivot) eclipseModelPivot.rotation.set(0, 0, 0);
+}
+
+function buildEclipsePortal() {
+  eclipseRig = new T.Group();
+  eclipseRig.name = 'EclipsePortal';
+  eclipseRig.visible = activeRoute === 'inicio';
+
+  const haloMat = new T.SpriteMaterial({
+    map: makeGlowTexture('rgba(181,123,255,0.44)', 'rgba(91,184,255,0.16)'),
+    transparent: true,
+    opacity: 0.62,
+    blending: T.AdditiveBlending,
+    depthWrite: false
+  });
+  eclipseHalo = new T.Sprite(haloMat);
+  eclipseHalo.position.set(0, 0, -0.35);
+  eclipseHalo.scale.set(4.1, 4.1, 1);
+  eclipseRig.add(eclipseHalo);
+
+  const rimLight = new T.DirectionalLight(0x8fd2ff, 2.25);
+  rimLight.position.set(2.2, 1.8, 3.6);
+  const purpleFill = new T.PointLight(0xb57bff, 1.75, 16);
+  purpleFill.position.set(-2.4, -1.6, 2.8);
+  const backRim = new T.DirectionalLight(0xffffff, 1.15);
+  backRim.position.set(-1.5, 2.6, -1.4);
+  eclipseRig.add(rimLight, purpleFill, backRim);
+
+  scene.add(eclipseRig);
+  updateEclipseSlotRect();
+
+  loadGlbGroup(T, './assets/models/eclipse.glb')
+    .then(model => {
+      if (!eclipseRig) return;
+      eclipseModelPivot = model;
+      eclipseMats.length = 0;
+      model.traverse(obj => {
+        if (!obj.isMesh || !obj.material) return;
+        const m = obj.material;
+        m.transparent = true;
+        m.depthWrite = true;
+        eclipseMats.push({
+          mat: m,
+          baseOpacity: typeof m.opacity === 'number' ? m.opacity : 1,
+          baseEmissive: typeof m.emissiveIntensity === 'number' ? m.emissiveIntensity : 1
+        });
+      });
+      const clips = model.userData.clips || [];
+      if (clips.length) {
+        eclipseMixer = new T.AnimationMixer(model);
+        for (const clip of clips) eclipseMixer.clipAction(clip).play();
+      }
+      eclipseRig.add(model);
+      updateEclipseSlotRect();
+      eclipseRig.visible = activeRoute === 'inicio' || eclipsePhase === 'transition';
+      wakeLoop();
+    })
+    .catch(() => {
+      if (eclipseRig) eclipseRig.visible = false;
+    });
+}
+
+function updateEclipsePortalFrame(dt) {
+  if (!eclipseRig || !camera) return;
+  if (eclipsePhase === 'done') {
+    eclipseRig.visible = false;
+    return;
+  }
+
+  if (eclipsePhase === 'idle' && activeRoute !== 'inicio') {
+    eclipseRig.visible = false;
+    return;
+  }
+
+  if (eclipseSlot.size <= 0) updateEclipseSlotRect();
+  const w = window.innerWidth || 1280;
+  const h = window.innerHeight || 720;
+  const cx = eclipseSlot.size > 0 ? eclipseSlot.cx : w * 0.62;
+  const cy = eclipseSlot.size > 0 ? eclipseSlot.cy : h * 0.5;
+  const slotSize = eclipseSlot.size > 0 ? eclipseSlot.size : Math.min(w, h) * 0.16;
+
+  if (!_eclipseRay.initialized) {
+    _eclipseRay.v = new T.Vector3();
+    _eclipseRay.fwd = new T.Vector3();
+    _eclipseRay.initialized = true;
+  }
+
+  let progress = 0;
+  if (eclipsePhase === 'transition') {
+    eclipseWarpT = Math.min(1, eclipseWarpT + dt / 0.88);
+    progress = eclipseWarpT;
+  }
+
+  const ease = progress < 0.5
+    ? 2 * progress * progress
+    : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+  const slotNdcX = (cx / w) * 2 - 1;
+  const slotNdcY = -(cy / h) * 2 + 1;
+  const ndcX = slotNdcX * (1 - ease);
+  const ndcY = slotNdcY * (1 - ease);
+
+  const depth = eclipsePhase === 'transition'
+    ? 26 * (1 - Math.pow(progress, 1.55)) + 0.8 * (1 - progress)
+    : 26;
+
+  _eclipseRay.fwd.set(0, 0, -1).applyQuaternion(camera.quaternion).normalize();
+  _eclipseRay.v.set(ndcX, ndcY, 0.5).unproject(camera).sub(camera.position).normalize();
+  const cosTheta = Math.max(0.25, _eclipseRay.v.dot(_eclipseRay.fwd));
+  const rayDist = depth / cosTheta;
+
+  eclipseRig.visible = true;
+  eclipseRig.position.copy(camera.position).addScaledVector(_eclipseRay.v, rayDist);
+  eclipseRig.quaternion.copy(camera.quaternion);
+
+  const worldScreenH = 2 * depth * Math.tan((camera.fov * Math.PI) / 360);
+  const baseScale = ((slotSize / h) * worldScreenH) * 0.44;
+  const zoomScale = eclipsePhase === 'transition'
+    ? baseScale * (1 + 4.4 * Math.pow(progress, 1.45))
+    : baseScale;
+  eclipseRig.scale.setScalar(zoomScale);
+
+  if (eclipseMixer && !window.__skyReducedMotion) {
+    eclipseMixer.update(dt * (eclipsePhase === 'transition' ? 2.4 : 1.0));
+  }
+
+  if (eclipseModelPivot) {
+    if (eclipsePhase === 'idle') {
+      const targetRx = 0.14 - cursorParallax.y * 0.22 + Math.sin(simTime * 0.65) * 0.04;
+      const targetRy = -0.18 + cursorParallax.x * 0.28 + Math.cos(simTime * 0.45) * 0.06;
+      eclipseModelPivot.rotation.x += (targetRx - eclipseModelPivot.rotation.x) * 0.08;
+      eclipseModelPivot.rotation.y += (targetRy - eclipseModelPivot.rotation.y) * 0.08;
+      eclipseModelPivot.rotation.z *= 0.92;
+    } else {
+      eclipseModelPivot.rotation.z += dt * 1.15;
+      eclipseModelPivot.rotation.y *= 0.9;
+      eclipseModelPivot.rotation.x *= 0.9;
+    }
+  }
+
+  const fadeAlpha = eclipsePhase === 'transition' && progress > 0.66
+    ? Math.max(0, 1 - (progress - 0.66) / 0.34)
+    : 1;
+
+  for (const entry of eclipseMats) {
+    entry.mat.opacity = entry.baseOpacity * fadeAlpha;
+    if (entry.mat.emissiveIntensity !== undefined && eclipsePhase === 'transition') {
+      entry.mat.emissiveIntensity = entry.baseEmissive * (1 + progress * 1.1) * fadeAlpha;
+    }
+  }
+  if (eclipseHalo) {
+    const hPulse = 4.1 + 0.25 * Math.sin(simTime * 1.9);
+    eclipseHalo.scale.set(hPulse, hPulse, 1);
+    eclipseHalo.material.opacity = (0.58 + 0.08 * Math.sin(simTime * 1.9)) * fadeAlpha;
+  }
+
+  if (eclipsePhase === 'transition' && progress >= 1) {
+    eclipsePhase = 'done';
+    eclipseRig.visible = false;
+    resetEclipseMaterials();
+  }
+}
+
 /* ==========================================================================
    1. Campo Estelar Profundo Compartido (Fondo #000000)
    ========================================================================== */
@@ -173,7 +368,7 @@ function buildInicioScene() {
   const R = rng(11);
   const starTex = makeGlowTexture('#ffffff', 'rgba(91, 184, 255, 0.55)');
   const coolNebTex = makeGlowTexture('rgba(91, 184, 255, 0.22)', 'rgba(30, 82, 185, 0.09)');
-  const warmNebTex = makeGlowTexture('rgba(255, 122, 26, 0.18)', 'rgba(180, 72, 18, 0.06)');
+  const warmNebTex = makeGlowTexture('rgba(181, 123, 255, 0.18)', 'rgba(84, 40, 150, 0.06)');
 
   // Capas de nebulosa infrarroja aditiva muy sutil sobre negro absoluto
   inicioNebula = new T.Group();
@@ -256,7 +451,7 @@ function buildInicioScene() {
 
       const sp = new T.Sprite(new T.SpriteMaterial({
         map: starTex,
-        color: i === 0 ? 0xff7a1a : 0x5bb8ff,
+        color: i === 0 ? 0xb57bff : 0x5bb8ff,
         blending: T.AdditiveBlending,
         transparent: true,
         depthWrite: false
@@ -307,7 +502,7 @@ function buildInicioScene() {
   }
   inicioOuterRing.add(new T.Line(
     new T.BufferGeometry().setFromPoints(outerPts),
-    new T.LineBasicMaterial({ color: 0xff7a1a, transparent: true, opacity: 0.2 })
+    new T.LineBasicMaterial({ color: 0xb57bff, transparent: true, opacity: 0.2 })
   ));
   inicioOuterRing.rotation.set(-0.42, -0.35, 0.24);
   inicioGroup.add(inicioOuterRing);
@@ -499,7 +694,7 @@ function buildExplorarScene() {
         new T.DodecahedronGeometry(o[7] === 'Candidato' ? 1.95 : 1.6, 0),
         new T.MeshStandardMaterial({
           color: colorHex,
-          emissive: o[7] === 'Candidato' ? 0xff7a1a : 0x222222,
+          emissive: o[7] === 'Candidato' ? 0xb57bff : 0x222222,
           emissiveIntensity: o[7] === 'Candidato' ? 0.55 : 0.2,
           roughness: 0.7
         })
@@ -508,7 +703,7 @@ function buildExplorarScene() {
 
       const halo = new T.Sprite(new T.SpriteMaterial({
         map: starTex,
-        color: o[7] === 'Candidato' ? 0xff7a1a : colorHex,
+        color: o[7] === 'Candidato' ? 0xb57bff : colorHex,
         blending: T.AdditiveBlending,
         transparent: true,
         opacity: 0.65,
@@ -530,7 +725,7 @@ function buildExplorarScene() {
 
     const vecGeom = new T.BufferGeometry().setFromPoints([new T.Vector3(), new T.Vector3()]);
     const vecLine = new T.Line(vecGeom, new T.LineBasicMaterial({
-      color: 0xff7a1a,
+      color: 0xb57bff,
       transparent: true,
       opacity: 0.92
     }));
@@ -538,7 +733,7 @@ function buildExplorarScene() {
 
     const originDot = new T.Mesh(
       new T.SphereGeometry(0.9, 10, 10),
-      new T.MeshBasicMaterial({ color: 0xff7a1a })
+      new T.MeshBasicMaterial({ color: 0xb57bff })
     );
     originDot.visible = false;
 
@@ -591,10 +786,10 @@ export function syncExplorarVisuals() {
 
   if (healpixDome) {
     healpixDome.material.opacity = exploreState.mode === 'cientifico' ? 0.24 : 0.085;
-    healpixDome.material.color.setHex(isIRLong ? 0xff9a4d : 0x5bb8ff);
+    healpixDome.material.color.setHex(isIRLong ? 0xc9a2ff : 0x5bb8ff);
   }
   if (cutoutFrame) {
-    cutoutFrame.material.color.setHex(isIRLong ? 0xff7a1a : 0x5bb8ff);
+    cutoutFrame.material.color.setHex(isIRLong ? 0xb57bff : 0x5bb8ff);
     cutoutFrame.material.opacity = exploreState.compare || exploreState.blink ? 0.72 : 0.45;
   }
 
@@ -764,7 +959,7 @@ function buildFasesScene() {
     mesh.rotation.z = rotZ;
     return mesh;
   };
-  fasesCones.add(mkCone(0x5bb8ff, Math.PI / 2.2), mkCone(0xff7a1a, -Math.PI / 2.2));
+  fasesCones.add(mkCone(0x5bb8ff, Math.PI / 2.2), mkCone(0xb57bff, -Math.PI / 2.2));
   fasesGroup.add(fasesCones);
 
   // 7 Nodos de Fase (0..6) a lo largo de una hélice orbital interactiva
@@ -776,7 +971,7 @@ function buildFasesScene() {
     const pos = new T.Vector3(Math.cos(a) * rad, y, Math.sin(a) * rad);
     curvePts.push(pos);
 
-    const toneColor = phase.tone === 'ac2' ? 0xff7a1a : (phase.tone === 'ok' ? 0x4ade80 : 0x5bb8ff);
+    const toneColor = phase.tone === 'ac2' ? 0xb57bff : (phase.tone === 'ok' ? 0x4ade80 : 0x5bb8ff);
 
     const mesh = new T.Mesh(
       new T.SphereGeometry(3.1, 20, 20),
@@ -815,7 +1010,7 @@ function buildFasesScene() {
   // Pulso viajero a lo largo del pipeline
   phaseSignal = new T.Sprite(new T.SpriteMaterial({
     map: glowTex,
-    color: 0xff7a1a,
+    color: 0xb57bff,
     blending: T.AdditiveBlending,
     transparent: true,
     depthWrite: false
@@ -963,8 +1158,28 @@ function bindPointerEvents() {
 /* ==========================================================================
    7. Orquestación de Vistas, Transición de Cámara y Bucle Ponytail
    ========================================================================== */
+export function getEclipsePortalState() {
+  return {
+    phase: eclipsePhase,
+    warpT: Number(eclipseWarpT.toFixed(3)),
+    visible: Boolean(eclipseRig && eclipseRig.visible),
+    hasModel: Boolean(eclipseModelPivot),
+    clipsCount: eclipseModelPivot?.userData?.clips?.length || 0,
+    mixerTime: eclipseMixer ? Number(eclipseMixer.time.toFixed(3)) : 0
+  };
+}
+
 export function triggerWarpZoom() {
   if (!isInitialized) return;
+  if (window.__skyReducedMotion) {
+    eclipsePhase = 'done';
+    if (eclipseRig) eclipseRig.visible = false;
+    return;
+  }
+  updateEclipseSlotRect();
+  eclipsePhase = 'transition';
+  eclipseWarpT = 0;
+  if (eclipseRig) eclipseRig.visible = true;
   isWarpingFromInicio = true;
   warpBoost = 1;
   camGoal.r = 22;
@@ -985,6 +1200,11 @@ export function setCosmosRoute(route) {
     canvas.style.cursor = 'default';
     isWarpingFromInicio = false;
     warpBoost = 0;
+    eclipsePhase = 'idle';
+    eclipseWarpT = 0;
+    resetEclipseMaterials();
+    updateEclipseSlotRect();
+    if (eclipseRig) eclipseRig.visible = true;
     if (inicioGroup) inicioGroup.scale.set(1, 1, 1);
     if (camera && camera.fov !== 50) {
       camera.fov = 50;
@@ -993,6 +1213,10 @@ export function setCosmosRoute(route) {
     Object.assign(camGoal, { t: 0.4, p: 1.48, r: 165, tx: 0, ty: 0, tz: 0 });
   } else if (route === 'explorar') {
     canvas.style.cursor = 'grab';
+    if (prev !== 'inicio' || !isWarpingFromInicio) {
+      eclipsePhase = 'done';
+      if (eclipseRig) eclipseRig.visible = false;
+    }
     const fitR = window.innerWidth < 780 ? 198 : 132;
     if (prev === 'inicio' && isWarpingFromInicio) {
       camCurr.r = fitR + 72; // entra haciendo zoom hacia la bóveda desde el hiperespacio
@@ -1002,9 +1226,13 @@ export function setCosmosRoute(route) {
     syncExplorarVisuals();
   } else if (route === '3d') {
     canvas.style.cursor = 'grab';
+    eclipsePhase = 'done';
+    if (eclipseRig) eclipseRig.visible = false;
     set3DFocus(focus3D);
   } else if (route === 'fases') {
     canvas.style.cursor = 'grab';
+    eclipsePhase = 'done';
+    if (eclipseRig) eclipseRig.visible = false;
     focusPhaseNode(fasesState.activeIdx);
   }
 
@@ -1243,6 +1471,8 @@ function renderLoop(now = performance.now()) {
     camCurr.tz + camCurr.r * Math.sin(camCurr.p) * Math.sin(camCurr.t)
   );
   camera.lookAt(camCurr.tx, camCurr.ty, camCurr.tz);
+  camera.updateMatrixWorld(true);
+  updateEclipsePortalFrame(dt * 0.001);
 
   if (starField) {
     starField.position.copy(camera.position);
@@ -1251,7 +1481,11 @@ function renderLoop(now = performance.now()) {
   renderer.render(scene, camera);
 
   // Ponytail: dormir loop si reduced-motion y cámara estable, o en #3d pausado
-  const settled = Math.abs(camCurr.r - camGoal.r) < 0.05 && Math.abs(camCurr.t - camGoal.t) < 0.002 && activePointers.size === 0;
+  const settled =
+    eclipsePhase !== 'transition' &&
+    Math.abs(camCurr.r - camGoal.r) < 0.05 &&
+    Math.abs(camCurr.t - camGoal.t) < 0.002 &&
+    activePointers.size === 0;
   if ((reduced && settled) || (activeRoute === '3d' && !isPlaying3D && settled)) {
     rafId = 0;
     return;
@@ -1288,6 +1522,7 @@ export async function initCosmos3D(initialRoute = 'inicio') {
 
   buildSharedStarfield();
   buildInicioScene();
+  buildEclipsePortal();
   buildExplorarScene();
   buildSistemaScene();
   buildFasesScene();
@@ -1299,6 +1534,7 @@ export async function initCosmos3D(initialRoute = 'inicio') {
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    updateEclipseSlotRect();
     wakeLoop();
   };
   window.addEventListener('resize', onResize);

@@ -11,12 +11,14 @@
 - Consulta 2026-11-14: bóveda MCP sin skill de delegación multimodelo; índice skyo no registrado.
 - Esta sesión dispone de ecc:team-agent-orchestration; no se ejecutaron agentes ni instalaciones.
 - Revisión 2026-11-14: pipeline local cubre 001; falta flujo para 002 con build/puertas y chequeo documental reproducible. Node24.21.0/npm test pasan (1 archivo informado).
+- Validación visual 2026-11-14: protocolos PV-01…PV-08 en `docs/protocols/`, runner `scripts/audit-visual.mjs` y pipeline `docs/pipelines/validacion-visual.md`. 7 recorridos (320→1440 + reduced): sin pageerror, sin overflow de documento, WebGL y teclado correctos; 1 fallo a 320 px (pestaña «Colección y Candidatos» recortada en `#explorar`). `npm test` 8/8.
+- Fuentes 2026-11-14: `docs/FUENTES.md` reúne 47 URLs citadas con clave estable, matriz afirmación→fuente y estado HTTP real. 51 URLs externas con recibo (29 previas + 22 comprobadas hoy: 19×200, SIA/TAP raíz 502, NASA Space Apps sin conexión). Aladin GPL v3 sigue siendo decisión de licencia abierta.
 
 ## Investigación y evidencia actual
 
 - NASA: DR1+QR3; WCS-WAVE visual, ciencia CWAVE/CBAND por versión/posición.
 - ePSF D3 puede ser441/451 según revisión; leer geometría real. Conservar FINAST.
-- Consulta SQL exacta del SPEC devuelve84filas;28enlaces externos HTTP200.
+- Consulta SQL exacta del SPEC devuelve84filas;28enlaces externos HTTP200 declarados, pero el recibo `enlaces-http.json` solo conserva18 (discrepancia anotada en docs/FUENTES.md §4.3).
 - S3 Range206/CORS* y calibraciones listadas; tabla3I aúnQR2, una exposición resueltaDR1.
 - RecorteDR1 leído y WCS comparado con Astropy en4puntos: evidencia puntual, no ciencia validada.
 - Aplicación: npm12/12 y Vite7.3.8 build pasan; cargo1/1 y wasm32bruto pasan.
@@ -30,6 +32,7 @@
 ## Próximo paso
 
 - Iniciar T01: t-5aa0315b2f01, integridad de selección/procedencia/reporte con regresiones.
+- Corregir el recorte de `#explorar` a 320 px (parche CSS en auditoría visual) y repetir `node scripts/audit-visual.mjs`; completar a mano PV-03 (pausa 3D), PV-04 (teclado del carrusel), PV-07 (`aria-live` de H.E.R.A, objetivos de 13 px en `lab.html`) y PV-08 (pestaña en segundo plano).
 - Después T02curación yT03FITS/WCS; validar par visual real antes de ciencia de candidatos.
 - Preparación documental lista para implementación; producto no aceptado en puertas I/V/C.
 - Sesiones MCP siguen requiriendo identidad; indicar project=skyo explícito.

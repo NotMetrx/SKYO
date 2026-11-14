@@ -8,6 +8,7 @@
     "start": "node scripts/dev-server.mjs",
     "dev": "node scripts/dev-server.mjs",
     "test": "node scripts/pipeline.test.mjs",
+    "audit:visual": "node scripts/audit-visual.mjs",
     "demo:generate": "node scripts/generate_demo_fits.mjs",
     "demo:preview": "node scripts/export_demo_preview.mjs",
     "build:wasm": "wasm-pack build science-core --target web --out-dir ../assets/js/science/wasm/pkg --release"

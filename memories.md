@@ -50,3 +50,8 @@ Cada cambio se apunta aquí con fecha. Complementa a `history.md` (lo imprescind
 - `sw.js`: lista de caché corregida con los assets reales del proyecto y controlada con `Promise.allSettled`.
 - `scripts/dev-server.mjs`: servidor nativo Node.js en puerto 8000 con soporte de cabeceras Range, CORS y MIME types.
 - `package.json`: metadatos estándar humanos, scripts `npm start` y `npm test` verificados.
+
+## 2026-11-14 — Paleta de colores
+- Nuevo `docs/PALETA.md`: documenta tokens `:root` de `main.css` (base, acentos `--ac`/`--ac2`/`--ok`, líneas, Liquid Glass, wordmark) y contraste WCAG.
+- 2026-11-14 — Acento naranja → morado `#b57bff` (`--ac2`) en CSS, SVG, cosmos3d, explorar, data, lab.css. Se conservan colores físicos (Sol, Betelgeuse, Antares, estrellas cálidas). Nuevo `docs/LAYOUT.md` (maqueta por vista). Previews actualizadas.
+- 2026-11-14 — Eclipse 3D de Blender (`assets/models/eclipse.glb`, `assets/js/glb-lite.js`) reemplaza el SVG en la `O` de `SKYO`, reproduce los 5 clips de animación keyframeada en Blender vía `THREE.AnimationMixer` (`sculpted crater moon + astrolabe gimbal + purple arc + corona + diamond flare`), acompaña el salto `Enter`/`Espacio` hacia `#explorar` volando hacia la cámara y se oculta al finalizar (`eclipseRig.visible = false`). Bóveda Celeste (`#explorar`) simplificada sin `#modebar`, `#scale-pill`, `#stage-tabs` ni `#meses`; `sw.js` actualizado a `skyo-v2.2.0`.

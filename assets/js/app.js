@@ -175,40 +175,7 @@ window.addEventListener('keydown', e => {
   }
 });
 
-// 4. Parallax reactivo suavizado (LERP) en el DOM — cero trabajo en reposo
-let domTargetX = 0;
-let domTargetY = 0;
-let domCurrX = 0;
-let domCurrY = 0;
-let domParallaxRaf = 0;
-
-function updateDomParallax() {
-  domParallaxRaf = 0;
-  if (window.__skyReducedMotion) return;
-
-  domCurrX += (domTargetX - domCurrX) * 0.12;
-  domCurrY += (domTargetY - domCurrY) * 0.12;
-
-  const eclipseEl = document.querySelector('.eclipse-o');
-  if (currentRoute === 'inicio' && eclipseEl) {
-    eclipseEl.style.transform = `translate3d(${domCurrX * -10}px, ${domCurrY * -8}px, 0)`;
-  }
-
-  if (Math.abs(domTargetX - domCurrX) > 0.002 || Math.abs(domTargetY - domCurrY) > 0.002) {
-    domParallaxRaf = requestAnimationFrame(updateDomParallax);
-  }
-}
-
-window.addEventListener('pointermove', e => {
-  if (window.__skyReducedMotion || currentRoute !== 'inicio') return;
-  domTargetX = (e.clientX / window.innerWidth - 0.5) * 2;
-  domTargetY = (e.clientY / window.innerHeight - 0.5) * 2;
-  if (!domParallaxRaf) {
-    domParallaxRaf = requestAnimationFrame(updateDomParallax);
-  }
-}, { passive: true });
-
-// 5. Gestión de C-States (Page Visibility API)
+// 4. Gestión de C-States (Page Visibility API)
 document.addEventListener('visibilitychange', () => {
   setCosmosVisible(!document.hidden);
 });

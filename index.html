@@ -22,7 +22,7 @@
         <svg viewBox="0 0 36 36" width="22" height="22">
           <defs>
             <linearGradient id="miniRim" x1="15%" y1="85%" x2="85%" y2="15%">
-              <stop offset="0%" stop-color="#ff7a1a" stop-opacity="0.35"/>
+              <stop offset="0%" stop-color="#b57bff" stop-opacity="0.35"/>
               <stop offset="55%" stop-color="#5bb8ff" stop-opacity="0.85"/>
               <stop offset="100%" stop-color="#ffffff" stop-opacity="1"/>
             </linearGradient>
@@ -47,54 +47,7 @@
       <div class="hero">
         <h1 class="eclipse-wordmark" aria-label="SKYO">
           <span class="letters">SKY</span>
-          <span class="eclipse-o" aria-hidden="true">
-            <svg class="diamond-eclipse" viewBox="0 0 220 220" width="220" height="220">
-              <defs>
-                <radialGradient id="coronaGlow" cx="68%" cy="32%" r="68%">
-                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
-                  <stop offset="22%" stop-color="#5bb8ff" stop-opacity="0.58"/>
-                  <stop offset="56%" stop-color="#1e4b8a" stop-opacity="0.16"/>
-                  <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
-                </radialGradient>
-
-                <linearGradient id="rimArc" x1="12%" y1="88%" x2="88%" y2="12%">
-                  <stop offset="0%" stop-color="#ff7a1a" stop-opacity="0.22"/>
-                  <stop offset="38%" stop-color="#5bb8ff" stop-opacity="0.72"/>
-                  <stop offset="76%" stop-color="#cceeff" stop-opacity="0.96"/>
-                  <stop offset="100%" stop-color="#ffffff" stop-opacity="1"/>
-                </linearGradient>
-
-                <radialGradient id="lunarSphere" cx="62%" cy="38%" r="64%">
-                  <stop offset="0%" stop-color="#111520"/>
-                  <stop offset="55%" stop-color="#06070b"/>
-                  <stop offset="100%" stop-color="#000000"/>
-                </radialGradient>
-
-                <radialGradient id="diamondCore" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
-                  <stop offset="28%" stop-color="#9be0ff" stop-opacity="0.9"/>
-                  <stop offset="68%" stop-color="#5bb8ff" stop-opacity="0.25"/>
-                  <stop offset="100%" stop-color="#5bb8ff" stop-opacity="0"/>
-                </radialGradient>
-              </defs>
-
-              <circle class="eclipse-corona" cx="110" cy="110" r="88" fill="url(#coronaGlow)"/>
-
-              <g class="eclipse-crescent">
-                <circle cx="110" cy="110" r="64" fill="none" stroke="url(#rimArc)" stroke-width="5.2"/>
-                <path d="M 60 66 A 64 64 0 0 1 162 152" fill="none" stroke="#ffffff" stroke-opacity="0.72" stroke-width="1.6" stroke-linecap="round"/>
-              </g>
-
-              <circle class="eclipse-disc" cx="108" cy="112" r="59.5" fill="url(#lunarSphere)" stroke="rgba(91, 184, 255, 0.25)" stroke-width="1"/>
-
-              <g class="eclipse-flare" transform="translate(154 65)">
-                <circle cx="0" cy="0" r="24" fill="url(#diamondCore)"/>
-                <ellipse cx="0" cy="0" rx="34" ry="2.2" transform="rotate(-38)" fill="url(#diamondCore)" opacity="0.88"/>
-                <path d="M 0 -22 L 2.2 -2.2 L 22 0 L 2.2 2.2 L 0 22 L -2.2 2.2 L -22 0 L -2.2 -2.2 Z" fill="#ffffff"/>
-                <circle cx="0" cy="0" r="3.4" fill="#ffffff"/>
-              </g>
-            </svg>
-          </span>
+          <span class="eclipse-o" aria-hidden="true"></span>
         </h1>
       </div>
     </section>
@@ -118,7 +71,6 @@
 
           <div class="explore-right">
             <button type="button" id="bitacora-btn" class="bit-btn" aria-expanded="false">Bitácora (0)</button>
-            <div class="modebar" id="modebar" role="group" aria-label="Nivel de lectura"></div>
           </div>
         </div>
 
@@ -136,11 +88,6 @@
           </div>
 
           <div class="explore-subrow">
-            <div id="scale-pill" class="scale-pill">
-              <span>Bóveda ICRS · Recorte 0.05°</span>
-              <a href="#3d">Escala Sistema Solar →</a>
-            </div>
-
             <div id="mission-bar" class="mission-bar" aria-live="polite">
               <span class="m-tag" id="m-tag">Misión 1/4</span>
               <p class="m-prompt" id="m-prompt"></p>
@@ -153,10 +100,8 @@
         </div>
       </div>
 
-      <div class="tbar" id="tbar" data-stage="0" aria-label="Etapas de época, mes y banda">
-        <div class="stage-tabs" id="stage-tabs" role="group" aria-label="Tres preguntas de exploración"></div>
+      <div class="tbar" id="tbar" aria-label="Controles temporales y espectrales">
         <div class="trow" id="epocas" role="group" aria-label="Épocas SPHEREx"></div>
-        <div class="trow" id="meses" role="group" aria-label="Meses de observación"></div>
         <div class="trow tmeta">
           <div id="bandas" class="tgroup" role="group" aria-label="Banda espectral"></div>
           <div class="tactions">

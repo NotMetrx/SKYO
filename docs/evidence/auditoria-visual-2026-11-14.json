@@ -1,0 +1,2272 @@
+{
+  "base": "http://127.0.0.1:8123",
+  "generated": "2026-11-14T16:31:51.957Z",
+  "viewports": [
+    "desktop:1440x900",
+    "laptop:1280x720",
+    "tablet:820x1180",
+    "mobile:390x844",
+    "mobile-s:360x740",
+    "mobile-xs:320x568"
+  ],
+  "reducedMotionCheck": true,
+  "failures": [
+    {
+      "run": "mobile-xs",
+      "code": "E_CLIP",
+      "detail": "explorar: 1 control(es) fuera del viewport: 📑 Colección y Candidato"
+    }
+  ],
+  "results": [
+    {
+      "run": "desktop",
+      "route": "inicio",
+      "ready": true,
+      "hash": "#inicio",
+      "vw": 1440,
+      "vh": 900,
+      "docW": 1440,
+      "overflow": false,
+      "visibleSection": "inicio",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": false,
+        "inert": true
+      },
+      "hera": {
+        "visible": false,
+        "inert": true,
+        "bubble": false,
+        "bubbleLive": null,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "right": 0,
+          "bottom": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "webgl": "ok",
+      "interactives": 0,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "3px none rgb(164, 178, 202)",
+      "routeAsked": "inicio"
+    },
+    {
+      "run": "desktop",
+      "route": "explorar",
+      "ready": true,
+      "hash": "#explorar",
+      "vw": 1440,
+      "vh": 900,
+      "docW": 1440,
+      "overflow": false,
+      "visibleSection": "explorar",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": true
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": true,
+        "bubbleLive": null,
+        "rect": {
+          "x": 1016,
+          "y": 768,
+          "right": 1420,
+          "bottom": 880,
+          "w": 404,
+          "h": 112
+        }
+      },
+      "webgl": "ok",
+      "interactives": 31,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "explorar"
+    },
+    {
+      "run": "desktop",
+      "route": "3d",
+      "ready": true,
+      "hash": "#3d",
+      "vw": 1440,
+      "vh": 900,
+      "docW": 1440,
+      "overflow": false,
+      "visibleSection": "3d",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": true
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": true,
+        "bubbleLive": null,
+        "rect": {
+          "x": 1016,
+          "y": 768,
+          "right": 1420,
+          "bottom": 880,
+          "w": 404,
+          "h": 112
+        }
+      },
+      "webgl": "ok",
+      "interactives": 7,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "3d"
+    },
+    {
+      "run": "desktop",
+      "route": "fases",
+      "ready": true,
+      "hash": "#fases",
+      "vw": 1440,
+      "vh": 900,
+      "docW": 1440,
+      "overflow": false,
+      "visibleSection": "fases",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": true
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": true,
+        "bubbleLive": null,
+        "rect": {
+          "x": 1016,
+          "y": 768,
+          "right": 1420,
+          "bottom": 880,
+          "w": 404,
+          "h": 112
+        }
+      },
+      "webgl": "ok",
+      "interactives": 11,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "fases"
+    },
+    {
+      "run": "desktop",
+      "lab": {
+        "overflow": false,
+        "docW": 1440,
+        "vw": 1440,
+        "h1": "Una nueva manera de leer el universo.",
+        "interactives": 11,
+        "wasm": "fallback"
+      },
+      "keyboard": {
+        "hash": "#explorar",
+        "warp": false
+      },
+      "hera": {
+        "before": true,
+        "after": true
+      },
+      "errors": []
+    },
+    {
+      "run": "laptop",
+      "route": "inicio",
+      "ready": true,
+      "hash": "#inicio",
+      "vw": 1280,
+      "vh": 720,
+      "docW": 1280,
+      "overflow": false,
+      "visibleSection": "inicio",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": false,
+        "inert": true
+      },
+      "hera": {
+        "visible": false,
+        "inert": true,
+        "bubble": false,
+        "bubbleLive": null,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "right": 0,
+          "bottom": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "webgl": "ok",
+      "interactives": 0,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "3px none rgb(164, 178, 202)",
+      "routeAsked": "inicio"
+    },
+    {
+      "run": "laptop",
+      "route": "explorar",
+      "ready": true,
+      "hash": "#explorar",
+      "vw": 1280,
+      "vh": 720,
+      "docW": 1280,
+      "overflow": false,
+      "visibleSection": "explorar",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": true
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": true,
+        "bubbleLive": null,
+        "rect": {
+          "x": 856,
+          "y": 588,
+          "right": 1260,
+          "bottom": 700,
+          "w": 404,
+          "h": 112
+        }
+      },
+      "webgl": "ok",
+      "interactives": 31,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "explorar"
+    },
+    {
+      "run": "laptop",
+      "route": "3d",
+      "ready": true,
+      "hash": "#3d",
+      "vw": 1280,
+      "vh": 720,
+      "docW": 1280,
+      "overflow": false,
+      "visibleSection": "3d",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": true
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": true,
+        "bubbleLive": null,
+        "rect": {
+          "x": 856,
+          "y": 588,
+          "right": 1260,
+          "bottom": 700,
+          "w": 404,
+          "h": 112
+        }
+      },
+      "webgl": "ok",
+      "interactives": 7,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "3d"
+    },
+    {
+      "run": "laptop",
+      "route": "fases",
+      "ready": true,
+      "hash": "#fases",
+      "vw": 1280,
+      "vh": 720,
+      "docW": 1280,
+      "overflow": false,
+      "visibleSection": "fases",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": true
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": true,
+        "bubbleLive": null,
+        "rect": {
+          "x": 856,
+          "y": 588,
+          "right": 1260,
+          "bottom": 700,
+          "w": 404,
+          "h": 112
+        }
+      },
+      "webgl": "ok",
+      "interactives": 11,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "fases"
+    },
+    {
+      "run": "laptop",
+      "lab": {
+        "overflow": false,
+        "docW": 1280,
+        "vw": 1280,
+        "h1": "Una nueva manera de leer el universo.",
+        "interactives": 11,
+        "wasm": "fallback"
+      },
+      "keyboard": {
+        "hash": "#explorar",
+        "warp": false
+      },
+      "hera": {
+        "before": true,
+        "after": true
+      },
+      "errors": []
+    },
+    {
+      "run": "tablet",
+      "route": "inicio",
+      "ready": true,
+      "hash": "#inicio",
+      "vw": 820,
+      "vh": 1180,
+      "docW": 820,
+      "overflow": false,
+      "visibleSection": "inicio",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": false,
+        "inert": true
+      },
+      "hera": {
+        "visible": false,
+        "inert": true,
+        "bubble": false,
+        "bubbleLive": null,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "right": 0,
+          "bottom": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "webgl": "ok",
+      "interactives": 0,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "3px none rgb(164, 178, 202)",
+      "routeAsked": "inicio"
+    },
+    {
+      "run": "tablet",
+      "route": "explorar",
+      "ready": true,
+      "hash": "#explorar",
+      "vw": 820,
+      "vh": 1180,
+      "docW": 820,
+      "overflow": false,
+      "visibleSection": "explorar",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": true
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": true,
+        "bubbleLive": null,
+        "rect": {
+          "x": 396,
+          "y": 1048,
+          "right": 800,
+          "bottom": 1160,
+          "w": 404,
+          "h": 112
+        }
+      },
+      "webgl": "ok",
+      "interactives": 31,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "explorar"
+    },
+    {
+      "run": "tablet",
+      "route": "3d",
+      "ready": true,
+      "hash": "#3d",
+      "vw": 820,
+      "vh": 1180,
+      "docW": 820,
+      "overflow": false,
+      "visibleSection": "3d",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": true
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": true,
+        "bubbleLive": null,
+        "rect": {
+          "x": 396,
+          "y": 1048,
+          "right": 800,
+          "bottom": 1160,
+          "w": 404,
+          "h": 112
+        }
+      },
+      "webgl": "ok",
+      "interactives": 7,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "3d"
+    },
+    {
+      "run": "tablet",
+      "route": "fases",
+      "ready": true,
+      "hash": "#fases",
+      "vw": 820,
+      "vh": 1180,
+      "docW": 820,
+      "overflow": false,
+      "visibleSection": "fases",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": true
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": true,
+        "bubbleLive": null,
+        "rect": {
+          "x": 396,
+          "y": 1048,
+          "right": 800,
+          "bottom": 1160,
+          "w": 404,
+          "h": 112
+        }
+      },
+      "webgl": "ok",
+      "interactives": 11,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "fases"
+    },
+    {
+      "run": "tablet",
+      "lab": {
+        "overflow": false,
+        "docW": 820,
+        "vw": 820,
+        "h1": "Una nueva manera de leer el universo.",
+        "interactives": 11,
+        "wasm": "fallback"
+      },
+      "keyboard": {
+        "hash": "#explorar",
+        "warp": false
+      },
+      "hera": {
+        "before": true,
+        "after": true
+      },
+      "errors": []
+    },
+    {
+      "run": "mobile",
+      "route": "inicio",
+      "ready": true,
+      "hash": "#inicio",
+      "vw": 390,
+      "vh": 844,
+      "docW": 390,
+      "overflow": false,
+      "visibleSection": "inicio",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": false,
+        "inert": true
+      },
+      "hera": {
+        "visible": false,
+        "inert": true,
+        "bubble": false,
+        "bubbleLive": null,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "right": 0,
+          "bottom": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "webgl": "ok",
+      "interactives": 0,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "3px none rgb(164, 178, 202)",
+      "routeAsked": "inicio"
+    },
+    {
+      "run": "mobile",
+      "route": "explorar",
+      "ready": true,
+      "hash": "#explorar",
+      "vw": 390,
+      "vh": 844,
+      "docW": 390,
+      "overflow": false,
+      "visibleSection": "explorar",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": true
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": false,
+        "bubbleLive": null,
+        "rect": {
+          "x": 332,
+          "y": 6,
+          "right": 378,
+          "bottom": 52,
+          "w": 46,
+          "h": 46
+        }
+      },
+      "webgl": "ok",
+      "interactives": 31,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "explorar"
+    },
+    {
+      "run": "mobile",
+      "route": "3d",
+      "ready": true,
+      "hash": "#3d",
+      "vw": 390,
+      "vh": 844,
+      "docW": 390,
+      "overflow": false,
+      "visibleSection": "3d",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": true
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": false,
+        "bubbleLive": null,
+        "rect": {
+          "x": 332,
+          "y": 6,
+          "right": 378,
+          "bottom": 52,
+          "w": 46,
+          "h": 46
+        }
+      },
+      "webgl": "ok",
+      "interactives": 7,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "3d"
+    },
+    {
+      "run": "mobile",
+      "route": "fases",
+      "ready": true,
+      "hash": "#fases",
+      "vw": 390,
+      "vh": 844,
+      "docW": 390,
+      "overflow": false,
+      "visibleSection": "fases",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": true
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": false,
+        "bubbleLive": null,
+        "rect": {
+          "x": 332,
+          "y": 6,
+          "right": 378,
+          "bottom": 52,
+          "w": 46,
+          "h": 46
+        }
+      },
+      "webgl": "ok",
+      "interactives": 11,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "fases"
+    },
+    {
+      "run": "mobile",
+      "lab": {
+        "overflow": false,
+        "docW": 390,
+        "vw": 390,
+        "h1": "Una nueva manera de leer el universo.",
+        "interactives": 11,
+        "wasm": "fallback"
+      },
+      "keyboard": {
+        "hash": "#explorar",
+        "warp": false
+      },
+      "hera": {
+        "before": false,
+        "after": true
+      },
+      "errors": []
+    },
+    {
+      "run": "mobile-s",
+      "route": "inicio",
+      "ready": true,
+      "hash": "#inicio",
+      "vw": 360,
+      "vh": 740,
+      "docW": 360,
+      "overflow": false,
+      "visibleSection": "inicio",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": false,
+        "inert": true
+      },
+      "hera": {
+        "visible": false,
+        "inert": true,
+        "bubble": false,
+        "bubbleLive": null,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "right": 0,
+          "bottom": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "webgl": "ok",
+      "interactives": 0,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "3px none rgb(164, 178, 202)",
+      "routeAsked": "inicio"
+    },
+    {
+      "run": "mobile-s",
+      "route": "explorar",
+      "ready": true,
+      "hash": "#explorar",
+      "vw": 360,
+      "vh": 740,
+      "docW": 360,
+      "overflow": false,
+      "visibleSection": "explorar",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": true
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": false,
+        "bubbleLive": null,
+        "rect": {
+          "x": 302,
+          "y": 6,
+          "right": 348,
+          "bottom": 52,
+          "w": 46,
+          "h": 46
+        }
+      },
+      "webgl": "ok",
+      "interactives": 31,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "explorar"
+    },
+    {
+      "run": "mobile-s",
+      "route": "3d",
+      "ready": true,
+      "hash": "#3d",
+      "vw": 360,
+      "vh": 740,
+      "docW": 360,
+      "overflow": false,
+      "visibleSection": "3d",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": true
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": false,
+        "bubbleLive": null,
+        "rect": {
+          "x": 302,
+          "y": 6,
+          "right": 348,
+          "bottom": 52,
+          "w": 46,
+          "h": 46
+        }
+      },
+      "webgl": "ok",
+      "interactives": 7,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "3d"
+    },
+    {
+      "run": "mobile-s",
+      "route": "fases",
+      "ready": true,
+      "hash": "#fases",
+      "vw": 360,
+      "vh": 740,
+      "docW": 360,
+      "overflow": false,
+      "visibleSection": "fases",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": true
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": false,
+        "bubbleLive": null,
+        "rect": {
+          "x": 302,
+          "y": 6,
+          "right": 348,
+          "bottom": 52,
+          "w": 46,
+          "h": 46
+        }
+      },
+      "webgl": "ok",
+      "interactives": 11,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "fases"
+    },
+    {
+      "run": "mobile-s",
+      "lab": {
+        "overflow": false,
+        "docW": 360,
+        "vw": 360,
+        "h1": "Una nueva manera de leer el universo.",
+        "interactives": 11,
+        "wasm": "fallback"
+      },
+      "keyboard": {
+        "hash": "#explorar",
+        "warp": false
+      },
+      "hera": {
+        "before": false,
+        "after": true
+      },
+      "errors": []
+    },
+    {
+      "run": "mobile-xs",
+      "route": "inicio",
+      "ready": true,
+      "hash": "#inicio",
+      "vw": 320,
+      "vh": 568,
+      "docW": 320,
+      "overflow": false,
+      "visibleSection": "inicio",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": false,
+        "inert": true
+      },
+      "hera": {
+        "visible": false,
+        "inert": true,
+        "bubble": false,
+        "bubbleLive": null,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "right": 0,
+          "bottom": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "webgl": "ok",
+      "interactives": 0,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "3px none rgb(164, 178, 202)",
+      "routeAsked": "inicio"
+    },
+    {
+      "run": "mobile-xs",
+      "route": "explorar",
+      "ready": true,
+      "hash": "#explorar",
+      "vw": 320,
+      "vh": 568,
+      "docW": 320,
+      "overflow": false,
+      "visibleSection": "explorar",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": true
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": false,
+        "bubbleLive": null,
+        "rect": {
+          "x": 262,
+          "y": 6,
+          "right": 308,
+          "bottom": 52,
+          "w": 46,
+          "h": 46
+        }
+      },
+      "webgl": "ok",
+      "interactives": 31,
+      "clipped": [
+        {
+          "text": "📑 Colección y Candidato",
+          "x": 235,
+          "y": 61,
+          "right": 327,
+          "bottom": 131,
+          "w": 92,
+          "h": 70
+        }
+      ],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "explorar"
+    },
+    {
+      "run": "mobile-xs",
+      "route": "3d",
+      "ready": true,
+      "hash": "#3d",
+      "vw": 320,
+      "vh": 568,
+      "docW": 320,
+      "overflow": false,
+      "visibleSection": "3d",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": true
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": false,
+        "bubbleLive": null,
+        "rect": {
+          "x": 262,
+          "y": 6,
+          "right": 308,
+          "bottom": 52,
+          "w": 46,
+          "h": 46
+        }
+      },
+      "webgl": "ok",
+      "interactives": 7,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "3d"
+    },
+    {
+      "run": "mobile-xs",
+      "route": "fases",
+      "ready": true,
+      "hash": "#fases",
+      "vw": 320,
+      "vh": 568,
+      "docW": 320,
+      "overflow": false,
+      "visibleSection": "fases",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": true
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": false,
+        "bubbleLive": null,
+        "rect": {
+          "x": 262,
+          "y": 6,
+          "right": 308,
+          "bottom": 52,
+          "w": 46,
+          "h": 46
+        }
+      },
+      "webgl": "ok",
+      "interactives": 11,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "fases"
+    },
+    {
+      "run": "mobile-xs",
+      "lab": {
+        "overflow": false,
+        "docW": 320,
+        "vw": 320,
+        "h1": "Una nueva manera de leer el universo.",
+        "interactives": 11,
+        "wasm": "fallback"
+      },
+      "keyboard": {
+        "hash": "#explorar",
+        "warp": false
+      },
+      "hera": {
+        "before": false,
+        "after": true
+      },
+      "errors": []
+    },
+    {
+      "run": "desktop-reduced",
+      "route": "inicio",
+      "ready": true,
+      "hash": "#inicio",
+      "vw": 1440,
+      "vh": 900,
+      "docW": 1440,
+      "overflow": false,
+      "visibleSection": "inicio",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": false,
+        "inert": true
+      },
+      "hera": {
+        "visible": false,
+        "inert": true,
+        "bubble": false,
+        "bubbleLive": null,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "right": 0,
+          "bottom": 0,
+          "w": 0,
+          "h": 0
+        }
+      },
+      "webgl": "ok",
+      "interactives": 0,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "3px none rgb(164, 178, 202)",
+      "routeAsked": "inicio"
+    },
+    {
+      "run": "desktop-reduced",
+      "route": "explorar",
+      "ready": true,
+      "hash": "#explorar",
+      "vw": 1440,
+      "vh": 900,
+      "docW": 1440,
+      "overflow": false,
+      "visibleSection": "explorar",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": true
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": true,
+        "bubbleLive": null,
+        "rect": {
+          "x": 1016,
+          "y": 768,
+          "right": 1420,
+          "bottom": 880,
+          "w": 404,
+          "h": 112
+        }
+      },
+      "webgl": "ok",
+      "interactives": 31,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "explorar"
+    },
+    {
+      "run": "desktop-reduced",
+      "route": "3d",
+      "ready": true,
+      "hash": "#3d",
+      "vw": 1440,
+      "vh": 900,
+      "docW": 1440,
+      "overflow": false,
+      "visibleSection": "3d",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        },
+        {
+          "id": "fases",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": true
+        },
+        {
+          "text": "Fases",
+          "current": false
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": true,
+        "bubbleLive": null,
+        "rect": {
+          "x": 1016,
+          "y": 768,
+          "right": 1420,
+          "bottom": 880,
+          "w": 404,
+          "h": 112
+        }
+      },
+      "webgl": "ok",
+      "interactives": 7,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "3d"
+    },
+    {
+      "run": "desktop-reduced",
+      "route": "fases",
+      "ready": true,
+      "hash": "#fases",
+      "vw": 1440,
+      "vh": 900,
+      "docW": 1440,
+      "overflow": false,
+      "visibleSection": "fases",
+      "sections": [
+        {
+          "id": "inicio",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "explorar",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "3d",
+          "on": false,
+          "inert": true,
+          "aria": "true"
+        },
+        {
+          "id": "fases",
+          "on": true,
+          "inert": false,
+          "aria": "false"
+        }
+      ],
+      "nav": [
+        {
+          "text": "Explorar",
+          "current": false
+        },
+        {
+          "text": "3D",
+          "current": false
+        },
+        {
+          "text": "Fases",
+          "current": true
+        }
+      ],
+      "top": {
+        "visible": true,
+        "inert": false
+      },
+      "hera": {
+        "visible": true,
+        "inert": false,
+        "bubble": true,
+        "bubbleLive": null,
+        "rect": {
+          "x": 1016,
+          "y": 768,
+          "right": 1420,
+          "bottom": 880,
+          "w": 404,
+          "h": 112
+        }
+      },
+      "webgl": "ok",
+      "interactives": 11,
+      "clipped": [],
+      "smallTargets": [],
+      "focusStyle": "2px solid rgb(91, 184, 255)",
+      "routeAsked": "fases"
+    },
+    {
+      "run": "desktop-reduced",
+      "lab": {
+        "overflow": false,
+        "docW": 1440,
+        "vw": 1440,
+        "h1": "Una nueva manera de leer el universo.",
+        "interactives": 11,
+        "wasm": "fallback"
+      },
+      "keyboard": {
+        "hash": "#explorar",
+        "warp": false
+      },
+      "hera": {
+        "before": true,
+        "after": true
+      },
+      "errors": []
+    }
+  ]
+}
