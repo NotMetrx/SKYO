@@ -1,0 +1,15 @@
+{
+  "name": "skyo",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "SKYO — Explorador astronómico multitemporal y laboratorio científico local-first (SPHEREx / JPL)",
+  "scripts": {
+    "start": "node scripts/dev-server.mjs",
+    "dev": "node scripts/dev-server.mjs",
+    "test": "node scripts/pipeline.test.mjs",
+    "demo:generate": "node scripts/generate_demo_fits.mjs",
+    "demo:preview": "node scripts/export_demo_preview.mjs",
+    "wasm:build": "wasm-pack build science-core --target web --out-dir ../assets/js/science/wasm/pkg --release"
+  }
+}

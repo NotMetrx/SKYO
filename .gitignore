@@ -1,0 +1,14 @@
+# temporales
+*.tmp
+*.bak
+.DS_Store
+
+# configuraciones locales de agentes
+.agents/
+.claude/
+.opencode/
+
+# capturas de depuración
+*.png
+*.jpg
+!assets/img/*
