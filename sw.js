@@ -1,17 +1,82 @@
-/** PWA shell offline; no guarda por defecto observaciones NASA de terceros. */
-const VERSION='skyo-local-shell-v1';
-const FILES=['./','./index.html','./main.js','./worker.js','./styles.css',
-  './src/fits.js','./src/wcs.js','./src/pipeline.js','./src/render.js',
-  './src/wasm-bridge.js','./src/opfs.js','./manifest.webmanifest','./icon.svg',
-  './demo/epoca_A.fits','./demo/epoca_B.fits'];
-self.addEventListener('install',e=>{
-  e.waitUntil(caches.open(VERSION).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()));
+/**
+ * SKYO Service Worker — PWA offline shell.
+ * Caché estricto solo para assets locales de la aplicación y muestras FITS de demostración.
+ */
+const VERSION = 'skyo-v2.1.0';
+const ASSETS_TO_CACHE = [
+  './',
+  './index.html',
+  './lab.html',
+  './icon.svg',
+  './sw.js',
+  './assets/css/main.css',
+  './assets/css/lab.css',
+  './assets/js/app.js',
+  './assets/js/cosmos3d.js',
+  './assets/js/explorar.js',
+  './assets/js/fases.js',
+  './assets/js/sistema3d.js',
+  './assets/js/hera3d.js',
+  './assets/js/data.js',
+  './assets/js/science-lab-ui.js',
+  './assets/js/vendor/three.min.js',
+  './assets/js/vendor/lottie.min.js',
+  './assets/js/science/fits.js',
+  './assets/js/science/wcs.js',
+  './assets/js/science/pipeline.js',
+  './assets/js/science/render.js',
+  './assets/js/science/wasm-bridge.js',
+  './assets/js/science/opfs.js',
+  './assets/js/science/worker.js',
+  './assets/img/hera.webp',
+  './assets/img/logo.jpg',
+  './assets/img/icon.svg',
+  './assets/fonts/SpaceGrotesk-Regular.otf',
+  './assets/fonts/SpaceGrotesk-Medium.otf',
+  './assets/fonts/SpaceGrotesk-Bold.otf',
+  './assets/fonts/SpaceMono-Regular.ttf',
+  './data/sample-fits/epoca_A.fits',
+  './data/sample-fits/epoca_B.fits',
+  './data/manifests/manifest.webmanifest'
+];
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(VERSION).then(cache => {
+      return Promise.allSettled(
+        ASSETS_TO_CACHE.map(url =>
+          cache.add(url).catch(err => {
+            console.warn('[SW] No se pudo cachear:', url, err);
+          })
+        )
+      );
+    }).then(() => self.skipWaiting())
+  );
 });
-self.addEventListener('activate',e=>{
-  e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==VERSION).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== VERSION).map(k => caches.delete(k)))
+    ).then(() => self.clients.claim())
+  );
 });
-self.addEventListener('fetch',e=>{
-  const url=new URL(e.request.url);
-  if(e.request.method!=='GET'||url.origin!==self.location.origin)return;
-  e.respondWith(caches.match(e.request).then(hit=>hit||fetch(e.request)));
+
+self.addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
+  if (event.request.method !== 'GET' || url.origin !== self.location.origin) return;
+
+  event.respondWith(
+    caches.match(event.request).then(cached => {
+      if (cached) return cached;
+      return fetch(event.request).then(response => {
+        // Guardar respuestas exitosas en caché si son locales
+        if (response.status === 200 && (url.pathname.startsWith('/assets/') || url.pathname.startsWith('/data/'))) {
+          const clone = response.clone();
+          caches.open(VERSION).then(cache => cache.put(event.request, clone));
+        }
+        return response;
+      });
+    })
+  );
 });

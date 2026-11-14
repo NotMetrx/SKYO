@@ -16,8 +16,8 @@ __pycache__/
 .claude/
 .opencode/
 
-# capturas de depuración
+# capturas de depuración y temporales
 *.png
 *.jpg
-!assets/img/*
+!assets/img/**
 !docs/demo_procesamiento_sintetico.png

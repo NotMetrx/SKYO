@@ -43,3 +43,10 @@ Cada cambio se apunta aquí con fecha. Complementa a `history.md` (lo imprescind
 - Resueltos conflictos en `.gitignore`, `package.json`, `README.md` y `docs/IMPLEMENTACION_EN_SKYO.md`.
 - Verificada suite de pruebas `pipeline.test.mjs` (8/8 pass).
 - Autoría de commit asociada a `@aronemilio` en la rama principal.
+
+## 2026-11-14 — Organización definitiva y experiencia clonable universal
+- Raíz limpia de carpetas basura: `skills/` (2,391 archivos de agentes) movido a `_archivo/ajeno/skills/`; `web/`, `tools/`, `tests/`, `wasm/` y `vite.config.mjs` movidos a `_archivo/legacy/`; `specs/` y `pipelines/` movidos a `docs/`.
+- Previews visuales reales del localhost integradas en `assets/img/previews/` e incluidas en el nuevo `README.md`.
+- `sw.js`: lista de caché corregida con los assets reales del proyecto y controlada con `Promise.allSettled`.
+- `scripts/dev-server.mjs`: servidor nativo Node.js en puerto 8000 con soporte de cabeceras Range, CORS y MIME types.
+- `package.json`: metadatos estándar humanos, scripts `npm start` y `npm test` verificados.
