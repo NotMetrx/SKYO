@@ -1,19 +1,15 @@
 {
-  "name": "skyo-local-first-science-lab",
-  "version": "2.1.0-review",
+  "name": "skyo",
+  "version": "2.1.0",
   "private": true,
   "type": "module",
-  "description": "SKYO 2.1 pipeline FITS local-first corregido a partir de auditoria externa",
+  "description": "SKYO — Explorador astronómico multitemporal y laboratorio científico local-first (SPHEREx / JPL)",
   "scripts": {
-    "dev": "vite --config vite.config.mjs --host 127.0.0.1 --port 4173",
-    "demo:generate": "node tools/generate_demo_fits.mjs",
-    "test": "node --test tests/*.test.mjs",
-    "wasm:build": "wasm-pack build wasm --target web --out-dir ../web/public/wasm/pkg --release",
-    "web:build": "vite build --config vite.config.mjs && node tools/postbuild.mjs",
-    "preview": "vite preview --config vite.config.mjs --host 127.0.0.1 --port 4173",
-    "dev:standalone": "node tools/dev-server.mjs"
-  },
-  "devDependencies": {
-    "vite": "^7.0.0"
+    "start": "node scripts/dev-server.mjs",
+    "dev": "node scripts/dev-server.mjs",
+    "test": "node scripts/pipeline.test.mjs",
+    "demo:generate": "node scripts/generate_demo_fits.mjs",
+    "demo:preview": "node scripts/export_demo_preview.mjs",
+    "wasm:build": "wasm-pack build science-core --target web --out-dir ../assets/js/science/wasm/pkg --release"
   }
 }

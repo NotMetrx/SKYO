@@ -22,12 +22,11 @@ Conservar la navegación hash (`#inicio`, `#explorar`, `#3d`), assets visuales, 
 #inicio
   Identidad SKYO + CTA a Explorar + H.E.R.A 7 introductorio
 #explorar
-  [Vista del cielo] [Laboratorio] [Colección de objetos]
-    Vista del cielo: Aladin Lite + HiPS por banda
-    Laboratorio: dos FITS + espectro/fecha + blink + diferencia
-    Colección: fichas Gaia/JPL/WISE procedentes de datasets
+  Bóveda celeste / retícula ICRS + panel de misiones + laboratorio FITS
 #3d
-  Simulación 3D existente; NASA/JPL solo si hay efemérides verificadas
+  Sistema Solar y órbitas en 3D
+#fases
+  Visualizador temporal de fases y comparación espectral
 ```
 
 ## D. Adaptar `assets/js/data.js`
@@ -73,7 +72,6 @@ No prometer que `fetch` NASA en navegador funciona sin validar CORS. El curador 
 4. Probar `fitsio-pure` o `fitsy` con los HDUs `FLAGS`, `EPSF`, `WCS-WAVE`; comprobar tile compression y lectura espectral específica, no suponer soporte genérico.
 5. Validar Aladin Lite v3 en la versión/librearía concreta que usará el proyecto y revisar LGPL notices.
 6. Diseñar y probar el pipeline de extracción de fuentes con ePSF y fotometría antes de afirmar candidatos reales.
-
 
 ## I. Cambios auditados 2.1 (obligatorios al integrar)
 

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="SKYO — Explorador público multitemporal del cielo infrarrojo (Ref. SPHEREx / JPL) con sistema solar 3D y asistente H.E.R.A 7.">
+  <title>SKYO — Atrévete a explorar</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script type="module" src="assets/js/app.js"></script>
+</head>
+<body data-route="inicio" data-dir="forward">
+
+  <!-- Lienzo 3D Three.js compartido en negro puro (#000000) para todos los paneles -->
+  <canvas id="cosmos" aria-label="Universo interactivo 3D de SKYO"></canvas>
+
+  <!-- Barra de navegación principal -->
+  <header class="top">
+    <a class="brand" href="#inicio" aria-label="SKYO Inicio">
+      <span class="brand-sky">SKY</span>
+      <span class="mini-eclipse" aria-hidden="true">
+        <svg viewBox="0 0 36 36" width="22" height="22">
+          <defs>
+            <linearGradient id="miniRim" x1="15%" y1="85%" x2="85%" y2="15%">
+              <stop offset="0%" stop-color="#ff7a1a" stop-opacity="0.35"/>
+              <stop offset="55%" stop-color="#5bb8ff" stop-opacity="0.85"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="1"/>
+            </linearGradient>
+          </defs>
+          <circle cx="18" cy="18" r="12.5" fill="none" stroke="url(#miniRim)" stroke-width="2"/>
+          <circle cx="18" cy="18" r="10.2" fill="#000000"/>
+          <path d="M26.5 7.5 L27.3 9.7 L29.5 10.5 L27.3 11.3 L26.5 13.5 L25.7 11.3 L23.5 10.5 L25.7 9.7 Z" fill="#ffffff"/>
+        </svg>
+      </span>
+    </a>
+
+    <nav id="nav" aria-label="Navegación principal">
+      <a href="#explorar" data-s="explorar"><span>Explorar</span></a>
+      <a href="#3d" data-s="3d"><span>3D</span></a>
+      <a href="#fases" data-s="fases"><span>Fases</span></a>
+    </nav>
+  </header>
+
+  <main id="viewport">
+    <!-- Vista 1: Inicio minimalista (Solo SKYO sobre el cosmos 3D vivo en #000000) -->
+    <section class="sec" id="inicio" aria-hidden="true" inert>
+      <div class="hero">
+        <h1 class="eclipse-wordmark" aria-label="SKYO">
+          <span class="letters">SKY</span>
+          <span class="eclipse-o" aria-hidden="true">
+            <svg class="diamond-eclipse" viewBox="0 0 220 220" width="220" height="220">
+              <defs>
+                <radialGradient id="coronaGlow" cx="68%" cy="32%" r="68%">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+                  <stop offset="22%" stop-color="#5bb8ff" stop-opacity="0.58"/>
+                  <stop offset="56%" stop-color="#1e4b8a" stop-opacity="0.16"/>
+                  <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+                </radialGradient>
+
+                <linearGradient id="rimArc" x1="12%" y1="88%" x2="88%" y2="12%">
+                  <stop offset="0%" stop-color="#ff7a1a" stop-opacity="0.22"/>
+                  <stop offset="38%" stop-color="#5bb8ff" stop-opacity="0.72"/>
+                  <stop offset="76%" stop-color="#cceeff" stop-opacity="0.96"/>
+                  <stop offset="100%" stop-color="#ffffff" stop-opacity="1"/>
+                </linearGradient>
+
+                <radialGradient id="lunarSphere" cx="62%" cy="38%" r="64%">
+                  <stop offset="0%" stop-color="#111520"/>
+                  <stop offset="55%" stop-color="#06070b"/>
+                  <stop offset="100%" stop-color="#000000"/>
+                </radialGradient>
+
+                <radialGradient id="diamondCore" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+                  <stop offset="28%" stop-color="#9be0ff" stop-opacity="0.9"/>
+                  <stop offset="68%" stop-color="#5bb8ff" stop-opacity="0.25"/>
+                  <stop offset="100%" stop-color="#5bb8ff" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+
+              <circle class="eclipse-corona" cx="110" cy="110" r="88" fill="url(#coronaGlow)"/>
+
+              <g class="eclipse-crescent">
+                <circle cx="110" cy="110" r="64" fill="none" stroke="url(#rimArc)" stroke-width="5.2"/>
+                <path d="M 60 66 A 64 64 0 0 1 162 152" fill="none" stroke="#ffffff" stroke-opacity="0.72" stroke-width="1.6" stroke-linecap="round"/>
+              </g>
+
+              <circle class="eclipse-disc" cx="108" cy="112" r="59.5" fill="url(#lunarSphere)" stroke="rgba(91, 184, 255, 0.25)" stroke-width="1"/>
+
+              <g class="eclipse-flare" transform="translate(154 65)">
+                <circle cx="0" cy="0" r="24" fill="url(#diamondCore)"/>
+                <ellipse cx="0" cy="0" rx="34" ry="2.2" transform="rotate(-38)" fill="url(#diamondCore)" opacity="0.88"/>
+                <path d="M 0 -22 L 2.2 -2.2 L 22 0 L 2.2 2.2 L 0 22 L -2.2 2.2 L -22 0 L -2.2 -2.2 Z" fill="#ffffff"/>
+                <circle cx="0" cy="0" r="3.4" fill="#ffffff"/>
+              </g>
+            </svg>
+          </span>
+        </h1>
+      </div>
+    </section>
+
+    <!-- Vista 2: Explorar Bóveda ICRS 3D + Blink, Misiones H.E.R.A 7 y Bitácora -->
+    <section class="sec" id="explorar" aria-hidden="true" inert>
+      <div class="explore-hud-top">
+        <div class="explore-subnav-row">
+          <div class="explore-view-tabs" id="explore-view-tabs" role="tablist" aria-label="Modos de exploración">
+            <button type="button" class="view-tab on" data-view="boveda" role="tab" aria-selected="true">
+              <span>🔭 Bóveda Celeste</span>
+            </button>
+            <button type="button" class="view-tab" data-view="lab" role="tab" aria-selected="false">
+              <span>🔬 Laboratorio FITS</span>
+              <span class="view-tag-new">WASM 2.0</span>
+            </button>
+            <button type="button" class="view-tab" data-view="coleccion" role="tab" aria-selected="false">
+              <span>📑 Colección y Candidatos</span>
+            </button>
+          </div>
+
+          <div class="explore-right">
+            <button type="button" id="bitacora-btn" class="bit-btn" aria-expanded="false">Bitácora (0)</button>
+            <div class="modebar" id="modebar" role="group" aria-label="Nivel de lectura"></div>
+          </div>
+        </div>
+
+        <!-- HUD exclusivo de la Bóveda Celeste -->
+        <div id="boveda-hud" class="boveda-hud">
+          <div class="explore-top">
+            <div class="flt" id="flt" role="toolbar" aria-label="Filtro de cuerpos celestes">
+              <button type="button" class="on" data-t="Todos">Todos</button>
+              <button type="button" data-t="Estrella">Estrellas</button>
+              <button type="button" data-t="Cometa">Cometas</button>
+              <button type="button" data-t="Asteroide">Asteroides</button>
+            </div>
+
+            <div id="hover-pill" class="hover-pill" aria-live="polite"></div>
+          </div>
+
+          <div class="explore-subrow">
+            <div id="scale-pill" class="scale-pill">
+              <span>Bóveda ICRS · Recorte 0.05°</span>
+              <a href="#3d">Escala Sistema Solar →</a>
+            </div>
+
+            <div id="mission-bar" class="mission-bar" aria-live="polite">
+              <span class="m-tag" id="m-tag">Misión 1/4</span>
+              <p class="m-prompt" id="m-prompt"></p>
+              <div class="m-actions">
+                <button type="button" id="m-hint">Pista</button>
+                <button type="button" id="m-next">Siguiente</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tbar" id="tbar" data-stage="0" aria-label="Etapas de época, mes y banda">
+        <div class="stage-tabs" id="stage-tabs" role="group" aria-label="Tres preguntas de exploración"></div>
+        <div class="trow" id="epocas" role="group" aria-label="Épocas SPHEREx"></div>
+        <div class="trow" id="meses" role="group" aria-label="Meses de observación"></div>
+        <div class="trow tmeta">
+          <div id="bandas" class="tgroup" role="group" aria-label="Banda espectral"></div>
+          <div class="tactions">
+            <button type="button" id="blink" class="blink-btn" aria-pressed="false">Parpadear épocas</button>
+            <button type="button" id="cmp" class="cmp-btn" aria-pressed="false">Comparar épocas</button>
+          </div>
+        </div>
+        <p id="tdesc" class="tdesc" aria-live="polite"></p>
+      </div>
+
+      <div class="hint">Arrastra la bóveda ICRS · Recorte astrométrico 0.05° · Datos ilustrativos Ref. NASA/IPAC IRSA (SPHEREx) y JPL</div>
+
+      <div id="info" class="info-panel" aria-live="polite" aria-hidden="true" inert>
+        <canvas id="ith"></canvas>
+        <div class="badges">
+          <span class="tg" id="it"></span>
+          <span class="tg st" id="ist"></span>
+        </div>
+        <h3 id="in"></h3>
+        <p id="id"></p>
+        <p id="ix"></p>
+        <p id="imv" class="mv"></p>
+
+        <!-- Modificador / Corrector interactivo de coordenadas ICRS -->
+        <div class="coord-editor" id="coord-editor">
+          <div class="coord-editor-head">
+            <span>Ajuste astrométrico de coordenada ICRS</span>
+            <small>Arrastre subpíxel ±0.05°</small>
+          </div>
+          <div class="coord-sliders">
+            <label>
+              <span>RA offset</span>
+              <input type="range" id="ra-slider" min="-0.02" max="0.02" step="0.0005" value="0">
+              <code id="ra-val">+0.0000°</code>
+            </label>
+            <label>
+              <span>Dec offset</span>
+              <input type="range" id="dec-slider" min="-0.02" max="0.02" step="0.0005" value="0">
+              <code id="dec-val">+0.0000°</code>
+            </label>
+          </div>
+          <div class="coord-actions">
+            <button type="button" class="btn subtle-sm" id="btn-reset-coord">Reajustar</button>
+            <button type="button" class="btn subtle-sm ok" id="btn-apply-coord">Fijar coordenada</button>
+          </div>
+        </div>
+
+        <div class="r">
+          <button type="button" class="btn ok" id="ibit">Registrar en bitácora</button>
+          <button type="button" class="btn" id="ih">Preguntar a H.E.R.A 7</button>
+          <button type="button" class="btn" id="ic">Cerrar</button>
+        </div>
+      </div>
+
+      <aside id="bitacora-panel" class="bitacora-panel" aria-label="Bitácora de candidato (Modo Aula)" aria-hidden="true" inert>
+        <div class="bit-head">
+          <div>
+            <b>Bitácora de Candidato</b>
+            <small id="bit-summary">0 registros guardados en modo aula</small>
+          </div>
+          <button type="button" id="bit-close" aria-label="Cerrar bitácora">✕</button>
+        </div>
+        <div id="bit-list" class="bit-list"></div>
+        <div class="bit-foot">
+          <button type="button" class="btn" id="bit-export">Exportar JSON</button>
+          <button type="button" class="btn" id="bit-clear">Limpiar</button>
+        </div>
+      </aside>
+
+      <!-- Subvista 2: Laboratorio Científico FITS Local-First (WASM / Web Worker / OPFS) -->
+      <div id="view-lab" class="subview-workspace" hidden>
+        <div class="lab-card-pane">
+          <div class="lab-pane-head">
+            <div>
+              <div class="mini-label">01 / PROCESAMIENTO CIENTÍFICO LOCAL · SIN VPS</div>
+              <h3>Laboratorio FITS de Doble Época</h3>
+              <p class="lab-desc">Inspecciona datos infrarrojos SPHEREx, aplica máscaras FLAGS, alinea por WCS TAN-SIP y encuentra fuentes que cambiaron de posición o brillo.</p>
+            </div>
+            <div class="lab-head-status">
+              <span class="status-pill" id="lab-kernel-status">Inicializando WASM...</span>
+              <span class="privacy-pill">Privacidad 100% local</span>
+            </div>
+          </div>
+
+          <div class="warning-callout" role="note">
+            <span class="callout-icon">◎</span>
+            <span><strong>Principio de Honestidad Científica:</strong> SKYO es un explorador asistido de candidatos. Cualquier diferencia observada requiere validación de PSF y cruce con JPL Small-Body Database antes de catalogarse como descubrimiento. Prohibido afirmar «Planeta X» sin evidencia.</span>
+          </div>
+
+          <div class="lab-step-box">
+            <div class="lab-box-head">
+              <h4>01. Ingesta de observaciones FITS</h4>
+              <button type="button" id="lab-load-demo" class="btn btn-demo">✦ Cargar simulación SPHEREx (Épocas A y B)</button>
+            </div>
+            <p class="lab-help">Selecciona dos archivos FITS (recortes SPHEREx L2 de hasta 512×512 px) con extensiones IMAGE, FLAGS y VARIANCE.</p>
+            <div class="lab-upload-grid">
+              <label class="lab-upload" for="file-lab-a">
+                <span class="slot-tag">ÉPOCA A (T1)</span>
+                <span class="upload-icon">↥</span>
+                <strong>Primera observación</strong>
+                <small id="lab-name-a">Seleccionar .fits</small>
+                <input id="file-lab-a" type="file" accept=".fits,.fit,.fts">
+              </label>
+              <label class="lab-upload" for="file-lab-b">
+                <span class="slot-tag">ÉPOCA B (T2)</span>
+                <span class="upload-icon">↥</span>
+                <strong>Segunda observación</strong>
+                <small id="lab-name-b">Seleccionar .fits</small>
+                <input id="file-lab-b" type="file" accept=".fits,.fit,.fts">
+              </label>
+            </div>
+            <div class="lab-opfs-bar">
+              <button type="button" class="btn subtle-sm" id="lab-save-local" disabled>Guardar en OPFS (Disco local)</button>
+              <button type="button" class="btn subtle-sm" id="lab-load-local">Recuperar desde OPFS</button>
+            </div>
+          </div>
+
+          <div class="lab-step-box">
+            <div class="lab-box-head">
+              <h4>02. Visor espectral de observaciones</h4>
+            </div>
+            <div class="lab-dual-viewer">
+              <article class="lab-canvas-card">
+                <div class="card-title-bar">
+                  <span>OBSERVACIÓN ÉPOCA A</span>
+                  <span class="tag-raw">RAW FITS</span>
+                </div>
+                <div class="canvas-wrap">
+                  <canvas id="canvas-lab-a" width="320" height="240" aria-label="Visualización FITS de Época A"></canvas>
+                  <span class="canvas-hint" id="hint-lab-a">Esperando FITS A...</span>
+                </div>
+                <div class="canvas-meta" id="meta-lab-a">Esperando imagen…</div>
+              </article>
+              <article class="lab-canvas-card">
+                <div class="card-title-bar">
+                  <span>OBSERVACIÓN ÉPOCA B</span>
+                  <span class="tag-raw">RAW FITS</span>
+                </div>
+                <div class="canvas-wrap">
+                  <canvas id="canvas-lab-b" width="320" height="240" aria-label="Visualización FITS de Época B"></canvas>
+                  <span class="canvas-hint" id="hint-lab-b">Esperando FITS B...</span>
+                </div>
+                <div class="canvas-meta" id="meta-lab-b">Esperando imagen…</div>
+              </article>
+            </div>
+          </div>
+
+          <div class="lab-step-box">
+            <div class="lab-box-head">
+              <h4>03. Sustracción diferencial y detección de cambio</h4>
+              <button type="button" id="lab-compare-btn" class="btn pr" disabled>
+                <span>Comparar épocas (WCS / Worker)</span>
+                <span>↗</span>
+              </button>
+            </div>
+            <div class="lab-analysis-grid">
+              <div class="lab-diff-preview">
+                <canvas id="canvas-lab-difference" width="320" height="240" aria-label="Mapa de diferencia reproyectada"></canvas>
+                <div class="diff-placeholder" id="lab-diff-placeholder">
+                  <span>Aquí se proyectará la sustracción de imágenes alineadas por coordenadas astrométricas WCS TAN-SIP.</span>
+                </div>
+              </div>
+              <div class="lab-results-card">
+                <div class="results-head">INFORME DEL MOTOR CIENTÍFICO</div>
+                <dl id="lab-report-table" class="lab-report-list">
+                  <div><dt>Estado</dt><dd>Sin análisis ejecutado</dd></div>
+                  <div><dt>Motor</dt><dd>En espera de comparación</dd></div>
+                  <div><dt>Compatibilidad espectral</dt><dd>Requiere misma banda IR</dd></div>
+                </dl>
+                <div class="lab-report-actions">
+                  <button type="button" class="btn" id="lab-save-report" disabled>Descargar informe JSON ↓</button>
+                  <button type="button" class="btn ok" id="lab-add-bitacora" disabled>✦ Registrar en Bitácora H.E.R.A 7</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="lab-toast" class="lab-toast" role="status" aria-live="polite" hidden></div>
+      </div>
+
+      <!-- Subvista 3: Colección de Candidatos y Detecciones (SPHEREx / JPL / WISE) -->
+      <div id="view-coleccion" class="subview-workspace" hidden>
+        <div class="col-card-pane">
+          <div class="col-pane-head">
+            <div>
+              <div class="mini-label">02 / CATÁLOGO CIENTÍFICO DE OBJETOS</div>
+              <h3>Colección de Candidatos y Detecciones</h3>
+              <p class="col-desc">Cruce entre observaciones infrarrojas de SPHEREx y el oráculo astrométrico de JPL Small-Body Database.</p>
+            </div>
+            <div class="col-filter-bar" id="col-filter-bar">
+              <button type="button" class="on" data-col-filter="all">Todos (14)</button>
+              <button type="button" data-col-filter="confirmados">Confirmados JPL (13)</button>
+              <button type="button" data-col-filter="candidatos">Candidatos activos (1)</button>
+            </div>
+          </div>
+
+          <div class="col-metrics-strip">
+            <div class="metric-card">
+              <span class="m-val">14</span>
+              <span class="m-lbl">Objetos mapeados</span>
+            </div>
+            <div class="metric-card">
+              <span class="m-val" style="color: var(--ok)">13</span>
+              <span class="m-lbl">Confirmados en JPL</span>
+            </div>
+            <div class="metric-card">
+              <span class="m-val" style="color: var(--ac2)">1</span>
+              <span class="m-lbl">Candidato sin identificar (SPX-26)</span>
+            </div>
+            <div class="metric-card">
+              <span class="m-val" style="color: var(--ac)">0.05°</span>
+              <span class="m-lbl">Ventana ICRS</span>
+            </div>
+          </div>
+
+          <div class="col-objects-grid" id="col-objects-grid">
+            <!-- Renderizado dinámicamente desde data.js / OBJ -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vista 3: Sistema Solar 3D -->
+    <section class="sec" id="3d" aria-hidden="true" inert>
+      <div class="ctl">
+        <div class="r" id="fc" role="toolbar" aria-label="Controles del sistema 3D">
+          <button type="button" class="on" data-f="Sistema">Sistema</button>
+          <button type="button" data-f="Cometa">Cometa</button>
+          <button type="button" data-f="Cinturón">Cinturón</button>
+          <button type="button" id="pp" aria-label="Pausar simulación">⏸</button>
+          <label class="speed-ctl">
+            <span>Velocidad</span>
+            <input type="range" id="sp" min="0.2" max="4" step="0.2" value="1" aria-label="Velocidad orbital">
+          </label>
+          <button type="button" id="zi" aria-label="Acercar">＋</button>
+          <button type="button" id="zo" aria-label="Alejar">－</button>
+        </div>
+        <p id="fi" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <!-- Vista 4: Fases del Proyecto y Pipeline Vivo 3D -->
+    <section class="sec" id="fases" aria-hidden="true" inert>
+      <div class="fases-top">
+        <div class="fases-title-wrap">
+          <span class="fases-kicker">Arquitectura viva 3D · Planeta X y SPHEREx</span>
+          <h2>Fases y etapas de la solución</h2>
+        </div>
+        <div class="modebar" id="fases-view-toggle" role="group" aria-label="Modo de arquitectura">
+          <button type="button" class="on" data-view="roadmap">Fases (0–6)</button>
+          <button type="button" data-view="pipeline">Pipeline de cambios</button>
+        </div>
+      </div>
+
+      <div class="fases-dock">
+        <div id="phase-rail" class="phase-rail" role="tablist" aria-label="Fases de hoja de ruta SKYO"></div>
+        <div id="phase-panel" class="phase-panel" role="tabpanel" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Asistente de IA: H.E.R.A 7 (oculta en #inicio, sin acceso rápido por botón) -->
+  <aside id="hera">
+    <div id="hb" role="dialog" aria-label="Mensaje de H.E.R.A 7">
+      <b>H.E.R.A 7</b>
+      <p id="ht"></p>
+    </div>
+    <button type="button" id="ha" aria-label="Abrir asistente H.E.R.A 7">
+      <img alt="H.E.R.A 7, asistente astronauta de IA" src="assets/img/hera.webp" width="96" height="96">
+    </button>
+  </aside>
+
+</body>
+</html>

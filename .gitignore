@@ -1,3 +1,7 @@
+# temporales
+*.tmp
+*.bak
+.DS_Store
 node_modules/
 dist/
 wasm/target/
@@ -6,3 +10,14 @@ __pycache__/
 .env
 .env.*
 !.env.example
+
+# configuraciones locales de agentes
+.agents/
+.claude/
+.opencode/
+
+# capturas de depuración
+*.png
+*.jpg
+!assets/img/*
+!docs/demo_procesamiento_sintetico.png
