@@ -1,0 +1,94 @@
+{
+  "utc": "2026-11-14T04:49:49.285Z",
+  "syntheticOnly": true,
+  "staleReport": {
+    "steps": [
+      "cargar epoca_A.fits en A y B",
+      "comparar A/A y descargar",
+      "cargar simulación A/B",
+      "descargar SIN volver a comparar"
+    ],
+    "expectedDownloadEnabled": false,
+    "actualDownloadEnabled": true,
+    "reportsIdentical": true,
+    "oldReportCreatedUtc": "2026-11-14T04:49:52.986Z",
+    "afterReportCreatedUtc": "2026-11-14T04:49:52.986Z",
+    "oldReportOffset": 0,
+    "currentNameB": "Simulacion B (no NASA)"
+  },
+  "varyOrigin": [
+    {
+      "varyOrigin": false,
+      "failedRequests": [
+        {
+          "url": "http://127.0.0.1:4175/wasm/pkg/skyo_wasm.js",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+            "origin": "http://127.0.0.1:4175",
+            "referer": "http://127.0.0.1:4175/assets/worker-B2bSXbsx.js"
+          },
+          "failure": {
+            "errorText": "net::ERR_ABORTED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:4175/wasm/pkg/skyo_wasm.js",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+            "origin": "http://127.0.0.1:4175",
+            "referer": "http://127.0.0.1:4175/assets/worker-B2bSXbsx.js"
+          },
+          "failure": {
+            "errorText": "net::ERR_FAILED"
+          }
+        }
+      ],
+      "offlineSuccess": true
+    },
+    {
+      "varyOrigin": true,
+      "failedRequests": [
+        {
+          "url": "http://127.0.0.1:4175/wasm/pkg/skyo_wasm.js",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+            "origin": "http://127.0.0.1:4175",
+            "referer": "http://127.0.0.1:4175/assets/worker-B2bSXbsx.js"
+          },
+          "failure": {
+            "errorText": "net::ERR_ABORTED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:4175/assets/index-6oSfxPHq.js",
+          "headers": {
+            "origin": "http://127.0.0.1:4175",
+            "sec-ch-ua-platform": "\"Linux\"",
+            "referer": "http://127.0.0.1:4175/",
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+            "sec-ch-ua": "\"Not:A-Brand\";v=\"8\", \"Chromium\";v=\"156\"",
+            "sec-ch-ua-mobile": "?0"
+          },
+          "failure": {
+            "errorText": "net::ERR_FAILED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:4175/assets/index-BekVthn0.css",
+          "headers": {
+            "origin": "http://127.0.0.1:4175",
+            "sec-ch-ua-platform": "\"Linux\"",
+            "referer": "http://127.0.0.1:4175/",
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+            "sec-ch-ua": "\"Not:A-Brand\";v=\"8\", \"Chromium\";v=\"156\"",
+            "sec-ch-ua-mobile": "?0"
+          },
+          "failure": {
+            "errorText": "net::ERR_FAILED"
+          }
+        }
+      ],
+      "offlineSuccess": false
+    }
+  ]
+}

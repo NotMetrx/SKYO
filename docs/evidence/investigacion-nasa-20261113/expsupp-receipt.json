@@ -1,0 +1,19 @@
+{
+  "url": "https://irsa.ipac.caltech.edu/data/SPHEREx/docs/SPHEREx_Expsupp.pdf",
+  "utc": "2026-11-14T04:41:22.143353+00:00",
+  "status": 200,
+  "headers": {
+    "Server": "nginx",
+    "Date": "Sat, 14 Nov 2026 04:41:07 GMT",
+    "Content-Type": "application/pdf",
+    "Content-Length": "30087730",
+    "Connection": "close",
+    "Vary": "X-Data-Proxy-Hop",
+    "Last-Modified": "Tue, 10 Nov 2026 18:12:35 GMT",
+    "ETag": "\"1cb1a32-65ff005e19a55\"",
+    "Accept-Ranges": "bytes"
+  },
+  "bytes": 30087730,
+  "sha256": "9f3085cea74c6cdb647cc373bef27aaae50e394d348402e68ea2558ea06011cd",
+  "temporary_pdf": "/tmp/skyo-spherex-expsupp-current.pdf"
+}

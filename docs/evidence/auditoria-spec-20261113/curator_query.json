@@ -1,0 +1,9 @@
+{
+  "name": "curator_query",
+  "query": "SELECT TOP 1 'https://irsa.ipac.caltech.edu/' || ar.uri || '?center=210.80227,54.34895d&size=0.1' AS cutout_url,p.time_bounds_lower AS mjd,p.energy_bandpassname AS bandpass,o.collection AS collection FROM spherex.artifact ar JOIN spherex.plane p ON ar.planeid=p.planeid JOIN spherex.observation o ON o.obsid=p.obsid WHERE 1=CONTAINS(POINT('ICRS',210.80227,54.34895),p.poly) AND p.energy_bandpassname='SPHEREx-D2' ORDER BY p.time_bounds_lower",
+  "url": "https://irsa.ipac.caltech.edu/TAP/sync?REQUEST=doQuery&LANG=ADQL&FORMAT=csv&QUERY=SELECT+TOP+1+%27https%3A%2F%2Firsa.ipac.caltech.edu%2F%27+%7C%7C+ar.uri+%7C%7C+%27%3Fcenter%3D210.80227%2C54.34895d%26size%3D0.1%27+AS+cutout_url%2Cp.time_bounds_lower+AS+mjd%2Cp.energy_bandpassname+AS+bandpass%2Co.collection+AS+collection+FROM+spherex.artifact+ar+JOIN+spherex.plane+p+ON+ar.planeid%3Dp.planeid+JOIN+spherex.observation+o+ON+o.obsid%3Dp.obsid+WHERE+1%3DCONTAINS%28POINT%28%27ICRS%27%2C210.80227%2C54.34895%29%2Cp.poly%29+AND+p.energy_bandpassname%3D%27SPHEREx-D2%27+ORDER+BY+p.time_bounds_lower",
+  "status": 200,
+  "content_type": "text/csv",
+  "access_control_allow_origin": null,
+  "body": "cutout_url,mjd,bandpass,collection\n\"https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W19_2B/l2b-v27-2026-198/2/level2_2025W19_2B_0346_1D2_spx_l2b-v27-2026-198.fits?center=210.80227,54.34895d&size=0.1\",60805.711548,SPHEREx-D2,spherex_dr1\n"
+}

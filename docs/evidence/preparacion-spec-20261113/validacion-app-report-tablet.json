@@ -1,0 +1,33 @@
+{
+  "schema_version": "0.1-prototype",
+  "created_utc": "2026-11-14T04:44:51.298Z",
+  "scientific_status": "exploratory_not_validated",
+  "width": 128,
+  "height": 128,
+  "kernel": "JavaScript (fallback verificable)",
+  "offset": -7.001718521118164,
+  "validCount": 15718,
+  "spectral": {
+    "verified": true,
+    "reason": "Filtro preliminar por centro ROI; falta verificacion WCS-WAVE por pixel"
+  },
+  "flagsReady": true,
+  "varianceReady": true,
+  "background": {
+    "offset": -7.001718521118164,
+    "gradientX": -0.03948997173990514,
+    "gradientY": -0.04904626824316563,
+    "tiles": 64,
+    "method": "robust-plane",
+    "zodiApplied": true,
+    "model": "zodi-plus-residual"
+  },
+  "status": "exploratorio",
+  "notes": [
+    "Comparacion exploratoria, SIN validacion astrometrica contra datos NASA",
+    "Varianza interpolada con pesos al cuadrado; correlaciones de remuestreo no modeladas",
+    "Se resto ZODI de ambas epocas; su incertidumbre no esta incorporada",
+    "No se ha calibrado PSF ni WCS-WAVE por pixel: no inferir descubrimientos"
+  ],
+  "disclaimer": "Requiere validacion espectral WCS-WAVE por pixel, PSF, correlacion de ruido y catalogos externos."
+}

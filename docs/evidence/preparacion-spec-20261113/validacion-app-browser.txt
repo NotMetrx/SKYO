@@ -1,0 +1,6 @@
+desktop {"kernel":"JavaScript (fallback verificable)","validCount":15718,"overflow":false,"axeViolations":["label-content-name-mismatch"],"pageErrors":0,"offlineDemo":true}
+mobile360 {"kernel":"JavaScript (fallback verificable)","validCount":15718,"overflow":false,"axeViolations":["label-content-name-mismatch"],"pageErrors":0,"offlineDemo":false}
+mobile390 {"kernel":"JavaScript (fallback verificable)","validCount":15718,"overflow":false,"axeViolations":["label-content-name-mismatch"],"pageErrors":0,"offlineDemo":false}
+tablet {"kernel":"JavaScript (fallback verificable)","validCount":15718,"overflow":false,"axeViolations":["label-content-name-mismatch"],"pageErrors":0,"offlineDemo":false}
+subdirectory {"kernel":"JavaScript (fallback verificable)","validCount":15718,"overflow":false,"axeViolations":["label-content-name-mismatch"],"pageErrors":0,"offlineDemo":true}
+vite-preview {"kernel":"JavaScript (fallback verificable)","validCount":15718,"overflow":false,"axeViolations":["label-content-name-mismatch"],"pageErrors":0,"offlineDemo":false}

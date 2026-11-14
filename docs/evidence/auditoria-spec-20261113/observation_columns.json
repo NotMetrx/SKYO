@@ -1,0 +1,9 @@
+{
+  "name": "observation_columns",
+  "query": "SELECT column_name,datatype FROM TAP_SCHEMA.columns WHERE table_name='spherex.observation'",
+  "url": "https://irsa.ipac.caltech.edu/TAP/sync?REQUEST=doQuery&LANG=ADQL&FORMAT=csv&QUERY=SELECT+column_name%2Cdatatype+FROM+TAP_SCHEMA.columns+WHERE+table_name%3D%27spherex.observation%27",
+  "status": 200,
+  "content_type": "text/csv",
+  "access_control_allow_origin": null,
+  "body": "column_name,datatype\nobsid,char\ncollection,char\nobservationid,char\nmetarelease,char\nsequencenumber,int\ntype,char\nintent,char\nalgorithm_name,char\ntelescope_name,char\ntelescope_geolocationx,double\ntelescope_geolocationy,double\ntelescope_geolocationz,double\ntelescope_keywords,char\ninstrument_name,char\ninstrument_keywords,char\nenvironment_seeing,double\nenvironment_humidity,double\nenvironment_elevation,double\nenvironment_tau,double\nenvironment_wavelengthtau,double\nenvironment_ambienttemp,double\nenvironment_photometric,boolean\nproposal_id,char\nproposal_pi,char\nproposal_project,char\nproposal_title,char\nproposal_keywords,char\ntarget_name,char\ntarget_type,char\ntarget_redshift,double\ntarget_standard,boolean\ntarget_moving,boolean\ntarget_keywords,char\ntargetposition_coordinates,char\ntargetposition_coordsys,char\ntargetposition_equinox,double\nrequirements_flag,char\nipac_gid,int\nmission_id,int\nipac_pub_date,char\nlastmodified,char\n"
+}

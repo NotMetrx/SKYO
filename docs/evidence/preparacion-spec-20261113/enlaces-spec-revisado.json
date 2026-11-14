@@ -1,0 +1,145 @@
+{
+  "checked_at_utc": "2026-11-14T04:49:41.951765+00:00",
+  "results": [
+    {
+      "url": "https://caltech-ipac.github.io/irsa-tutorials/spherex-cutouts/",
+      "status": 200,
+      "final_url": "https://caltech-ipac.github.io/irsa-tutorials/spherex-cutouts/"
+    },
+    {
+      "url": "https://caltech-ipac.github.io/irsa-tutorials/spherex-hipscube/",
+      "status": 200,
+      "final_url": "https://caltech-ipac.github.io/irsa-tutorials/spherex-hipscube/"
+    },
+    {
+      "url": "https://caltech-ipac.github.io/irsa-tutorials/spherex-intro/",
+      "status": 200,
+      "final_url": "https://caltech-ipac.github.io/irsa-tutorials/spherex-intro/"
+    },
+    {
+      "url": "https://caltech-ipac.github.io/irsa-tutorials/spherex-psf/",
+      "status": 200,
+      "final_url": "https://caltech-ipac.github.io/irsa-tutorials/spherex-psf/"
+    },
+    {
+      "url": "https://caltech-ipac.github.io/spherex-archive-documentation/spherex-data-access/",
+      "status": 200,
+      "final_url": "https://caltech-ipac.github.io/spherex-archive-documentation/spherex-data-access/"
+    },
+    {
+      "url": "https://caltech-ipac.github.io/spherex-archive-documentation/spherex-data-products/",
+      "status": 200,
+      "final_url": "https://caltech-ipac.github.io/spherex-archive-documentation/spherex-data-products/"
+    },
+    {
+      "url": "https://caltech-ipac.github.io/spherex-archive-documentation/spherex-data-releases/",
+      "status": 200,
+      "final_url": "https://caltech-ipac.github.io/spherex-archive-documentation/spherex-data-releases/"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/File_System_API/Origin_private_file_system",
+      "status": 200,
+      "final_url": "https://developer.mozilla.org/en-US/docs/Web/API/File_System_API/Origin_private_file_system"
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers",
+      "status": 200,
+      "final_url": "https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers"
+    },
+    {
+      "url": "https://doi.org/10.26131/IRSA678",
+      "status": 200,
+      "final_url": "https://cosmos.ipac.caltech.edu/dois/doi.php?id=10.26131/IRSA678"
+    },
+    {
+      "url": "https://doi.org/10.26131/IRSA679",
+      "status": 200,
+      "final_url": "https://cosmos.ipac.caltech.edu/dois/doi.php?id=10.26131/IRSA679"
+    },
+    {
+      "url": "https://github.com/cds-astro/aladin-lite",
+      "status": 200,
+      "final_url": "https://github.com/cds-astro/aladin-lite"
+    },
+    {
+      "url": "https://github.com/cds-astro/aladin-lite/blob/master/LICENSE",
+      "status": 200,
+      "final_url": "https://github.com/cds-astro/aladin-lite/blob/master/LICENSE"
+    },
+    {
+      "url": "https://irsa.ipac.caltech.edu/Missions/spherex.html",
+      "status": 200,
+      "final_url": "https://irsa.ipac.caltech.edu/Missions/spherex.html"
+    },
+    {
+      "url": "https://irsa.ipac.caltech.edu/cloud_access/",
+      "status": 200,
+      "final_url": "https://irsa.ipac.caltech.edu/cloud_access/"
+    },
+    {
+      "url": "https://irsa.ipac.caltech.edu/data/SPHEREx/docs/comet3iatlas/index.html",
+      "status": 200,
+      "final_url": "https://irsa.ipac.caltech.edu/data/SPHEREx/docs/comet3iatlas/index.html"
+    },
+    {
+      "url": "https://irsa.ipac.caltech.edu/data/SPHEREx/docs/overview_dr1.html",
+      "status": 200,
+      "final_url": "https://irsa.ipac.caltech.edu/data/SPHEREx/docs/overview_dr1.html"
+    },
+    {
+      "url": "https://irsa.ipac.caltech.edu/data/SPHEREx/docs/spherex_spectral_calibrations.html",
+      "status": 200,
+      "final_url": "https://irsa.ipac.caltech.edu/data/SPHEREx/docs/spherex_spectral_calibrations.html"
+    },
+    {
+      "url": "https://irsa.ipac.caltech.edu/data/WISE/docs/release/AllWISE/expsup/sec2_6.html",
+      "status": 200,
+      "final_url": "https://irsa.ipac.caltech.edu/data/WISE/docs/release/AllWISE/expsup/sec2_6.html"
+    },
+    {
+      "url": "https://irsa.ipac.caltech.edu/docs/program_interface/TAP.html",
+      "status": 200,
+      "final_url": "https://irsa.ipac.caltech.edu/docs/program_interface/TAP.html"
+    },
+    {
+      "url": "https://irsa.ipac.caltech.edu/ibe/cutouts.html",
+      "status": 200,
+      "final_url": "https://irsa.ipac.caltech.edu/ibe/cutouts.html"
+    },
+    {
+      "url": "https://irsa.ipac.caltech.edu/ibe/sia.html",
+      "status": 200,
+      "final_url": "https://irsa.ipac.caltech.edu/ibe/sia.html"
+    },
+    {
+      "url": "https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/sp.html",
+      "status": 200,
+      "final_url": "https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/sp.html"
+    },
+    {
+      "url": "https://ssd-api.jpl.nasa.gov/doc/horizons.html",
+      "status": 200,
+      "final_url": "https://ssd-api.jpl.nasa.gov/doc/horizons.html"
+    },
+    {
+      "url": "https://ssd-api.jpl.nasa.gov/doc/sb_ident.html",
+      "status": 200,
+      "final_url": "https://ssd-api.jpl.nasa.gov/doc/sb_ident.html"
+    },
+    {
+      "url": "https://ssd-api.jpl.nasa.gov/doc/sbdb.html",
+      "status": 200,
+      "final_url": "https://ssd-api.jpl.nasa.gov/doc/sbdb.html"
+    },
+    {
+      "url": "https://vite.dev/guide/build.html",
+      "status": 200,
+      "final_url": "https://vite.dev/guide/build.html"
+    },
+    {
+      "url": "https://www.cosmos.esa.int/web/gaia/data-access",
+      "status": 200,
+      "final_url": "https://www.cosmos.esa.int/web/gaia/data-access"
+    }
+  ]
+}

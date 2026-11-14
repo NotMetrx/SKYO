@@ -1,0 +1,7 @@
+uri,obsid,observationid,productid,provenance_version,time_bounds_lower,collection
+ibe/data/spherex/dr1/level2/2025W31_2A/l2b-v27-2026-225/1/level2_2025W31_2A_0156_1D1_spx_l2b-v27-2026-225.fits,01a0d750-3db2-7fce-ae87-ad6d67e67339,2025W31_2A_0156_1,D1,7.0.5,60888.333440,spherex_dr1
+ibe/data/spherex/dr1/level2/2025W31_2A/l2b-v27-2026-225/2/level2_2025W31_2A_0156_1D2_spx_l2b-v27-2026-225.fits,01a0d750-3db2-7fce-ae87-ad6d67e67339,2025W31_2A_0156_1,D2,7.0.5,60888.333440,spherex_dr1
+ibe/data/spherex/dr1/level2/2025W31_2A/l2b-v27-2026-225/3/level2_2025W31_2A_0156_1D3_spx_l2b-v27-2026-225.fits,01a0d750-3db2-7fce-ae87-ad6d67e67339,2025W31_2A_0156_1,D3,7.0.5,60888.333440,spherex_dr1
+ibe/data/spherex/dr1/level2/2025W31_2A/l2b-v27-2026-225/4/level2_2025W31_2A_0156_1D4_spx_l2b-v27-2026-225.fits,01a0d750-3db2-7fce-ae87-ad6d67e67339,2025W31_2A_0156_1,D4,7.0.5,60888.333440,spherex_dr1
+ibe/data/spherex/dr1/level2/2025W31_2A/l2b-v27-2026-225/5/level2_2025W31_2A_0156_1D5_spx_l2b-v27-2026-225.fits,01a0d750-3db2-7fce-ae87-ad6d67e67339,2025W31_2A_0156_1,D5,7.0.5,60888.333440,spherex_dr1
+ibe/data/spherex/dr1/level2/2025W31_2A/l2b-v27-2026-225/6/level2_2025W31_2A_0156_1D6_spx_l2b-v27-2026-225.fits,01a0d750-3db2-7fce-ae87-ad6d67e67339,2025W31_2A_0156_1,D6,7.0.5,60888.333440,spherex_dr1

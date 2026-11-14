@@ -1,0 +1,324 @@
+{
+  "artifact": "/tmp/skyo-rust-validation-ZM2DSQ/wasm/target/wasm32-unknown-unknown/release/skyo_wasm.wasm",
+  "bytes": 44098,
+  "sha256": "6a41fa5f0c003428f454bdf895eb75c808cdb4a75a248f3cd8cea1a3ea89adb0",
+  "valid": true,
+  "exports": [
+    {
+      "name": "memory",
+      "kind": "memory"
+    },
+    {
+      "name": "__wbindgen_describe_compare_flux_7852327794463f0b",
+      "kind": "function"
+    },
+    {
+      "name": "compare_flux_7852327794463f0b",
+      "kind": "function"
+    },
+    {
+      "name": "__externref_drop_slice",
+      "kind": "function"
+    },
+    {
+      "name": "__externref_table_dealloc",
+      "kind": "function"
+    },
+    {
+      "name": "__externref_table_alloc",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg_BigInt_3e93c219586a8b84",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg_Number_ff192a72a0dcdf6d",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg_Symbol_4b0347ddd8e032de",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_add_7859b7151d4116b3",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_bigint_get_as_i64_11da4b52cd0aedef",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_bit_not_0844b92e91b58ae8",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_boolean_get_4f1baf9a00be3c74",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_copy_to_typed_array_680b191e71920dc1",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_debug_string_f249a2a76caa9a55",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_exports_b4867f6a7e493960",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_ge_37c0bd1d92a673cc",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_init_externref_table_e321ca21737215cc",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_is_bigint_5fa10641e039d3ef",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_number_get_934b640d0889af78",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_rethrow_d953c34c2e20677f",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_string_from_utf8_lossy_396336d3428c3bd9",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_string_get_7ce8eee7fd327545",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_throw_4c88d8bf264fd984",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_unsigned_shr_5c285e57102340e4",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg__wbg_cb_unref_09736879a3f67559",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg_parse_c7e066186c6c86eb",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_destroy_closure",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_exn_store",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_free",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_jspi_set_rejected",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_malloc",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_realloc",
+      "kind": "function"
+    },
+    {
+      "name": "__abort_handler",
+      "kind": "global"
+    },
+    {
+      "name": "__instance_terminated",
+      "kind": "global"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_bit_and_c00cf3ab0d0acdf4",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_bit_or_2b7e790334e12db0",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_bit_xor_42389197cca28e7d",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_checked_div_966fba0839d8b37c",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_div_afa8bf966f91854b",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_gt_99de8d610f38bd06",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_in_3f58a9d3b3a7eed2",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_jsval_eq_38d7bfbe4cc84039",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_jsval_loose_eq_b2f214e2e4b30e36",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_le_f176122a37c56ce2",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_lt_0e30ec898d8dffe8",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_mul_1aef7acdbe3b4b2a",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_pow_33e8306ba910fd2c",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_rem_387d5a468b80539e",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_shl_541d7162e30ee0d4",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_shr_692b534b32c7458f",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_sub_bf803d9e0e620b06",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg_get_5121371adb9ddf4d",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg_stringify_4c0abddfd9938268",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_skip_interpret_calls",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_function_table_dd9abe976e6c95f6",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_instance_8ada22d5416ffd82",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_memory_17a1178bc3328ea3",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_module_2e98e71e8e96b4ac",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_reinit_2fe0d0b9c1cc3c21",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg_Error_208446807d0d1e30",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_is_falsy_d864b623500ae65d",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_is_function_741ff2bb612836f5",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_is_null_c22311b1cc228e3a",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_is_null_or_undefined_fb96af93c75460ae",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_is_object_8b968c3ab8e96595",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_is_string_fc456fee5d3317de",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_is_symbol_f846131a047725ea",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_is_undefined_be5b34249ff1fc15",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_neg_672409ed5c0e2e56",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_try_into_number_635ce1fc4289291e",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg___wbindgen_typeof_ee4990276e02f607",
+      "kind": "function"
+    },
+    {
+      "name": "__wbindgen_describe___wbg_isArray_181eee9e42397260",
+      "kind": "function"
+    }
+  ],
+  "imports": [
+    {
+      "module": "__wbindgen_placeholder__",
+      "name": "__wbindgen_describe",
+      "kind": "function"
+    },
+    {
+      "module": "__wbindgen_externref_xform__",
+      "name": "__wbindgen_externref_statics_end",
+      "kind": "function"
+    },
+    {
+      "module": "__wbindgen_externref_xform__",
+      "name": "__wbindgen_externref_table_grow",
+      "kind": "function"
+    },
+    {
+      "module": "__wbindgen_externref_xform__",
+      "name": "__wbindgen_externref_table_set_null",
+      "kind": "function"
+    }
+  ],
+  "integrationValidated": false,
+  "wasmPackInstalled": false
+}

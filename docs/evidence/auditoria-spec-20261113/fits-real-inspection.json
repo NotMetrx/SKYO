@@ -1,0 +1,152 @@
+{
+  "astropy_version": "8.0.2",
+  "input_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W19_2B/l2b-v27-2026-198/2/level2_2025W19_2B_0346_1D2_spx_l2b-v27-2026-198.fits?center=210.80227,54.34895d&size=0.01",
+  "input_sha256": "c801cfc42275ef1e762a460f796dda2843279db31f8b843b918b4508cd0575e8",
+  "bytes": 3954240,
+  "hdus": [
+    {
+      "name": "PRIMARY",
+      "type": "PrimaryHDU",
+      "shape": null
+    },
+    {
+      "name": "IMAGE",
+      "type": "ImageHDU",
+      "shape": [
+        6,
+        6
+      ]
+    },
+    {
+      "name": "FLAGS",
+      "type": "ImageHDU",
+      "shape": [
+        6,
+        6
+      ]
+    },
+    {
+      "name": "VARIANCE",
+      "type": "ImageHDU",
+      "shape": [
+        6,
+        6
+      ]
+    },
+    {
+      "name": "ZODI",
+      "type": "ImageHDU",
+      "shape": [
+        6,
+        6
+      ]
+    },
+    {
+      "name": "EPSF",
+      "type": "BinTableHDU",
+      "shape": [
+        441
+      ]
+    },
+    {
+      "name": "WCS-WAVE",
+      "type": "BinTableHDU",
+      "shape": [
+        1
+      ]
+    }
+  ],
+  "primary": {
+    "VERSION": "7.0.5",
+    "DATE": null,
+    "ORIGIN": null
+  },
+  "image": {
+    "DETECTOR": 2,
+    "BUNIT": "MJy / sr",
+    "DATE-OBS": "2025-05-10T17:04:37.741",
+    "MJD-OBS": 60805.711547928,
+    "MJD-AVG": 60805.712214117,
+    "MJD-BEG": 60805.711547928,
+    "MJD-END": 60805.712880307,
+    "CTYPE1": "RA---TAN-SIP",
+    "CTYPE2": "DEC--TAN-SIP",
+    "CUNIT1": "deg",
+    "CUNIT2": "deg",
+    "CRPIX1": -759.5,
+    "CRPIX2": 548.5
+  },
+  "spectral_center": {
+    "x": 2.9210685680633706,
+    "y": 2.4983436631349276,
+    "wavelength_um": 1.5064212841578182,
+    "bandwidth_um": 0.036952739361587945
+  },
+  "flags": {
+    "dtype": ">i4",
+    "bit31_set_count": 0,
+    "definitions": {
+      "MSKN0000": "TRANSIENT",
+      "MSKN0001": "OVERFLOW",
+      "MSKN0002": "SUR_ERROR",
+      "MSKN0006": "NONFUNC",
+      "MSKN0007": "DICHROIC",
+      "MSKN0009": "MISSING_DATA",
+      "MSKN0010": "HOT",
+      "MSKN0011": "COLD",
+      "MSKN0012": "FULLSAMPLE",
+      "MSKN0014": "PHANMISS",
+      "MSKN0015": "NONLINEAR",
+      "MSKN0017": "PERSIST",
+      "MSKN0019": "OUTLIER",
+      "MSKN0020": "CROSSTALK",
+      "MSKN0021": "SOURCE",
+      "MSKN0022": "GHOST",
+      "MSKN0023": "GHOST_FPA",
+      "MSKN0024": "GHOST_EXT",
+      "MSKN0025": "STREAK",
+      "MSKN0026": "BLOOM",
+      "MSKN0027": "SNOWBALL",
+      "MSKN0028": "HALO"
+    }
+  },
+  "curator": {
+    "status": "success",
+    "transport": "Replayed successful downloaded bytes via patched requests.get; all FITS processing is real",
+    "result": {
+      "local_file": "spherex_d2_001.fits",
+      "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W19_2B/l2b-v27-2026-198/2/level2_2025W19_2B_0346_1D2_spx_l2b-v27-2026-198.fits?center=210.80227,54.34895d&size=0.01",
+      "source_release": "DR1",
+      "source_sha256": "c801cfc42275ef1e762a460f796dda2843279db31f8b843b918b4508cd0575e8",
+      "sha256": "4d0f2bb6c1c0c681db322b004b3dc40a6976d24d261e46776ce34ef52f6acb9a",
+      "observation_utc": "2025-05-10T17:04:37.747",
+      "mjd": 60805.711548,
+      "detector": 2,
+      "bandpass": "SPHEREx-D2",
+      "wavelength_um": 1.5064212841578182,
+      "bandwidth_um": 0.036952739361587945,
+      "wavelength_quality": "center_only_from_astropy_WCS_WAVE",
+      "ra_deg": 210.80227,
+      "dec_deg": 54.34895,
+      "size_deg": 0.01,
+      "psf_fwhm_arcsec": 7.46070125580342,
+      "has_uncompressed_flags": true,
+      "has_variance": true,
+      "provenance_note": "Observacion NASA/IPAC, archivo derivado localmente para acceso web; radiancias preservadas"
+    },
+    "output_hdus": [
+      "PRIMARY",
+      "IMAGE",
+      "FLAGS",
+      "VARIANCE",
+      "ZODI",
+      "WCS-WAVE"
+    ],
+    "output_primary": {
+      "VERSION": null,
+      "DATE": null,
+      "ORIGIN": null
+    },
+    "output_origin": "NASA/IPAC via SKYO curator"
+  }
+}

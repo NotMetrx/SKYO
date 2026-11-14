@@ -1,0 +1,80 @@
+[
+  {
+    "name": "sia_dr1",
+    "url": "https://irsa.ipac.caltech.edu/SIA?COLLECTION=spherex_dr1&POS=CIRCLE+210.80227+54.34895+0.0001&MAXREC=1",
+    "origin_probe": "https://skyo-audit.example",
+    "status": 200,
+    "final_url": "https://irsa.ipac.caltech.edu/SIA?COLLECTION=spherex_dr1&POS=CIRCLE+210.80227+54.34895+0.0001&MAXREC=1",
+    "content_type": "application/x-votable+xml",
+    "access_control_allow_origin": null,
+    "body_prefix": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<VOTABLE version=\"1.3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.ivoa.net/xml/VOTable/v1.3\" xmlns:stc=\"http://www.ivoa.net/xml/STC/v1.30\" xsi:schemaLocation=\"http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3",
+    "query_status_has_error": false
+  },
+  {
+    "name": "sia_qr3",
+    "url": "https://irsa.ipac.caltech.edu/SIA?COLLECTION=spherex_qr3&POS=CIRCLE+210.80227+54.34895+0.0001&MAXREC=1",
+    "origin_probe": "https://skyo-audit.example",
+    "status": 200,
+    "final_url": "https://irsa.ipac.caltech.edu/SIA?COLLECTION=spherex_qr3&POS=CIRCLE+210.80227+54.34895+0.0001&MAXREC=1",
+    "content_type": "application/x-votable+xml",
+    "access_control_allow_origin": null,
+    "body_prefix": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<VOTABLE version=\"1.3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.ivoa.net/xml/VOTable/v1.3\" xmlns:stc=\"http://www.ivoa.net/xml/STC/v1.30\" xsi:schemaLocation=\"http://www.ivoa.net/xml/VOTable/v1.3 http://www.ivoa.net/xml/VOTable/v1.3",
+    "query_status_has_error": false
+  },
+  {
+    "name": "data_directories",
+    "url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/",
+    "origin_probe": "https://skyo-audit.example",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "name": "api_guide",
+    "url": "https://caltech-ipac.github.io/spherex-archive-documentation/spherex-data-access/",
+    "origin_probe": "https://skyo-audit.example",
+    "status": 200,
+    "final_url": "https://caltech-ipac.github.io/spherex-archive-documentation/spherex-data-access/",
+    "content_type": "text/html; charset=utf-8",
+    "access_control_allow_origin": "*",
+    "body_prefix": "<!DOCTYPE html><html lang=\"en\" class=\"\" style=\"scroll-padding:60px\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"/><link rel=\"preload\" as=\"image\" href=\"/spherex-archive-documentation/_public/irsa_logo-787070b2ae98760a3d02f7d4f2c607ef.png\"/><title>SPH"
+  },
+  {
+    "name": "jpl_horizons_docs",
+    "url": "https://ssd-api.jpl.nasa.gov/doc/horizons.html",
+    "origin_probe": "https://skyo-audit.example",
+    "status": 200,
+    "final_url": "https://ssd-api.jpl.nasa.gov/doc/horizons.html",
+    "content_type": "text/html",
+    "access_control_allow_origin": null,
+    "body_prefix": "<!DOCTYPE html>\n<html class=\"no-js\" lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"robots\" content=\"nofollow\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  \n    <title>Horizon API</title>\n    <m"
+  },
+  {
+    "name": "jpl_sbdb_docs",
+    "url": "https://ssd-api.jpl.nasa.gov/doc/sbdb.html",
+    "origin_probe": "https://skyo-audit.example",
+    "status": 200,
+    "final_url": "https://ssd-api.jpl.nasa.gov/doc/sbdb.html",
+    "content_type": "text/html",
+    "access_control_allow_origin": null,
+    "body_prefix": "<!DOCTYPE html>\n<html class=\"no-js\" lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"robots\" content=\"nofollow\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  \n    <title>SBDB API</title>\n    <meta"
+  },
+  {
+    "name": "wise_access",
+    "url": "https://irsa.ipac.caltech.edu/Missions/wise.html",
+    "origin_probe": "https://skyo-audit.example",
+    "status": 200,
+    "final_url": "https://irsa.ipac.caltech.edu/Missions/wise.html",
+    "content_type": "text/html",
+    "access_control_allow_origin": null,
+    "body_prefix": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> \n<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\"> \n<head> \n<title>IRSA - Wide-field Infrared Survey Explorer</title> \n \n\n<link rel=\"stylesheet\" type=\"text/css\""
+  },
+  {
+    "name": "gaia_archive",
+    "url": "https://gea.esac.esa.int/archive/",
+    "origin_probe": "https://skyo-audit.example",
+    "status": 200,
+    "final_url": "https://gea.esac.esa.int/archive/",
+    "content_type": "text/html; charset=UTF-8",
+    "access_control_allow_origin": null,
+    "body_prefix": "<!DOCTYPE html>\n<!-- The DOCTYPE declaration above will set the    -->\n<!-- browser's rendering engine into               -->\n<!-- \"Standards Mode\". Replacing this declaration  -->\n<!-- with a \"Quirks Mode\" doctype may lead to some -->\n<!-- differences in layout.                        -->\n\n<html la"
+  }
+]

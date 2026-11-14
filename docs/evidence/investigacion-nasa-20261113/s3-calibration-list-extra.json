@@ -1,0 +1,81 @@
+[
+  {
+    "url": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/?list-type=2&prefix=qr3%2Fspectral_wcs%2F&max-keys=100",
+    "utc": "2026-11-14T04:43:31.405203+00:00",
+    "is_truncated": "false",
+    "items": [
+      {
+        "key": "qr3/spectral_wcs/cal-swcs-v5-2026-191/1/spectral_wcs_D1_spx_cal-swcs-v5-2026-191.fits",
+        "size": "33312960",
+        "etag": "\"624790eba5fdde40a6cb2187099e415d\""
+      },
+      {
+        "key": "qr3/spectral_wcs/cal-swcs-v5-2026-191/2/spectral_wcs_D2_spx_cal-swcs-v5-2026-191.fits",
+        "size": "33312960",
+        "etag": "\"af87630c33716cd77ae54ab6c63d388d\""
+      },
+      {
+        "key": "qr3/spectral_wcs/cal-swcs-v5-2026-191/3/spectral_wcs_D3_spx_cal-swcs-v5-2026-191.fits",
+        "size": "33312960",
+        "etag": "\"327f973e59efeaa101bf1fe9ac7c354e\""
+      },
+      {
+        "key": "qr3/spectral_wcs/cal-swcs-v5-2026-191/4/spectral_wcs_D4_spx_cal-swcs-v5-2026-191.fits",
+        "size": "33312960",
+        "etag": "\"438a1d94ca7b392cf854f68d18bfd7db\""
+      },
+      {
+        "key": "qr3/spectral_wcs/cal-swcs-v5-2026-191/5/spectral_wcs_D5_spx_cal-swcs-v5-2026-191.fits",
+        "size": "33312960",
+        "etag": "\"d59bd98b5d1d14ae8d74499b1c1ccb3f\""
+      },
+      {
+        "key": "qr3/spectral_wcs/cal-swcs-v5-2026-191/6/spectral_wcs_D6_spx_cal-swcs-v5-2026-191.fits",
+        "size": "33312960",
+        "etag": "\"e665c189ad63ca0cd032c0797e8aabf2\""
+      }
+    ]
+  },
+  {
+    "url": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/?list-type=2&prefix=dr1%2Fepsf%2F&max-keys=100",
+    "utc": "2026-11-14T04:43:31.773861+00:00",
+    "is_truncated": "false",
+    "items": [
+      {
+        "key": "dr1/epsf/cal-epsf-v1-2026-191/1/epsf_D1_spx_cal-epsf-v1-2026-191.fits",
+        "size": "7943040",
+        "etag": "\"6c6bbc7f03c062bbdc0f781fd58598a7\""
+      },
+      {
+        "key": "dr1/epsf/cal-epsf-v1-2026-191/2/epsf_D2_spx_cal-epsf-v1-2026-191.fits",
+        "size": "7943040",
+        "etag": "\"4271972259cb7f0c352e8140af073be8\""
+      },
+      {
+        "key": "dr1/epsf/cal-epsf-v1-2026-191/3/epsf_D3_spx_cal-epsf-v1-2026-191.fits",
+        "size": "7943040",
+        "etag": "\"7ac5b97b75f4737e76e92c491f82dadb\""
+      },
+      {
+        "key": "dr1/epsf/cal-epsf-v1-2026-191/4/epsf_D4_spx_cal-epsf-v1-2026-191.fits",
+        "size": "7943040",
+        "etag": "\"4f9486e02e22d26abff5f3f084de4a89\""
+      },
+      {
+        "key": "dr1/epsf/cal-epsf-v1-2026-191/5/epsf_D5_spx_cal-epsf-v1-2026-191.fits",
+        "size": "7943040",
+        "etag": "\"d9dae7946639a301cdf0723adcc6e93f\""
+      },
+      {
+        "key": "dr1/epsf/cal-epsf-v1-2026-191/6/epsf_D6_spx_cal-epsf-v1-2026-191.fits",
+        "size": "7943040",
+        "etag": "\"4c15b66f86af4197fc855c94201e266c\""
+      },
+      {
+        "key": "dr1/epsf/cal-epsf-v2-2026-191/3/epsf_D3_spx_cal-epsf-v2-2026-191.fits",
+        "size": "8118720",
+        "etag": "\"0acf3f094d70f1bca51a71aa8452c491\""
+      }
+    ]
+  }
+]

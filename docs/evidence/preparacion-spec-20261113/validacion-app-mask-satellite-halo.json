@@ -1,0 +1,11 @@
+{
+  "flag": "SATELLITE_HALO",
+  "bit": 29,
+  "input": 536870912,
+  "mask": [
+    1
+  ],
+  "unsafeBits": 0,
+  "maskedCount": 0,
+  "shouldBeMasked": true
+}

@@ -1,0 +1,13 @@
+   Compiling wasm-bindgen-shared v0.2.130
+   Compiling unicode-ident v1.0.27
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling rustversion v1.0.23
+   Compiling bumpalo v3.20.4
+   Compiling cfg-if v1.0.5
+   Compiling wasm-bindgen v0.2.130
+   Compiling syn v3.0.10
+   Compiling wasm-bindgen-macro-support v0.2.130
+   Compiling wasm-bindgen-macro v0.2.130
+   Compiling skyo_wasm v0.1.0 (/tmp/skyo-rust-validation-ZM2DSQ/wasm)
+    Finished `release` profile [optimized] target(s) in 41.38s

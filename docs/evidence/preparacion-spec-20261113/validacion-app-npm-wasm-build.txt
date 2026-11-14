@@ -1,0 +1,5 @@
+
+> skyo-local-first-science-lab@2.1.0-review wasm:build
+> wasm-pack build wasm --target web --out-dir ../web/public/wasm/pkg --release
+
+sh: 1: wasm-pack: not found

@@ -1,0 +1,15 @@
+
+> skyo-local-first-science-lab@2.1.0-review web:build
+> vite build --config vite.config.mjs && node tools/postbuild.mjs
+
+vite v7.3.8 building client environment for production...
+transforming...
+✓ 5 modules transformed.
+rendering chunks...
+computing gzip size...
+../dist/index.html                  5.95 kB │ gzip: 2.35 kB
+../dist/assets/worker-B2bSXbsx.js  16.57 kB
+../dist/assets/index-BekVthn0.css   8.28 kB │ gzip: 2.76 kB
+../dist/assets/index-6oSfxPHq.js    7.62 kB │ gzip: 3.39 kB
+✓ built in 1.62s
+Build SKYO OK: 3 assets, 9 precache; WASM fallback JS

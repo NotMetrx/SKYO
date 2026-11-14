@@ -1,0 +1,33 @@
+{
+  "scenario": "New A job3 loads first; old A job1 finishes its File.arrayBuffer later and reaches Worker last. UI ignores loaded(job1) but Worker overwrites A.",
+  "visible_A": "epoca_B.fits from job3",
+  "expectedOffset": 0,
+  "actualOffset": -7.001718521118164,
+  "comparedJobId": 5,
+  "events": [
+    {
+      "event": "kernel",
+      "jobId": 0
+    },
+    {
+      "event": "loaded",
+      "jobId": 2
+    },
+    {
+      "event": "loaded",
+      "jobId": 3
+    },
+    {
+      "event": "compared",
+      "jobId": 4
+    },
+    {
+      "event": "loaded",
+      "jobId": 1
+    },
+    {
+      "event": "compared",
+      "jobId": 5
+    }
+  ]
+}

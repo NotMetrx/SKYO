@@ -1,0 +1,10 @@
+locator.waitFor: Timeout 12000ms exceeded.
+Call log:
+[2m  - waiting for locator('#kernel-status').filter({ hasText: 'JavaScript' }) to be visible[22m
+
+    at /home/metrx/Proyectos/SKYO/docs/evidence/preparacion-spec-20261113/validacion-app-browser.mjs:72:75 {
+  log: [
+    "  - waiting for locator('#kernel-status').filter({ hasText: 'JavaScript' }) to be visible"
+  ],
+  name: 'TimeoutError'
+}

@@ -1,0 +1,95 @@
+[
+  {
+    "kind": "tap_candidates",
+    "utc": "2026-11-14T04:40:53.775823+00:00",
+    "query": "SELECT TOP 200 ar.uri, p.planeid, p.productid, p.time_bounds_lower, p.time_bounds_upper, p.energy_bandpassname, p.provenance_version, p.provenance_runid, p.quality_flag, o.collection FROM spherex.artifact ar JOIN spherex.plane p ON ar.planeid=p.planeid JOIN spherex.observation o ON o.obsid=p.obsid WHERE 1=CONTAINS(POINT('ICRS',210.80227,54.34895),p.poly) AND p.energy_bandpassname='SPHEREx-D2' AND o.collection IN ('spherex_dr1','spherex_qr3') ORDER BY p.time_bounds_lower",
+    "url": "https://irsa.ipac.caltech.edu/TAP/sync?REQUEST=doQuery&LANG=ADQL&FORMAT=csv&QUERY=SELECT+TOP+200+ar.uri%2C+p.planeid%2C+p.productid%2C+p.time_bounds_lower%2C+p.time_bounds_upper%2C+p.energy_bandpassname%2C+p.provenance_version%2C+p.provenance_runid%2C+p.quality_flag%2C+o.collection+FROM+spherex.artifact+ar+JOIN+spherex.plane+p+ON+ar.planeid%3Dp.planeid+JOIN+spherex.observation+o+ON+o.obsid%3Dp.obsid+WHERE+1%3DCONTAINS%28POINT%28%27ICRS%27%2C210.80227%2C54.34895%29%2Cp.poly%29+AND+p.energy_bandpassname%3D%27SPHEREx-D2%27+AND+o.collection+IN+%28%27spherex_dr1%27%2C%27spherex_qr3%27%29+ORDER+BY+p.time_bounds_lower",
+    "status": 200,
+    "headers": {
+      "Server": "nginx",
+      "Date": "Sat, 14 Nov 2026 04:40:53 GMT",
+      "Content-Type": "text/csv",
+      "Content-Length": "17646",
+      "Connection": "keep-alive",
+      "Server-Timing": "main;dur=28183.759, prepare_internal;dur=1.997, generate_adql;dur=0.013, query_delegate;dur=28177.209, oversee_sync;dur=28172.757, submit_sync;dur=8818.264, spinoff_queued;dur=9006.512, spinoff_running;dur=10199.007, TAP_main;dur=187.629, query_execute;dur=155.819, database_query;dur=155.360, get_postgres_connection;dur=7.014, run_postgres;dur=145.277"
+    },
+    "body_sha256": "7ddc8378028e4f55c01afa06e895805e500f9558ee2e59a63008e48da84d6e1b",
+    "body_bytes": 17646,
+    "omitted_headers": [
+      "Set-Cookie"
+    ]
+  },
+  {
+    "kind": "s3_head",
+    "utc": "2026-11-14T04:40:54.239041+00:00",
+    "url": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W19_2B/l2b-v27-2026-198/2/level2_2025W19_2B_0346_1D2_spx_l2b-v27-2026-198.fits",
+    "status": 200,
+    "headers": {
+      "x-amz-id-2": "X6qfC/BdQdwR+WqrqMiT6VVauPAwMqSEig0guRsrXkQcXwjrV25wdpbDTxCjvSeGzskb2EjvaLEPAZWGYYVrXEwIRzYslm3T",
+      "x-amz-request-id": "0CAA6T9GWNC9AYCP",
+      "Server": "AmazonS3",
+      "Date": "Sat, 14 Nov 2026 04:40:55 GMT",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "HEAD, GET",
+      "Access-Control-Expose-Headers": "ETag, x-amz-meta-custom-header",
+      "Access-Control-Max-Age": "3000",
+      "Vary": "Origin, Access-Control-Request-Headers, Access-Control-Request-Method",
+      "Last-Modified": "Wed, 11 Nov 2026 14:15:25 GMT",
+      "ETag": "\"9fdc6dec669aad79cfdcc4d8dbc6306f\"",
+      "x-amz-storage-class": "INTELLIGENT_TIERING",
+      "x-amz-server-side-encryption": "AES256",
+      "Accept-Ranges": "bytes",
+      "Content-Length": "64800000",
+      "Content-Type": "binary/octet-stream"
+    },
+    "read_bytes": 0,
+    "body_sha256": null
+  },
+  {
+    "kind": "s3_range",
+    "utc": "2026-11-14T04:40:54.412806+00:00",
+    "url": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W19_2B/l2b-v27-2026-198/2/level2_2025W19_2B_0346_1D2_spx_l2b-v27-2026-198.fits",
+    "status": 206,
+    "headers": {
+      "x-amz-id-2": "ljGoeJCuzOFs4tYQplEDohbTu32JDyiI03AXHts4WxB+goriueNgvDksklUl+WnMhplc1dRsXUUtu/I0/kqx2Z7ZDB/Xakv/",
+      "x-amz-request-id": "0CAE33SFV6K27TWQ",
+      "Server": "AmazonS3",
+      "Date": "Sat, 14 Nov 2026 04:40:55 GMT",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "HEAD, GET",
+      "Access-Control-Expose-Headers": "ETag, x-amz-meta-custom-header",
+      "Access-Control-Max-Age": "3000",
+      "Vary": "Origin, Access-Control-Request-Headers, Access-Control-Request-Method",
+      "Last-Modified": "Wed, 11 Nov 2026 14:15:25 GMT",
+      "ETag": "\"9fdc6dec669aad79cfdcc4d8dbc6306f\"",
+      "x-amz-storage-class": "INTELLIGENT_TIERING",
+      "x-amz-server-side-encryption": "AES256",
+      "Accept-Ranges": "bytes",
+      "Content-Range": "bytes 0-17279/64800000",
+      "Content-Type": "binary/octet-stream",
+      "Content-Length": "17280"
+    },
+    "read_bytes": 17280,
+    "body_sha256": "b6d309c91ebcdeeba984a074289a1aa41344be82708a7d24e7d2bbd96f12904a"
+  },
+  {
+    "kind": "hips_props",
+    "utc": "2026-11-14T04:40:54.568016+00:00",
+    "url": "https://irsa.ipac.caltech.edu/data/hips/SPHEREx/spherex_allsky_cube/properties",
+    "status": 200,
+    "headers": {
+      "Server": "nginx",
+      "Date": "Sat, 14 Nov 2026 04:40:54 GMT",
+      "Content-Type": "text/plain",
+      "Content-Length": "3504",
+      "Connection": "keep-alive",
+      "Last-Modified": "Wed, 11 Nov 2026 21:49:38 GMT",
+      "ETag": "\"6af4e2f2-db0\"",
+      "X-Content-Type-Options": "nosniff",
+      "Access-Control-Allow-Origin": "*",
+      "Accept-Ranges": "bytes"
+    },
+    "read_bytes": 3504,
+    "body_sha256": "65f3bda2c1ba582989da7e2e5324fd8b7ad50823580554aae432be45ae05745f"
+  }
+]

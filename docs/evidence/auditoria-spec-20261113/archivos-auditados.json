@@ -1,0 +1,11 @@
+{
+  "SPEC_SKYO_2.1_AUDITADO.md": "0f0d5d1b7ee4d8c87686ca394b28d1f39e192ff960e88b05d7238fee36ea81e2",
+  "tools/curate_irsa.py": "db63c4f5f5aff78051cb60da5b4e2d19a21833f5e2c7486f6faf70933a5fa7fa",
+  "web/main.js": "4acede3177c84197a1169abb705c49f9cd462fec2cabfbc1f640403149d12b19",
+  "web/worker.js": "f027abc517ba82f0d851bbcb9b3947fdd399b55df119ca69eb8e7c5d03cb7393",
+  "web/src/fits.js": "98b3a41c6c2557351dff0ce7965a230b9bbad829beaaba630778530b7079a347",
+  "web/src/wcs.js": "d10c5c3ceed8b64dedec81a7fad4797fcc386777b0e8519c3d6deef326e21406",
+  "web/src/pipeline.js": "ddd6fbb7fbf2f03327451e07777fd38183accc2a653414109a31a0b5f554e037",
+  "web/src/contracts.d.ts": "91e5d2118adaee95f18cf1dee7fd2626fb7c01b7549954c50a85c8fc7be61d82",
+  "package.json": "3f6494d249ceab1fa5149343350857d35a015eb53ffed8e6cb36efb0792e3abe"
+}

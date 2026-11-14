@@ -1,0 +1,167 @@
+{
+  "startedUtc": "2026-11-14T04:43:11.315Z",
+  "syntheticOnly": true,
+  "checks": [],
+  "runs": [
+    {
+      "label": "desktop",
+      "url": "http://127.0.0.1:4173/",
+      "width": 1440,
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: net::ERR_FAILED"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: net::ERR_FAILED"
+        }
+      ],
+      "pageErrors": [],
+      "httpErrors": [
+        {
+          "url": "http://127.0.0.1:4173/wasm/pkg/skyo_wasm.js",
+          "status": 404
+        }
+      ],
+      "failedRequests": [
+        {
+          "url": "http://127.0.0.1:4173/wasm/pkg/skyo_wasm.js",
+          "failure": {
+            "errorText": "net::ERR_ABORTED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:4173/assets/index-6oSfxPHq.js",
+          "failure": {
+            "errorText": "net::ERR_FAILED"
+          }
+        },
+        {
+          "url": "http://127.0.0.1:4173/assets/index-BekVthn0.css",
+          "failure": {
+            "errorText": "net::ERR_FAILED"
+          }
+        }
+      ],
+      "workerUrls": [
+        "http://127.0.0.1:4173/assets/worker-B2bSXbsx.js"
+      ],
+      "title": "SKYO | Laboratorio científico local",
+      "initialKernel": "JavaScript (fallback verificable)",
+      "a": {
+        "width": 128,
+        "height": 128,
+        "sum": 2794353,
+        "min": 0,
+        "max": 255
+      },
+      "b": {
+        "width": 128,
+        "height": 128,
+        "sum": 2788497,
+        "min": 0,
+        "max": 255
+      },
+      "difference": {
+        "width": 128,
+        "height": 128,
+        "sum": 3421104,
+        "min": 12,
+        "max": 252
+      },
+      "reportText": "ESTADO\nComparación exploratoria, NO detección confirmada\nMOTOR DE CÁLCULO\nJavaScript (fallback verificable)\nCOBERTURA VÁLIDA\n15718 píxeles\nFONDO RESIDUAL\n-7.0017 MJy/sr (si BUNIT corresponde)\nMODELO DE FONDO\nzodi-plus-residual; robust-plane\nCALIDAD DE PÍXELES\nMáscaras disponibles\nVARIANZA\nDos mapas presentes; propagación aproximada\nCOMPATIBILIDAD ESPECTRAL\nFiltro preliminar por centro ROI; falta verificacion WCS-WAVE por pixel\nRESULTADO\nNo afirmar Planeta X, cometa o asteroide sin verificación",
+      "downloadName": "skyo_reporte_exploratorio.json",
+      "reportSummary": {
+        "status": "exploratorio",
+        "scientific_status": "exploratory_not_validated",
+        "validCount": 15718,
+        "kernel": "JavaScript (fallback verificable)",
+        "hasObservationProvenance": false
+      },
+      "layout": {
+        "viewport": 1440,
+        "scrollWidth": 1440,
+        "overflows": []
+      },
+      "a11y": {
+        "version": "4.14.0",
+        "violations": [
+          {
+            "id": "label-content-name-mismatch",
+            "impact": "serious",
+            "description": "Ensure that elements labelled through their content must have their visible text as part of their accessible name",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/label-content-name-mismatch?application=axeAPI",
+            "nodes": [
+              {
+                "html": "<a class=\"brand\" href=\"#inicio\" aria-label=\"SKYO inicio\">SKY<span class=\"eclipse\">O</span><span class=\"brand-tag\">LAB</span></a>",
+                "target": [
+                  ".brand"
+                ],
+                "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+              }
+            ]
+          }
+        ],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": 65
+          },
+          {
+            "id": "link-in-text-block",
+            "nodes": 1
+          }
+        ],
+        "passes": 24
+      },
+      "pwa": {
+        "secure": true,
+        "scope": "http://127.0.0.1:4173/",
+        "active": "activated",
+        "controller": "http://127.0.0.1:4173/sw.js",
+        "cached": {
+          "skyo-2.1-shell-v2": [
+            "http://127.0.0.1:4173/",
+            "http://127.0.0.1:4173/index.html",
+            "http://127.0.0.1:4173/manifest.webmanifest",
+            "http://127.0.0.1:4173/icon.svg",
+            "http://127.0.0.1:4173/assets/index-6oSfxPHq.js",
+            "http://127.0.0.1:4173/assets/index-BekVthn0.css",
+            "http://127.0.0.1:4173/assets/worker-B2bSXbsx.js",
+            "http://127.0.0.1:4173/demo/epoca_A.fits",
+            "http://127.0.0.1:4173/demo/epoca_B.fits"
+          ]
+        },
+        "manifest": {
+          "name": "SKYO Laboratorio Científico",
+          "short_name": "SKYO Lab",
+          "description": "Exploración local de imágenes infrarrojas FITS",
+          "start_url": "./index.html",
+          "display": "standalone",
+          "background_color": "#080d1b",
+          "theme_color": "#080d1b",
+          "lang": "es",
+          "icons": [
+            {
+              "src": "./icon.svg",
+              "sizes": "any",
+              "type": "image/svg+xml",
+              "purpose": "any maskable"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "browser": "156.0.8078.4",
+  "fatal": {
+    "message": "locator.waitFor: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#kernel-status').filter({ hasText: 'JavaScript' }) to be visible\u001b[22m\n",
+    "stack": "locator.waitFor: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#kernel-status').filter({ hasText: 'JavaScript' }) to be visible\u001b[22m\n\n    at /home/metrx/Proyectos/SKYO/docs/evidence/preparacion-spec-20261113/validacion-app-browser.mjs:72:75"
+  },
+  "finishedUtc": "2026-11-14T04:43:31.442Z"
+}

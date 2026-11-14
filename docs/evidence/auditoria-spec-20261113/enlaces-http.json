@@ -1,0 +1,204 @@
+{
+  "checked_at_utc": "2026-11-14T04:20:55Z",
+  "scope": "Todos los enlaces Markdown del SPEC, fuentes adicionales README y ambos DOI; no valida descendientes recursivos.",
+  "results": [
+    {
+      "url": "https://irsa.ipac.caltech.edu/Missions/spherex.html",
+      "method": "GET",
+      "status": 200,
+      "final_url": "https://irsa.ipac.caltech.edu/Missions/spherex.html",
+      "content_type": "text/html",
+      "access_control_allow_origin": null,
+      "bytes_read": 9985,
+      "title": "IRSA - SPHEREx",
+      "elapsed_seconds": 0.93
+    },
+    {
+      "url": "https://irsa.ipac.caltech.edu/data/SPHEREx/docs/overview_dr1.html",
+      "method": "GET",
+      "status": 200,
+      "final_url": "https://irsa.ipac.caltech.edu/data/SPHEREx/docs/overview_dr1.html",
+      "content_type": "text/html",
+      "access_control_allow_origin": null,
+      "bytes_read": 7268,
+      "title": "SPHEREx DR1",
+      "elapsed_seconds": 0.79
+    },
+    {
+      "url": "https://caltech-ipac.github.io/irsa-tutorials/spherex-intro/",
+      "method": "GET",
+      "status": 200,
+      "final_url": "https://caltech-ipac.github.io/irsa-tutorials/spherex-intro/",
+      "content_type": "text/html; charset=utf-8",
+      "access_control_allow_origin": "*",
+      "bytes_read": 279128,
+      "title": "Introduction to SPHEREx Spectral Images - IRSA Notebooks",
+      "elapsed_seconds": 0.87
+    },
+    {
+      "url": "https://caltech-ipac.github.io/irsa-tutorials/spherex-cutouts/",
+      "method": "GET",
+      "status": 200,
+      "final_url": "https://caltech-ipac.github.io/irsa-tutorials/spherex-cutouts/",
+      "content_type": "text/html; charset=utf-8",
+      "access_control_allow_origin": "*",
+      "bytes_read": 194339,
+      "title": "Download a collection of SPHEREx Spectral Image cutouts as a multi-extension FITS file - IRSA Notebooks",
+      "elapsed_seconds": 0.83
+    },
+    {
+      "url": "https://caltech-ipac.github.io/irsa-tutorials/spherex-hipscube/",
+      "method": "GET",
+      "status": 200,
+      "final_url": "https://caltech-ipac.github.io/irsa-tutorials/spherex-hipscube/",
+      "content_type": "text/html; charset=utf-8",
+      "access_control_allow_origin": "*",
+      "bytes_read": 314326,
+      "title": "Using SPHEREx HiPS All-Sky Mosaic Cubes - IRSA Notebooks",
+      "elapsed_seconds": 0.92
+    },
+    {
+      "url": "https://github.com/cds-astro/aladin-lite",
+      "method": "GET",
+      "status": 200,
+      "final_url": "https://github.com/cds-astro/aladin-lite",
+      "content_type": "text/html; charset=utf-8",
+      "access_control_allow_origin": null,
+      "bytes_read": 332835,
+      "title": "GitHub - cds-astro/aladin-lite: An astronomical HiPS visualizer in the browser · GitHub",
+      "elapsed_seconds": 1.51
+    },
+    {
+      "url": "https://github.com/cds-astro/aladin-lite/blob/master/LICENSE",
+      "method": "GET",
+      "status": 200,
+      "final_url": "https://github.com/cds-astro/aladin-lite/blob/master/LICENSE",
+      "content_type": "text/html; charset=utf-8",
+      "access_control_allow_origin": null,
+      "bytes_read": 239211,
+      "title": "aladin-lite/LICENSE at master · cds-astro/aladin-lite · GitHub",
+      "elapsed_seconds": 1.1
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/WebAssembly",
+      "method": "GET",
+      "status": 200,
+      "final_url": "https://developer.mozilla.org/en-US/docs/WebAssembly",
+      "content_type": "text/html",
+      "access_control_allow_origin": null,
+      "bytes_read": 175500,
+      "title": "WebAssembly | MDN",
+      "elapsed_seconds": 0.95
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers",
+      "method": "GET",
+      "status": 200,
+      "final_url": "https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers",
+      "content_type": "text/html",
+      "access_control_allow_origin": null,
+      "bytes_read": 202719,
+      "title": "Using Web Workers - Web APIs | MDN",
+      "elapsed_seconds": 1.09
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/File_System_API/Origin_private_file_system",
+      "method": "GET",
+      "status": 200,
+      "final_url": "https://developer.mozilla.org/en-US/docs/Web/API/File_System_API/Origin_private_file_system",
+      "content_type": "text/html",
+      "access_control_allow_origin": null,
+      "bytes_read": 166225,
+      "title": "Origin private file system - Web APIs | MDN",
+      "elapsed_seconds": 0.22
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/crossOriginIsolated",
+      "method": "GET",
+      "status": 200,
+      "final_url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/crossOriginIsolated",
+      "content_type": "text/html",
+      "access_control_allow_origin": null,
+      "bytes_read": 179634,
+      "title": "Window: crossOriginIsolated property - Web APIs | MDN",
+      "elapsed_seconds": 1.08
+    },
+    {
+      "url": "https://vite.dev/guide/build.html",
+      "method": "GET",
+      "status": 200,
+      "final_url": "https://vite.dev/guide/build.html",
+      "content_type": "text/html; charset=UTF-8",
+      "access_control_allow_origin": null,
+      "bytes_read": 162342,
+      "title": "Building for Production | Vite",
+      "elapsed_seconds": 0.7
+    },
+    {
+      "url": "https://docs.rs/crate/fitsio-pure/latest",
+      "method": "GET",
+      "status": 200,
+      "final_url": "https://docs.rs/crate/fitsio-pure/latest",
+      "content_type": "text/html; charset=utf-8",
+      "access_control_allow_origin": null,
+      "bytes_read": 42497,
+      "title": "fitsio-pure 0.25.1 - Docs.rs",
+      "elapsed_seconds": 0.43
+    },
+    {
+      "url": "https://docs.rs/fitsy/latest/fitsy/",
+      "method": "GET",
+      "status": 200,
+      "final_url": "https://docs.rs/fitsy/latest/fitsy/",
+      "content_type": "text/html; charset=utf-8",
+      "access_control_allow_origin": null,
+      "bytes_read": 45057,
+      "title": "fitsy - Rust",
+      "elapsed_seconds": 0.92
+    },
+    {
+      "url": "https://caltech-ipac.github.io/spherex-archive-documentation/spherex-data-releases/",
+      "method": "GET",
+      "status": 200,
+      "final_url": "https://caltech-ipac.github.io/spherex-archive-documentation/spherex-data-releases/",
+      "content_type": "text/html; charset=utf-8",
+      "access_control_allow_origin": "*",
+      "bytes_read": 44132,
+      "title": "SPHEREx Data Releases - SPHEREx Archive at IRSA",
+      "elapsed_seconds": 0.38
+    },
+    {
+      "url": "https://vite.dev/guide/assets",
+      "method": "GET",
+      "status": 200,
+      "final_url": "https://vite.dev/guide/assets",
+      "content_type": "text/html; charset=UTF-8",
+      "access_control_allow_origin": null,
+      "bytes_read": 89938,
+      "title": "Static Asset Handling | Vite",
+      "elapsed_seconds": 0.44
+    },
+    {
+      "url": "https://doi.org/10.26131/IRSA678",
+      "method": "GET",
+      "status": 200,
+      "final_url": "https://cosmos.ipac.caltech.edu/dois/doi.php?id=10.26131/IRSA678",
+      "content_type": "text/html; charset=UTF-8",
+      "access_control_allow_origin": null,
+      "bytes_read": 2488,
+      "title": "IPAC DOIs",
+      "elapsed_seconds": 1.15
+    },
+    {
+      "url": "https://doi.org/10.26131/IRSA679",
+      "method": "GET",
+      "status": 200,
+      "final_url": "https://cosmos.ipac.caltech.edu/dois/doi.php?id=10.26131/IRSA679",
+      "content_type": "text/html; charset=UTF-8",
+      "access_control_allow_origin": null,
+      "bytes_read": 2417,
+      "title": "IPAC DOIs",
+      "elapsed_seconds": 1.2
+    }
+  ]
+}

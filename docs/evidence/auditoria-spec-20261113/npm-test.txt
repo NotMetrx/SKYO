@@ -1,0 +1,24 @@
+
+> skyo-local-first-science-lab@2.1.0-review test
+> node --test tests/*.test.mjs
+
+✔ FITS MEF: IMAGE/FLAGS/VARIANCE/ZODI con datos originales (45.666833ms)
+✔ WCS TAN-SIP respeta transformacion ida/vuelta subpixel (13.095679ms)
+✔ mascaras decodifican banderas de mala calidad sin eliminar SOURCE (16.327902ms)
+✔ el motor reproyecta B usando WCS de A (178.641896ms)
+✔ calculo de diferencia con varianza y filtro de datos nulos (1.425132ms)
+✔ pipeline extremo a extremo sintético mantiene calificativo exploratorio (203.539809ms)
+✔ sin longitud de onda calibrada se rechaza validar compatibilidad (20.146349ms)
+✔ bloquea comparaciones con filtros realmente incompatibles (23.477449ms)
+✔ mascara FLAGS conserva bits altos y BZERO 2^31 sin Float32 (2.737392ms)
+✔ propagacion de varianza bilineal emplea pesos cuadrados (94.952898ms)
+✔ plano robusto corrige fondo espacial sintético (5.822429ms)
+✔ comparacion explora resta de ZODI y declara modelo de fondo (262.348618ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1272.154146

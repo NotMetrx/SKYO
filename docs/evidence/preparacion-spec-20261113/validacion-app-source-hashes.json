@@ -1,0 +1,12 @@
+{
+  "package.json": "3f6494d249ceab1fa5149343350857d35a015eb53ffed8e6cb36efb0792e3abe",
+  "vite.config.mjs": "6b8d9d8c3f465c2b13335ca2304d6d9fb352eac0a265a4694f6c159c2887c557",
+  "tools/postbuild.mjs": "4c57b3d1d32c12eba30f8c952ccb008d5bf23964391bbf27af08f677a4bdd2eb",
+  "web/main.js": "4acede3177c84197a1169abb705c49f9cd462fec2cabfbc1f640403149d12b19",
+  "web/worker.js": "f027abc517ba82f0d851bbcb9b3947fdd399b55df119ca69eb8e7c5d03cb7393",
+  "web/src/wasm-bridge.js": "de0f912a792dba5b708dcc4c45021fe56c53eacae5dfd5ecbe1ca631beed26c4",
+  "web/public/sw.js": "a7af909693425ae8c23804a724281ba5d209b0fc28f702a302c1e40f0572b51b",
+  "web/index.html": "86cc2044cb2203c852a069682fccb18b6822470efa4e368ef01c9a6894cbabd8",
+  "web/styles.css": "81ee9503fbd7daa32c91e6a5edaf28181aa4114b90c22c5a0d5c27bfc945e506",
+  "web/public/manifest.webmanifest": "6cf4c33759730fb38e0a9862f490e25569639b3216f6da4decb38b2349f7258a"
+}

@@ -1,0 +1,42 @@
+{
+  "synthetic_label": {
+    "origin": "NASA/IPAC via SKYO curator",
+    "actual": "DATOS SINTÉTICOS",
+    "expected": "NASA-DERIVED"
+  },
+  "unknown_wcs": {
+    "header": {
+      "CTYPE1": "GLON-TAN",
+      "CTYPE2": "GLAT-TAN",
+      "CUNIT1": "rad",
+      "CUNIT2": "rad",
+      "CRVAL1": 0,
+      "CRVAL2": 0,
+      "CRPIX1": 1,
+      "CRPIX2": 1,
+      "CDELT1": 0.01,
+      "CDELT2": 0.01
+    },
+    "accepted": true,
+    "result": {
+      "ra": 0.009999999898468559,
+      "dec": 0.009999999746152162
+    },
+    "expected": "rejection"
+  },
+  "report_provenance": {
+    "reportBlock": "lastReport={schema_version:'0.1-prototype',created_utc:new Date().toISOString(),\n    scientific_status:'exploratory_not_validated',...info,\n    disclaimer:'Requiere validacion espectral WCS-WAVE por pixel, PSF, correlacion de ruido y catalogos externos.'};\n  ",
+    "worker_info_has_observation_ids": false,
+    "contract_requires_ids": true
+  },
+  "wasm_paths": [
+    {
+      "worker": "https://example.test/skyo/worker.js",
+      "resolved": "https://example.test/wasm/pkg/skyo_wasm.js"
+    },
+    {
+      "worker": "https://example.test/skyo/assets/worker-hash.js",
+      "resolved": "https://example.test/skyo/wasm/pkg/skyo_wasm.js"
+    }
+  ]
+}

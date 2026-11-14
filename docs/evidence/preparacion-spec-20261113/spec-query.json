@@ -1,0 +1,9 @@
+{
+  "query": "SELECT TOP 200\n  ar.uri, ar.planeid, p.obsid, o.observationid, o.collection,\n  p.time_bounds_lower, p.time_bounds_upper, p.energy_bandpassname,\n  p.provenance_version\nFROM spherex.artifact ar\nJOIN spherex.plane p ON ar.planeid = p.planeid\nJOIN spherex.observation o ON o.obsid = p.obsid\nWHERE 1 = CONTAINS(POINT('ICRS',210.80227,54.34895),p.poly)\n  AND p.energy_bandpassname = 'SPHEREx-D2'\n  AND o.collection IN ('spherex_dr1','spherex_qr3')\nORDER BY p.time_bounds_lower, ar.planeid",
+  "url": "https://irsa.ipac.caltech.edu/TAP/sync?REQUEST=doQuery&LANG=ADQL&FORMAT=csv&QUERY=SELECT+TOP+200%0A++ar.uri%2C+ar.planeid%2C+p.obsid%2C+o.observationid%2C+o.collection%2C%0A++p.time_bounds_lower%2C+p.time_bounds_upper%2C+p.energy_bandpassname%2C%0A++p.provenance_version%0AFROM+spherex.artifact+ar%0AJOIN+spherex.plane+p+ON+ar.planeid+%3D+p.planeid%0AJOIN+spherex.observation+o+ON+o.obsid+%3D+p.obsid%0AWHERE+1+%3D+CONTAINS%28POINT%28%27ICRS%27%2C210.80227%2C54.34895%29%2Cp.poly%29%0A++AND+p.energy_bandpassname+%3D+%27SPHEREx-D2%27%0A++AND+o.collection+IN+%28%27spherex_dr1%27%2C%27spherex_qr3%27%29%0AORDER+BY+p.time_bounds_lower%2C+ar.planeid",
+  "status": 200,
+  "bytes": 21826,
+  "content_type": "text/csv",
+  "rows": 84,
+  "contains_error": false
+}

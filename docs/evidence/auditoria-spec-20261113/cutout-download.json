@@ -1,0 +1,12 @@
+{
+  "url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W19_2B/l2b-v27-2026-198/2/level2_2025W19_2B_0346_1D2_spx_l2b-v27-2026-198.fits?center=210.80227,54.34895d&size=0.1",
+  "observation_metadata": {
+    "cutout_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W19_2B/l2b-v27-2026-198/2/level2_2025W19_2B_0346_1D2_spx_l2b-v27-2026-198.fits?center=210.80227,54.34895d&size=0.1",
+    "mjd": "60805.711548",
+    "bandpass": "SPHEREx-D2",
+    "collection": "spherex_dr1"
+  },
+  "origin_probe": "https://skyo-audit.example",
+  "byte_limit": 16777216,
+  "error": "HTTP Error 503: Service Unavailable"
+}

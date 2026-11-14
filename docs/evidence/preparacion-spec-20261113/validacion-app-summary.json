@@ -1,0 +1,30 @@
+{
+  "browserRuns": 6,
+  "fatal": null,
+  "pageErrors": 0,
+  "horizontalOverflows": 0,
+  "strictOffline": [
+    {
+      "label": "desktop",
+      "passed": true
+    },
+    {
+      "label": "subdirectory",
+      "passed": true
+    }
+  ],
+  "staleReportReproduced": true,
+  "varyOriginControl": [
+    {
+      "varyOrigin": false,
+      "offlineSuccess": true
+    },
+    {
+      "varyOrigin": true,
+      "offlineSuccess": false
+    }
+  ],
+  "sourceUnchanged": true,
+  "missingReportLinks": [],
+  "previewStopped": true
+}

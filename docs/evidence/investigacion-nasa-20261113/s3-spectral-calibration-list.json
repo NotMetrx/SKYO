@@ -1,0 +1,37 @@
+{
+  "url": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/?list-type=2&prefix=dr1%2Fspectral_wcs%2F&max-keys=100",
+  "utc": "2026-11-14T04:42:29.634517+00:00",
+  "is_truncated": "false",
+  "items": [
+    {
+      "key": "dr1/spectral_wcs/cal-swcs-v5-2026-191/1/spectral_wcs_D1_spx_cal-swcs-v5-2026-191.fits",
+      "size": "33312960",
+      "etag": "\"624790eba5fdde40a6cb2187099e415d\""
+    },
+    {
+      "key": "dr1/spectral_wcs/cal-swcs-v5-2026-191/2/spectral_wcs_D2_spx_cal-swcs-v5-2026-191.fits",
+      "size": "33312960",
+      "etag": "\"af87630c33716cd77ae54ab6c63d388d\""
+    },
+    {
+      "key": "dr1/spectral_wcs/cal-swcs-v5-2026-191/3/spectral_wcs_D3_spx_cal-swcs-v5-2026-191.fits",
+      "size": "33312960",
+      "etag": "\"327f973e59efeaa101bf1fe9ac7c354e\""
+    },
+    {
+      "key": "dr1/spectral_wcs/cal-swcs-v5-2026-191/4/spectral_wcs_D4_spx_cal-swcs-v5-2026-191.fits",
+      "size": "33312960",
+      "etag": "\"438a1d94ca7b392cf854f68d18bfd7db\""
+    },
+    {
+      "key": "dr1/spectral_wcs/cal-swcs-v5-2026-191/5/spectral_wcs_D5_spx_cal-swcs-v5-2026-191.fits",
+      "size": "33312960",
+      "etag": "\"d59bd98b5d1d14ae8d74499b1c1ccb3f\""
+    },
+    {
+      "key": "dr1/spectral_wcs/cal-swcs-v5-2026-191/6/spectral_wcs_D6_spx_cal-swcs-v5-2026-191.fits",
+      "size": "33312960",
+      "etag": "\"e665c189ad63ca0cd032c0797e8aabf2\""
+    }
+  ]
+}

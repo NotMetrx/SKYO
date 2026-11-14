@@ -1,0 +1,19 @@
+{
+  "checks": [
+    "20 RF únicos con condición EARS y aceptación",
+    "T01–T08 trazadas al plan y registro",
+    "60 enlaces locales resuelven",
+    "Snapshot previo intacto",
+    "Código y package.json sin cambios",
+    "SQL normativo idéntico al probado:84filas",
+    "28 enlaces externos del SPEC con HTTP200"
+  ],
+  "spec_sha256": "0ddba4c0ff23562325c6568854d29afe04d1ae1aaea62401071d5a4ab0a211dc",
+  "application_changed": false,
+  "documentation_ready_to_start": true,
+  "application_acceptance": {
+    "I": false,
+    "V": false,
+    "C": false
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "plane_columns",
+  "query": "SELECT column_name,datatype FROM TAP_SCHEMA.columns WHERE table_name='spherex.plane'",
+  "url": "https://irsa.ipac.caltech.edu/TAP/sync?REQUEST=doQuery&LANG=ADQL&FORMAT=csv&QUERY=SELECT+column_name%2Cdatatype+FROM+TAP_SCHEMA.columns+WHERE+table_name%3D%27spherex.plane%27",
+  "status": 200,
+  "content_type": "text/csv",
+  "access_control_allow_origin": null,
+  "body": "column_name,datatype\nobsid,char\nplaneid,char\nproductid,char\ncreatorid,char\nmetarelease,char\ndatarelease,char\ncalibrationlevel,short\ndataproducttype,char\nquality_flag,char\nmetrics_sourcenumberdensity,double\nmetrics_background,double\nmetrics_backgroundstddev,double\nmetrics_fluxdensitylimit,double\nmetrics_maglimit,double\nposition_dimension_naxis1,long\nposition_dimension_naxis2,long\nposition_resolution,double\nposition_samplesize,double\nposition_timedependent,boolean\nenergy_bounds_lower,double\nenergy_bounds_upper,double\nenergy_bounds_samples,double\nenergy_emband,char\nenergy_dimension,long\nenergy_resolvingpower,double\nenergy_samplesize,double\nenergy_bandpassname,char\nenergy_transition_species,char\nenergy_transition_transition,char\nenergy_restwav,double\ntime_bounds_lower,double\ntime_bounds_upper,double\ntime_bounds_samples,double\ntime_dimension,long\ntime_resolution,double\ntime_samplesize,double\ntime_exposure,double\npolarization_states,char\npolarization_dimension,long\nprovenance_name,char\nprovenance_reference,char\nprovenance_version,char\nprovenance_project,char\nprovenance_producer,char\nprovenance_runid,char\nprovenance_lastexecuted,char\nprovenance_keywords,char\nipac_gid,int\nmission_id,int\npoly,char\npt,char\nipac_pub_date,char\nlastmodified,char\nobs_publisher_did,char\n"
+}
