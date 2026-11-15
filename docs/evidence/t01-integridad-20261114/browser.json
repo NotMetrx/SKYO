@@ -1,0 +1,258 @@
+{
+  "config": {
+    "argv": [
+      "/home/metrx/.nvm/versions/node/v24.21.0/bin/node",
+      "/home/metrx/Proyectos/SKYO/node_modules/.bin/playwright",
+      "test",
+      "t01.spec.mjs"
+    ],
+    "configFile": "/home/metrx/Proyectos/SKYO/playwright.config.mjs",
+    "rootDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/metrx/Proyectos/SKYO/test-results/t01",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+        "testIgnore": [],
+        "testMatch": [
+          "*.spec.mjs"
+        ],
+        "timeout": 90000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/home/metrx/Proyectos/SKYO/test-results/t01",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+        "snapshotDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+        "testIgnore": [],
+        "testMatch": "*.spec.mjs",
+        "timeout": 90000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4188",
+          "headless": true,
+          "reducedMotion": "reduce",
+          "trace": "retain-on-failure",
+          "launchOptions": {
+            "args": [
+              "--disable-gpu"
+            ]
+          }
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/evidence/t01-integridad-20261114/browser.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.65.1",
+    "workers": 1,
+    "webServer": {
+      "command": "node tests/browser/server.mjs",
+      "url": "http://127.0.0.1:4188",
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "t01.spec.mjs",
+      "file": "t01.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "T01 independiente: cambiar demo invalida informe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8685,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-14T17:52:56.564Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c9b6c2fa4be684cc3ed1-d31229963d6782f31e2a",
+          "file": "t01.spec.mjs",
+          "line": 9,
+          "column": 39
+        },
+        {
+          "title": "T01 integrado: cambiar demo invalida informe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11368,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-14T17:53:06.641Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c9b6c2fa4be684cc3ed1-a91268b3298f8955f15e",
+          "file": "t01.spec.mjs",
+          "line": 9,
+          "column": 39
+        },
+        {
+          "title": "T01 independiente: A/A→demo A/B, export y diagnóstico",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10669,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-14T17:53:18.281Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c9b6c2fa4be684cc3ed1-1aa77757cdb5dc8a5dd1",
+          "file": "t01.spec.mjs",
+          "line": 18,
+          "column": 38
+        },
+        {
+          "title": "T01 integrado: A/A→demo A/B, export y diagnóstico",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 18512,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-14T17:53:29.243Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c9b6c2fa4be684cc3ed1-dc9f924ba1081b89063e",
+          "file": "t01.spec.mjs",
+          "line": 18,
+          "column": 38
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-14T17:52:50.456Z",
+    "duration": 58073.779,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

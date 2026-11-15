@@ -1,0 +1,986 @@
+{
+  "config": {
+    "argv": [
+      "/home/metrx/.nvm/versions/node/v24.21.0/bin/node",
+      "/home/metrx/Proyectos/SKYO/node_modules/.bin/playwright",
+      "test"
+    ],
+    "configFile": "/home/metrx/Proyectos/SKYO/playwright.config.mjs",
+    "rootDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/metrx/Proyectos/SKYO/test-results/fpa-20261115",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+        "testIgnore": [],
+        "testMatch": [
+          "*.spec.mjs"
+        ],
+        "timeout": 90000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/home/metrx/Proyectos/SKYO/test-results/fpa-20261115",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+        "snapshotDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+        "testIgnore": [],
+        "testMatch": "*.spec.mjs",
+        "timeout": 90000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4192",
+          "headless": true,
+          "reducedMotion": "reduce",
+          "trace": "retain-on-failure",
+          "launchOptions": {
+            "args": [
+              "--disable-gpu"
+            ]
+          }
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/evidence/fpa-20261115/browser.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.65.1",
+    "workers": 1,
+    "webServer": {
+      "command": "node tests/browser/server.mjs",
+      "url": "http://127.0.0.1:4192",
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "accessibility.spec.mjs",
+      "file": "accessibility.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "accesibilidad de controles en lab.html",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9944,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T05:50:46.487Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a334d9d3eb462d454b6a-bfdd3dc0e94f355b5936",
+          "file": "accessibility.spec.mjs",
+          "line": 3,
+          "column": 50
+        },
+        {
+          "title": "accesibilidad de controles en contexto.html",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5340,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T05:50:57.430Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a334d9d3eb462d454b6a-2e78aecb32ba98b90f15",
+          "file": "accessibility.spec.mjs",
+          "line": 3,
+          "column": 50
+        }
+      ]
+    },
+    {
+      "title": "curated.spec.mjs",
+      "file": "curated.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "NASA real independiente: regiones, blink manual, informe y offline",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 31151,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T05:51:02.967Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a47a7c4a20f00dc2cf68-27d2889ca24a5a648daf",
+          "file": "curated.spec.mjs",
+          "line": 4,
+          "column": 38
+        },
+        {
+          "title": "NASA real integrado: regiones, blink manual, informe y offline",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 19720,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 8\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"http://127.0.0.1:4192/datasets/fpa-dr1/D1.fits\",\u001b[39m\n\u001b[31m+   \"http://127.0.0.1:4192/datasets/fpa-dr1/D2.fits\",\u001b[39m\n\u001b[31m+   \"http://127.0.0.1:4192/datasets/fpa-dr1/D3.fits\",\u001b[39m\n\u001b[31m+   \"http://127.0.0.1:4192/datasets/fpa-dr1/D4.fits\",\u001b[39m\n\u001b[31m+   \"http://127.0.0.1:4192/datasets/fpa-dr1/D5.fits\",\u001b[39m\n\u001b[31m+   \"http://127.0.0.1:4192/datasets/fpa-dr1/D6.fits\",\u001b[39m\n\u001b[31m+ ]\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 8\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"http://127.0.0.1:4192/datasets/fpa-dr1/D1.fits\",\u001b[39m\n\u001b[31m+   \"http://127.0.0.1:4192/datasets/fpa-dr1/D2.fits\",\u001b[39m\n\u001b[31m+   \"http://127.0.0.1:4192/datasets/fpa-dr1/D3.fits\",\u001b[39m\n\u001b[31m+   \"http://127.0.0.1:4192/datasets/fpa-dr1/D4.fits\",\u001b[39m\n\u001b[31m+   \"http://127.0.0.1:4192/datasets/fpa-dr1/D5.fits\",\u001b[39m\n\u001b[31m+   \"http://127.0.0.1:4192/datasets/fpa-dr1/D6.fits\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at /home/metrx/Proyectos/SKYO/tests/browser/curated.spec.mjs:14:18",
+                    "location": {
+                      "file": "/home/metrx/Proyectos/SKYO/tests/browser/curated.spec.mjs",
+                      "column": 18,
+                      "line": 14
+                    },
+                    "snippet": " \u001b[90m 12 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForFunction(()\u001b[33m=>\u001b[39m\u001b[33m!\u001b[39m\u001b[33m!\u001b[39mnavigator\u001b[33m.\u001b[39mserviceWorker\u001b[33m.\u001b[39mcontroller)\u001b[33m;\u001b[39m\n \u001b[90m 13 |\u001b[39m   \u001b[36mconst\u001b[39m cached\u001b[33m=\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mevaluate(\u001b[36masync\u001b[39m()\u001b[33m=>\u001b[39m{\u001b[36mconst\u001b[39m all\u001b[33m=\u001b[39m\u001b[36mawait\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m.\u001b[39mall((\u001b[36mawait\u001b[39m caches\u001b[33m.\u001b[39mkeys())\u001b[33m.\u001b[39mmap(\u001b[36masync\u001b[39m key\u001b[33m=>\u001b[39m(\u001b[36mawait\u001b[39m (\u001b[36mawait\u001b[39m caches\u001b[33m.\u001b[39mopen(key))\u001b[33m.\u001b[39mkeys())\u001b[33m.\u001b[39mmap(r\u001b[33m=>\u001b[39mr\u001b[33m.\u001b[39murl)))\u001b[33m;\u001b[39m\u001b[36mreturn\u001b[39m all\u001b[33m.\u001b[39mflat()\u001b[33m.\u001b[39mfilter(url\u001b[33m=>\u001b[39murl\u001b[33m.\u001b[39mincludes(\u001b[32m'/datasets/'\u001b[39m)\u001b[33m&&\u001b[39murl\u001b[33m.\u001b[39mendsWith(\u001b[32m'.fits'\u001b[39m))\u001b[33m;\u001b[39m})\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 14 |\u001b[39m   expect(cached)\u001b[33m.\u001b[39mtoEqual([])\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                  \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m id(\u001b[32m'load-real'\u001b[39m)\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m expect(compare)\u001b[33m.\u001b[39mtoBeEnabled()\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m compare\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m expect(save)\u001b[33m.\u001b[39mtoBeEnabled()\u001b[33m;\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m id(\u001b[32m'blink-manual'\u001b[39m)\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m expect(id(\u001b[32m'render-view'\u001b[39m))\u001b[33m.\u001b[39mtoHaveValue(\u001b[32m'A'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 17 |\u001b[39m   \u001b[36mawait\u001b[39m id(\u001b[32m'blink-manual'\u001b[39m)\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m expect(id(\u001b[32m'render-view'\u001b[39m))\u001b[33m.\u001b[39mtoHaveValue(\u001b[32m'B'\u001b[39m)\u001b[33m;\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/metrx/Proyectos/SKYO/tests/browser/curated.spec.mjs",
+                        "column": 18,
+                        "line": 14
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 8\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   \"http://127.0.0.1:4192/datasets/fpa-dr1/D1.fits\",\u001b[39m\n\u001b[31m+   \"http://127.0.0.1:4192/datasets/fpa-dr1/D2.fits\",\u001b[39m\n\u001b[31m+   \"http://127.0.0.1:4192/datasets/fpa-dr1/D3.fits\",\u001b[39m\n\u001b[31m+   \"http://127.0.0.1:4192/datasets/fpa-dr1/D4.fits\",\u001b[39m\n\u001b[31m+   \"http://127.0.0.1:4192/datasets/fpa-dr1/D5.fits\",\u001b[39m\n\u001b[31m+   \"http://127.0.0.1:4192/datasets/fpa-dr1/D6.fits\",\u001b[39m\n\u001b[31m+ ]\u001b[39m\n\n  12 |   await page.waitForFunction(()=>!!navigator.serviceWorker.controller);\n  13 |   const cached=await page.evaluate(async()=>{const all=await Promise.all((await caches.keys()).map(async key=>(await (await caches.open(key)).keys()).map(r=>r.url)));return all.flat().filter(url=>url.includes('/datasets/')&&url.endsWith('.fits'));});\n> 14 |   expect(cached).toEqual([]);\n     |                  ^\n  15 |   await id('load-real').click();await expect(compare).toBeEnabled();await compare.click();await expect(save).toBeEnabled();\n  16 |   await id('blink-manual').click();await expect(id('render-view')).toHaveValue('A');\n  17 |   await id('blink-manual').click();await expect(id('render-view')).toHaveValue('B');\n    at /home/metrx/Proyectos/SKYO/tests/browser/curated.spec.mjs:14:18"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T05:51:34.262Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/metrx/Proyectos/SKYO/test-results/fpa-20261115/curated-NASA-real-integrad-2286a-nk-manual-informe-y-offline/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/metrx/Proyectos/SKYO/test-results/fpa-20261115/curated-NASA-real-integrad-2286a-nk-manual-informe-y-offline/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/metrx/Proyectos/SKYO/tests/browser/curated.spec.mjs",
+                    "column": 18,
+                    "line": 14
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "a47a7c4a20f00dc2cf68-a76d5a4a50241b3e64c6",
+          "file": "curated.spec.mjs",
+          "line": 4,
+          "column": 38
+        },
+        {
+          "title": "320 px: las cuatro pestañas quedan completas y accesibles",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14156,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T05:52:02.913Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a47a7c4a20f00dc2cf68-6d6b018c267eeb7b35d2",
+          "file": "curated.spec.mjs",
+          "line": 34,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "fpa.spec.mjs",
+      "file": "fpa.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "FPA real /: seis texturas WASM, cámara, contraste y móvil",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11598,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T05:52:18.403Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f98d9a0bbf2c66098092-502f6d1950456a41ecd7",
+          "file": "fpa.spec.mjs",
+          "line": 4,
+          "column": 3
+        },
+        {
+          "title": "FPA real /skyo/: seis texturas WASM, cámara, contraste y móvil",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11226,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T05:52:30.146Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f98d9a0bbf2c66098092-70dace064e039a070482",
+          "file": "fpa.spec.mjs",
+          "line": 4,
+          "column": 3
+        },
+        {
+          "title": "FPA: hash erróneo controlado, reintento y búsqueda IRSA con carga de resultado",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9098,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T05:52:41.500Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f98d9a0bbf2c66098092-0d6c0ad073a07c6706fc",
+          "file": "fpa.spec.mjs",
+          "line": 24,
+          "column": 1
+        },
+        {
+          "title": "Explorar abre imágenes reales y descarga el visor al cambiar de pestaña",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 15736,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T05:52:50.763Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f98d9a0bbf2c66098092-384f0d853cac1ad034a9",
+          "file": "fpa.spec.mjs",
+          "line": 42,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "graphics.spec.mjs",
+      "file": "graphics.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "WebGL2: Aladin real y pausa del motor Three.js fuera de vista",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "interrupted",
+                  "duration": 22427,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T05:53:06.643Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/metrx/Proyectos/SKYO/test-results/fpa-20261115/graphics-WebGL2-Aladin-rea-972af-tor-Three-js-fuera-de-vista/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "5da9f961d34ca1202064-6427eb9f7b602efb6b87",
+          "file": "graphics.spec.mjs",
+          "line": 2,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "integration.spec.mjs",
+      "file": "integration.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "KRYO-9 y GLTF remoto /: carga diferida, Draco y modelo",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "d2e5af720b2b561d2ec7-73a1b6e10e705d2b8eee",
+          "file": "integration.spec.mjs",
+          "line": 4,
+          "column": 3
+        },
+        {
+          "title": "KRYO-9 y GLTF remoto /skyo/: carga diferida, Draco y modelo",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "d2e5af720b2b561d2ec7-e39d8a616ca43b7d0d09",
+          "file": "integration.spec.mjs",
+          "line": 4,
+          "column": 3
+        }
+      ]
+    },
+    {
+      "title": "migration.spec.mjs",
+      "file": "migration.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "/ navegación, teclado y responsive",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "94dbda98a2b05a3033e6-e095243cb3be5a76ccb9",
+          "file": "migration.spec.mjs",
+          "line": 4,
+          "column": 3
+        },
+        {
+          "title": "/ Worker, export y offline con Vary Origin",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "94dbda98a2b05a3033e6-af28532e470cc0ddf7d1",
+          "file": "migration.spec.mjs",
+          "line": 25,
+          "column": 3
+        },
+        {
+          "title": "/ manifiesto, iconos y aislamiento de caché",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "94dbda98a2b05a3033e6-8b30ca2a6099df95bd8e",
+          "file": "migration.spec.mjs",
+          "line": 42,
+          "column": 3
+        },
+        {
+          "title": "/skyo/ navegación, teclado y responsive",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "94dbda98a2b05a3033e6-f9bd58a394101310568d",
+          "file": "migration.spec.mjs",
+          "line": 4,
+          "column": 3
+        },
+        {
+          "title": "/skyo/ Worker, export y offline con Vary Origin",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "94dbda98a2b05a3033e6-4cf6216d03d5f30792f5",
+          "file": "migration.spec.mjs",
+          "line": 25,
+          "column": 3
+        },
+        {
+          "title": "/skyo/ manifiesto, iconos y aislamiento de caché",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "94dbda98a2b05a3033e6-7921eeecb7d88cb1a6a7",
+          "file": "migration.spec.mjs",
+          "line": 42,
+          "column": 3
+        },
+        {
+          "title": "contexto HiPS se carga bajo demanda y se descarga al salir",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "94dbda98a2b05a3033e6-721f25347418b9b67149",
+          "file": "migration.spec.mjs",
+          "line": 56,
+          "column": 1
+        },
+        {
+          "title": "actualización PWA espera al usuario y conserva cachés ajenas",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "94dbda98a2b05a3033e6-c4e6068d35eeefd481ff",
+          "file": "migration.spec.mjs",
+          "line": 66,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "storage.spec.mjs",
+      "file": "storage.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "OPFS independiente: fallo de segundo archivo, recuperación y borrado",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "41a9034ffaaff0acdbbb-f8951f4d2e08d113e1a1",
+          "file": "storage.spec.mjs",
+          "line": 4,
+          "column": 38
+        },
+        {
+          "title": "OPFS integrado: fallo de segundo archivo, recuperación y borrado",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "41a9034ffaaff0acdbbb-bbe6994f36da4d5a2bf0",
+          "file": "storage.spec.mjs",
+          "line": 4,
+          "column": 38
+        },
+        {
+          "title": "Bitácora conserva snapshot, no inventa movimiento y escapa nombres de archivo",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "41a9034ffaaff0acdbbb-df93261ca1419a9d2ff7",
+          "file": "storage.spec.mjs",
+          "line": 26,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "t01.spec.mjs",
+      "file": "t01.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "T01 independiente: cambiar demo invalida informe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "c9b6c2fa4be684cc3ed1-d31229963d6782f31e2a",
+          "file": "t01.spec.mjs",
+          "line": 9,
+          "column": 39
+        },
+        {
+          "title": "T01 integrado: cambiar demo invalida informe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "c9b6c2fa4be684cc3ed1-a91268b3298f8955f15e",
+          "file": "t01.spec.mjs",
+          "line": 9,
+          "column": 39
+        },
+        {
+          "title": "T01 independiente: A/A→demo A/B, export y diagnóstico",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "c9b6c2fa4be684cc3ed1-1aa77757cdb5dc8a5dd1",
+          "file": "t01.spec.mjs",
+          "line": 18,
+          "column": 38
+        },
+        {
+          "title": "T01 integrado: A/A→demo A/B, export y diagnóstico",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "c9b6c2fa4be684cc3ed1-dc9f924ba1081b89063e",
+          "file": "t01.spec.mjs",
+          "line": 18,
+          "column": 38
+        }
+      ]
+    },
+    {
+      "title": "wasm.spec.mjs",
+      "file": "wasm.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "WASM Worker /: carga real, identidad y fallback",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "d56206561e218ea8f657-d763367b2437445ae809",
+          "file": "wasm.spec.mjs",
+          "line": 7,
+          "column": 34
+        },
+        {
+          "title": "WASM Worker /skyo/: carga real, identidad y fallback",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "d56206561e218ea8f657-408cdf3e03b14c4d0387",
+          "file": "wasm.spec.mjs",
+          "line": 7,
+          "column": 34
+        },
+        {
+          "title": "WASM corrupto o que lanza excepción conserva fallback explícito",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "d56206561e218ea8f657-afbce537f226bc538619",
+          "file": "wasm.spec.mjs",
+          "line": 18,
+          "column": 1
+        },
+        {
+          "title": "WASM y JavaScript: benchmark de kernel en Worker Chromium",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [],
+              "status": "skipped"
+            }
+          ],
+          "id": "d56206561e218ea8f657-b9c39f37be7147c8c890",
+          "file": "wasm.spec.mjs",
+          "line": 29,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-15T05:50:38.482Z",
+    "duration": 180339.125,
+    "expected": 8,
+    "skipped": 22,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

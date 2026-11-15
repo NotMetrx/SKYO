@@ -1,0 +1,54 @@
+{
+  "environment": "v24.21.0",
+  "note": "One cold run per preview, includes input/output copies; excludes network/GPU; no speedup or fps claim.",
+  "kernel": {
+    "crateVersion": "0.1.0",
+    "generator": "wasm-bindgen 0.2.130",
+    "wasmSha256": "7acff41c01e0ff7f78b6452a60fc29063a81d2771c507e665ffa8508964a706d",
+    "cargoLockSha256": "cf21147e33938a9917caad44916d39505587d45e31c9e9c52f8034ccbd947d30"
+  },
+  "results": [
+    {
+      "detector": 1,
+      "width": 255,
+      "height": 255,
+      "ms": 434.4785790000001,
+      "rgbaBytes": 260100
+    },
+    {
+      "detector": 2,
+      "width": 255,
+      "height": 255,
+      "ms": 67.60297500000001,
+      "rgbaBytes": 260100
+    },
+    {
+      "detector": 3,
+      "width": 255,
+      "height": 255,
+      "ms": 87.9749260000001,
+      "rgbaBytes": 260100
+    },
+    {
+      "detector": 4,
+      "width": 255,
+      "height": 255,
+      "ms": 95.833934,
+      "rgbaBytes": 260100
+    },
+    {
+      "detector": 5,
+      "width": 255,
+      "height": 255,
+      "ms": 117.77332999999999,
+      "rgbaBytes": 260100
+    },
+    {
+      "detector": 6,
+      "width": 255,
+      "height": 255,
+      "ms": 78.39928899999995,
+      "rgbaBytes": 260100
+    }
+  ]
+}

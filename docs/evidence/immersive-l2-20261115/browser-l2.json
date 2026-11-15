@@ -1,0 +1,294 @@
+{
+  "config": {
+    "argv": [
+      "/home/metrx/.nvm/versions/node/v24.21.0/bin/node",
+      "/home/metrx/Proyectos/SKYO/node_modules/.bin/playwright",
+      "test",
+      "tests/browser/l2.spec.mjs"
+    ],
+    "configFile": "/home/metrx/Proyectos/SKYO/playwright.config.mjs",
+    "rootDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/metrx/Proyectos/SKYO/test-results/l2",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+        "testIgnore": [],
+        "testMatch": [
+          "*.spec.mjs"
+        ],
+        "timeout": 90000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/home/metrx/Proyectos/SKYO/test-results/l2",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+        "snapshotDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+        "testIgnore": [],
+        "testMatch": "*.spec.mjs",
+        "timeout": 90000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4199",
+          "headless": true,
+          "reducedMotion": "reduce",
+          "trace": "retain-on-failure",
+          "launchOptions": {
+            "args": [
+              "--disable-gpu"
+            ]
+          }
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/evidence/immersive-l2-20261115/browser-l2.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.65.1",
+    "workers": 1,
+    "webServer": {
+      "command": "node tests/browser/server.mjs",
+      "url": "http://127.0.0.1:4199",
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "l2.spec.mjs",
+      "file": "l2.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Zoom L2 /: FITS real, λ/fecha/flujo propios, export y retorno",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 37095,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('#sky')\nExpected: \u001b[32m\"ready\"\u001b[39m\nReceived: \u001b[31m\"mosaic\"\u001b[39m\nTimeout:  30000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" locator('#sky') with timeout 30000ms\u001b[22m\n\u001b[2m  - waiting for locator('#sky')\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"49\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"4\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"49\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"5\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"49\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"11\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"49\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"15\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"49\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"17\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    55 × locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"97\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"30\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"mosaic\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m       - unexpected value \"mosaic\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('#sky')\nExpected: \u001b[32m\"ready\"\u001b[39m\nReceived: \u001b[31m\"mosaic\"\u001b[39m\nTimeout:  30000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" locator('#sky') with timeout 30000ms\u001b[22m\n\u001b[2m  - waiting for locator('#sky')\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"49\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"4\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"49\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"5\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"49\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"11\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"49\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"15\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"49\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"17\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    55 × locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"97\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"30\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"mosaic\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m       - unexpected value \"mosaic\"\u001b[22m\n\n    at /home/metrx/Proyectos/SKYO/tests/browser/l2.spec.mjs:27:64",
+                    "location": {
+                      "file": "/home/metrx/Proyectos/SKYO/tests/browser/l2.spec.mjs",
+                      "column": 64,
+                      "line": 27
+                    },
+                    "snippet": " \u001b[90m 25 |\u001b[39m   \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'#flux'\u001b[39m))\u001b[33m.\u001b[39mtoContainText(\u001b[32m'observación L2'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 26 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByText(\u001b[32m'Controles y procedencia'\u001b[39m\u001b[33m,\u001b[39m{exact\u001b[33m:\u001b[39m\u001b[36mtrue\u001b[39m})\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\u001b[36mconst\u001b[39m download\u001b[33m=\u001b[39mpage\u001b[33m.\u001b[39mwaitForEvent(\u001b[32m'download'\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'#export'\u001b[39m)\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\u001b[36mconst\u001b[39m report\u001b[33m=\u001b[39m\u001b[33mJSON\u001b[39m\u001b[33m.\u001b[39mparse(\u001b[36mawait\u001b[39m fs\u001b[33m.\u001b[39mreadFile(\u001b[36mawait\u001b[39m(\u001b[36mawait\u001b[39m download)\u001b[33m.\u001b[39mpath()\u001b[33m,\u001b[39m\u001b[32m'utf8'\u001b[39m))\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 27 |\u001b[39m   expect(report\u001b[33m.\u001b[39msource\u001b[33m.\u001b[39mtype)\u001b[33m.\u001b[39mtoBe(\u001b[32m'L2-observation'\u001b[39m)\u001b[33m;\u001b[39mexpect(report\u001b[33m.\u001b[39msource\u001b[33m.\u001b[39msha256)\u001b[33m.\u001b[39mtoBe(ref\u001b[33m.\u001b[39msha256)\u001b[33m;\u001b[39mexpect(report\u001b[33m.\u001b[39msource\u001b[33m.\u001b[39mx)\u001b[33m.\u001b[39mtoBe(\u001b[35m15\u001b[39m)\u001b[33m;\u001b[39mexpect(report\u001b[33m.\u001b[39msource\u001b[33m.\u001b[39my)\u001b[33m.\u001b[39mtoBe(\u001b[35m15\u001b[39m)\u001b[33m;\u001b[39mexpect(report\u001b[33m.\u001b[39mscienceReady)\u001b[33m.\u001b[39mtoBe(\u001b[36mfalse\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 28 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByText(\u001b[32m'Controles y procedencia'\u001b[39m\u001b[33m,\u001b[39m{exact\u001b[33m:\u001b[39m\u001b[36mtrue\u001b[39m})\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mscreenshot({path\u001b[33m:\u001b[39minfo\u001b[33m.\u001b[39moutputPath(\u001b[32m'native-l2.png'\u001b[39m)})\u001b[33m;\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'#sky'\u001b[39m)\u001b[33m.\u001b[39mfocus()\u001b[33m;\u001b[39m\u001b[36mfor\u001b[39m(\u001b[36mlet\u001b[39m i\u001b[33m=\u001b[39m\u001b[35m0\u001b[39m\u001b[33m;\u001b[39mi\u001b[33m<\u001b[39m\u001b[35m18\u001b[39m\u001b[33m;\u001b[39mi\u001b[33m++\u001b[39m)\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mkeyboard\u001b[33m.\u001b[39mpress(\u001b[32m'-'\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'#sky'\u001b[39m))\u001b[33m.\u001b[39mtoHaveAttribute(\u001b[32m'data-detail-layer'\u001b[39m\u001b[33m,\u001b[39m\u001b[32m'mosaic'\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'#flux'\u001b[39m))\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoContainText(\u001b[32m'observación L2'\u001b[39m)\u001b[33m;\u001b[39mexpect(errors)\u001b[33m.\u001b[39mtoEqual([])\u001b[33m;\u001b[39m\n \u001b[90m 30 |\u001b[39m })\u001b[33m;\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/metrx/Proyectos/SKYO/tests/browser/l2.spec.mjs",
+                        "column": 64,
+                        "line": 27
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('#sky')\nExpected: \u001b[32m\"ready\"\u001b[39m\nReceived: \u001b[31m\"mosaic\"\u001b[39m\nTimeout:  30000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" locator('#sky') with timeout 30000ms\u001b[22m\n\u001b[2m  - waiting for locator('#sky')\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"49\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"4\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"49\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"5\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"49\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"11\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"49\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"15\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"49\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"17\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    55 × locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"97\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"30\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"mosaic\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m       - unexpected value \"mosaic\"\u001b[22m\n\n\n  25 |   await expect(page.locator('#flux')).toContainText('observación L2');\n  26 |   await page.getByText('Controles y procedencia',{exact:true}).click();const download=page.waitForEvent('download');await page.locator('#export').click();const report=JSON.parse(await fs.readFile(await(await download).path(),'utf8'));\n> 27 |   expect(report.source.type).toBe('L2-observation');expect(report.source.sha256).toBe(ref.sha256);expect(report.source.x).toBe(15);expect(report.source.y).toBe(15);expect(report.scienceReady).toBe(false);\n     |                                                                ^\n  28 |   await page.getByText('Controles y procedencia',{exact:true}).click();await page.screenshot({path:info.outputPath('native-l2.png')});\n  29 |   await page.locator('#sky').focus();for(let i=0;i<18;i++)await page.keyboard.press('-');await expect(page.locator('#sky')).toHaveAttribute('data-detail-layer','mosaic');await expect(page.locator('#flux')).not.toContainText('observación L2');expect(errors).toEqual([]);\n  30 | });\n    at /home/metrx/Proyectos/SKYO/tests/browser/l2.spec.mjs:27:64"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T16:17:55.340Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/metrx/Proyectos/SKYO/test-results/l2/l2-Zoom-L2-FITS-real-λ-fecha-flujo-propios-export-y-retorno/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/metrx/Proyectos/SKYO/test-results/l2/l2-Zoom-L2-FITS-real-λ-fecha-flujo-propios-export-y-retorno/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/metrx/Proyectos/SKYO/tests/browser/l2.spec.mjs",
+                    "column": 64,
+                    "line": 27
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "ecd79b7cafb660d42e47-9386c7b48bb9b99061e8",
+          "file": "l2.spec.mjs",
+          "line": 24,
+          "column": 34
+        },
+        {
+          "title": "Zoom L2 /skyo/: FITS real, λ/fecha/flujo propios, export y retorno",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 39279,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('#sky')\nExpected: \u001b[32m\"ready\"\u001b[39m\nReceived: \u001b[31m\"mosaic\"\u001b[39m\nTimeout:  30000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" locator('#sky') with timeout 30000ms\u001b[22m\n\u001b[2m  - waiting for locator('#sky')\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"54\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"23\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"54\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"24\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"54\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"28\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    57 × locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"102\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"30\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"mosaic\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m       - unexpected value \"mosaic\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('#sky')\nExpected: \u001b[32m\"ready\"\u001b[39m\nReceived: \u001b[31m\"mosaic\"\u001b[39m\nTimeout:  30000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" locator('#sky') with timeout 30000ms\u001b[22m\n\u001b[2m  - waiting for locator('#sky')\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"54\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"23\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"54\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"24\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"54\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"28\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    57 × locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"102\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"30\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"mosaic\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m       - unexpected value \"mosaic\"\u001b[22m\n\n    at /home/metrx/Proyectos/SKYO/tests/browser/l2.spec.mjs:27:64",
+                    "location": {
+                      "file": "/home/metrx/Proyectos/SKYO/tests/browser/l2.spec.mjs",
+                      "column": 64,
+                      "line": 27
+                    },
+                    "snippet": " \u001b[90m 25 |\u001b[39m   \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'#flux'\u001b[39m))\u001b[33m.\u001b[39mtoContainText(\u001b[32m'observación L2'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 26 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByText(\u001b[32m'Controles y procedencia'\u001b[39m\u001b[33m,\u001b[39m{exact\u001b[33m:\u001b[39m\u001b[36mtrue\u001b[39m})\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\u001b[36mconst\u001b[39m download\u001b[33m=\u001b[39mpage\u001b[33m.\u001b[39mwaitForEvent(\u001b[32m'download'\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'#export'\u001b[39m)\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\u001b[36mconst\u001b[39m report\u001b[33m=\u001b[39m\u001b[33mJSON\u001b[39m\u001b[33m.\u001b[39mparse(\u001b[36mawait\u001b[39m fs\u001b[33m.\u001b[39mreadFile(\u001b[36mawait\u001b[39m(\u001b[36mawait\u001b[39m download)\u001b[33m.\u001b[39mpath()\u001b[33m,\u001b[39m\u001b[32m'utf8'\u001b[39m))\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 27 |\u001b[39m   expect(report\u001b[33m.\u001b[39msource\u001b[33m.\u001b[39mtype)\u001b[33m.\u001b[39mtoBe(\u001b[32m'L2-observation'\u001b[39m)\u001b[33m;\u001b[39mexpect(report\u001b[33m.\u001b[39msource\u001b[33m.\u001b[39msha256)\u001b[33m.\u001b[39mtoBe(ref\u001b[33m.\u001b[39msha256)\u001b[33m;\u001b[39mexpect(report\u001b[33m.\u001b[39msource\u001b[33m.\u001b[39mx)\u001b[33m.\u001b[39mtoBe(\u001b[35m15\u001b[39m)\u001b[33m;\u001b[39mexpect(report\u001b[33m.\u001b[39msource\u001b[33m.\u001b[39my)\u001b[33m.\u001b[39mtoBe(\u001b[35m15\u001b[39m)\u001b[33m;\u001b[39mexpect(report\u001b[33m.\u001b[39mscienceReady)\u001b[33m.\u001b[39mtoBe(\u001b[36mfalse\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 28 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByText(\u001b[32m'Controles y procedencia'\u001b[39m\u001b[33m,\u001b[39m{exact\u001b[33m:\u001b[39m\u001b[36mtrue\u001b[39m})\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mscreenshot({path\u001b[33m:\u001b[39minfo\u001b[33m.\u001b[39moutputPath(\u001b[32m'native-l2.png'\u001b[39m)})\u001b[33m;\u001b[39m\n \u001b[90m 29 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'#sky'\u001b[39m)\u001b[33m.\u001b[39mfocus()\u001b[33m;\u001b[39m\u001b[36mfor\u001b[39m(\u001b[36mlet\u001b[39m i\u001b[33m=\u001b[39m\u001b[35m0\u001b[39m\u001b[33m;\u001b[39mi\u001b[33m<\u001b[39m\u001b[35m18\u001b[39m\u001b[33m;\u001b[39mi\u001b[33m++\u001b[39m)\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mkeyboard\u001b[33m.\u001b[39mpress(\u001b[32m'-'\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'#sky'\u001b[39m))\u001b[33m.\u001b[39mtoHaveAttribute(\u001b[32m'data-detail-layer'\u001b[39m\u001b[33m,\u001b[39m\u001b[32m'mosaic'\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'#flux'\u001b[39m))\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoContainText(\u001b[32m'observación L2'\u001b[39m)\u001b[33m;\u001b[39mexpect(errors)\u001b[33m.\u001b[39mtoEqual([])\u001b[33m;\u001b[39m\n \u001b[90m 30 |\u001b[39m })\u001b[33m;\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/metrx/Proyectos/SKYO/tests/browser/l2.spec.mjs",
+                        "column": 64,
+                        "line": 27
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('#sky')\nExpected: \u001b[32m\"ready\"\u001b[39m\nReceived: \u001b[31m\"mosaic\"\u001b[39m\nTimeout:  30000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" locator('#sky') with timeout 30000ms\u001b[22m\n\u001b[2m  - waiting for locator('#sky')\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"54\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"23\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"54\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"24\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"54\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"28\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"loading\"\u001b[22m\n\u001b[2m    57 × locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"102\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"30\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"mosaic\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m       - unexpected value \"mosaic\"\u001b[22m\n\n\n  25 |   await expect(page.locator('#flux')).toContainText('observación L2');\n  26 |   await page.getByText('Controles y procedencia',{exact:true}).click();const download=page.waitForEvent('download');await page.locator('#export').click();const report=JSON.parse(await fs.readFile(await(await download).path(),'utf8'));\n> 27 |   expect(report.source.type).toBe('L2-observation');expect(report.source.sha256).toBe(ref.sha256);expect(report.source.x).toBe(15);expect(report.source.y).toBe(15);expect(report.scienceReady).toBe(false);\n     |                                                                ^\n  28 |   await page.getByText('Controles y procedencia',{exact:true}).click();await page.screenshot({path:info.outputPath('native-l2.png')});\n  29 |   await page.locator('#sky').focus();for(let i=0;i<18;i++)await page.keyboard.press('-');await expect(page.locator('#sky')).toHaveAttribute('data-detail-layer','mosaic');await expect(page.locator('#flux')).not.toContainText('observación L2');expect(errors).toEqual([]);\n  30 | });\n    at /home/metrx/Proyectos/SKYO/tests/browser/l2.spec.mjs:27:64"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T16:18:36.912Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/metrx/Proyectos/SKYO/test-results/l2/l2-Zoom-L2-skyo-FITS-real--e2af9-jo-propios-export-y-retorno/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/metrx/Proyectos/SKYO/test-results/l2/l2-Zoom-L2-skyo-FITS-real--e2af9-jo-propios-export-y-retorno/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/metrx/Proyectos/SKYO/tests/browser/l2.spec.mjs",
+                    "column": 64,
+                    "line": 27
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "ecd79b7cafb660d42e47-1187e87a98f3632d2723",
+          "file": "l2.spec.mjs",
+          "line": 24,
+          "column": 34
+        },
+        {
+          "title": "Zoom L2: respuesta tardía se descarta al cambiar canal y error conserva panorama",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9670,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T16:19:20.849Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "ecd79b7cafb660d42e47-bef83b432e91b6e13bb8",
+          "file": "l2.spec.mjs",
+          "line": 35,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-15T16:17:52.664Z",
+    "duration": 98584.28499999999,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

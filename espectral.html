@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SKYO · Imágenes SPHEREx</title></head>
+<body>
+  <header><div><small>SKYO / ARCHIVO ESPECTRAL</small><h1>Explora una imagen. Comprende sus datos.</h1></div><a href="index.html#explorar" target="_top">Volver a SKYO</a></header>
+  <main>
+    <section aria-label="Imágenes espectrales reales">
+      <div class="toolbar"><button id="reset" type="button">Encuadrar D1–D6</button><label>Contraste <select id="stretch"><option value="zscale">ZScale aproximado + Asinh</option><option value="percentile">Percentiles + Asinh</option></select></label><button id="retry" type="button">Recargar conjunto real</button></div>
+      <p id="status" role="status">Cargando seis imágenes reales DR1…</p>
+      <div id="viewport"><canvas id="fpa" tabindex="0" aria-label="Plano focal esquemático 3D. Flechas: rotar; Mayús y flechas: paneo; más y menos: zoom; Inicio: encuadrar."></canvas><div id="labels" aria-hidden="true"></div></div>
+      <p class="help">Arrastra para rotar · Mayús + arrastre o botón derecho para desplazar · Rueda / pellizco para acercar · Flechas y +/− con el visor enfocado. La cámara no recalcula los FITS.</p>
+      <p class="note">Distribución 2×3 esquemática, no mosaico del cielo ni geometría óptica calibrada. Vistas curadas: huella completa a 255×255, media 8×8 de IMAGE sin máscara de calidad. Cada detector tiene su propio campo y contraste. Grises de intensidad, no colores visibles.</p>
+      <ol id="detectors" aria-label="Procedencia por detector"></ol>
+      <label class="file-open">O inspecciona un FITS de tu equipo<input id="inspect-local" type="file" accept=".fits,.fit,.fts" aria-describedby="local-help"></label>
+      <p id="local-help">Hasta 96 MB y 2048 píxeles por eje. El archivo permanece en tu equipo.</p>
+    </section>
+    <aside>
+      <h2>Buscar en IRSA</h2><p>Observaciones DR1 y QR3 que contienen estas coordenadas ICRS. Hasta 60 resultados por consulta.</p>
+      <form id="search"><label>RA (grados)<input id="ra" type="number" min="0" max="359.999999" step="any" required value="210.80227"></label><label>Dec (grados)<input id="dec" type="number" min="-90" max="90" step="any" required value="54.34895"></label><button>Buscar imágenes</button></form>
+      <button id="cancel-search" type="button" hidden>Cancelar búsqueda</button>
+      <p id="search-status" role="status"></p><a id="irsa" href="https://irsa.ipac.caltech.edu/applications/spherex/search-spectral-images" target="_blank" rel="noopener">Abrir visor oficial IRSA ↗</a>
+      <div id="archive-coverage" hidden><h3>Cobertura de estos resultados</h3><svg id="coverage-map" viewBox="0 0 360 260" role="group" aria-label="Huellas ICRS de los resultados. Norte arriba; este a la izquierda."></svg><p id="coverage-status"></p></div>
+      <div id="results"></div>
+      <p>Selecciona «Ver imagen» para abrir un recorte de 0.25° con sus extensiones. La cobertura corresponde a los resultados consultados, no al archivo completo. Los originales se conservan.</p>
+      <p><a href="https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/searching.html" target="_blank" rel="noopener">Ayuda y datos: NASA / IPAC / IRSA ↗</a></p>
+    </aside>
+  </main>
+  <dialog id="fits-inspector" aria-labelledby="fits-title">
+    <div class="inspector-heading"><h2 id="fits-title">Imagen FITS</h2><button id="fits-close" type="button" autofocus>Cerrar</button></div>
+    <p id="fits-origin"></p>
+    <div class="toolbar"><label>Contraste<select id="fits-contrast"><option value="1">Automático</option><option value="0.65">Más oscuro</option><option value="1.6">Más claro</option></select></label><label class="inline-check"><input id="fits-mask" type="checkbox" disabled>Resaltar problemas</label><button id="fits-measure" type="button" aria-pressed="false" disabled>Medir entre dos puntos</button></div>
+    <p id="fits-status" role="status"></p>
+    <div class="fits-stage"><canvas id="fits-image" tabindex="0" aria-label="Imagen FITS. Flechas para recorrer píxeles y Enter para marcar un punto en la regla." hidden></canvas></div>
+    <p id="fits-readout"></p><p id="fits-measurement" role="status"></p>
+    <p id="fits-coordinates"></p><p id="fits-quality"></p>
+    <details id="fits-details"><summary>Detalles del archivo</summary><div class="toolbar"><label>Extensión (HDU)<select id="fits-hdu"></select></label><label id="fits-plane-label" hidden>Plano del cubo<input id="fits-plane" type="number" min="1" max="1" value="1" step="1"><span id="fits-plane-count"></span></label></div><pre id="fits-header" tabindex="0" aria-label="Cabecera de la extensión seleccionada"></pre><p id="fits-hash"></p></details>
+    <p><a id="fits-source" target="_blank" rel="noopener" hidden>FITS original IRSA ↗</a> · <a href="lab.html" target="_top">Comparar dos imágenes en el laboratorio</a></p>
+    <p>Inspección exploratoria. En el laboratorio, las imágenes compatibles se alinean automáticamente por WCS; no necesitas ajustarlas a mano.</p>
+  </dialog>
+  <script src="assets/js/vendor/three.min.js"></script><script type="module" src="assets/js/fpa.js"></script>
+</body></html>

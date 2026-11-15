@@ -1,0 +1,7 @@
+{
+  "operation": "Rust/WASM sky_tiles batch; 1800 physical px; FOV70",
+  "warmup": 30,
+  "runs": 1000,
+  "medianMs": 0.057829000000026554,
+  "p95Ms": 0.09512999999998328
+}

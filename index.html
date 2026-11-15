@@ -17,7 +17,7 @@
   <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
   <link rel="alternate icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
-  <link rel="manifest" href="data/manifests/manifest.webmanifest">
+  <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="assets/css/main.css">
   <link rel="stylesheet" href="assets/css/states.css">
   <script type="module" src="assets/js/app.js"></script>
@@ -64,6 +64,7 @@
     </div>
   </header>
 
+  <p id="cosmos-status" role="status"></p>
   <main id="viewport">
     <!-- Vista 1: Inicio minimalista (SKYO + KRYO-9 en 3D sobre el cosmos vivo en #000000) -->
     <section class="sec" id="inicio" aria-hidden="true" inert>
@@ -79,7 +80,7 @@
             <span class="kicker-dot"></span>
             <span>Grupo Neois · NASA Space Apps 2026 · SPHEREx</span>
           </div>
-          <h1 class="eclipse-wordmark" aria-label="SKYO">
+          <h1 tabindex="-1" class="eclipse-wordmark" aria-label="SKYO">
             <span class="letters">
               <span class="wm-letter" style="--l-idx: 0;">S</span><span class="wm-letter" style="--l-idx: 1;">K</span><span class="wm-letter" style="--l-idx: 2;">Y</span>
             </span>
@@ -254,13 +255,18 @@
       </div>
     </section>
 
-    <!-- Vista 2: Explorar Plano Focal IR SPHEREx + Blink, Misiones H.E.R.A 7 y Bitácora -->
+    <!-- Vista 2: Cielo inmersivo SPHEREx y herramientas de exploración -->
     <section class="sec" id="explorar" aria-hidden="true" inert>
+      <div id="view-espectral" class="context-panel" hidden><iframe id="spectral-frame" title="Cielo inmersivo SPHEREx en primera persona" allow="xr-spatial-tracking; fullscreen" allowfullscreen src="about:blank"></iframe></div>
+      <div id="view-contexto" class="context-panel" hidden><iframe id="hips-frame" title="Contexto del cielo con Aladin Lite" src="about:blank"></iframe></div>
       <div class="explore-hud-top">
         <div class="explore-subnav-row">
           <div class="explore-view-tabs" id="explore-view-tabs" role="tablist" aria-label="Modos de exploración">
             <button type="button" class="view-tab on" data-view="boveda" role="tab" aria-selected="true">
               <span>◎ Plano Focal IR</span>
+            </button>
+            <button type="button" class="view-tab" data-view="espectral" role="tab" aria-selected="false">
+              <span>🌌 Espacio inmersivo</span>
             </button>
             <button type="button" class="view-tab" data-view="lab" role="tab" aria-selected="false">
               <span>🔬 Laboratorio FITS</span>
@@ -268,6 +274,9 @@
             </button>
             <button type="button" class="view-tab" data-view="coleccion" role="tab" aria-selected="false">
               <span>📑 Colección y Candidatos</span>
+            </button>
+            <button type="button" class="view-tab" data-view="contexto" role="tab" aria-selected="false">
+              <span>🛰 Contexto HiPS</span>
             </button>
           </div>
 
@@ -278,6 +287,7 @@
 
         <!-- HUD exclusivo del Plano Focal IR -->
         <div id="boveda-hud" class="boveda-hud">
+          <p class="illustration-note">Simulación educativa · posiciones, cambios y misiones ilustrativos; sin detecciones astronómicas.</p>
           <div class="explore-top">
             <div class="flt" id="flt" role="toolbar" aria-label="Filtro de cuerpos celestes">
               <button type="button" class="on" data-t="Todos">Todos</button>
@@ -327,7 +337,7 @@
         <p id="tdesc" class="tdesc" aria-live="polite"></p>
       </div>
 
-      <div class="hint">Arrastra para reencuadrar el plano focal · Rueda para zoom · Clic en una fuente para telemetría astrométrica</div>
+      <div class="hint"> Arrastra la bóveda ICRS · Recorte astrométrico 0.05° · Datos ilustrativos Ref. NASA/IPAC IRSA (SPHEREx) y JPL</div>
 
       <div id="info" class="info-panel" aria-live="polite" aria-hidden="true" inert>
         <div class="hud-label panel-craft-tag" aria-hidden="true"><span class="hud-idx">// 02</span> ASTROMETRIC TARGET TELEMETRY</div>
@@ -396,10 +406,10 @@
             <div>
               <div class="hud-label subview-craft-label"><span class="hud-idx">// 01</span> PROCESAMIENTO CIENTÍFICO LOCAL · SIN VPS</div>
               <h3>Laboratorio FITS de Doble Época</h3>
-              <p class="lab-desc">Inspecciona datos infrarrojos SPHEREx, aplica máscaras FLAGS, alinea por WCS TAN-SIP y encuentra fuentes que cambiaron de posición o brillo.</p>
+              <p class="lab-desc">Inspecciona datos infrarrojos SPHEREx, aplica máscaras FLAGS, alinea por WCS TAN-SIP y examina diferencias exploratorias que requieren validación independiente.</p>
             </div>
             <div class="lab-head-status">
-              <span class="status-pill" id="lab-kernel-status">Inicializando WASM...</span>
+              <span class="status-pill" id="lab-kernel-status">Motor local en espera</span>
               <span class="privacy-pill">Privacidad 100% local</span>
             </div>
           </div>
@@ -431,9 +441,19 @@
                 <input id="file-lab-b" type="file" accept=".fits,.fit,.fts">
               </label>
             </div>
+            <div class="meta-input">
+              <label for="lab-real-region">Lugar · región del paquete NASA</label><select id="lab-real-region"></select>
+              <button type="button" class="btn" id="lab-load-real">Cargar M101 real (exploratorio)</button>
+            </div>
+            <div class="meta-input">
+              <label for="manifest-lab">Manifiesto opcional de integridad (.json)</label>
+              <input id="manifest-lab" type="file" accept=".json,application/json">
+              <p id="manifest-lab-state" role="status"></p>
+            </div>
             <div class="lab-opfs-bar">
               <button type="button" class="btn subtle-sm" id="lab-save-local" disabled>Guardar en OPFS (Disco local)</button>
               <button type="button" class="btn subtle-sm" id="lab-load-local">Recuperar desde OPFS</button>
+                <button type="button" class="btn subtle-sm" id="lab-clear-local">Borrar pareja guardada</button>
             </div>
           </div>
 
@@ -449,7 +469,7 @@
                 </div>
                 <div class="canvas-wrap">
                   <canvas id="canvas-lab-a" width="320" height="240" aria-label="Visualización FITS de Época A"></canvas>
-                  <div class="canvas-hint is-state" id="hint-lab-a"></div>
+                  <div class="canvas-hint" id="hint-lab-a">Selecciona una observación FITS</div>
                 </div>
                 <div class="canvas-meta" id="meta-lab-a">Sin archivo cargado</div>
               </article>
@@ -460,7 +480,7 @@
                 </div>
                 <div class="canvas-wrap">
                   <canvas id="canvas-lab-b" width="320" height="240" aria-label="Visualización FITS de Época B"></canvas>
-                  <div class="canvas-hint is-state" id="hint-lab-b"></div>
+                  <div class="canvas-hint" id="hint-lab-b">Selecciona una observación FITS</div>
                 </div>
                 <div class="canvas-meta" id="meta-lab-b">Sin archivo cargado</div>
               </article>
@@ -475,10 +495,16 @@
                 <span>↗</span>
               </button>
             </div>
+            <div class="lab-view-controls">
+              <label for="lab-render-view">Luz · vista</label>
+              <select id="lab-render-view" disabled><option value="A">Observación A</option><option value="B">Observación B</option><option value="difference">Diferencia</option><option value="snr">SNR aproximado</option></select>
+              <button type="button" class="btn" id="lab-blink-manual" disabled>Alternar A/B</button>
+              <p id="lab-time-summary" role="status">Tiempo · selecciona ambas observaciones</p>
+            </div>
             <div class="lab-analysis-grid">
               <div class="lab-diff-preview">
                 <canvas id="canvas-lab-difference" width="320" height="240" aria-label="Mapa de diferencia reproyectada"></canvas>
-                <div class="diff-placeholder is-state" id="lab-diff-placeholder"></div>
+                <div class="diff-placeholder" id="lab-diff-placeholder">Aquí aparecerá la diferencia exploratoria</div>
               </div>
               <div class="lab-results-card">
                 <div class="results-head">INFORME DEL MOTOR CIENTÍFICO</div>
@@ -498,7 +524,7 @@
         <div id="lab-toast" class="lab-toast" role="status" aria-live="polite" hidden></div>
       </div>
 
-      <!-- Subvista 3: Colección de Candidatos y Detecciones (SPHEREx / JPL / WISE) -->
+      <!-- Subvista 3: Colección de referencias ilustrativas (SPHEREx / JPL / WISE) -->
       <div id="view-coleccion" class="subview-workspace" hidden>
         <div class="col-card-pane">
           <div class="col-pane-head">
@@ -509,23 +535,23 @@
             </div>
             <div class="col-filter-bar" id="col-filter-bar">
               <button type="button" class="on" data-col-filter="all">Todos (14)</button>
-              <button type="button" data-col-filter="confirmados">Confirmados JPL (13)</button>
-              <button type="button" data-col-filter="candidatos">Candidatos activos (1)</button>
+              <button type="button" data-col-filter="confirmados">Referencias ilustrativas (13)</button>
+              <button type="button" data-col-filter="candidatos">Candidato simulado (1)</button>
             </div>
           </div>
 
           <div class="col-metrics-strip">
             <div class="metric-card">
               <span class="m-val">14</span>
-              <span class="m-lbl">Objetos mapeados</span>
+              <span class="m-lbl">Objetos ilustrativos</span>
             </div>
             <div class="metric-card">
               <span class="m-val" style="color: var(--ok)">13</span>
-              <span class="m-lbl">Confirmados en JPL</span>
+              <span class="m-lbl">Referencias de ejemplo</span>
             </div>
             <div class="metric-card">
               <span class="m-val" style="color: var(--ac2)">1</span>
-              <span class="m-lbl">Candidato sin identificar (SPX-26)</span>
+              <span class="m-lbl">Candidato simulado (SPX-26)</span>
             </div>
             <div class="metric-card">
               <span class="m-val" style="color: var(--ac)">0.05°</span>
@@ -607,7 +633,7 @@
             <circle cx="24" cy="24" r="21" stroke="currentColor" stroke-dasharray="4 4" stroke-width="1.8" stroke-opacity="0.45"/>
             <circle cx="24" cy="18" r="7.5" stroke="currentColor" stroke-width="2"/>
             <path d="M12 36 C13 27, 35 27, 36 36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="35" cy="13" r="5" fill="#b57bff"/>
+            <circle cx="35" cy="13" r="5" fill="#5bb8ff"/>
             <path d="M35 10.5 V15.5 M32.5 13 H37.5" stroke="#000000" stroke-width="1.6" stroke-linecap="round"/>
           </svg>
           <span class="slot-text">KRYO-9</span>

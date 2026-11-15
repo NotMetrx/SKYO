@@ -1,0 +1,50 @@
+[
+  {
+    "path": "assets/js/vendor/DRACOLoader.js",
+    "bytes": 13453,
+    "sha256": "bbd4a1bb08f05d9c8df1b411644a1fc31a32fdcd36489e5bcdfe6c4fa2b8e4e9",
+    "matchesRemote": true
+  },
+  {
+    "path": "assets/js/vendor/GLTFLoader.js",
+    "bytes": 96550,
+    "sha256": "5c15967ba830918a9caea6338712c994c354bccd4edc4569bde411c3ec06a3e6",
+    "matchesRemote": true
+  },
+  {
+    "path": "assets/js/vendor/RoomEnvironment.js",
+    "bytes": 3425,
+    "sha256": "94fd17363598048cb3faf3b3d7d663e561e8bc929b0162716f33424af30695ad",
+    "matchesRemote": true
+  },
+  {
+    "path": "assets/js/vendor/draco/gltf/draco_decoder.js",
+    "bytes": 548080,
+    "sha256": "bafef89650284d70a1c51bce232cbeffb3f3f57394e7b695908406baf816edc4",
+    "matchesRemote": true
+  },
+  {
+    "path": "assets/js/vendor/draco/gltf/draco_decoder.wasm",
+    "bytes": 194983,
+    "sha256": "32b19d590ca48d4478f74788170c7b713e0addf1f8dbab5cb07e3b2ad5f6e32e",
+    "matchesRemote": true
+  },
+  {
+    "path": "assets/js/vendor/draco/gltf/draco_wasm_wrapper.js",
+    "bytes": 53604,
+    "sha256": "fc724571efc24138ffb7e430fb1c5c59a9760e64c1c3fdb98cc2503d110a3846",
+    "matchesRemote": true
+  },
+  {
+    "path": "assets/models/boveda.glb",
+    "bytes": 546716,
+    "sha256": "4cc12e06a27bbd5c7bebcb67eca91f930448ed5c6049e10abc9f7e9436777214",
+    "matchesRemote": true
+  },
+  {
+    "path": "assets/models/kryo9.glb",
+    "bytes": 1139492,
+    "sha256": "e6bd18c5fc9ed1af0709a5fc1bc7716d7cf8b1624979e90cf9958610475b73b4",
+    "matchesRemote": true
+  }
+]

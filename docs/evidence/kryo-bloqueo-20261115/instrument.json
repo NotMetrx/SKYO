@@ -1,0 +1,84 @@
+{
+  "errors": [],
+  "requests": [
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:4176/assets/models/eclipse.glb"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:4176/assets/models/focal_plane.glb"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:4176/assets/js/vendor/GLTFLoader.js"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:4176/assets/js/vendor/RoomEnvironment.js"
+    }
+  ],
+  "probes": [
+    {
+      "i": 0,
+      "responseMs": 50,
+      "frames": {
+        "started": 2,
+        "ended": 2,
+        "maxMs": 0.2999999998137355
+      },
+      "status": "KRYO-9 · ACTIVA LA VISTA 3D",
+      "route": "inicio"
+    },
+    {
+      "i": 1,
+      "responseMs": 18,
+      "frames": {
+        "started": 2,
+        "ended": 2,
+        "maxMs": 0.2999999998137355
+      },
+      "status": "KRYO-9 · ACTIVA LA VISTA 3D",
+      "route": "inicio"
+    },
+    {
+      "i": 2,
+      "responseMs": 4228,
+      "frames": {
+        "started": 3,
+        "ended": 3,
+        "maxMs": 874.9000000003725
+      },
+      "status": "KRYO-9 · EN ÓRBITA DE ESPERA",
+      "route": "inicio"
+    },
+    {
+      "i": 3,
+      "responseMs": 200,
+      "frames": {
+        "started": 4,
+        "ended": 4,
+        "maxMs": 874.9000000003725
+      },
+      "status": "KRYO-9 · EN ÓRBITA DE ESPERA",
+      "route": "inicio"
+    },
+    {
+      "i": 4,
+      "responseMs": 1397,
+      "frames": {
+        "started": 5,
+        "ended": 5,
+        "maxMs": 874.9000000003725
+      },
+      "status": "KRYO-9 · EN ÓRBITA DE ESPERA",
+      "route": "inicio"
+    },
+    {
+      "i": 5,
+      "error": "main thread timeout"
+    }
+  ],
+  "hung": true,
+  "probeError": "main thread timeout"
+}

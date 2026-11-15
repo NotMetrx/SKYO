@@ -1,0 +1,23 @@
+import fs from 'node:fs/promises';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import assert from 'node:assert/strict';
+import {pathToFileURL} from 'node:url';
+import path from 'node:path';
+
+const lock=await fs.readFile('science-core/Cargo.lock','utf8');
+const expected=lock.match(/name = "wasm-bindgen"\nversion = "([^"]+)"/)[1];
+const generator=execFileSync('wasm-bindgen',['--version'],{encoding:'utf8'}).trim();
+assert.equal(generator,`wasm-bindgen ${expected}`,'Instala wasm-bindgen-cli de la misma versión que Cargo.lock');
+execFileSync('cargo',['build','--locked','--manifest-path','science-core/Cargo.toml','--target','wasm32-unknown-unknown','--release'],{stdio:'inherit'});
+const dir='assets/js/science/wasm/pkg';await fs.mkdir(dir,{recursive:true});
+execFileSync('wasm-bindgen',['science-core/target/wasm32-unknown-unknown/release/skyo_wasm.wasm','--target','web','--out-dir',dir],{stdio:'inherit'});
+const bytes=await fs.readFile(dir+'/skyo_wasm_bg.wasm');
+assert.ok(WebAssembly.validate(bytes));
+const info={crateVersion:'0.1.0',generator,wasmSha256:createHash('sha256').update(bytes).digest('hex'),cargoLockSha256:createHash('sha256').update(lock).digest('hex')};
+await fs.appendFile(dir+'/skyo_wasm.js',`\nexport const SKYO_BUILD=Object.freeze(${JSON.stringify(info)});\n`);
+await fs.writeFile(dir+'/build-info.json',JSON.stringify(info,null,2)+'\n');
+const module=await import(pathToFileURL(path.resolve(dir+'/skyo_wasm.js')));
+await module.default({module_or_path:bytes});
+assert.equal(module.compare_flux(new Float32Array([12]),new Float32Array([7]),new Float32Array([4]),new Float32Array([5]),new Uint8Array([1]),2)[0],3);
+console.log(`WASM generado y cargado: ${bytes.length} bytes, SHA256 ${info.wasmSha256}`);

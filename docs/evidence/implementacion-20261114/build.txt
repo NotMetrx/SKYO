@@ -1,0 +1,37 @@
+
+> skyo@2.1.0 web:build
+> vite build && node tools/postbuild.mjs
+
+vite v7.3.8 building client environment for production...
+transforming...
+✓ 28 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/contexto.html                                  1.32 kB │ gzip:   0.75 kB
+dist/lab.html                                       7.08 kB │ gzip:   2.71 kB
+dist/index.html                                    20.51 kB │ gzip:   5.69 kB
+dist/assets/hera-B8G6uZcA.webp                     28.62 kB
+dist/assets/worker-Bw7VORFM.js                     50.50 kB
+dist/assets/SpaceGrotesk-Light-B7jmapZk.otf        58.68 kB
+dist/assets/SpaceGrotesk-Regular-DJfN3LFJ.otf      60.38 kB
+dist/assets/SpaceGrotesk-Medium-DBPg_CG_.otf       60.98 kB
+dist/assets/SpaceGrotesk-Bold-CgbbmG7m.otf         61.05 kB
+dist/assets/SpaceGrotesk-SemiBold-CvXxrvSi.otf     61.60 kB
+dist/assets/SpaceMono-Bold-9tno74N4.ttf            98.23 kB
+dist/assets/SpaceMono-Regular-DFDYVJRE.ttf         99.36 kB
+dist/assets/contexto-DqeE6vLG.css                   0.50 kB │ gzip:   0.33 kB
+dist/assets/lab-apYY9jou.css                        9.93 kB │ gzip:   2.98 kB
+dist/assets/main-7nAxGrrO.css                      37.46 kB │ gzip:   7.70 kB
+dist/assets/lab-D859eXo5.js                         0.10 kB │ gzip:   0.11 kB
+dist/assets/modulepreload-polyfill-B5Qt9EMX.js      0.71 kB │ gzip:   0.40 kB
+dist/assets/contexto-BofdHux-.js                    2.39 kB │ gzip:   1.31 kB
+dist/assets/register-offline-BR91F7fX.js           39.12 kB │ gzip:  12.23 kB
+dist/assets/main-Btx7KCMp.js                       69.05 kB │ gzip:  25.32 kB
+dist/assets/aladin-CXPYtL4c.js                  2,390.38 kB │ gzip: 840.29 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 18.27s
+Build SKYO OK: 36 recursos precache; WASM presente

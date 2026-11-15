@@ -1,0 +1,7 @@
+{
+  "url": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/spectral_wcs/cal-swcs-v5-2026-191/2/spectral_wcs_D2_spx_cal-swcs-v5-2026-191.fits",
+  "status": "downloaded",
+  "bytes": 33312960,
+  "sha256": "0eb4e27f351e6161e21372818f9e811480a7ab8bab9295722f180791e151a463",
+  "retrievedUtc": "2026-11-15T02:45:32.380090+00:00"
+}

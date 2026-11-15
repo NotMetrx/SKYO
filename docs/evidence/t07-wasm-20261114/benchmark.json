@@ -1,0 +1,27 @@
+{
+  "runtime": "Chromium headless Worker, V8",
+  "scope": "Kernel solo; incluye copia del glue. Excluye WCS, fondo, carga inicial y Android físico.",
+  "results": [
+    {
+      "pixels": 144,
+      "medianMs": {
+        "JavaScript": 0.027749999999068676,
+        "WASM": 0.061499999999068675
+      }
+    },
+    {
+      "pixels": 16384,
+      "medianMs": {
+        "JavaScript": 2.2525000000023283,
+        "WASM": 2.0875
+      }
+    },
+    {
+      "pixels": 262144,
+      "medianMs": {
+        "JavaScript": 40.6333333333799,
+        "WASM": 30.01666666660458
+      }
+    }
+  ]
+}

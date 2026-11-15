@@ -1,0 +1,5 @@
+
+> skyo@2.1.0 validate:build
+> node scripts/validate-build.mjs
+
+Build verificado: 46 recursos, manifiesto raíz/subruta y entradas válidas

@@ -1,0 +1,15 @@
+{
+  "source_png": "https://irsa.ipac.caltech.edu/data/hips/SPHEREx/spherex_allsky_cube/Norder5/Dir0/Npix445/Npix445_62.png",
+  "comparison": "PNG screen rows versus original FITS plane rows; no output images changed",
+  "correlation": {
+    "identity": 0.010552022652478246,
+    "flipY": 0.8427837172491842,
+    "flipX": 0.020197743248441268,
+    "flipXY": 0.035659079059971496,
+    "transpose": 0.0016367247943548345,
+    "transpose-flipY": 0.06830413142856165,
+    "transpose-flipX": 0.015698443850224838,
+    "transpose-flipXY": 0.00014975096433901007
+  },
+  "best": "flipY"
+}

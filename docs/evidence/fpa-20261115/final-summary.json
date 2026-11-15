@@ -1,0 +1,65 @@
+{
+  "date": "2026-11-15T06:21:37.910Z",
+  "checks": {
+    "javascript": {
+      "passed": 45,
+      "skipped": 0
+    },
+    "rust": {
+      "passed": 5
+    },
+    "python": {
+      "passed": 6
+    },
+    "browserUiFinal": {
+      "passed": 9,
+      "failed": 0,
+      "report": "browser-ui-final.json"
+    },
+    "browserPriorSelective": {
+      "passed": 12,
+      "failed": 2,
+      "report": "browser-targeted.json",
+      "note": "Both UI occlusions fixed and passed in final UI run. Includes four WASM checks and KRYO subpath."
+    },
+    "generalSuite": {
+      "planned": 32,
+      "executed": 29,
+      "passed": 25,
+      "failed": 4,
+      "exitCode": 137,
+      "complete": false
+    },
+    "build": true,
+    "buildValidator": true,
+    "docsValidator": true,
+    "syntax": true,
+    "diffCheck": true,
+    "liveOriginal": "live-original-browser.json",
+    "liveTap": "live-irsa.json"
+  },
+  "limits": [
+    "No complete 32/32 general run",
+    "No measured 60fps or physical Android validation",
+    "ZScale approximation, not IRAF identity",
+    "FPA schematic, not registered sky mosaic",
+    "IRSA TAP live request timed out"
+  ],
+  "sourceSha256": {
+    "espectral.html": "aca3602e473ebf02da82ace4c08fbc50c814959c4a14dda08a56145266a0cc4c",
+    "assets/js/fpa.js": "b032d83a78ba19387a6312394265b90261d8c37382556ac47de6f723480e79bc",
+    "assets/js/fpa.css": "fa4c9ecf5378055a322be04599985106566ba6283e5dc82ebb44fce8b07703d5",
+    "assets/js/science/fpa-worker.js": "27a4975c5411c40d89e1af0a19a2c6e0b380a4e33f30db81a981a51994a999ad",
+    "assets/js/science/wasm-bridge.js": "e5cde830214263d8361e26269afeb78c60eb291b439b45a85326ec772871361e",
+    "science-core/src/texture.rs": "3099f11b7d2120f87097990a8b443e1460532e69f585192dbd1379de6e23aec0",
+    "science-core/src/lib.rs": "dd10a330af22b6a89fb1cefa343f15845090e6d5106776e2907499c1df3021d0",
+    "assets/js/app.js": "7efd0765676af18b09d7b93ee82e631eecd9faa4c9e1dda33e0290a06fdd31c5",
+    "assets/js/explorar.js": "8923114a113a6db84c721aebe5977b7ddf655386a6d7d0de50b0b6918a4915e4",
+    "assets/css/main.css": "254ddd1ead3c89fe259c4ee6aa7d1d2d75332ddc9630208a8d1fcf73fd5cfc67",
+    "index.html": "ca2fdc588834f033bb0053f1cf408261f4e9cd2e25997726815bda434e748a9a",
+    "vite.config.mjs": "1e6cfdecbd224ed9f0816ea91ecc409291216d4cd6405f85ba5a708a546563d1",
+    "package.json": "0241e1203acfd75abe620ea63d33ec9859af6bffb34a0194eaba8572f1b1bc3b",
+    "assets/js/science/wasm/pkg/skyo_wasm_bg.wasm": "7acff41c01e0ff7f78b6452a60fc29063a81d2771c507e665ffa8508964a706d",
+    "public/datasets/fpa-dr1/manifest.json": "3989a9888dca1ec626ae762f47c48209448e2ae5fcefbe22027b5995787e671a"
+  }
+}

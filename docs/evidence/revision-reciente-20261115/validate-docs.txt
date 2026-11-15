@@ -1,0 +1,5 @@
+
+> skyo@2.1.0 validate:docs
+> node scripts/validate-docs.mjs
+
+Documentos 002 verificados; SPEC SHA-256 9cb76403fc0d845d8ab1c6aba7292b83b817cbd9159bd8dee58b2fa7b543fcfb

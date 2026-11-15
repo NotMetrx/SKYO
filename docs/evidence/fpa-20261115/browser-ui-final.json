@@ -1,0 +1,461 @@
+{
+  "config": {
+    "argv": [
+      "/home/metrx/.nvm/versions/node/v24.21.0/bin/node",
+      "/home/metrx/Proyectos/SKYO/node_modules/.bin/playwright",
+      "test",
+      "--grep",
+      "FPA|Explorar abre|320 px|navegación|Bitácora conserva|accesibilidad de controles en espectral"
+    ],
+    "configFile": "/home/metrx/Proyectos/SKYO/playwright.config.mjs",
+    "rootDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/metrx/Proyectos/SKYO/test-results/fpa-ui-final",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+        "testIgnore": [],
+        "testMatch": [
+          "*.spec.mjs"
+        ],
+        "timeout": 90000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/home/metrx/Proyectos/SKYO/test-results/fpa-ui-final",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+        "snapshotDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+        "testIgnore": [],
+        "testMatch": "*.spec.mjs",
+        "timeout": 90000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4195",
+          "headless": true,
+          "reducedMotion": "reduce",
+          "trace": "retain-on-failure",
+          "launchOptions": {
+            "args": [
+              "--disable-gpu"
+            ]
+          }
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/evidence/fpa-20261115/browser-ui-final.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.65.1",
+    "workers": 1,
+    "webServer": {
+      "command": "node tests/browser/server.mjs",
+      "url": "http://127.0.0.1:4195",
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "accessibility.spec.mjs",
+      "file": "accessibility.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "accesibilidad de controles en espectral.html",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8718,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T06:17:17.776Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a334d9d3eb462d454b6a-e4dca0dba12df2e49d1f",
+          "file": "accessibility.spec.mjs",
+          "line": 3,
+          "column": 67
+        }
+      ]
+    },
+    {
+      "title": "curated.spec.mjs",
+      "file": "curated.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "320 px: las cinco pestañas quedan completas y accesibles",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8756,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T06:17:27.633Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a47a7c4a20f00dc2cf68-c6bb11abf4d83b6b4a99",
+          "file": "curated.spec.mjs",
+          "line": 34,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "fpa.spec.mjs",
+      "file": "fpa.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "FPA real /: seis texturas WASM, cámara, contraste y móvil",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6870,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T06:17:36.502Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f98d9a0bbf2c66098092-502f6d1950456a41ecd7",
+          "file": "fpa.spec.mjs",
+          "line": 4,
+          "column": 3
+        },
+        {
+          "title": "FPA real /skyo/: seis texturas WASM, cámara, contraste y móvil",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7066,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T06:17:43.483Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f98d9a0bbf2c66098092-70dace064e039a070482",
+          "file": "fpa.spec.mjs",
+          "line": 4,
+          "column": 3
+        },
+        {
+          "title": "FPA: hash erróneo controlado, reintento y búsqueda IRSA con carga de resultado",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6001,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T06:17:50.792Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f98d9a0bbf2c66098092-0d6c0ad073a07c6706fc",
+          "file": "fpa.spec.mjs",
+          "line": 24,
+          "column": 1
+        },
+        {
+          "title": "Explorar abre imágenes reales y descarga el visor al cambiar de pestaña",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 18477,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T06:17:56.916Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f98d9a0bbf2c66098092-384f0d853cac1ad034a9",
+          "file": "fpa.spec.mjs",
+          "line": 42,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "migration.spec.mjs",
+      "file": "migration.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "/ navegación, teclado y responsive",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 24145,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T06:18:15.523Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "94dbda98a2b05a3033e6-e095243cb3be5a76ccb9",
+          "file": "migration.spec.mjs",
+          "line": 4,
+          "column": 3
+        },
+        {
+          "title": "/skyo/ navegación, teclado y responsive",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 22848,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T06:18:39.766Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "94dbda98a2b05a3033e6-f9bd58a394101310568d",
+          "file": "migration.spec.mjs",
+          "line": 4,
+          "column": 3
+        }
+      ]
+    },
+    {
+      "title": "storage.spec.mjs",
+      "file": "storage.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Bitácora conserva snapshot, no inventa movimiento y escapa nombres de archivo",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 16619,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T06:19:02.722Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "41a9034ffaaff0acdbbb-df93261ca1419a9d2ff7",
+          "file": "storage.spec.mjs",
+          "line": 26,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-15T06:17:10.703Z",
+    "duration": 129296.83499999999,
+    "expected": 9,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

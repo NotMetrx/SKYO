@@ -1,0 +1,6 @@
+
+> skyo@2.1.0 wasm:build
+> node scripts/build-wasm.mjs
+
+    Finished `release` profile [optimized] target(s) in 0.36s
+WASM generado y cargado: 25278 bytes, SHA256 173039a1888940f97b3ca1c65603d600d54527343bd92284060c1dec6ba02524

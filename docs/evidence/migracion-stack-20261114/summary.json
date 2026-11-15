@@ -1,0 +1,95 @@
+{
+  "browser_checks": {
+    "/ manifiesto, iconos y aislamiento de caché": {
+      "status": "passed",
+      "evidence": "browser-pwa.json"
+    },
+    "/skyo/ manifiesto, iconos y aislamiento de caché": {
+      "status": "passed",
+      "evidence": "browser-pwa.json"
+    },
+    "actualización PWA espera al usuario y conserva cachés ajenas": {
+      "status": "passed",
+      "evidence": "browser-update.json"
+    },
+    "/ Worker, export y offline con Vary Origin": {
+      "status": "passed",
+      "evidence": "browser-offline.json"
+    },
+    "/skyo/ Worker, export y offline con Vary Origin": {
+      "status": "passed",
+      "evidence": "browser-offline.json"
+    },
+    "WebGL2: Aladin real y pausa del motor Three.js fuera de vista": {
+      "status": "passed",
+      "evidence": "browser-graphics.json"
+    },
+    "accesibilidad de controles en lab.html": {
+      "status": "passed",
+      "evidence": "browser-interface.json"
+    },
+    "accesibilidad de controles en contexto.html": {
+      "status": "passed",
+      "evidence": "browser-interface.json"
+    },
+    "/ navegación, teclado y responsive": {
+      "status": "passed",
+      "evidence": "browser-navigation-final.json"
+    },
+    "/skyo/ navegación, teclado y responsive": {
+      "status": "passed",
+      "evidence": "browser-navigation-final.json"
+    },
+    "contexto HiPS se carga bajo demanda y se descarga al salir": {
+      "status": "passed",
+      "evidence": "browser-interface.json"
+    }
+  },
+  "browser_passed": 11,
+  "unit_passed": 8,
+  "science_gaps": {
+    "passed": 1,
+    "failed": 3,
+    "exit_code": 1
+  },
+  "build": {
+    "version": "7d6ac521a1b30339",
+    "precache": [
+      "assets/SpaceGrotesk-Bold-CgbbmG7m.otf",
+      "assets/SpaceGrotesk-Light-B7jmapZk.otf",
+      "assets/SpaceGrotesk-Medium-DBPg_CG_.otf",
+      "assets/SpaceGrotesk-Regular-DJfN3LFJ.otf",
+      "assets/SpaceGrotesk-SemiBold-CvXxrvSi.otf",
+      "assets/SpaceMono-Bold-9tno74N4.ttf",
+      "assets/SpaceMono-Regular-DFDYVJRE.ttf",
+      "assets/contexto-BXma1wQV.css",
+      "assets/contexto-Ck3ZnZbp.js",
+      "assets/hera-B8G6uZcA.webp",
+      "assets/img/hera.webp",
+      "assets/img/icon.svg",
+      "assets/img/logo.jpg",
+      "assets/img/observer-lottie.json",
+      "assets/lab-BK5T8ZLP.css",
+      "assets/lab-Da-auSJO.js",
+      "assets/main-DpXO3oNy.js",
+      "assets/main-gJF52Lt2.css",
+      "assets/modulepreload-polyfill-B5Qt9EMX.js",
+      "assets/register-offline-zXNSPvDU.js",
+      "assets/worker-qkeE7SD0.js",
+      "contexto.html",
+      "index.html",
+      "lab.html",
+      "licenses/aladin-lite/COPYING",
+      "licenses/aladin-lite/COPYING.LESSER",
+      "licenses/aladin-lite/LICENSE",
+      "licenses/aladin-lite/README.md",
+      "manifest.webmanifest"
+    ],
+    "runtime": [
+      "assets/aladin-CXPYtL4c.js",
+      "assets/js/vendor/lottie.min.js",
+      "assets/js/vendor/three.min.js"
+    ],
+    "wasmPresent": false
+  }
+}

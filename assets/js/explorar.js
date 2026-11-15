@@ -201,7 +201,7 @@ function renderThumbnail(index) {
 
   // Telemetría compacta sobre el recorte para respaldo visual en Bitácora
   const arcsec = o[8] > 0 ? Math.round(o[8] * elapsed * 180) : 0;
-  tCtx.fillStyle = 'rgba(238, 243, 255, 0.72)';
+  tCtx.fillStyle = 'rgba(230, 232, 236, 0.72)';
   tCtx.font = '10px "Space Mono", monospace';
   tCtx.fillText(`${BANDAS[currentBand].id.toUpperCase()} · Δθ ${arcsec}"`, 14, h - 13);
 }
@@ -215,17 +215,17 @@ function updateSelectedMovementText(o) {
     if (elapsed === 0) {
       mvEl.textContent = currentMode === 'vuelo'
         ? 'Posición inicial. Usa «Parpadear épocas» o avanza de época abajo para ver si viajó.'
-        : 'Referencia base (Época 1 · Mes 1). Usa Blink o avanza de época para medir Δθ.';
+        : 'Referencia simulada (Época 1 · Mes 1). Usa Blink o avanza de época para explorar Δθ.';
     } else if (currentMode === 'vuelo') {
       mvEl.textContent = `Se movió respecto al primer barrido tras ${elapsed} meses.`;
     } else if (currentMode === 'cientifico') {
-      mvEl.textContent = `Δθ ≈ ${arcsec}" (umbral > 2") · ${formatICRS(o, elapsed)} · ${BANDAS[currentBand].range}.`;
+      mvEl.textContent = `Δθ ilustrativo ≈ ${arcsec}" (sin umbral de detección) · ${formatICRS(o, elapsed)} · ${BANDAS[currentBand].range}.`;
     } else {
       mvEl.textContent = `Desplazamiento desde Época 1: ~${arcsec}" en ${elapsed} meses · ${formatICRS(o, elapsed)}.`;
     }
   } else {
     mvEl.textContent = currentMode === 'cientifico'
-      ? `Estrella de referencia ICRS fija · ${formatICRS(o, 0)} (calibración WCS).`
+      ? `Referencia ilustrativa ICRS fija · ${formatICRS(o, 0)} (sin calibración medida).`
       : 'Estrella fija de fondo (ancla de referencia ICRS entre épocas).';
   }
 }
@@ -295,7 +295,7 @@ function renderBitacora() {
     renderState(listEl, {
       state: 'empty',
       title: 'Bitácora sin capturas',
-      detail: 'Toca una fuente celeste en el plano focal y pulsa «Registrar en bitácora» para archivar evidencia.',
+      detail: 'Registra una ilustración educativa del plano focal o una comparación exploratoria del laboratorio FITS.',
       actionLabel: 'Ir al Plano Focal',
       onAction: () => {
         toggleBitacoraPanel(false);
@@ -317,14 +317,11 @@ function renderBitacora() {
 
     const meta = document.createElement('div');
     meta.className = 'bit-meta';
-    meta.innerHTML = `
-      <div class="bit-row">
-        <strong>${item.name}</strong>
-        <span class="tg ${item.status === 'Candidato' ? 'cand' : 'st'}">${item.status}</span>
-      </div>
-      <div class="bit-tech">Δθ ≈ ${item.deltaArcsec}" · ${item.bandLabel} · ${item.epochLabel}</div>
-      <div class="bit-coords">${item.icrsLabel}</div>
-    `;
+    meta.innerHTML = '<div class="bit-row"><strong></strong><span class="tg"></span></div><div class="bit-tech"></div><div class="bit-coords"></div>';
+    meta.querySelector('strong').textContent=item.name;
+    const status=meta.querySelector('.tg');status.textContent=item.status;status.classList.add(item.status==='Candidato'?'cand':'st');
+    meta.querySelector('.bit-tech').textContent=`${item.deltaArcsec==null?'Movimiento no medido':`Δθ ilustrativo ≈ ${item.deltaArcsec}\"`} · ${item.bandLabel} · ${item.epochLabel}`;
+    meta.querySelector('.bit-coords').textContent=item.icrsLabel;
 
     const del = document.createElement('button');
     del.type = 'button';
@@ -362,7 +359,10 @@ export function addExternalBitacoraEntry(entry) {
     status: entry.status,
     epochLabel: entry.epoch,
     bandLabel: 'WCS TAN-SIP',
-    deltaArcsec: '4.2',
+    deltaArcsec: null,
+    analysisId:entry.analysisId??null,
+    snapshot:entry.snapshot??null,
+    sourceKind:entry.sourceKind??'USER-LOCAL',
     icrsLabel: entry.coords,
     motionNote: entry.motion,
     thumbUrl: localStorage.getItem('skyo_custom_avatar') || 'icon.svg',
@@ -374,6 +374,17 @@ export function addExternalBitacoraEntry(entry) {
 
 export function setSubView(view) {
   currentSubView = view;
+  document.body.dataset.exploreView = view;
+  const spectralPanel = document.getElementById('view-espectral');
+  const spectralFrame = document.getElementById('spectral-frame');
+  spectralPanel.hidden = view !== 'espectral';
+  if(view === 'espectral' && spectralFrame.getAttribute('src') === 'about:blank')spectralFrame.src = 'inmersivo.html';
+  if(view !== 'espectral')spectralFrame.src = 'about:blank';
+  const contextFrame = document.getElementById('hips-frame');
+  const contextPanel = document.getElementById('view-contexto');
+  contextPanel.hidden = view !== 'contexto';
+  contextFrame.src = view === 'contexto' ? 'contexto.html' : 'about:blank';
+  document.dispatchEvent(new Event('skyo:subviewchange'));
   const bovedaHud = document.getElementById('boveda-hud');
   const tbar = document.getElementById('tbar');
   const hint = document.querySelector('#explorar .hint');
@@ -408,19 +419,20 @@ export function setSubView(view) {
       onHeraNotify: msg => onHeraSpeak?.(msg, false)
     });
     if (typeof onHeraSpeak === 'function') {
-      onHeraSpeak('Laboratorio FITS activo. Compara dos épocas con WCS TAN-SIP y máscaras FLAGS para detectar fuentes en movimiento.', false);
+      onHeraSpeak('Laboratorio FITS activo: compara recortes con máscaras y WCS. El resultado es exploratorio; consulta su procedencia y las limitaciones del informe.', false);
     }
-  } else if (view === 'coleccion') {
+  } else if (view === 'coleccion' || view === 'contexto' || view === 'espectral') {
     if (bovedaHud) bovedaHud.hidden = true;
     if (tbar) tbar.hidden = true;
     if (hint) hint.hidden = true;
     closeObjectInfo();
     if (viewLab) viewLab.hidden = true;
-    if (viewCol) viewCol.hidden = false;
+    if (viewCol) viewCol.hidden = view !== 'coleccion';
     if (cosmosCanvas) cosmosCanvas.style.opacity = '0.15';
-    renderCandidateCollection();
+    if(view === 'coleccion')renderCandidateCollection();
     if (typeof onHeraSpeak === 'function') {
-      onHeraSpeak('Colección científica: explora candidatos sin identificar y cuerpos confirmados por JPL con su desplazamiento observado.', false);
+      onHeraSpeak(view === 'espectral' ? 'Cielo inmersivo SPHEREx: mira alrededor, selecciona una longitud de onda y consulta el flujo real bajo la retícula. El vuelo es visual y no representa distancias astronómicas.' : view === 'contexto' ? 'Contexto HiPS: mosaico de referencia; no representa una época FITS ni valida cambios temporales.' : 'Colección educativa: posiciones y movimientos ilustrativos. No se ha realizado una consulta JPL/Gaia para estas fuentes.', false);
+      if(view === 'espectral')document.getElementById('hb')?.classList.remove('show');
     }
   }
 }
@@ -477,7 +489,7 @@ function renderCandidateCollection(filter = collectionFilter) {
       </div>
       <div class="col-actions-row">
         <button type="button" class="btn subtle-sm btn-focus-boveda" data-idx="${originalIdx}">◎ Ver en Plano Focal</button>
-        <button type="button" class="btn subtle-sm ok btn-analyze-lab" data-idx="${originalIdx}">🔬 Analizar FITS</button>
+        <button type="button" class="btn subtle-sm ok btn-analyze-lab" data-idx="${originalIdx}">🔬 Probar demo FITS</button>
       </div>
     `;
 
@@ -514,6 +526,7 @@ function registerCurrentCandidate() {
     id: `${Date.now()}-${selectedIndex}`,
     name: o[0],
     type: o[1],
+    sourceKind:'SYNTHETIC',
     status: o[7],
     bandId: band.id,
     bandLabel: band.label,
@@ -544,7 +557,7 @@ function registerCurrentCandidate() {
 function exportBitacoraJSON() {
   const payload = {
     proyecto: 'SKYO — Modo Aula',
-    atribucion: 'Datos ilustrativos · Ref. NASA/IPAC IRSA (SPHEREx) y JPL',
+    atribucion: 'Bitácora educativa y comparaciones exploratorias; procedencia indicada por registro. Referencias: NASA/IPAC IRSA y JPL.',
     exportadoEn: new Date().toISOString(),
     registros: bitacoraEntries.map(({ thumbUrl, ...rest }) => rest)
   };
@@ -981,7 +994,7 @@ function buildExplorarUI() {
       if (selectedIndex >= 0 && typeof onHeraSpeak === 'function') {
         const o = OBJ[selectedIndex];
         const ep = EPOCAS[currentEpoch];
-        onHeraSpeak(`En ${ep.label}, ${o[0]} (${o[7]}): ${o[5]} ${o[6]}.`, true);
+        onHeraSpeak(`Ilustración educativa en ${ep.label}: ${o[0]} (${o[7]}). ${o[5]} ${o[6]}.`, true);
       }
     };
   }

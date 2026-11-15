@@ -1,0 +1,37 @@
+{
+  "project": "skyo",
+  "actor": "codex",
+  "createdUtc": "2026-11-15T03:31:34.782054+00:00",
+  "backup": "/home/metrx/Proyectos/SKYO-backups/integracion-9022f46-20261115T032838Z",
+  "backupManifest": "/home/metrx/Proyectos/SKYO-backups/integracion-9022f46-20261115T032838Z/manifest.json",
+  "bundleVerified": true,
+  "fileHashesVerified": 193,
+  "stashContentsVerified": true,
+  "preHead": "4ee3f74cf71120fc68620137270894adb663753b",
+  "head": "9022f46c8657428124562d96bb1947ba2d897717",
+  "newStash": "6aa80315bfde0f7854fe11ef0aebef6372f9961d",
+  "oldStashPreserved": "8df0722",
+  "stashDropped": false,
+  "applyExitCode": 1,
+  "conflicts": [
+    "MEMORY.md",
+    "assets/css/lab.css",
+    "assets/css/main.css",
+    "assets/js/app.js",
+    "assets/js/cosmos3d.js",
+    "assets/js/hera3d.js",
+    "assets/js/science-lab-ui.js",
+    "assets/js/science/lab.js",
+    "index.html",
+    "lab.html",
+    "memories.md",
+    "sw.js"
+  ],
+  "snapshotDirectories": {
+    "base-4ee3f74": "/home/metrx/Proyectos/SKYO-backups/integracion-9022f46-20261115T032838Z/conflicts/base-4ee3f74",
+    "remote-9022f46": "/home/metrx/Proyectos/SKYO-backups/integracion-9022f46-20261115T032838Z/conflicts/remote-9022f46",
+    "local-stash": "/home/metrx/Proyectos/SKYO-backups/integracion-9022f46-20261115T032838Z/conflicts/local-stash",
+    "with-markers": "/home/metrx/Proyectos/SKYO-backups/integracion-9022f46-20261115T032838Z/conflicts/with-markers"
+  },
+  "next": "Assign semantic conflicts by file owner; this integrator has not edited product code."
+}

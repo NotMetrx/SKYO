@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SKYO — Contexto HiPS</title><script type="module" src="assets/js/contexto.js"></script></head>
+<body>
+  <form id="sky-position">
+    <label>Ascensión recta (°)<input id="sky-ra" type="number" min="0" max="360" step="any" value="210.8023" required></label>
+    <label>Declinación (°)<input id="sky-dec" type="number" min="-90" max="90" step="any" value="54.3489" required></label>
+    <button type="submit">Ir a coordenadas</button>
+    <button type="button" id="sky-retry">Cargar mapa</button>
+  </form>
+  <p id="sky-status" role="status">Selecciona «Cargar mapa» para consultar el contexto HiPS en línea.</p>
+  <div role="region" id="aladin-map" aria-label="Mapa infrarrojo 2MASS de contexto"></div>
+  <p>Aladin Lite 3.8.2 · CDS / 2MASS color (infrarrojo), servido por IRSA. Mosaico de contexto; las épocas FITS se comparan en el laboratorio. Requiere conexión. <a href="licenses/aladin-lite/README.md" target="_blank" rel="noopener">Fuente y licencias</a></p>
+</body>
+</html>

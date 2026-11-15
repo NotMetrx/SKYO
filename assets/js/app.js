@@ -37,7 +37,7 @@ let heraTimer = 0;
 
 export const hera = {
   say(message, keep = false) {
-    if (currentRoute === 'inicio' || !heraBubble || !heraText) return;
+    if (currentRoute === 'inicio' || !heraBubble || !heraText || (window.innerWidth <= 780 && !keep)) return;
     heraText.textContent = message;
     heraBubble.classList.add('show');
     clearTimeout(heraTimer);
@@ -114,7 +114,7 @@ function setCustomAvatar(dataUrl) {
     if (heraPlaceholder) heraPlaceholder.hidden = true;
     if (avatarResetBtn) avatarResetBtn.hidden = false;
     if (heraTitle) heraTitle.textContent = 'Asistente H.E.R.A 7';
-    initHera3d(heraAvatarBtn);
+    if (canMountNow) initHera3d(heraAvatarBtn);
   } else if (heraImg) {
     heraImg.src = '';
     heraImg.hidden = true;
@@ -125,7 +125,8 @@ function setCustomAvatar(dataUrl) {
   }
 }
 
-const savedAvatar = localStorage.getItem('skyo_custom_avatar');
+let savedAvatar = null;
+try { savedAvatar = localStorage.getItem('skyo_custom_avatar'); } catch { /* El avatar no impide navegar si el almacenamiento está bloqueado. */ }
 setCustomAvatar(savedAvatar);
 
 if (avatarInput) {
@@ -172,6 +173,36 @@ if (heraAvatarBtn) {
 }
 
 // 3. Router Reactivo por Hash con Transiciones GPU + Vuelo de Cámara 3D
+let cosmosReady = null;
+function syncCosmosVisibility() {
+  const view = document.body.dataset.exploreView || 'boveda';
+  const frame = document.getElementById('hips-frame');
+  const src = !document.hidden && currentRoute === 'explorar' && view === 'contexto' ? 'contexto.html' : 'about:blank';
+  if (frame && frame.getAttribute('src') !== src) frame.src = src;
+  const spectralFrame=document.getElementById('spectral-frame');
+  const spectralSrc=!document.hidden && currentRoute==='explorar' && view==='espectral' ? 'inmersivo.html' : 'about:blank';
+  if(spectralFrame && spectralFrame.getAttribute('src')!==spectralSrc)spectralFrame.src=spectralSrc;
+  setCosmosVisible(!document.hidden && (currentRoute === 'inicio' || currentRoute === '3d' || (currentRoute === 'explorar' && view === 'boveda')));
+}
+async function enableCosmos() {
+  try {
+    cosmosReady ||= initCosmos3D(currentRoute).then(() => {
+      if (heraAvatarBtn) initHera3d(heraAvatarBtn);
+    });
+    await cosmosReady;
+    setCosmosRoute(currentRoute);
+    syncCosmosVisibility();
+  } catch (error) {
+    cosmosReady = null;
+    document.getElementById('cosmos-status').textContent = 'La vista 3D no está disponible. Puedes usar el laboratorio FITS y el contexto HiPS.';
+    console.warn('Vista 3D:', error);
+  }
+}
+document.addEventListener('click', event => {
+  if (event.target.closest('[data-enable-cosmos], #enable-eclipse')) enableCosmos();
+});
+document.addEventListener('skyo:subviewchange', syncCosmosVisibility);
+
 function clearLeavingSections(exceptId) {
   document.querySelectorAll('.sec.leaving').forEach(el => {
     if (el.id !== exceptId) el.classList.remove('leaving');
@@ -230,6 +261,10 @@ function navigate() {
   if (prevRoute && !window.__skyReducedMotion) {
     leaveTimer = setTimeout(() => clearLeavingSections(currentRoute), 440);
   }
+  if (currentRoute !== 'inicio') {
+    document.body.classList.remove('warp-zoom');
+    isWarping = false;
+  }
 
   document.querySelectorAll('#nav a').forEach(link => {
     if (link.dataset.s === currentRoute) {
@@ -270,6 +305,8 @@ function navigate() {
     initHera3d(heraAvatarBtn);
   }
   setCosmosRoute(currentRoute);
+  syncCosmosVisibility();
+  if (currentRoute === '3d') enableCosmos();
 
   if (currentRoute === 'explorar') {
     startExplorar(hera.say.bind(hera));
@@ -283,6 +320,9 @@ function navigate() {
 }
 
 window.addEventListener('hashchange', navigate);
+window.addEventListener('resize', () => {
+  if (window.innerWidth <= 780) heraBubble?.classList.remove('show');
+});
 
 // Despegue de KRYO-9 con audio espacial y acoplamiento dentro del módulo guía en #explorar
 let isWarping = false;
@@ -294,7 +334,8 @@ setKryoDockHandler(() => {
   triggerKryoGesture('Wave_Hello', { duration: 1.5, timeScale: 1.15 });
 });
 
-function launchFromInicio() {
+function launchFromInicio(event) {
+  event?.preventDefault();
   if (currentRoute !== 'inicio' || isWarping) return;
   unlockAudio();
   const inicioEl = document.getElementById('inicio');
@@ -321,12 +362,12 @@ function launchFromInicio() {
   triggerWarpZoom();
   setTimeout(() => {
     window.location.hash = '#explorar';
+    setTimeout(() => {
+      document.body.classList.remove('warp-zoom');
+      if (promptText) promptText.textContent = 'Iniciar secuencia de despegue';
+      isWarping = false;
+    }, 360);
   }, 140);
-  setTimeout(() => {
-    document.body.classList.remove('warp-zoom');
-    if (promptText) promptText.textContent = 'Iniciar secuencia de despegue';
-    isWarping = false;
-  }, 360);
 }
 
 window.addEventListener('keydown', e => {
@@ -335,11 +376,11 @@ window.addEventListener('keydown', e => {
   if (['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A'].includes(tag) || document.activeElement?.isContentEditable) return;
   if (e.key === 'Enter' || e.code === 'Space') {
     e.preventDefault();
-    launchFromInicio();
+    launchFromInicio(e);
   }
 });
 
-// Activación opcional por clic/toque sobre el prompt o el escenario de KRYO-9 (sin controles <button>/<a> en #inicio)
+// El enlace conserva navegación por teclado; el escenario permite el mismo lanzamiento.
 document.querySelector('#inicio .hero-prompt')?.addEventListener('click', launchFromInicio);
 document.getElementById('kryo9-stage')?.addEventListener('click', launchFromInicio);
 
@@ -348,7 +389,7 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
     pauseExplorarBlink();
   }
-  setCosmosVisible(!document.hidden);
+  syncCosmosVisibility();
 });
 
 function initInicioShowcase() {
@@ -452,12 +493,10 @@ function initInicioShowcase() {
 
 // 6. Inicialización inmediata
 function initApp() {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
-  }
   initInicioShowcase();
   navigate();
-  initCosmos3D(currentRoute);
+  enableCosmos();
+  syncCosmosVisibility();
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
@@ -471,3 +510,5 @@ if (document.readyState === 'loading') {
 } else {
   initApp();
 }
+
+import './register-offline.js';

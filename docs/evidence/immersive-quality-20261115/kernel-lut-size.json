@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-15T15:18:30.339Z",
+  "node": "v24.21.0",
+  "source": "NASA IMAGE 512x512 float32, identical input, RGBA and pixel hashes",
+  "warmup": 5,
+  "runs": 30,
+  "variants": [
+    {
+      "name": "baseline",
+      "bytes": 102109,
+      "sha256": "ad4422eed36f72b4f48c84e32d7a5e933d0b1cf1f83a3a02344f477129d82128",
+      "medianMs": 74.96503099999995,
+      "p95Ms": 112.90918600000032,
+      "correct": true
+    },
+    {
+      "name": "exact-lut-size",
+      "bytes": 130105,
+      "sha256": "ba99520936fb5f3a9b13d4c22af340d32b870656680c474f357a14846692b9da",
+      "medianMs": 19.925144000000046,
+      "p95Ms": 36.67998699999998,
+      "correct": true
+    }
+  ]
+}

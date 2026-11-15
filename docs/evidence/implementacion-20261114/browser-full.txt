@@ -1,0 +1,39 @@
+
+> skyo@2.1.0 test:browser
+> playwright test
+
+[WebServer] (node:23479) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 26 tests using 1 worker
+
+(node:23521) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/browser/accessibility.spec.mjs:3:50 › accesibilidad de controles en lab.html (3.9s)
+  ✓   2 tests/browser/accessibility.spec.mjs:3:50 › accesibilidad de controles en contexto.html (2.2s)
+  ✓   3 tests/browser/curated.spec.mjs:3:38 › NASA real independiente: regiones, blink manual, informe y offline (6.3s)
+  ✓   4 tests/browser/curated.spec.mjs:3:38 › NASA real integrado: regiones, blink manual, informe y offline (10.2s)
+  ✓   5 tests/browser/curated.spec.mjs:29:1 › 320 px: las cuatro pestañas quedan completas y accesibles (1.8s)
+  ✓   6 tests/browser/graphics.spec.mjs:2:1 › WebGL2: Aladin real y pausa del motor Three.js fuera de vista (21.0s)
+  ✓   7 tests/browser/integration.spec.mjs:3:1 › Eclipse remoto: marca completa, carga diferida y modelo en raíz/subruta (49.7s)
+  ✓   8 tests/browser/migration.spec.mjs:4:3 › / navegación, teclado y responsive (12.3s)
+  ✓   9 tests/browser/migration.spec.mjs:25:3 › / Worker, export y offline con Vary Origin (18.8s)
+  ✓  10 tests/browser/migration.spec.mjs:42:3 › / manifiesto, iconos y aislamiento de caché (2.9s)
+  ✓  11 tests/browser/migration.spec.mjs:4:3 › /skyo/ navegación, teclado y responsive (13.7s)
+  ✓  12 tests/browser/migration.spec.mjs:25:3 › /skyo/ Worker, export y offline con Vary Origin (16.9s)
+  ✓  13 tests/browser/migration.spec.mjs:42:3 › /skyo/ manifiesto, iconos y aislamiento de caché (2.9s)
+  ✓  14 tests/browser/migration.spec.mjs:56:1 › contexto HiPS se carga bajo demanda y se descarga al salir (9.6s)
+  ✓  15 tests/browser/migration.spec.mjs:66:1 › actualización PWA espera al usuario y conserva cachés ajenas (6.7s)
+  ✓  16 tests/browser/storage.spec.mjs:4:38 › OPFS independiente: fallo de segundo archivo, recuperación y borrado (9.6s)
+  ✓  17 tests/browser/storage.spec.mjs:4:38 › OPFS integrado: fallo de segundo archivo, recuperación y borrado (15.6s)
+  ✓  18 tests/browser/storage.spec.mjs:26:1 › Bitácora conserva snapshot, no inventa movimiento y escapa nombres de archivo (8.5s)
+  ✓  19 tests/browser/t01.spec.mjs:9:39 › T01 independiente: cambiar demo invalida informe (4.3s)
+  ✓  20 tests/browser/t01.spec.mjs:9:39 › T01 integrado: cambiar demo invalida informe (6.3s)
+  ✓  21 tests/browser/t01.spec.mjs:18:38 › T01 independiente: A/A→demo A/B, export y diagnóstico (7.3s)
+  ✓  22 tests/browser/t01.spec.mjs:18:38 › T01 integrado: A/A→demo A/B, export y diagnóstico (12.4s)
+  ✓  23 tests/browser/wasm.spec.mjs:7:34 › WASM Worker /: carga real, identidad y fallback (8.0s)
+  ✓  24 tests/browser/wasm.spec.mjs:7:34 › WASM Worker /skyo/: carga real, identidad y fallback (7.8s)
+  ✓  25 tests/browser/wasm.spec.mjs:15:1 › WASM corrupto o que lanza excepción conserva fallback explícito (8.5s)
+  ✓  26 tests/browser/wasm.spec.mjs:26:1 › WASM y JavaScript: benchmark de kernel en Worker Chromium (10.3s)
+
+  26 passed (4.8m)

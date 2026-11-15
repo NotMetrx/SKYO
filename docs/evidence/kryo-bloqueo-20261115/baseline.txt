@@ -1,0 +1,41 @@
+{
+  "errors": [],
+  "requests": [],
+  "probes": [
+    {
+      "i": 0,
+      "responseMs": 140,
+      "frames": {
+        "started": 2,
+        "ended": 2,
+        "maxMs": 0.5
+      },
+      "status": "KRYO-9 · ACTIVA LA VISTA 3D",
+      "route": "inicio"
+    },
+    {
+      "i": 1,
+      "responseMs": 23,
+      "frames": {
+        "started": 2,
+        "ended": 2,
+        "maxMs": 0.5
+      },
+      "status": "KRYO-9 · ACTIVA LA VISTA 3D",
+      "route": "inicio"
+    },
+    {
+      "i": 2,
+      "error": "main thread timeout"
+    }
+  ],
+  "hung": true,
+  "frames": [
+    {
+      "function": "",
+      "url": "",
+      "line": 1,
+      "column": 1
+    }
+  ]
+}

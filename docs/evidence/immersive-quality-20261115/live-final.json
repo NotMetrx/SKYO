@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-15T15:54:19.307Z",
+  "source": "Live IRSA no mocks, viewport1440x900 DPR2",
+  "stats": {
+    "ready": "12",
+    "channel": "62",
+    "lod": "2",
+    "detailReady": "71",
+    "detailWanted": "71",
+    "spatialKernel": "Rust/WASM",
+    "displayChannel": "62",
+    "tiles": "131",
+    "ra": "60.81100",
+    "dec": "51.34040",
+    "travel": "0.00",
+    "width": 2880,
+    "height": 1800
+  },
+  "flux": "Flujo 12.0051 MJy/sr",
+  "status": "12/12 base · detalle 71/71 (orden 2) · SPHEREx · 0 pendientes",
+  "errors": []
+}

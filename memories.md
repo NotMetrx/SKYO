@@ -53,6 +53,9 @@ Cada cambio se apunta aquí con fecha. Complementa a `history.md` (lo imprescind
 
 ## 2026-11-14 — Paleta de colores
 - Nuevo `docs/PALETA.md`: documenta tokens `:root` de `main.css` (base, acentos `--ac`/`--ac2`/`--ok`, líneas, Liquid Glass, wordmark) y contraste WCAG.
+
+### Historial recibido de origin/main (hasta 9022f46)
+
 - 2026-11-14 — Acento naranja → morado `#b57bff` (`--ac2`) en CSS, SVG, cosmos3d, explorar, data, lab.css. Se conservan colores físicos (Sol, Betelgeuse, Antares, estrellas cálidas). Nuevo `docs/LAYOUT.md` (maqueta por vista). Previews actualizadas.
 - 2026-11-14 — Eclipse 3D de Blender (`assets/models/eclipse.glb`, `assets/js/glb-lite.js`) reemplaza el SVG en la `O` de `SKYO`, reproduce los 5 clips de animación keyframeada en Blender vía `THREE.AnimationMixer` (`sculpted crater moon + astrolabe gimbal + purple arc + corona + diamond flare`), acompaña el salto `Enter`/`Espacio` hacia `#explorar` volando hacia la cámara y se oculta al finalizar (`eclipseRig.visible = false`). Bóveda Celeste (`#explorar`) simplificada sin `#modebar`, `#scale-pill`, `#stage-tabs` ni `#meses`; `sw.js` actualizado a `skyo-v2.2.0`.
 - 2026-11-14 — Sistema unificado de estados UI (`assets/css/states.css`, `assets/js/ui-states.js`) con temática orbital Liquid Glass y WCAG 2.2 (`role="status"` / `role="alert"`, iconos propios, acciones de recuperación, `prefers-reduced-motion`) integrado en `#inicio`/`cosmos3d.js`, Bitácora, Bóveda/Colección (`explorar.js`), Laboratorio FITS (`science-lab-ui.js`) y `lab.html` (`science/lab.js`).
@@ -61,9 +64,30 @@ Cada cambio se apunta aquí con fecha. Complementa a `history.md` (lo imprescind
 - 2026-11-14 — Investigación de Sofía y propuesta de fusión de paneles: diagnóstico de fragmentación (Bóveda oculta al cambiar de pestaña, duplicidad de `lab.html`, Colección redundante de 14 tarjetas, Sistema Solar `#3d` desconectado de SPHEREx). Propuesta funcional: "Estación de Observación y Análisis" con Bóveda 3D continua, Catálogo como Rail lateral táctico, Laboratorio FITS como Drawer contextual deslizante precargado con el objeto seleccionado y Bitácora certificadora (Triángulo de Descubrimiento SPHEREx).
 - 2026-11-14 — Eclipse Solar Realista y Continuidad en Transición / Pantalla 2 (`cosmos3d.js`, `main.css`): contraluz físico estricto con umbra lunar oscura (`#060913`), corona solar radiante generada proceduralmente en canvas con filamentos plasmáticos (`makeSolarCoronaTexture`), destello de diamante anamórfico en el limbo (`makeDiamondStarburstTexture`), expansión luminosa de portal durante la transición warp-zoom hacia la cámara, y anclaje cósmico reflejado en la Bóveda Celeste 3D de `#explorar` (`BovedaEclipseAnchor` con corona pulsante y luz puntual ambiental en reposo Ponytail). Verificado con `npm test` 8/8 y auditoría visual en 7 viewports (0 errores).
 - 2026-11-15 — Calibración PBR y Estudio de Render FPA SPHEREx vía Blender MCP (`assets/models/focal_plane.glb`): 19 materiales físicos estrictos (oro puro 1.0/0.09, cobre OFHC 1.0/0.22, nitruro de aluminio AlN dieléctrico con Coat 0.45, titanio/aluminio espacial anodizado 1.0/0.20, detectores LVF D1–D6 en zafiro IOR 1.76 con película delgada 480nm y emisión espectral calibrada). Suavizado con modificadores Weighted Normal, estudio de 3 puntos (Key 6500K 240W, Rim cian 160W, Fill morado 85W), cámara Hero 85mm y trazado de rayos en tiempo real EEVEE Next con AgX High Contrast. Exportado a GLB óptimo (5.582 polígonos, 509 KB) y sincronizado con el visor.
+### Ajustes locales anteriores a la integración
+
+- 2026-11-14 — Paleta de campaña: Obsidian Black `#07070A`, Chrome Silver `#C9CED6`/`#E6E8EC`, Laser Crimson `#E11D48` y Sky Blue `#7CC8FF` en CSS, SVG, cosmos3d, explorar, data y lab.css. Se conservan colores físicos (Sol, Betelgeuse, Antares, estrellas cálidas). Nuevo `docs/LAYOUT.md` (maqueta por vista). Previews actualizadas.
+- 2026-11-14 — Eclipse 3D de Blender (`assets/models/eclipse.glb`, `assets/js/glb-lite.js`) reemplaza el SVG en la `O` de `SKYO`, reproduce los 5 clips de animación keyframeada en Blender vía `THREE.AnimationMixer` (`sculpted crater moon + astrolabe gimbal + crimson arc + corona + diamond flare`), acompaña el salto `Enter`/`Espacio` hacia `#explorar` volando hacia la cámara y se oculta al finalizar (`eclipseRig.visible = false`). Bóveda Celeste (`#explorar`) simplificada sin `#modebar`, `#scale-pill`, `#stage-tabs` ni `#meses`; `sw.js` actualizado a `skyo-v2.2.0`.
+
+## 2026-11-14 — Integración remota con respaldo y delegación
+
+- `main` actualizado por fast-forward `4ee3f74` → `9022f46`; tres commits
+  recibidos, sin nuevo commit ni push de los cambios locales.
+- Respaldo externo íntegro y verificado en
+  `/home/metrx/Proyectos/SKYO-backups/integracion-9022f46-20261115T032838Z/`:
+  193 rutas, índice, parches binarios y bundle; stash nuevo `6aa80315` y anterior
+  `8df0722` conservados. Originales FITS y artefactos WASM recuperados.
+- Reaplicar el stash produjo 12 conflictos. Se reparten por propietario entre
+  integrador Git/documentos, resolutor frontend y resolutor científico/Explorar.
+  OpenCode agotó cuota (429) sin propuestas; se reasignaron sus archivos al
+  resolutor científico. Agy revisa refs sin modificarlas.
+- Se conservan los registros históricos recibidos y los ajustes locales de paleta;
+  la paleta normativa vigente es `docs/PALETA.md`, no las anotaciones antiguas.
+- Resolución y revisión en curso; no se atribuyen pruebas anteriores a la fusión.
+  Recibos: `docs/evidence/integracion-9022f46/`. Ciencia T08 sin aceptación.
+
 - 2026-11-15 — Identidad de pestaña y Favicon Eclipse SKYO (`assets/img/favicon.svg`, `favicon-32x32.png`, `favicon-192x192.png`, `apple-touch-icon.png`): icono circular de alto contraste en `#000000` con anillo de diamante y corona espectral (cian `--ac` / morado `--ac2`), vinculado en `index.html`, `lab.html`, `SKYO · Explora el cosmos con SPHEREx.html`, `manifest.webmanifest` y `sw.js` (v2.3.8). Título limpio sin el carácter `◐` (`SKYO · ...`).
 - 2026-11-15 — Sección unificada de Resumen de Trabajo y Contactos del Equipo Neois: integrados los contactos de integrantes (GitHub, Email, roles) y los 5 hitos clave de arquitectura (Bóveda 3D, FPA PBR, Laboratorio FITS, Eclipse Solar y KRYO-9) tanto en la subvista «Misión & Equipo Neois» de la app principal (`#fases` en `fases.js`, `data.js`, `main.css`) como en la landing personal `SKYO · Explora el cosmos con SPHEREx.html` (`#trabajo` y `#neois`). Verificado con `npm test` (8/8).
-
 
 ## 2026-11-15 — Unificación visual y estructural de `#inicio` (Grupo Neois + SPHEREx) + pulido global
 - Conservado al 100% el trabajo previo de Sofía (favicons `assets/img/favicon*.png`/`svg`, `data/manifests/manifest.webmanifest`, `document.title` limpio sin `◐`, `EQUIPO_NEOIS`, `RESUMEN_TRABAJO`, `MISION_SPHEREX` y pestaña «Misión & Equipo Neois» en `#fases`).

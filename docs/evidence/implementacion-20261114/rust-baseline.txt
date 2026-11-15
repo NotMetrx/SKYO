@@ -1,0 +1,28 @@
+   Compiling wasm-bindgen-macro-support v0.2.130
+   Compiling wasm-bindgen-macro v0.2.130
+   Compiling wasm-bindgen v0.2.130
+   Compiling skyo_wasm v0.1.0 (/home/metrx/Proyectos/SKYO/science-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 46.42s
+     Running unittests src/lib.rs (science-core/target/debug/deps/skyo_wasm-1a70b1e20f45d539)
+
+running 2 tests
+test tests::preserves_offset_precision_and_large_finite_variance ... FAILED
+test tests::subtracts_with_variance_and_mask ... ok
+
+failures:
+
+---- tests::preserves_offset_precision_and_large_finite_variance stdout ----
+
+thread 'tests::preserves_offset_precision_and_large_finite_variance' (18478) panicked at src/lib.rs:41:9:
+assertion `left == right` failed
+  left: 2.0
+ right: 1.0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::preserves_offset_precision_and_large_finite_variance
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`

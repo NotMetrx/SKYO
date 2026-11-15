@@ -1,0 +1,40 @@
+{
+  "project": "skyo",
+  "actor": "codex",
+  "createdUtc": "2026-11-15T03:34:37.409Z",
+  "resolvedAndStaged": [
+    "MEMORY.md",
+    "memories.md"
+  ],
+  "gitOwner": "git_integrator",
+  "remainingUnmerged": [
+    "assets/css/lab.css",
+    "assets/css/main.css",
+    "assets/js/app.js",
+    "assets/js/cosmos3d.js",
+    "assets/js/hera3d.js",
+    "assets/js/science-lab-ui.js",
+    "assets/js/science/lab.js",
+    "index.html",
+    "lab.html",
+    "sw.js"
+  ],
+  "review": {
+    "data": "Remote MSG/provenance helper retained, local palette retained; catalog labels remain illustrative and need science/UI review before association claims.",
+    "history": "Remote configurable avatar/Boveda/panel-proposal retained, local palette retained. No integration losses observed; historical local paths remain historical."
+  },
+  "tests": "Not run: other owners are editing product files. Docs checked for conflict markers and git diff --check.",
+  "files": {
+    "MEMORY.md": "585a99900ec86c401f4c9536ee5df0d482121187d9bd3a7a053439ead1dc54c1",
+    "memories.md": "cbcd35910979ea000a16be73c59162d47d566a6ecb51b964bd0e90072ae67592",
+    "assets/js/data.js": "a2a99e84d4064ad4d3379fd51c11c7635cba92bdfb4d2d848210298349b5c6a0",
+    "history.md": "d357c7825e3c41adbaee8ab44983a5a27ca418daeff4c69295395edcfcafe852"
+  },
+  "updatedUtc": "2026-11-15T03:35:32.578995+00:00",
+  "delegation": {
+    "frontend": "frontend_resolver",
+    "science": "science_resolver",
+    "opencode": "provider quota429; no proposals",
+    "agy": "read-only review; original sessions controlled by coordinator"
+  }
+}

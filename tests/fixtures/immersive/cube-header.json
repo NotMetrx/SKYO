@@ -1,0 +1,107 @@
+{
+  "header": {
+    "XTENSION": "IMAGE",
+    "BITPIX": -32,
+    "NAXIS": 3,
+    "NAXIS1": 512,
+    "NAXIS2": 512,
+    "NAXIS3": 102,
+    "PCOUNT": 0,
+    "GCOUNT": 1,
+    "EXTNAME": "IMAGE",
+    "WCSAXES": 3,
+    "CRPIX1": 8192.5,
+    "CRPIX2": 8704.5,
+    "PC1_1": -0.00274658203125,
+    "PC1_2": -0.00274658203125,
+    "PC2_1": 0.00274658203125,
+    "PC2_2": -0.00274658203125,
+    "CDELT1": 1.0,
+    "CDELT2": 1.0,
+    "CUNIT1": "deg",
+    "CUNIT2": "deg",
+    "CTYPE1": "RA---HPX",
+    "CTYPE2": "DEC--HPX",
+    "CRVAL1": 0.0,
+    "CRVAL2": 0.0,
+    "PV2_1": 4.0,
+    "PV2_2": 3.0,
+    "LONPOLE": 0.0,
+    "LATPOLE": 90.0,
+    "MJDREF": 0.0,
+    "RADESYS": "ICRS",
+    "ORDER": 5,
+    "NPIX": 0,
+    "CTYPE3": "WAVE-TAB",
+    "CNAME3": "WAVELENGTH",
+    "CUNIT3": "um",
+    "CRPIX3": 1,
+    "CDELT3": 1,
+    "CRVAL3": 1,
+    "PS3_0": "WCS-WAVE",
+    "PS3_1": "WAVELENGTHS",
+    "PS3_2": "PLANE",
+    "PV3_3": 1,
+    "PC3_3": 1.0,
+    "NCHAN": 102,
+    "WLMIN": 0.753,
+    "WLMAX": 4.988,
+    "BUNIT": "MJy/sr"
+  },
+  "primary": {
+    "SIMPLE": true,
+    "BITPIX": 8,
+    "NAXIS": 0,
+    "EXTEND": true,
+    "VERSION": "7.2.0",
+    "TIMESYS": "UTC",
+    "MJD-BEG": 60882.051117882,
+    "MJD-END": 61078.625115503,
+    "DATE-BEG": "2025-07-26T01:13:36.585",
+    "DATE-END": "2026-02-07T15:00:09.979",
+    "ORIGIN": "SSDC",
+    "TELESCOP": "SPHEREx",
+    "INSTRUME": "SPHEREx",
+    "BLANKCH": "D3:17,D4:01",
+    "DATE": "2026-10-25T16:47:23.958"
+  },
+  "offset": 8640,
+  "orientation_samples": [
+    {
+      "x": 0,
+      "y": 0,
+      "ra": 46.40350341796875,
+      "dec": 1.1937484371410785
+    },
+    {
+      "x": 255.5,
+      "y": 255.5,
+      "ra": 45.0,
+      "dec": 1.1937484371410785
+    },
+    {
+      "x": 511,
+      "y": 511,
+      "ra": 43.59649658203125,
+      "dec": 1.1937484371410785
+    },
+    {
+      "x": 511,
+      "y": 0,
+      "ra": 45.0,
+      "dec": 2.3856820676142405
+    },
+    {
+      "x": 0,
+      "y": 511,
+      "ra": 45.0,
+      "dec": 0.0023313712373410215
+    },
+    {
+      "x": 23,
+      "y": 473,
+      "ra": 45.04119873046875,
+      "dec": 0.144545170000654
+    }
+  ]
+}

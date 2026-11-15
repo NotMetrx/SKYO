@@ -1,0 +1,82 @@
+
+> skyo@2.1.0 pretest
+> npm run sync:curated
+
+
+> skyo@2.1.0 sync:curated
+> node scripts/sync-curated-manifest.mjs
+
+Manifiesto curado ya sincronizado
+
+> skyo@2.1.0 test
+> node --test scripts/pipeline.test.mjs scripts/integrity.test.mjs scripts/session.test.mjs scripts/fits-boundary.test.mjs scripts/comparison.test.mjs scripts/science-regressions.test.mjs scripts/curated-dataset.test.mjs scripts/opfs.test.mjs scripts/wasm-equivalence.test.mjs scripts/fpa.test.mjs scripts/immersive.test.mjs scripts/l2.test.mjs
+
+✔ Fondo excluye SOURCE de A y B, conserva fuentes para análisis y no altera originales (613.388225ms)
+✔ Unidades incompatibles se rechazan y A/A se identifica como control (189.058085ms)
+✔ Par NASA real noroeste: cadena, cobertura espectral, comparación y control (411.300945ms)
+✔ Par NASA real sureste: cadena, cobertura espectral, comparación y control (266.159799ms)
+✔ La copia importable del manifiesto coincide con el paquete publicado (46.199283ms)
+✔ FLAGS conserva Uint32 y BZERO, con SOURCE separada del fondo (75.403551ms)
+✔ FITS rechaza dimensiones negativas, límites por eje, truncado y escalas inválidas (44.113032ms)
+✔ Parser admite imagen primaria y preserva inventario sin convertir BLANK a cero (3.106497ms)
+✔ WCS solo acepta ejes ecuatoriales TAN, grados e ICRS (24.826105ms)
+✔ Reproyección limita cada dimensión antes de reservar matrices (10.457218ms)
+✔ WCS NASA D2: centro/bordes frente a Astropy 8.0.2 (65.36896ms)
+ℹ Máximo 1.7653702741250185e-11 px en 9 puntos reales
+✔ WCS NASA D3: centro/bordes frente a Astropy 8.0.2 (32.929941ms)
+ℹ Máximo 1.5568041607024215e-11 px en 9 puntos reales
+✔ WCS NASA D6: centro/bordes frente a Astropy 8.0.2 (32.848178ms)
+ℹ Máximo 9.149382218393176e-11 px en 9 puntos reales
+✔ FPA: seis FITS reales íntegros, metadatos y decodificación Rust contrastada con JS (1961.981306ms)
+✔ Caché HiPS expulsa detalle fuera de pantalla durante una órbita completa (4278.176091ms)
+✔ Curación HiPS rechaza una edición nueva antes de reutilizar o relabelar los PNG (254.464746ms)
+✔ ICRS: cardinales, costura RA y polos conservan coordenadas (1.726835ms)
+✔ Range FITS rechaza HTTP200 y un rango truncado sin aceptar el cubo entero (7.811668ms)
+✔ WebXR r128: sesión, panel, mandos, vuelo y giro con antirrepetición (41.370332ms)
+✔ Rust/WASM: plano IMAGE real y flujo bajo retícula coinciden con binario NASA (58.143729ms)
+✔ Rust HEALPix: geometría y cobertura de toda la pantalla en polos, costura y vuelo (716.325585ms)
+✔ HiPS: metadatos reales,102canales y URLs incluidas carpetas por Npix (18.380336ms)
+✔ FITS HPX: orientación de texela y píxel contra WCS Astropy real (19.61153ms)
+✔ HEALPix: cara y NEST contra 48 posiciones independientes Astropy (15.978733ms)
+✔ Worker rechaza load3→load1 y compara el par vigente (3506.987286ms)
+✔ Worker clear invalida entradas y resultado anterior (549.357627ms)
+✔ Worker rechaza hash declarado incorrecto (215.429129ms)
+✔ Worker rechaza metadatos corruptos en la frontera (152.097122ms)
+✔ Subir un FITS con ORIGIN SKYO no lo convierte en demo (203.207867ms)
+✔ Metadatos NASA declarados se preservan sin autenticar el manifiesto del usuario (241.323785ms)
+✔ Reporte único conserva ambos archivos y rechaza campos incompletos o no finitos (1004.559584ms)
+✔ L2 original: WCS espacial y espectral contrastados con Astropy sin cambiar originales (311.606498ms)
+✔ L2 rechaza otro detector/canal, datos fuera de tabla y fuentes no permitidas (197.631173ms)
+✔ Capa L2 conserva la misma esfera celeste durante vuelo tangencial (249.876765ms)
+✔ OPFS: fallo de segundo archivo y commit preservan la pareja anterior (266.914012ms)
+✔ OPFS: cuota insuficiente y borrado explícito son recuperables (51.44551ms)
+✔ OPFS: hash corrupto rechaza la pareja completa y guarda sesiones concurrentes coherentes (120.469158ms)
+✔ OPFS: recupera el formato anterior con nombres originales (37.923784ms)
+✔ FITS MEF: IMAGE/FLAGS/VARIANCE/ZODI con datos originales (162.637307ms)
+✔ WCS TAN-SIP respeta transformacion ida/vuelta subpixel (63.406263ms)
+✔ mascaras decodifican banderas de mala calidad sin eliminar SOURCE (87.635147ms)
+✔ el motor reproyecta B usando WCS de A (974.156788ms)
+✔ calculo de diferencia con varianza y filtro de datos nulos (12.15619ms)
+✔ pipeline extremo a extremo sintético mantiene calificativo exploratorio (920.360067ms)
+✔ sin longitud de onda calibrada se rechaza validar compatibilidad (79.289339ms)
+✔ bloquea comparaciones con filtros realmente incompatibles (833.960875ms)
+✔ mascara FLAGS conserva bits altos y BZERO 2^31 sin Float32 (18.144301ms)
+✔ propagacion de varianza bilineal emplea pesos cuadrados (699.785994ms)
+✔ plano robusto corrige fondo espacial sintético (143.591455ms)
+✔ comparacion explora resta de ZODI y declara modelo de fondo (1572.615027ms)
+✔ Selección A: lectura 3→1 y hash tardío no sustituyen el archivo vigente (117.864624ms)
+✔ Selección B: lectura 3→1 y hash tardío no sustituyen el archivo vigente (48.703308ms)
+✔ Resultados viejos, incluso con jobId actual, no llegan a la vista ni al export (107.407098ms)
+✔ Un fallo de entrada exporta diagnóstico con B null y nunca el análisis anterior (32.222103ms)
+✔ Demo ignora manifiesto manual previo y una pareja tardía se descarta (40.692117ms)
+✔ Worker terminado no modifica la sesión nueva y comparar maneja fallo de envío (54.510139ms)
+✔ Render de otro snapshot no modifica la vista ni su informe (38.348865ms)
+✔ WASM/JS: misma salida f32, máscaras, NaN, varianza y offset preciso (1187.780699ms)
+ℹ tests 58
+ℹ suites 0
+ℹ pass 58
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6667.211722

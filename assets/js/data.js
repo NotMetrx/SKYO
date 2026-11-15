@@ -301,16 +301,16 @@ export const ETAPAS_PIPELINE = [
  * [nombre, tipo, radioRelativo, anguloBase, colorHex, descripcion, datoAdicional, estado, derivaPorMes]
  */
 export const OBJ = [
-  ['Sirius', 'Estrella', 0.30, 0.4, '#cfe6ff', 'La estrella más brillante del cielo nocturno.', 'Distancia: 8,6 años luz', 'Confirmado', 0],
+  ['Sirius', 'Estrella', 0.30, 0.4, '#dfe8f5', 'La estrella más brillante del cielo nocturno.', 'Distancia: 8,6 años luz', 'Confirmado', 0],
   ['Betelgeuse', 'Estrella', 0.62, 2.2, '#ff9c6b', 'Supergigante roja en la constelación de Orión.', 'Distancia: unos 550 a 700 años luz', 'Confirmado', 0],
-  ['Vega', 'Estrella', 0.45, 3.6, '#dbe8ff', 'Una de las estrellas más brillantes, en la constelación de Lira.', 'Distancia: unos 25 años luz', 'Confirmado', 0],
+  ['Vega', 'Estrella', 0.45, 3.6, '#dfe8f5', 'Una de las estrellas más brillantes, en la constelación de Lira.', 'Distancia: unos 25 años luz', 'Confirmado', 0],
   ['Antares', 'Estrella', 0.78, 4.9, '#ff7a5a', 'Supergigante roja en el corazón de Escorpio.', 'Distancia: unos 550 años luz', 'Confirmado', 0],
-  ['Rigel', 'Estrella', 0.70, 5.9, '#bcd6ff', 'Supergigante azul en Orión.', 'Distancia: unos 860 años luz', 'Confirmado', 0],
+  ['Rigel', 'Estrella', 0.70, 5.9, '#c9dff5', 'Supergigante azul en Orión.', 'Distancia: unos 860 años luz', 'Confirmado', 0],
   ['Polaris', 'Estrella', 0.20, 1.4, '#fff2c8', 'La estrella polar, casi fija sobre el polo norte celeste.', 'Distancia: unos 430 años luz', 'Confirmado', 0],
   ['Alfa Centauri', 'Estrella', 0.55, 1.1, '#ffe9a8', 'El sistema estelar más cercano al Sol.', 'Distancia: 4,4 años luz', 'Confirmado', 0],
   ['1P/Halley', 'Cometa', 0.36, 5.2, '#5bb8ff', 'El cometa más famoso; vuelve cada 76 años aproximadamente.', 'Próximo perihelio: 2061', 'Confirmado', 0.035],
-  ['C/2020 F3 (NEOWISE)', 'Cometa', 0.68, 1.7, '#99dbff', 'Cometa brillante visible a simple vista en 2020.', 'Período orbital: ~6 800 años', 'Confirmado', 0.022],
-  ['67P/Churyumov-Gerasimenko', 'Cometa', 0.52, 3.1, '#79cbff', 'Visitado y estudiado de cerca por la misión Rosetta de la ESA.', 'Tiene forma bilobulada («patito de goma»)', 'Confirmado', 0.028],
+  ['C/2020 F3 (NEOWISE)', 'Cometa', 0.68, 1.7, '#9ad4ff', 'Cometa brillante visible a simple vista en 2020.', 'Período orbital: ~6 800 años', 'Confirmado', 0.022],
+  ['67P/Churyumov-Gerasimenko', 'Cometa', 0.52, 3.1, '#5bb8ff', 'Visitado y estudiado de cerca por la misión Rosetta de la ESA.', 'Tiene forma bilobulada («patito de goma»)', 'Confirmado', 0.028],
   ['Bennu', 'Asteroide', 0.50, 5.5, '#c4b8a8', 'Asteroide cercano a la Tierra; OSIRIS-REx trajo una muestra en 2023.', 'Rico en carbono y agua', 'Confirmado', 0.045],
   ['Eros', 'Asteroide', 0.25, 2.8, '#d9be9c', 'Primer asteroide orbitado y aterrizado por una sonda (NEAR Shoemaker).', 'Forma alargada de cacahuate', 'Confirmado', 0.038],
   ['Ceres', 'Asteroide', 0.72, 0.9, '#e0dbd0', 'El objeto más grande del cinturón de asteroides; planeta enano.', 'Tiene depósitos brillantes de sal', 'Confirmado', 0.018],
@@ -340,7 +340,7 @@ export function getObjectProvenance(o) {
 export const PLANETAS = [
   ['Mercurio', 0x9a9a9a, 12, 1.60, 1.0],
   ['Venus',    0xe6c07a, 18, 1.20, 1.9],
-  ['Tierra',   0x5bb8ff, 25, 1.00, 2.1],
+  ['Tierra',   0x7cc8ff, 25, 1.00, 2.1],
   ['Marte',    0xd1603d, 32, 0.80, 0.4],
   ['Júpiter',  0xd9b38c, 54, 0.45, 3.4],
   ['Saturno',  0xe3d3a3, 70, 0.35, 3.0],

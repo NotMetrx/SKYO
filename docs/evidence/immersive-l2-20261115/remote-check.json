@@ -1,0 +1,16 @@
+{
+  "checked_utc": "2026-11-15T16:23:26.906852+00:00",
+  "tap": {
+    "point": [
+      60.8109955,
+      51.3404038
+    ],
+    "detector": 4,
+    "outcome": "Read timeout after35s"
+  },
+  "cutout": {
+    "url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W20_2D/l2b-v27-2026-198/2/level2_2025W20_2D_0065_1D2_spx_l2b-v27-2026-198.fits?center=210.8005798819627,54.34658512732025d&size=.25",
+    "outcome": "HTTP503ServiceUnavailable"
+  },
+  "conclusion": "Remote successful L2 transition not validated; controlled browser uses unchanged archived real FITS"
+}

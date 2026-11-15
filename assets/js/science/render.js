@@ -16,7 +16,7 @@ function quantiles(data,valid){
   }
   return [percentile(sample,.02),percentile(sample,.995)];
 }
-export function imageRgba(data,width,height,valid=null,{kind='science'}={}) {
+export function imageRgba(data,width,height,valid=null,{kind='science',contrast=1}={}) {
   if(data.length!==width*height)throw new Error('Tamanos incompatibles de render');
   const rgba=new Uint8ClampedArray(width*height*4);
   let [lo,hi]=quantiles(data,valid);
@@ -28,18 +28,18 @@ export function imageRgba(data,width,height,valid=null,{kind='science'}={}) {
   for(let i=0;i<data.length;i++) {
     const j=i*4;
     if((valid&&!valid[i])||!Number.isFinite(data[i])){
-      rgba[j]=12;rgba[j+1]=17;rgba[j+2]=34;rgba[j+3]=255;continue;
+      rgba[j]=7;rgba[j+1]=7;rgba[j+2]=10;rgba[j+3]=255;continue;
     }
     if(kind==='difference') {
       const v=clamp((data[i]-lo)/span,0,1);
       const z=(v-0.5)*2;
       const mag=Math.min(1,Math.abs(z));
-      // colormap divergente: cian negativo, ambar positivo; centro oscuro.
-      const base=[26,33,55],pos=[252,181,91],neg=[82,202,226];
+      // colormap divergente de campaña: Sky Blue negativo, Laser Crimson positivo; centro obsidiana.
+      const base=[18,19,24],pos=[255,92,122],neg=[124,200,255];
       const color=z>=0?pos:neg;
       for(let k=0;k<3;k++)rgba[j+k]=base[k]+mag*(color[k]-base[k]);
     }else{
-      const t=clamp((data[i]-lo)/span,0,1);
+      const t=clamp((data[i]-lo)/span,0,1)**(1/contrast);
       const g=Math.round(255*Math.asinh(10*t)/Math.asinh(10));
       rgba[j]=g;rgba[j+1]=g;rgba[j+2]=g;
     }

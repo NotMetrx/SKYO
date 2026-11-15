@@ -1,0 +1,12 @@
+✔ Inspector: HDU/IMAGE/FLAGS originales, máscara y contraste sin alterar FITS (283.726415ms)
+✔ Inspector: lee un solo plano de cubo, conserva NaN y rechaza límites/truncados (7.145957ms)
+✔ Cobertura: polígonos ICRS, costura RA y polos; ninguna huella inventada como fallback (57.731191ms)
+✔ Regla angular: costura, polos y extremos según geometría esférica (1.726081ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1162.023554

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#07070a">
   <meta name="description" content="Laboratorio local de imágenes FITS de SKYO, preparado para SPHEREx.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_PE">
@@ -15,7 +15,7 @@
   <link rel="icon" type="image/svg+xml" href="./assets/img/favicon.svg">
   <link rel="alternate icon" type="image/png" sizes="32x32" href="./assets/img/favicon-32x32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/img/apple-touch-icon.png">
-  <link rel="manifest" href="./data/manifests/manifest.webmanifest">
+  <link rel="manifest" href="/manifest.webmanifest">
   <link rel="stylesheet" href="./assets/css/lab.css">
   <link rel="stylesheet" href="./assets/css/states.css">
 </head>
@@ -75,7 +75,7 @@
 
     <div class="warning" role="note">
       <span class="warning-icon">◎</span>
-      <span><strong>Prototipo científico exploratorio.</strong> No utiliza imágenes reales de NASA precargadas. La demo genera datos sintéticos señalados como tales. Para conclusiones científicas faltan validaciones espectrales por píxel, ePSF y cruce con JPL Small-Body Database.</span>
+      <span><strong>Comparador exploratorio.</strong> El paquete del entorno de M101 contiene recortes reales NASA/IPAC; la simulación está separada y rotulada. WCS-WAVE es una estimación visual: faltan calibración científica, PSF y validación independiente.</span>
     </div>
 
     <section class="workspace" id="explorar">
@@ -94,11 +94,17 @@
       <div class="local-buttons">
         <button type="button" class="button subtle" id="save-local" disabled>Guardar ambas en este dispositivo</button>
         <button type="button" class="button subtle" id="load-local">Recuperar desde OPFS</button>
+        <button type="button" class="button subtle" id="clear-local">Borrar pareja guardada</button>
       </div>
       <div class="meta-input">
-        <label for="manifest">Metadatos científicos opcionales (.json, generados con el curador de IRSA)</label>
+        <label for="real-region">Lugar · región del paquete NASA</label>
+        <select id="real-region"></select>
+        <button id="load-real" class="button subtle" type="button">Cargar M101 real (exploratorio)</button>
+      </div>
+      <div class="meta-input">
+        <label for="manifest">Manifiesto opcional de integridad (.json)</label>
         <input id="manifest" type="file" accept=".json,application/json"/>
-        <span id="manifest-state">Ningún manifiesto cargado</span>
+        <span id="manifest-state" role="status">Ningún manifiesto cargado</span>
       </div>
     </section>
 
@@ -112,13 +118,13 @@
       </div>
       <div class="image-grid">
         <article class="image-card">
-          <div class="image-title"><span>OBSERVACIÓN A</span><span class="indicator">RAW / FITS</span></div>
-          <div class="canvas-wrapper"><canvas id="canvas-a" aria-label="Imagen FITS de la observación A" width="320" height="240"></canvas><div class="canvas-hint is-state" id="hint-a"></div></div>
+          <div class="image-title"><span>OBSERVACIÓN A</span><span class="indicator">RAW / VISUALIZACIÓN</span></div>
+          <div class="canvas-wrapper"><canvas id="canvas-a" aria-label="Imagen FITS de la observación A" width="320" height="240"></canvas><div class="canvas-hint" id="hint-a">Selecciona observaciones FITS para visualizar</div></div>
           <div class="image-meta" id="meta-a">Sin archivo cargado</div>
         </article>
         <article class="image-card">
-          <div class="image-title"><span>OBSERVACIÓN B</span><span class="indicator">RAW / FITS</span></div>
-          <div class="canvas-wrapper"><canvas id="canvas-b" aria-label="Imagen FITS de la observación B" width="320" height="240"></canvas><div class="canvas-hint is-state" id="hint-b"></div></div>
+          <div class="image-title"><span>OBSERVACIÓN B</span><span class="indicator">RAW / VISUALIZACIÓN</span></div>
+          <div class="canvas-wrapper"><canvas id="canvas-b" aria-label="Imagen FITS de la observación B" width="320" height="240"></canvas><div class="canvas-hint" id="hint-b">Selecciona observaciones FITS para visualizar</div></div>
           <div class="image-meta" id="meta-b">Sin archivo cargado</div>
         </article>
       </div>
@@ -132,8 +138,22 @@
         </div>
         <button id="compare" class="button main-button" type="button" disabled>Comparar épocas <span>↗</span></button>
       </div>
+      <div class="lab-view-controls">
+        <label for="render-view">Luz · vista</label>
+        <select id="render-view" disabled>
+          <option value="A">Observación A</option>
+          <option value="B">Observación B</option>
+          <option value="difference">Diferencia</option>
+          <option value="snr">SNR aproximado</option>
+        </select>
+        <button type="button" class="button subtle" id="blink-manual" disabled>Alternar A/B</button>
+        <p id="time-summary" role="status">Tiempo · selecciona ambas observaciones</p>
+      </div>
       <div class="analysis-grid">
-        <div class="difference-preview"><canvas id="canvas-difference" aria-label="Diferencia reproyectada" width="320" height="240"></canvas><div class="difference-overlay diff-placeholder is-state" id="difference-placeholder"></div></div>
+        <div class="difference-preview">
+          <canvas id="canvas-difference" aria-label="Diferencia reproyectada" width="320" height="240"></canvas>
+          <div class="difference-overlay diff-placeholder is-state" id="difference-placeholder">Aquí se mostrará la resta de imágenes alineadas por WCS.</div>
+        </div>
         <div class="results">
           <div class="results-title">// INFORME DEL MOTOR CIENTÍFICO</div>
           <dl id="result-table">

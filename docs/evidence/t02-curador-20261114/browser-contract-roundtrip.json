@@ -1,0 +1,40 @@
+{
+  "sourceKind": "USER-LOCAL",
+  "processingVersion": "7.0.5",
+  "epsf": {
+    "rows": 441,
+    "columns": [
+      "BINX",
+      "BINY",
+      "XCENTER",
+      "YCENTER",
+      "XWIDTH",
+      "YWIDTH",
+      "NSTAR",
+      "NEFF_MEAN",
+      "CWAVE",
+      "CBAND",
+      "EPSF"
+    ]
+  },
+  "nativeTimeCards": {
+    "DATE-OBS": "2025-05-10T17:04:37.741",
+    "MJD-OBS": 60805.711547928,
+    "MJD-BEG": 60805.711547928,
+    "MJD-END": 60805.712880307,
+    "MJD-AVG": 60805.712214117,
+    "TIMESYS": "UTC",
+    "TIMEUNIT": null,
+    "TREFPOS": null
+  },
+  "availableHdus": [
+    "PRIMARY",
+    "IMAGE",
+    "FLAGS",
+    "VARIANCE",
+    "ZODI",
+    "EPSF",
+    "WCS-WAVE"
+  ],
+  "sha256": "730844bd76211e8d8ed27d4b263098cc43ceb6982fc079009eacb09c2d38db17"
+}

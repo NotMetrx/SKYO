@@ -1,0 +1,30 @@
+[hidden]{display:none!important}
+main{grid-template-columns:minmax(0,1fr) minmax(310px,390px)}
+h3{font-size:15px;font-weight:500}
+#results table{width:100%;border-collapse:collapse;font-size:12px}
+#results caption{text-align:left;padding:8px 0;color:#c2ccd8}
+#results th,#results td{padding:9px 5px;text-align:left;vertical-align:top;border-bottom:1px solid #30313c;overflow-wrap:anywhere}
+#results tr[aria-selected=true]{background:#182c3c}
+#results button{min-height:44px;min-width:76px;margin:0}
+#coverage-map{width:100%;height:auto;display:block;background:#070b12;border:1px solid #30313c;border-radius:8px}
+#coverage-map path{fill:#7cc8ff18;stroke:#7cc8ff;stroke-width:1;cursor:pointer}
+#coverage-map path.selected,#coverage-map path:focus{fill:#e11d4844;stroke:#ff8aa2;stroke-width:2;outline:none}
+#coverage-map .search-target{fill:#fff;stroke:#070b12;stroke-width:1;pointer-events:none}
+.file-open{max-width:420px}
+#fits-inspector{color:#e6e8ec;background:#101116;border:1px solid #555b6c;border-radius:12px;width:min(960px,95vw);max-height:94dvh;padding:20px;overflow:auto}
+#fits-inspector::backdrop{background:#000b}
+.inspector-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;background:#101116;z-index:1}
+.inspector-heading h2{overflow-wrap:anywhere}
+#fits-origin,#fits-status,#fits-hash{overflow-wrap:anywhere}
+#fits-status{min-height:20px}
+.inline-check{display:flex;align-items:center;min-height:44px;gap:8px}
+.inline-check input{width:auto}
+.fits-stage{height:clamp(200px,52vh,560px);display:flex;align-items:center;justify-content:center;background:#07070a;border:1px solid #30313c;margin-top:12px}
+#fits-image{max-width:100%;max-height:100%;width:auto;height:auto;cursor:crosshair;touch-action:pan-y;image-rendering:pixelated}
+#fits-measure[aria-pressed=true]{background:#253b50;border-color:#7cc8ff}
+#fits-measurement{color:#b8ddff;min-height:20px}
+#fits-details{border-top:1px solid #30313c;padding-top:12px}
+#fits-details summary{cursor:pointer;padding:8px 0}
+#fits-header{max-height:260px;overflow:auto;font-size:12px;line-height:1.6;background:#07070a;padding:12px;white-space:pre}
+#fits-plane{width:100px}
+@media(max-width:850px){main{grid-template-columns:1fr}aside{order:-1}#fits-inspector{padding:12px}.fits-stage{height:40vh}#fits-inspector .toolbar{align-items:start}#fits-measure{min-height:44px}}

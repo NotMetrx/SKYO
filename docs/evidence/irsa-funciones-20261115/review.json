@@ -1,0 +1,25 @@
+{
+  "checkedUtc": "2026-11-15T17:32:46.562369+00:00",
+  "artifact": "docs/REPLICA_FUNCIONAL_IRSA_SPHEREX.md",
+  "capabilities": 38,
+  "localLinksChecked": 16,
+  "externalReferences": 13,
+  "httpReceipts": 16,
+  "tests": {
+    "command": "npm test",
+    "passed": 58,
+    "failed": 0,
+    "skipped": 0
+  },
+  "docs": {
+    "command": "npm run validate:docs",
+    "exitCode": 0,
+    "specSha256": "9cb76403fc0d845d8ab1c6aba7292b83b817cbd9159bd8dee58b2fa7b543fcfb"
+  },
+  "limits": [
+    "No interactive IRSA browser validation: browser access host unavailable.",
+    "No remote jobs or uploads.",
+    "No product code implementation; no build or physical Android/VR checks this review.",
+    "Existing channel-init and pinch-selection P2 findings remain open."
+  ]
+}

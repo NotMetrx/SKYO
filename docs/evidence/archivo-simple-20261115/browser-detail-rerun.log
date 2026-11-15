@@ -1,0 +1,43 @@
+[WebServer] (node:53629) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:53668) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 tests/browser/immersive.spec.mjs:111:1 › Detalle nativo completo, precarga espectral y caché FITS sin nuevas descargas (2.0m)
+
+
+  1) tests/browser/immersive.spec.mjs:111:1 › Detalle nativo completo, precarga espectral y caché FITS sin nuevas descargas 
+
+    Test timeout of 120000ms exceeded.
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Test timeout of 120000ms exceeded
+
+      138 |     await canvas.focus();await page.mouse.move(640,400);for(let i=0;i<8;i++)await page.mouse.wheel(0,-500);
+      139 |     await expect(canvas).toHaveAttribute('data-lod','5');
+    > 140 |     await expect.poll(async()=>await canvas.getAttribute('data-detail-ready')===await canvas.getAttribute('data-detail-wanted'),{timeout:60000}).toBe(true);
+          |                                                                                                                                                  ^
+      141 |   }finally{await context.close();}
+      142 | });
+      143 |
+        at /home/metrx/Proyectos/SKYO/tests/browser/immersive.spec.mjs:140:146
+
+    Error Context: test-results/archivo-simple-detail/immersive-Detalle-nativo-c-2e214-é-FITS-sin-nuevas-descargas/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/archivo-simple-detail/immersive-Detalle-nativo-c-2e214-é-FITS-sin-nuevas-descargas/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/archivo-simple-detail/immersive-Detalle-nativo-c-2e214-é-FITS-sin-nuevas-descargas/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/browser/immersive.spec.mjs:111:1 › Detalle nativo completo, precarga espectral y caché FITS sin nuevas descargas 

@@ -1,0 +1,41 @@
+{"i":0,"responseMs":164,"frames":2,"kryo":{"phase":"idle","warpT":0,"visible":false,"hasModel":false,"clipsCount":0,"clipNames":[],"mixerTime":0},"status":"KRYO-9 · ACTIVA LA VISTA 3D","route":"inicio"}
+{"i":1,"responseMs":3500,"frames":3,"kryo":{"phase":"idle","warpT":0,"visible":false,"hasModel":false,"clipsCount":0,"clipNames":[],"mixerTime":0},"status":"KRYO-9 · EN ÓRBITA DE ESPERA","route":"inicio"}
+{
+  "mode": "no-eclipse",
+  "errors": [],
+  "probes": [
+    {
+      "i": 0,
+      "responseMs": 164,
+      "frames": 2,
+      "kryo": {
+        "phase": "idle",
+        "warpT": 0,
+        "visible": false,
+        "hasModel": false,
+        "clipsCount": 0,
+        "clipNames": [],
+        "mixerTime": 0
+      },
+      "status": "KRYO-9 · ACTIVA LA VISTA 3D",
+      "route": "inicio"
+    },
+    {
+      "i": 1,
+      "responseMs": 3500,
+      "frames": 3,
+      "kryo": {
+        "phase": "idle",
+        "warpT": 0,
+        "visible": false,
+        "hasModel": false,
+        "clipsCount": 0,
+        "clipNames": [],
+        "mixerTime": 0
+      },
+      "status": "KRYO-9 · EN ÓRBITA DE ESPERA",
+      "route": "inicio"
+    }
+  ],
+  "error": "timeout"
+}

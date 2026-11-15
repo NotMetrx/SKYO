@@ -829,3 +829,29 @@ footer {
     animation: none !important;
   }
 }
+
+/* Controles de vista y parpadeo científico (Blink / Render view) */
+.lab-view-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 14px 0 16px;
+  font-size: 12px;
+}
+
+.lab-view-controls select {
+  background: var(--gl-card);
+  color: var(--fg);
+  border: 1px solid var(--craft-border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+#time-summary {
+  margin: 0;
+  font-size: 11px;
+  color: var(--mut);
+  font-family: var(--font-mono);
+}

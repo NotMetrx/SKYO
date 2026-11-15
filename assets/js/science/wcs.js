@@ -18,25 +18,42 @@ function evalSip(coeff,u,v) {
   return out;
 }
 export function wcsFromHeader(h) {
+  const ctype1=String(h.CTYPE1??'').trim(),ctype2=String(h.CTYPE2??'').trim();
+  if(!((ctype1==='RA---TAN'&&ctype2==='DEC--TAN')||(ctype1==='RA---TAN-SIP'&&ctype2==='DEC--TAN-SIP')))throw Error('WCS: ejes ecuatoriales TAN/TAN-SIP no soportados');
+  for(const key of ['CUNIT1','CUNIT2'])if(h[key]!=null&&String(h[key]).trim().toLowerCase()!=='deg')throw Error('WCS: unidad no soportada; se requieren grados');
+  const frame=String(h.RADESYS??(h.EQUINOX==null?'ICRS':'FK5')).trim().toUpperCase();
+  if(frame!=='ICRS')throw Error('WCS: marco no soportado; solo ICRS, sin transformación FK4/FK5');
+  for(const key of ['CRVAL1','CRVAL2','CRPIX1','CRPIX2'])if(typeof h[key]!=='number'||!finite(h[key]))throw Error('WCS: tarjeta numérica obligatoria inválida');
+  for(const key of ['CDELT1','CDELT2','CD1_1','CD1_2','CD2_1','CD2_2','PC1_1','PC1_2','PC2_1','PC2_2'])if(key in h&&(typeof h[key]!=='number'||!finite(h[key])))throw Error('WCS: matriz numérica inválida');
   const crval1=Number(h.CRVAL1), crval2=Number(h.CRVAL2);
   const crpix1=Number(h.CRPIX1), crpix2=Number(h.CRPIX2);
   const cdelt1=Number(h.CDELT1 ?? 1), cdelt2=Number(h.CDELT2 ?? 1);
-  const cd11= h.CD1_1!=null ? +h.CD1_1 : cdelt1*Number(h.PC1_1??1);
-  const cd12= h.CD1_2!=null ? +h.CD1_2 : cdelt1*Number(h.PC1_2??0);
-  const cd21= h.CD2_1!=null ? +h.CD2_1 : cdelt2*Number(h.PC2_1??0);
-  const cd22= h.CD2_2!=null ? +h.CD2_2 : cdelt2*Number(h.PC2_2??1);
-  const ctype1=String(h.CTYPE1??''), ctype2=String(h.CTYPE2??'');
+  const hasCd=['CD1_1','CD1_2','CD2_1','CD2_2'].some(key=>key in h);
+  const cd11= hasCd ? h.CD1_1??0 : cdelt1*Number(h.PC1_1??1);
+  const cd12= hasCd ? h.CD1_2??0 : cdelt1*Number(h.PC1_2??0);
+  const cd21= hasCd ? h.CD2_1??0 : cdelt2*Number(h.PC2_1??0);
+  const cd22= hasCd ? h.CD2_2??0 : cdelt2*Number(h.PC2_2??1);
   const nums=[crval1,crval2,crpix1,crpix2,cd11,cd12,cd21,cd22];
   const det=cd11*cd22-cd12*cd21;
-  if (!nums.every(finite)||Math.abs(det)<1e-15 || !ctype1.includes('TAN') || !ctype2.includes('TAN')) {
+  if (!nums.every(finite)||Math.abs(det)<1e-15 || crval2< -90 || crval2>90) {
     throw new Error('WCS TAN/TAN-SIP no compatible: hace falta registro astrometrico validado');
   }
   // Si el header indica SIP, debe haber terminos A/B. No ignorar distorsion.
+  const hasSip=ctype1.endsWith('-SIP');
   const a=sipCoeff(h,'A'),b=sipCoeff(h,'B');
+  if(!hasSip&&(a.length||b.length))throw Error('WCS contiene SIP sin declarar TAN-SIP');
+  if(hasSip)for(const prefix of ['A','B']){
+    const order=Number(h[prefix+'_ORDER']);
+    if(!Number.isInteger(order)||order<2||order>9)throw Error('WCS: orden SIP no soportado');
+    for(const [key,value] of Object.entries(h)){
+      const term=key.match(new RegExp(`^${prefix}_(\\d+)_(\\d+)$`));
+      if(term&&(!Number.isFinite(Number(value))||Number(term[1])+Number(term[2])>order))throw Error('WCS: coeficiente SIP inválido');
+    }
+  }
   if ((ctype1.includes('SIP')||ctype2.includes('SIP')) && (!a.length||!b.length)) {
     throw new Error('WCS indica SIP pero faltan coeficientes A/B');
   }
-  return {crval1,crval2,crpix1,crpix2,cd11,cd12,cd21,cd22,det,a,b};
+  return {crval1,crval2,crpix1,crpix2,cd11,cd12,cd21,cd22,det,a,b,frame,framePolicy:h.RADESYS?'RADESYS explícito':'ICRS por default FITS: RADESYS y EQUINOX ausentes',unitPolicy:'Grados; CUNIT ausente usa el default FITS para ejes celestes'};
 }
 export function pixelToWorld(w,x,y) {
   let u=x+1-w.crpix1, v=y+1-w.crpix2;
@@ -61,24 +78,29 @@ export function worldToPixel(w,ra,dec) {
   const distortU=(w.cd22*xi-w.cd12*eta)/w.det;
   const distortV=(-w.cd21*xi+w.cd11*eta)/w.det;
   let u=distortU,v=distortV;
-  for(let iter=0;iter<12;iter++) {
-    const nextU=distortU-evalSip(w.a,u,v),nextV=distortV-evalSip(w.b,u,v);
-    if(Math.abs(nextU-u)+Math.abs(nextV-v)<1e-9) {u=nextU;v=nextV;break;}
-    u=nextU;v=nextV;
+  for(let iter=0;iter<30;iter++) {
+    const f=u+evalSip(w.a,u,v)-distortU,g=v+evalSip(w.b,u,v)-distortV;
+    if(Math.abs(f)+Math.abs(g)<1e-9)break;
+    const derivative=(terms,axis)=>terms.reduce((sum,[i,j,c])=>sum+(axis===0?(i?c*i*u**(i-1)*v**j:0):(j?c*j*u**i*v**(j-1):0)),0);
+    const a=1+derivative(w.a,0),b=derivative(w.a,1),c=derivative(w.b,0),d=1+derivative(w.b,1),det=a*d-b*c;
+    if(!finite(det)||Math.abs(det)<1e-14)return {x:NaN,y:NaN};
+    u-=(d*f-b*g)/det;v-=(-c*f+a*g)/det;
   }
+  if(!finite(u)||!finite(v)||Math.abs(u+evalSip(w.a,u,v)-distortU)+Math.abs(v+evalSip(w.b,u,v)-distortV)>1e-7)return {x:NaN,y:NaN};
   return {x:u+w.crpix1-1,y:v+w.crpix2-1};
 }
 
 /** Devuelve B proyectada a la cuadricula de A; varianza propagada aprox. */
-export function reprojectToReference(ref,other,refMask,otherMask,{maxPixels=512*512}={}) {
+export function reprojectToReference(ref,other,refMask,otherMask,{maxPixels=512*512,refBackgroundMask=null,otherBackgroundMask=null}={}) {
   const n=ref.width*ref.height;
-  if(n>maxPixels || other.width*other.height>maxPixels) {
+  if(n>maxPixels || other.width*other.height>maxPixels || [ref.width,ref.height,other.width,other.height].some(axis=>!Number.isSafeInteger(axis)||axis<1||axis>512)) {
     throw new Error('Recorte mayor de 512x512; reduce el tamano para ahorrar memoria y bateria');
   }
   const refW=wcsFromHeader(ref.header),otherW=wcsFromHeader(other.header);
   const values=new Float32Array(n);values.fill(NaN);
   const variance=new Float32Array(n);variance.fill(NaN);
   const valid=new Uint8Array(n);
+  const backgroundMask=new Uint8Array(n),sourceExclusions={A:0,B:0};
   for(let y=0;y<ref.height;y++) for(let x=0;x<ref.width;x++) {
     const i=y*ref.width+x;
     if (!refMask[i]) continue;
@@ -94,10 +116,11 @@ export function reprojectToReference(ref,other,refMask,otherMask,{maxPixels=512*
       [(y0+1)*other.width+x0,(1-tx)*ty],
       [(y0+1)*other.width+x0+1,tx*ty]
     ];
-    let value=0,varSum=0,okay=true;
+    let value=0,varSum=0,okay=true,backgroundB=true;
     for(const [j,weight] of neighbors) {
       if(weight<1e-8) continue;
       const v=other.image[j];
+      if(otherBackgroundMask&&!otherBackgroundMask[j])backgroundB=false;
       if(!otherMask[j]||!finite(v)) {okay=false;break;}
       value+=weight*v;
       if(other.variance) {
@@ -110,7 +133,11 @@ export function reprojectToReference(ref,other,refMask,otherMask,{maxPixels=512*
       values[i]=value;
       variance[i]=other.variance ? varSum : NaN;
       valid[i]=1;
+      const backgroundA=!refBackgroundMask||!!refBackgroundMask[i];
+      backgroundMask[i]=backgroundA&&backgroundB?1:0;
+      if(!backgroundA)sourceExclusions.A++;
+      if(!backgroundB)sourceExclusions.B++;
     }
   }
-  return {image:values,variance,mask:valid};
+  return {image:values,variance,mask:valid,backgroundMask,sourceExclusions};
 }

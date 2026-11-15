@@ -1,0 +1,159 @@
+{
+  "project": "skyo",
+  "actor": "codex",
+  "date": "2026-11-15T16:00:22.776Z",
+  "node": {
+    "passed": 55,
+    "skipped": 0
+  },
+  "rust": {
+    "passed": 8
+  },
+  "live": {
+    "date": "2026-11-15T15:54:19.307Z",
+    "source": "Live IRSA no mocks, viewport1440x900 DPR2",
+    "stats": {
+      "ready": "12",
+      "channel": "62",
+      "lod": "2",
+      "detailReady": "71",
+      "detailWanted": "71",
+      "spatialKernel": "Rust/WASM",
+      "displayChannel": "62",
+      "tiles": "131",
+      "ra": "60.81100",
+      "dec": "51.34040",
+      "travel": "0.00",
+      "width": 2880,
+      "height": 1800
+    },
+    "flux": "Flujo 12.0051 MJy/sr",
+    "status": "12/12 base · detalle 71/71 (orden 2) · SPHEREx · 0 pendientes",
+    "errors": []
+  },
+  "benchmark": {
+    "date": "2026-11-15T15:53:01.956Z",
+    "node": "v24.21.0",
+    "source": "NASA IMAGE 512x512 float32, identical input, RGBA and pixel hashes",
+    "warmup": 5,
+    "runs": 30,
+    "variants": [
+      {
+        "name": "baseline",
+        "bytes": 102109,
+        "sha256": "ad4422eed36f72b4f48c84e32d7a5e933d0b1cf1f83a3a02344f477129d82128",
+        "medianMs": 98.74084600000015,
+        "p95Ms": 131.83275799999956,
+        "correct": true
+      },
+      {
+        "name": "final",
+        "bytes": 112331,
+        "sha256": "c61e0668dea746c4ddaacbbc9e7923c7faa1f7411994c6054d4c89ee3bf2cac2",
+        "medianMs": 26.00320099999999,
+        "p95Ms": 36.107066000000486,
+        "correct": true
+      }
+    ]
+  },
+  "review": {
+    "importantCorrected": [
+      "LRU retention of current channel detail outside view",
+      "radial-only LOD overrequest on backwards flight"
+    ],
+    "remainingCritical": 0,
+    "remainingImportant": 0,
+    "followup": "12 targeted tests and 12 JS/Rust adaptive scenarios passed"
+  },
+  "files": {
+    "science-core/src/texture.rs": {
+      "bytes": 12598,
+      "sha256": "06b4ac9399c914203365719fe89f02eb73f495db97dbde7148800360d75b7283"
+    },
+    "science-core/src/healpix.rs": {
+      "bytes": 4052,
+      "sha256": "c3fff0ee1b47eae20d925edbdd65ec4e68aaf985de1ff1c0262c6af9e16304c8"
+    },
+    "science-core/Cargo.toml": {
+      "bytes": 305,
+      "sha256": "9aa8bb301a3aee22ea1da42dc70cd56a4f37b3543be0b063407a3469e853944a"
+    },
+    "science-core/src/lib.rs": {
+      "bytes": 1737,
+      "sha256": "0340fd28698053f98ada7c468af06abb8d7202beb9b02e34393d5ee4905ae89e"
+    },
+    "assets/js/science/wasm-bridge.js": {
+      "bytes": 2895,
+      "sha256": "f64c549ee9d684f2391e8caf3616c4a1ee136ce622899418df06cb581df1d169"
+    },
+    "assets/js/science/wasm/pkg/skyo_wasm_bg.wasm": {
+      "bytes": 112331,
+      "sha256": "c61e0668dea746c4ddaacbbc9e7923c7faa1f7411994c6054d4c89ee3bf2cac2"
+    },
+    "assets/js/immersive/main.js": {
+      "bytes": 15905,
+      "sha256": "56fada1631ae55089c8e9dc6c79abec67cd2bda1903554a674693ff910a5f887"
+    },
+    "assets/js/immersive/hips.js": {
+      "bytes": 9992,
+      "sha256": "8fcbdc0ecca8d770487acaac150c67209b67df393cb904e4b7ffb7b5827f2c61"
+    },
+    "assets/js/immersive/cube-worker.js": {
+      "bytes": 2392,
+      "sha256": "6ccb2a22eb876e64e56197d10b15f3bfa6be17e93cc8429095ede8d314bd0365"
+    },
+    "scripts/benchmark-immersive.mjs": {
+      "bytes": 1961,
+      "sha256": "4306c04b9ce7132e6267c972a59ad3ccd9f66d9c2ebda6cac0b46f5fcb949216"
+    },
+    "scripts/immersive.test.mjs": {
+      "bytes": 12225,
+      "sha256": "9ae94cc26bdf2a5125387512bb59a330c6b3cda6b9aaa28fbe04194c2da076a3"
+    },
+    "tests/browser/immersive.spec.mjs": {
+      "bytes": 13299,
+      "sha256": "264df4608017b43877e677da8b133ef77d03fbeedfd7efff7a211afd1bd8e11c"
+    },
+    "tests/browser/curated.spec.mjs": {
+      "bytes": 3433,
+      "sha256": "03b868e6d648d32fb7834a6ff5bdbe4cd926d15cbd113ec23fc09c17ecd82b51"
+    }
+  },
+  "browser": {
+    "initial": {
+      "startTime": "2026-11-15T15:36:20.190Z",
+      "duration": 229864.688,
+      "expected": 43,
+      "skipped": 0,
+      "unexpected": 2,
+      "flaky": 0
+    },
+    "affected": {
+      "startTime": "2026-11-15T15:52:57.988Z",
+      "duration": 55791.683000000005,
+      "expected": 2,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "fullRepetition": {
+      "startTime": "2026-11-15T15:54:40.646Z",
+      "duration": 433107.70599999995,
+      "expected": 44,
+      "skipped": 0,
+      "unexpected": 1,
+      "flaky": 0
+    },
+    "gyroAfterFrameSynchronization": {
+      "startTime": "2026-11-15T15:57:33.862Z",
+      "duration": 51067.630000000005,
+      "expected": 3,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "note": "44/45 in full repetition; sole gyro simulator scheduling race corrected and rerun3/3; no production change after full run."
+  },
+  "build": "passed;45precache resources",
+  "validators": "build/docs/syntax/staged-and-unstaged diff checks passed"
+}

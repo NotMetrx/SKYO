@@ -1,0 +1,105 @@
+{"i":0,"responseMs":12,"frames":0,"status":"KRYO-9 · ACTIVA LA VISTA 3D","route":"inicio"}
+{"i":1,"responseMs":3,"frames":0,"status":"KRYO-9 · ACTIVA LA VISTA 3D","route":"inicio"}
+{"i":2,"responseMs":4,"frames":0,"status":"KRYO-9 · ACTIVA LA VISTA 3D","route":"inicio"}
+{"i":3,"responseMs":3,"frames":0,"status":"KRYO-9 · ACTIVA LA VISTA 3D","route":"inicio"}
+{"i":4,"responseMs":5,"frames":0,"status":"KRYO-9 · ACTIVA LA VISTA 3D","route":"inicio"}
+{"i":5,"responseMs":5,"frames":0,"status":"KRYO-9 · ACTIVA LA VISTA 3D","route":"inicio"}
+{"i":6,"responseMs":5,"frames":0,"status":"KRYO-9 · ACTIVA LA VISTA 3D","route":"inicio"}
+{"i":7,"responseMs":6,"frames":0,"status":"KRYO-9 · ACTIVA LA VISTA 3D","route":"inicio"}
+{"i":8,"responseMs":5,"frames":0,"status":"KRYO-9 · ACTIVA LA VISTA 3D","route":"inicio"}
+{"i":9,"responseMs":8,"frames":0,"status":"KRYO-9 · ACTIVA LA VISTA 3D","route":"inicio"}
+{"i":10,"responseMs":13,"frames":0,"status":"KRYO-9 · ACTIVA LA VISTA 3D","route":"inicio"}
+{"i":11,"responseMs":3,"frames":0,"status":"KRYO-9 · ACTIVA LA VISTA 3D","route":"inicio"}
+{
+  "mode": "empty",
+  "errors": [
+    "Unexpected token '}'"
+  ],
+  "probes": [
+    {
+      "i": 0,
+      "responseMs": 12,
+      "frames": 0,
+      "status": "KRYO-9 · ACTIVA LA VISTA 3D",
+      "route": "inicio"
+    },
+    {
+      "i": 1,
+      "responseMs": 3,
+      "frames": 0,
+      "status": "KRYO-9 · ACTIVA LA VISTA 3D",
+      "route": "inicio"
+    },
+    {
+      "i": 2,
+      "responseMs": 4,
+      "frames": 0,
+      "status": "KRYO-9 · ACTIVA LA VISTA 3D",
+      "route": "inicio"
+    },
+    {
+      "i": 3,
+      "responseMs": 3,
+      "frames": 0,
+      "status": "KRYO-9 · ACTIVA LA VISTA 3D",
+      "route": "inicio"
+    },
+    {
+      "i": 4,
+      "responseMs": 5,
+      "frames": 0,
+      "status": "KRYO-9 · ACTIVA LA VISTA 3D",
+      "route": "inicio"
+    },
+    {
+      "i": 5,
+      "responseMs": 5,
+      "frames": 0,
+      "status": "KRYO-9 · ACTIVA LA VISTA 3D",
+      "route": "inicio"
+    },
+    {
+      "i": 6,
+      "responseMs": 5,
+      "frames": 0,
+      "status": "KRYO-9 · ACTIVA LA VISTA 3D",
+      "route": "inicio"
+    },
+    {
+      "i": 7,
+      "responseMs": 6,
+      "frames": 0,
+      "status": "KRYO-9 · ACTIVA LA VISTA 3D",
+      "route": "inicio"
+    },
+    {
+      "i": 8,
+      "responseMs": 5,
+      "frames": 0,
+      "status": "KRYO-9 · ACTIVA LA VISTA 3D",
+      "route": "inicio"
+    },
+    {
+      "i": 9,
+      "responseMs": 8,
+      "frames": 0,
+      "status": "KRYO-9 · ACTIVA LA VISTA 3D",
+      "route": "inicio"
+    },
+    {
+      "i": 10,
+      "responseMs": 13,
+      "frames": 0,
+      "status": "KRYO-9 · ACTIVA LA VISTA 3D",
+      "route": "inicio"
+    },
+    {
+      "i": 11,
+      "responseMs": 3,
+      "frames": 0,
+      "status": "KRYO-9 · ACTIVA LA VISTA 3D",
+      "route": "inicio"
+    }
+  ],
+  "error": "locator.click: Timeout 6000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('link', { name: 'Explorar el cielo' })\u001b[22m\n"
+}

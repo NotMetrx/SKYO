@@ -1,0 +1,89 @@
+{
+  "local_file": "d2-730844bd76211e8d8ed27d4b.fits",
+  "original_file": "originals/c801cfc42275ef1e762a460f796dda2843279db31f8b843b918b4508cd0575e8.fits",
+  "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W19_2B/l2b-v27-2026-198/2/level2_2025W19_2B_0346_1D2_spx_l2b-v27-2026-198.fits?center=210.80227,54.34895d&size=0.01",
+  "parent_mef_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W19_2B/l2b-v27-2026-198/2/level2_2025W19_2B_0346_1D2_spx_l2b-v27-2026-198.fits",
+  "source_release": "DR1",
+  "collection": "spherex_dr1",
+  "observation_id": "2025W19_2B_0346_1",
+  "plane_id": "01a0cf8b-7b99-7cbb-bacf-f0572e021e16",
+  "obsid": "01a0cf8b-46f6-7a69-a9db-7439fe71759e",
+  "sha256": "730844bd76211e8d8ed27d4b263098cc43ceb6982fc079009eacb09c2d38db17",
+  "source_sha256": "c801cfc42275ef1e762a460f796dda2843279db31f8b843b918b4508cd0575e8",
+  "parent_sha256": null,
+  "bytes": 3954240,
+  "retrieved_utc": "2026-11-14T18:06:35.570816Z",
+  "sourceKind": "NASA-DERIVED",
+  "curator_version": "skyo-curator-0.2",
+  "processing_version": "7.0.5",
+  "metadata_processing_version": "7.0.5",
+  "observation_utc": "2025-05-10T17:04:37.741",
+  "native_time_cards": {
+    "DATE-OBS": "2025-05-10T17:04:37.741",
+    "MJD-OBS": 60805.711547928,
+    "MJD-BEG": 60805.711547928,
+    "MJD-END": 60805.712880307,
+    "MJD-AVG": 60805.712214117,
+    "TIMESYS": "UTC",
+    "TIMEUNIT": null,
+    "TREFPOS": null
+  },
+  "mjd": 60805.711548,
+  "mjd_start": 60805.711547928,
+  "mjd_end": 60805.712880307,
+  "mjd_mid": 60805.712214117,
+  "time_scale": "UTC",
+  "metadata_time_bounds": {
+    "lower": 60805.711548,
+    "upper": 60805.71288
+  },
+  "detector": 2,
+  "ra_deg": 210.80227,
+  "dec_deg": 54.34895,
+  "size_deg": 0.01,
+  "units": "MJy / sr",
+  "finast": 0,
+  "wavelength_um": 1.5064212841578182,
+  "bandwidth_um": 0.036952739361587945,
+  "wavelength_quality": "center_only_from_WCS_WAVE",
+  "has_uncompressed_flags": true,
+  "has_variance": true,
+  "epsf": {
+    "rows": 441,
+    "columns": [
+      "BINX",
+      "BINY",
+      "XCENTER",
+      "YCENTER",
+      "XWIDTH",
+      "YWIDTH",
+      "NSTAR",
+      "NEFF_MEAN",
+      "CWAVE",
+      "CBAND",
+      "EPSF"
+    ]
+  },
+  "available_hdus": [
+    "PRIMARY",
+    "IMAGE",
+    "FLAGS",
+    "VARIANCE",
+    "ZODI",
+    "EPSF",
+    "WCS-WAVE"
+  ],
+  "omitted_hdus": [],
+  "transforms": [
+    {
+      "software": "skyo-curator-0.2",
+      "operation": "preserve all HDUs; decompress tiled image extensions; update checksums"
+    }
+  ],
+  "missing_reasons": {
+    "parent_sha256": "MEF completo no descargado; source_sha256 identifica el recorte recibido.",
+    "spectral_calibration": "WCS-WAVE central visual; CWAVE/CBAND cient\u00edficos no verificados.",
+    "time_scale": null,
+    "epsf": null
+  }
+}

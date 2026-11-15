@@ -1,0 +1,2 @@
+   Compiling skyo_wasm v0.1.0 (/home/metrx/Proyectos/SKYO/science-core)
+    Finished `release` profile [optimized] target(s) in 2.00s

@@ -1,7 +1,7 @@
 # history — Lo que SÍ O SÍ se debe recordar (consultar en cada interacción)
 
 - Filosofía Ponytail: cero polling, render por eventos, pausa con `document.hidden`, `prefers-reduced-motion`, código mínimo.
-- Fondo siempre negro `#000000`; Wayland nativo. Paleta oficial en `docs/PALETA.md` (usar solo variables CSS). Acento secundario MORADO `#b57bff` (no naranja). Maqueta en `docs/LAYOUT.md`.
+- Fondo obsidiana `#07070A`; Wayland nativo. Paleta oficial en `docs/PALETA.md` (usar solo variables CSS): Chrome Silver, Laser Crimson `#E11D48` y Sky Blue `#7CC8FF`. Maqueta en `docs/LAYOUT.md`.
 - Idioma: español. Enlaces `file://` clicables al citar archivos.
 - Proyecto: `/home/emi/Documentos/SKYO` (SPA `#inicio`, `#explorar`, `#3d`, `#fases`). Servidor: `python3 -m http.server 8000 -d /home/emi/Documentos/SKYO`.
 - H.E.R.A 7: ranura de avatar personalizable libre (permite subir cualquier imagen con persistencia local y botón de reset; no avatar fijo). 3D con relieve adaptativo en el botón `#ha`.
