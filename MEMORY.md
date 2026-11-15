@@ -209,3 +209,54 @@
   - Sin commit, push ni reset --hard; respaldo externo y stashes conservados intactos.
 - T08 sigue inspection-only/scienceReady=false y el registro central sigue
   pendiente; sin autoaprobación, claim/finish ni sincronización implícita.
+
+## Revisión de incorporaciones recientes — 2026-11-15
+
+- Revisión solicitada del FPA, cielo inmersivo, consulta por clic y detalle L2.
+  HEAD observado `156961a`, remoto `dd0b317`; fusión creada por la otra sesión,
+  sin conflictos Git activos. Nuevos módulos siguen en parte sin seguimiento.
+- `npm test`58/58, cero omitidas; build Vite46precache y WASM presente,
+  validate:build y validate:docs pasan. Son verificaciones de esta revisión;
+  no acreditan VR/móvil físico ni corrigen/validan el cuelgue de otro snapshot.
+- Dos P2 reproducidos, sin editar producto: cambiar canal antes del manifiesto
+  lanza TypeError y deja selector64/102 frente a imagen63/102; terminar pellizco
+  con último dedo estacionario activa selección no solicitada.
+- Evidencia: docs/evidence/revision-reciente-20261115/{review,reproduction}.json.
+  Siguiente: proteger inicialización/canal y distinguir gesto multipuntero de clic;
+  repetir sus regresiones y navegador de vistas nuevas. scienceReady=false.
+
+## Inventario funcional de IRSA SPHEREx — 2026-11-15
+
+- Solicitud: revisar la aplicación de origen de los datos y extraer funciones
+  para replicarlas. Entregable: [matriz de 38 capacidades](docs/REPLICA_FUNCIONAL_IRSA_SPHEREX.md),
+  con fuentes primarias, brechas locales, prioridades, criterios de aceptación y
+  puntos de integración existentes; es una propuesta, sin autoaprobar el plan.
+- Fuente: SPHEREx Data Explorer de IRSA. Documentación oficial consultada y
+  16 recibos HTTP con SHA-256 en `docs/evidence/irsa-funciones-20261115/sources.json`.
+  Endpoint disponible; recorrido interactivo no comprobado porque CUA reportó
+  `browser access host unavailable`. Sin subir archivos ni ejecutar jobs remotos.
+- Orden propuesto: búsqueda combinada/tabla/cobertura; inspector HDU/FLAGS,
+  recortes y regla; después RGB/WCS/perfiles/catálogos/gráficos; mosaicos y
+  espectrofotometría requieren diseño y validación científica separados.
+- APIs Firefly identificadas como referencia, sin instalarlo ni migrar el stack.
+  No se modificó código de producto ni se corrigieron los dos P2 anteriores.
+- Validación de esta revisión: `npm test` 58/58 y `npm run validate:docs` pasan;
+  el hook de sincronización informó manifiesto ya sincronizado. Se comprueban
+  además enlaces locales e identificadores del nuevo inventario. Sin nuevo build
+  ni validación Android/VR. `scienceReady=false`; no se afirma detección.
+- Siguiente paso concreto: corregir canal/gesto y entregar una consulta real con
+  tabla seleccionable que actualice imagen, metadatos y huella de la observación.
+
+## Integración y resolución de conflictos de origin/main — 2026-11-15
+
+- Fusión completada de `origin/main` (`dd0b317`) en la rama de trabajo `main` local:
+  - Commit de merge: `156961a` (*merge: integrar origin/main (dd0b317) con estetica ArtCraft y motor cientifico local*).
+  - Conflictos resueltos en: `.gitignore`, `memories.md`, `MEMORY.md`, `sw.js`, `assets/js/science/worker.js`, `assets/js/science-lab-ui.js`, `lab.html`, `assets/css/lab.css`, `assets/js/app.js`, `assets/js/explorar.js`, `assets/js/hera3d.js`, `assets/js/cosmos3d.js`, `index.html`, y `assets/css/main.css`.
+  - Corrección complementaria `4f51023`: ajuste de `.explore-hud-top` a `top: 56px` en viewport compacto (evitando colisión con `<header class="top">`) y reposición de la clase `.eclipse-ready` en `.eclipse-o` al cargar el rig 3D.
+- Verificación exhaustiva:
+  - `npm test`: 58/58 pruebas unitarias pasando (0 fallos).
+  - `npm run web:build`: compilación limpia en `dist/` (46 recursos precache, WASM presente).
+  - `npm run validate:build` y `npm run validate:docs`: exitosos.
+  - Playwright: suites críticas validadas (`fpa.spec.mjs`, `migration.spec.mjs`, `integration.spec.mjs`, `immersive.spec.mjs`), todas en verde.
+- No se han realizado pushes remotos; la rama local `main` contiene el estado consolidado y funcional.
+
