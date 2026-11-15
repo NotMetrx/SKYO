@@ -475,6 +475,11 @@ function updateEclipsePortalFrame(dt) {
   const cx = eclipseSlot.size > 0 ? eclipseSlot.cx : w * 0.62;
   const cy = eclipseSlot.size > 0 ? eclipseSlot.cy : h * 0.5;
   const slotSize = eclipseSlot.size > 0 ? eclipseSlot.size : Math.min(w, h) * 0.16;
+  if (eclipsePhase === 'idle' && (cy < -slotSize * 0.6 || cy > h + slotSize)) {
+    eclipseRig.visible = false;
+    return;
+  }
+  eclipseRig.visible = true;
 
   if (!_eclipseRay.initialized) {
     _eclipseRay.v = new T.Vector3();
@@ -1269,6 +1274,12 @@ function updateKryoFrame(dt) {
   const cy = kryoSlot.h > 0 ? kryoSlot.cy : fallbackCy;
   const stageH = kryoSlot.h > 0 ? kryoSlot.h : Math.min(w, h) * 0.45;
   const stageW = kryoSlot.w > 0 ? kryoSlot.w : Math.min(w, h) * 0.45;
+  if (kryoPhase === 'idle' && (cy < -stageH * 0.45 || cy > h + stageH * 0.6)) {
+    kryoRig.visible = false;
+    if (kryoExhaust) kryoExhaust.visible = false;
+    return;
+  }
+  kryoRig.visible = true;
 
   ensureKryoTmp();
 
@@ -2571,10 +2582,11 @@ function buildSistemaScene() {
 
   const sunTex = makeGlowTexture('#fff7d6', 'rgba(255, 138, 42, 0.56)');
   const ionTex = makeGlowTexture('#ffffff', 'rgba(91, 184, 255, 0.52)');
-  const sunLight = new T.PointLight(0xffe1b0, 3.2, 520, 0.35);
+  const ambientSistema = new T.AmbientLight(0x8db2ff, 0.52);
+  const sunLight = new T.PointLight(0xffe1b0, 5.2, 650, 0);
   const rimSkyLight = new T.DirectionalLight(0x5bb8ff, 0.9);
   rimSkyLight.position.set(-120, 90, -140);
-  sistemaGroup.add(sunLight, rimSkyLight);
+  sistemaGroup.add(ambientSistema, sunLight, rimSkyLight);
 
   const sunMesh = new T.Mesh(
     new T.SphereGeometry(5, 32, 32),
@@ -2595,7 +2607,7 @@ function buildSistemaScene() {
       new T.MeshStandardMaterial({
         color,
         emissive: color,
-        emissiveIntensity: 0.22,
+        emissiveIntensity: 0.48,
         roughness: 0.54,
         metalness: 0.14
       })
@@ -3702,6 +3714,12 @@ export async function initCosmos3D(initialRoute = 'inicio') {
 
   window.addEventListener('resize', onResize, { passive: true });
   window.visualViewport?.addEventListener('resize', onResize, { passive: true });
+  document.getElementById('inicio')?.addEventListener('scroll', () => {
+    if (activeRoute !== 'inicio') return;
+    updateEclipseSlotRect();
+    updateKryoSlotRect();
+    wakeLoop();
+  }, { passive: true });
   watchDprChange();
   onResize();
 

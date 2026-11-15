@@ -5,8 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#07070a">
   <meta name="description" content="SKYO — Explorador público multitemporal del cielo infrarrojo (Ref. SPHEREx / JPL) con sistema solar 3D y asistente H.E.R.A 7.">
-  <title>SKYO — Atrévete a explorar</title>
-  <link rel="manifest" href="/manifest.webmanifest">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_PE">
+  <meta property="og:title" content="SKYO · Explora el cosmos con SPHEREx">
+  <meta property="og:description" content="Plataforma pública local-first en español para explorar el cosmos en luz infrarroja (0.75–5.01 µm), bóveda 3D y laboratorio FITS.">
+  <meta property="og:image" content="assets/img/favicon-192x192.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="SKYO · Explora el cosmos con SPHEREx">
+  <meta name="twitter:description" content="Explora el cielo infrarrojo de SPHEREx, Sistema Solar 3D y comparador FITS local-first.">
+  <title>SKYO · Explora el cosmos con SPHEREx</title>
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+  <link rel="alternate icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
+  <link rel="manifest" href="data/manifests/manifest.webmanifest">
   <link rel="stylesheet" href="assets/css/main.css">
   <link rel="stylesheet" href="assets/css/states.css">
   <script type="module" src="assets/js/app.js"></script>
@@ -16,6 +27,11 @@
   <!-- Lienzo 3D Three.js compartido en obsidiana (#07070a) para todos los paneles -->
   <canvas id="cosmos" aria-label="Universo interactivo 3D de SKYO"></canvas>
   <div id="cosmos-state" class="cosmos-state-layer" hidden></div>
+  <noscript>
+    <div class="noscript-banner" role="status">
+      <strong>SKYO requiere JavaScript y WebGL habilitados</strong> para renderizar la bóveda celeste 3D y ejecutar el laboratorio astrométrico local en tu navegador.
+    </div>
+  </noscript>
 
   <!-- Barra de navegación principal -->
   <header class="top">
@@ -62,7 +78,7 @@
           </div>
           <div class="hero-kicker" aria-hidden="true">
             <span class="kicker-dot"></span>
-            <span>NASA Space Apps 2026 · Planet X &amp; SPHEREx</span>
+            <span>Grupo Neois · NASA Space Apps 2026 · SPHEREx</span>
           </div>
           <h1 tabindex="-1" class="eclipse-wordmark" aria-label="SKYO">
             <span class="letters">
@@ -70,7 +86,7 @@
             </span>
             <span class="eclipse-o" aria-hidden="true"></span>
           </h1>
-          <p class="hero-sub">Exploración infrarroja multibanda y astrometría local para candidatos transneptunianos.</p>
+          <p class="hero-sub">El universo visto con luz infrarroja, al alcance de todos. Exploración multibanda SPHEREx y astrometría local para candidatos transneptunianos.</p>
           <div class="hero-craft-grid" aria-hidden="true">
             <div class="craft-card">
               <span class="craft-idx">01</span>
@@ -114,6 +130,129 @@
             <span id="kryo9-status-text">KRYO-9 · ACTIVA LA VISTA 3D</span>
           </div>
         </div>
+        <div class="hero-scroll-cue" id="hero-scroll-cue" aria-hidden="true">
+          <span class="scroll-cue-arrow">↓</span>
+          <span>Desliza para conocer SPHEREx, la plataforma y Grupo Neois</span>
+        </div>
+      </div>
+
+      <!-- Recorrido editorial bajo el Hero (inspirado en SKYO · Explora el cosmos con SPHEREx) -->
+      <div class="inicio-showcase">
+        <div class="inicio-sec" id="sec-spherex">
+          <div class="inicio-split">
+            <div class="rv">
+              <span class="hud-label inicio-tag"><span class="hud-idx">// 01</span> EL TELESCOPIO</span>
+              <h2 class="inicio-h2">¿Qué es SPHEREx?</h2>
+              <p class="inicio-lead">SPHEREx significa <em>Spectro-Photometer for the History of the Universe, Epoch of Reionization and Ices Explorer</em>. Es un telescopio espacial de la NASA lanzado en marzo de 2025 para cartografiar todo el cielo mediante luz infrarroja.</p>
+            </div>
+            <div class="ir-spectrum-card rv">
+              <div class="ir-spec-head">
+                <span class="ir-spec-title">Espectro infrarrojo continuo (D1–D6)</span>
+                <span class="ir-spec-range">0.75 – 5.01 µm · 102 bandas LVF</span>
+              </div>
+              <div class="ir-spec-bar" aria-hidden="true"></div>
+              <div class="ir-spec-ticks">
+                <span>0.75 µm · IR Corto (D1–D3)</span>
+                <span>2.41 µm</span>
+                <span>5.01 µm · IR Largo (D4–D6)</span>
+              </div>
+            </div>
+          </div>
+          <div class="inicio-grid inicio-grid-3">
+            <article class="inicio-card rv">
+              <span class="inicio-card-idx">01 · COBERTURA</span>
+              <h3>Casi todo el cielo</h3>
+              <p>Observa prácticamente toda la bóveda celeste en ciclos completos de 6 meses para detectar objetos móviles.</p>
+            </article>
+            <article class="inicio-card rv">
+              <span class="inicio-card-idx">02 · ESPECTRO</span>
+              <h3>Luz infrarroja</h3>
+              <p>Analiza radiación infrarroja invisible al ojo humano, clave para detectar cuerpos fríos y distantes.</p>
+            </article>
+            <article class="inicio-card rv">
+              <span class="inicio-card-idx">03 · LONGITUDES DE ONDA</span>
+              <h3>0.75 – 5.01 µm</h3>
+              <p>Diferencia respuesta espectral entre IR Corto (D1–D3) e IR Largo (D4–D6) sobre un plano focal 2×3.</p>
+            </article>
+            <article class="inicio-card rv">
+              <span class="inicio-card-idx">04 · COSMOS</span>
+              <h3>Galaxias y estrellas</h3>
+              <p>Estudia galaxias, estrellas, nebulosas y la historia del universo temprano desde órbita solar síncrona.</p>
+            </article>
+            <article class="inicio-card rv">
+              <span class="inicio-card-idx">05 · ASTROQUÍMICA</span>
+              <h3>Composición y hielos</h3>
+              <p>Permite investigar presencia de agua y hielos interestelares junto con astrometría de cuerpos menores.</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="inicio-sec" id="sec-skyo">
+          <div class="rv">
+            <span class="hud-label inicio-tag"><span class="hud-idx">// 02</span> LA PLATAFORMA</span>
+            <h2 class="inicio-h2">SKYO: el espacio, simple de explorar</h2>
+            <p class="inicio-lead">Una herramienta pública, en español y local-first, diseñada para navegar el plano focal de SPHEREx, comparar épocas y validar candidatos sin depender de servidores externos.</p>
+          </div>
+          <div class="inicio-grid inicio-grid-3">
+            <article class="inicio-card rv" data-goto="inicio-top">
+              <span class="inicio-card-idx">MOD 01</span>
+              <h3>Inicio 3D</h3>
+              <p>Constelaciones vivas, eclipse orbital modelado en 3D y secuencia de despegue con KRYO-9.</p>
+            </article>
+            <article class="inicio-card is-action rv" data-goto="explorar">
+              <span class="inicio-card-idx">MOD 02 · ABRIR ↗</span>
+              <h3>Explorar &amp; Plano Focal IR</h3>
+              <p>Bóveda ICRS interactiva con retícula HEALPix, detector 2×3, Blink de épocas y Lab FITS TAN-SIP.</p>
+            </article>
+            <article class="inicio-card is-action rv" data-goto="3d">
+              <span class="inicio-card-idx">MOD 03 · ABRIR ↗</span>
+              <h3>Vista Sistema Solar 3D</h3>
+              <p>Visualización orbital tridimensional para situar cometas, cinturón de asteroides y escalas espaciales.</p>
+            </article>
+            <article class="inicio-card rv" data-goto="explorar">
+              <span class="inicio-card-idx">MOD 04</span>
+              <h3>KRYO-9 / H.E.R.A 7</h3>
+              <p>Asistente guía interactivo y audio espacial opcional presente en las secciones de análisis.</p>
+            </article>
+            <article class="inicio-card is-action rv" data-goto="fases">
+              <span class="inicio-card-idx">MOD 05 · VER ↗</span>
+              <h3>Para todos &amp; Móvil</h3>
+              <p>Interfaz adaptable móvil primero, PWA offline y arquitectura por fases de divulgación progresiva.</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="inicio-sec" id="sec-neois">
+          <div class="rv">
+            <span class="hud-label inicio-tag"><span class="hud-idx">// 03</span> QUIÉNES SOMOS</span>
+            <h2 class="inicio-h2">Grupo Neois</h2>
+            <p class="inicio-lead">Somos cuatro jóvenes estudiantes académicos unidos por la curiosidad de mirar más allá del cielo y acercar la astronomía infrarroja a toda persona.</p>
+          </div>
+          <div class="inicio-grid neois-grid" id="inicio-neois-grid"></div>
+        </div>
+
+        <div class="inicio-sec" id="sec-mision">
+          <div class="mission-callout rv">
+            <span class="hud-label inicio-tag"><span class="hud-idx">// 04</span> NUESTRA MISIÓN</span>
+            <h2 class="inicio-h2">Llevar el conocimiento y la exploración espacial a todas las personas</h2>
+            <p class="inicio-lead">Con SKYO queremos que el universo deje de ser un lugar lejano: una experiencia abierta, rigurosa y dinámica para explorar el cosmos con los ojos infrarrojos de SPHEREx.</p>
+            <div class="mission-launch" id="mission-launch-cta" aria-hidden="true">
+              <kbd class="hero-key">ENTER</kbd>
+              <span>Explorar con SKYO · Ir al Plano Focal IR</span>
+            </div>
+          </div>
+        </div>
+
+        <footer class="inicio-footer">
+          <div class="footer-brand-line">© 2026 Grupo Neois · SKYO · Reto NASA Space Apps: Planet X &amp; SPHEREx</div>
+          <div class="footer-meta-line">
+            <span>Prototipo científico exploratorio local-first · No es una herramienta oficial de NASA/IPAC</span>
+            <span aria-hidden="true">·</span>
+            <span>Ref.: NASA/IPAC IRSA (SPHEREx) · JPL Small-Body Database</span>
+            <span aria-hidden="true">·</span>
+            <span class="footer-lab-trigger" id="footer-lab-link">Abrir Laboratorio FITS ↗</span>
+          </div>
+        </footer>
       </div>
     </section>
 
@@ -459,6 +598,7 @@
         <div class="modebar" id="fases-view-toggle" role="group" aria-label="Modo de arquitectura">
           <button type="button" class="on" data-view="roadmap">Fases (0–6)</button>
           <button type="button" data-view="pipeline">Pipeline de cambios</button>
+          <button type="button" data-view="equipo">Misión & Equipo Neois</button>
         </div>
       </div>
 
@@ -479,6 +619,7 @@
         <button type="button" class="hera-chip" data-topic="bandas">2 bandas IR</button>
         <button type="button" class="hera-chip" data-topic="blink">Blink (6 meses)</button>
         <button type="button" class="hera-chip" data-topic="planeta_x">¿Por qué SPX-26?</button>
+        <button type="button" class="hera-chip" data-topic="neois">Equipo Neois</button>
       </div>
     </div>
     <div class="hera-avatar-wrap">
