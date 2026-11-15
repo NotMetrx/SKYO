@@ -15,7 +15,7 @@ export const SUBS = [
 
 export const MSG = {
   inicio: 'Soy H.E.R.A 7, tu guía. Arrastra el cielo 3D o toca «Comenzar a explorar» para despegar.',
-  explorar: 'Exploras una ventana ICRS con retícula HEALPix. Prueba «Parpadear épocas» o inicia una misión de aula.',
+  explorar: 'Exploras el Plano Focal Infrarrojo SPHEREx (proyección TAN-SIP). Prueba «Parpadear épocas» o inicia una misión de aula.',
   '3d': 'Arrastra para girar el sistema solar. Usa la rueda o ＋ y － para acercarte al cometa o al cinturón.',
   fases: 'Gira la constelación 3D o elige una fase (0–6) para ver cómo SPHEREx, JPL y la caché HEALPix detectan cambios.'
 };
@@ -288,6 +288,26 @@ export const OBJ = [
   ['Ceres', 'Asteroide', 0.72, 0.9, '#e0dbd0', 'El objeto más grande del cinturón de asteroides; planeta enano.', 'Tiene depósitos brillantes de sal', 'Confirmado', 0.018],
   ['Candidato SPX-26', 'Asteroide', 0.60, 4.1, '#b57bff', 'Fuente tenue con desplazamiento propio entre épocas; en verificación.', 'Desplazamiento ilustrativo · Sin cruce JPL', 'Candidato', 0.052]
 ];
+
+export function getObjectProvenance(o) {
+  if (!o) return { label: 'Recreación educativa (SKYO)', type: 'synthetic' };
+  if (o[7] === 'Candidato') {
+    return {
+      label: 'Recreación sintética educativa (SKYO · Sin cruce JPL)',
+      type: 'synthetic'
+    };
+  }
+  if (o[1] === 'Estrella') {
+    return {
+      label: 'Referencia catalogada · Gaia DR3 / Hipparcos (posiciones ilustrativas)',
+      type: 'catalog'
+    };
+  }
+  return {
+    label: 'Referencia catalogada · JPL Small-Body Database (órbita ilustrativa)',
+    type: 'catalog'
+  };
+}
 
 export const PLANETAS = [
   ['Mercurio', 0x9a9a9a, 12, 1.60, 1.0],

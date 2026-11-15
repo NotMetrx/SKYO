@@ -1,0 +1,300 @@
+/* ==========================================================================
+   SKYO — Sistema unificado de estados (Cargando · Error · Sin datos)
+   Estética Liquid Glass orbital coherente con docs/PALETA.md y WCAG 2.2 AA/AAA
+   ========================================================================== */
+
+:root {
+  --err: #ff8aa8;
+  --err-bg: rgba(255, 107, 139, 0.12);
+  --err-ln: rgba(255, 138, 168, 0.48);
+}
+
+.skyo-state {
+  --st-color: var(--ac, #5bb8ff);
+  --st-bg: var(--gl-card, linear-gradient(148deg, rgba(255, 255, 255, 0.095) 0%, rgba(12, 19, 34, 0.42) 48%, rgba(91, 184, 255, 0.08) 100%));
+  --st-ln: var(--ln, rgba(255, 255, 255, 0.21));
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 10px;
+  padding: 20px 22px;
+  max-width: 340px;
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--st-ln);
+  background: var(--st-bg);
+  backdrop-filter: var(--gl-filter, blur(22px) saturate(185%));
+  -webkit-backdrop-filter: var(--gl-filter, blur(22px) saturate(185%));
+  box-shadow:
+    var(--gl-inset, inset 0 1px 0 rgba(255, 255, 255, 0.22)),
+    0 14px 36px rgba(0, 0, 0, 0.56);
+  color: var(--fg, #eef3ff);
+  pointer-events: auto;
+  box-sizing: border-box;
+}
+
+.skyo-state[data-state="loading"] {
+  --st-color: var(--ac, #5bb8ff);
+  --st-ln: rgba(91, 184, 255, 0.44);
+}
+
+.skyo-state[data-state="error"] {
+  --st-color: var(--err, #ff8aa8);
+  --st-bg: linear-gradient(148deg, rgba(255, 138, 168, 0.12) 0%, rgba(22, 10, 26, 0.72) 52%, rgba(181, 123, 255, 0.12) 100%);
+  --st-ln: var(--err-ln, rgba(255, 138, 168, 0.48));
+}
+
+.skyo-state[data-state="empty"] {
+  --st-color: var(--ac2, #b57bff);
+  --st-ln: rgba(181, 123, 255, 0.34);
+}
+
+.skyo-state[data-variant="compact"] {
+  flex-direction: row;
+  text-align: left;
+  justify-content: flex-start;
+  max-width: 460px;
+  padding: 11px 16px;
+  gap: 12px;
+  border-radius: 14px;
+}
+
+.skyo-state[data-variant="compact"] .skyo-state-body {
+  align-items: flex-start;
+  flex: 1;
+  min-width: 0;
+}
+
+.skyo-state[data-variant="slot"] {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.skyo-state-orbit {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  color: var(--st-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.skyo-state[data-variant="compact"] .skyo-state-orbit {
+  width: 28px;
+  height: 28px;
+}
+
+.skyo-state[data-variant="slot"] .skyo-state-orbit {
+  width: 72%;
+  height: 72%;
+}
+
+.skyo-state-orbit svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.skyo-orbit-sweep {
+  transform-origin: center;
+  animation: skyoOrbitSpin 1.35s linear infinite;
+}
+
+@keyframes skyoOrbitSpin {
+  to { transform: rotate(360deg); }
+}
+
+.skyo-state-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.skyo-state-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--fg, #eef3ff);
+}
+
+.skyo-state-detail {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.48;
+  color: var(--mut, #a4b2ca);
+  max-width: 42ch;
+}
+
+.skyo-state-btn {
+  margin-top: 4px;
+  appearance: none;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--fg, #eef3ff);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--st-ln);
+  border-radius: 999px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.skyo-state-btn:hover {
+  background: rgba(91, 184, 255, 0.16);
+  border-color: var(--st-color);
+  transform: translateY(-1px);
+}
+
+.skyo-state[data-state="error"] .skyo-state-btn:hover {
+  background: rgba(255, 138, 168, 0.2);
+}
+
+.skyo-state-btn:focus-visible {
+  outline: 2px solid var(--st-color);
+  outline-offset: 2px;
+}
+
+.skyo-state[data-variant="compact"] .skyo-state-btn {
+  margin-top: 0;
+  flex: 0 0 auto;
+}
+
+/* Superposiciones centradas en lienzos (Bóveda vacía / Error WebGL) */
+.cosmos-state-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  pointer-events: none;
+}
+
+.cosmos-state-layer[hidden],
+.boveda-state-host[hidden] {
+  display: none;
+}
+
+.boveda-state-host {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  pointer-events: none;
+  width: min(440px, calc(100vw - 32px));
+}
+
+/* Estados dentro de visores FITS (main + lab.html) */
+.canvas-hint.is-state,
+.diff-placeholder.is-state {
+  position: absolute;
+  inset: 12px;
+  width: auto;
+  max-width: none;
+  left: 12px;
+  top: 12px;
+  transform: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  white-space: normal;
+  pointer-events: auto;
+}
+
+.canvas-hint.is-state[hidden],
+.diff-placeholder.is-state[hidden],
+.lab-toast[hidden],
+.toast[hidden] {
+  display: none;
+}
+
+.canvas-hint.is-state .skyo-state,
+.diff-placeholder.is-state .skyo-state {
+  max-width: 300px;
+  padding: 14px 16px;
+  gap: 8px;
+}
+
+/* Semántica visual en status pill y toast */
+.status-pill[data-state="loading"],
+.status[data-state="loading"] {
+  color: var(--ac, #5bb8ff);
+  border-color: rgba(91, 184, 255, 0.45);
+}
+
+.status-pill[data-state="ok"],
+.status[data-state="ok"] {
+  color: var(--ok, #4ade80);
+  border-color: rgba(74, 222, 128, 0.45);
+}
+
+.status-pill[data-state="error"],
+.status[data-state="error"] {
+  color: var(--err, #ff8aa8);
+  border-color: var(--err-ln, rgba(255, 138, 168, 0.55));
+  background: var(--err-bg);
+}
+
+.lab-toast[data-state],
+.toast[data-state] {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+.lab-toast[data-state="error"],
+.toast[data-state="error"] {
+  border-color: var(--err-ln);
+  background: linear-gradient(148deg, rgba(255, 138, 168, 0.16) 0%, rgba(18, 10, 24, 0.88) 100%);
+  color: #ffe6ee;
+}
+
+.lab-toast[data-state="ok"],
+.toast[data-state="ok"] {
+  border-color: rgba(74, 222, 128, 0.48);
+}
+
+.skyo-toast-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  background: var(--ac, #5bb8ff);
+  box-shadow: 0 0 10px currentColor;
+}
+
+.lab-toast[data-state="error"] .skyo-toast-dot,
+.toast[data-state="error"] .skyo-toast-dot {
+  background: var(--err, #ff8aa8);
+}
+
+.lab-toast[data-state="ok"] .skyo-toast-dot,
+.toast[data-state="ok"] .skyo-toast-dot {
+  background: var(--ok, #4ade80);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skyo-orbit-sweep {
+    animation: none;
+  }
+}

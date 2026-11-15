@@ -8,6 +8,7 @@
 
 import { OBJ, PLANETAS, BANDAS, FASES_PROYECTO, FI, rng } from './data.js';
 import { loadGlbGroup } from './glb-lite.js';
+import { renderState, clearState } from './ui-states.js';
 
 let T = null;
 let canvas = null;
@@ -16,12 +17,18 @@ let scene = null;
 let camera = null;
 let raycaster = null;
 const pointerNDC = { x: -9, y: -9 };
+let _tmpVecA = null;
+let _tmpVecB = null;
+let cachedSpeed3D = 1;
+let emaFrameMs = 16.7;
+let lastPerfAdjustTs = 0;
 
 let isInitialized = false;
 let isLoading = false;
 let isVisible = true;
 let rafId = 0;
 let activeRoute = 'inicio';
+let hasRoutedOnce = false;
 
 let simTime = 0;
 let isPlaying3D = true;
@@ -63,6 +70,10 @@ let vaultPoints = null;
 let vaultBaseColors = null;
 let healpixDome = null;
 let cutoutFrame = null;
+let bovedaModelLoaded = false;
+let bovedaAstrolabe = null;
+let bovedaBezelGuides = null;
+let bovedaPolycount = 0;
 let selectRing = null;
 let hoverRing = null;
 const objEntries = [];
@@ -82,6 +93,12 @@ const exploreState = {
 };
 let blinkAccumMs = 0;
 let lastLoopTs = 0;
+let lastVaultBand = -1;
+let exploreHitMeshes = [];
+let fasesHitMeshes = [];
+let rafPickId = 0;
+let pendingPickX = 0;
+let pendingPickY = 0;
 
 let sistemaGroup = null;
 let beltPoints = null;
@@ -134,7 +151,11 @@ function makeGlowTexture(innerColor, midColor) {
   grad.addColorStop(1, 'rgba(0,0,0,0)');
   g.fillStyle = grad;
   g.fillRect(0, 0, 128, 128);
-  return new T.CanvasTexture(c);
+  const tex = new T.CanvasTexture(c);
+  if (renderer?.capabilities?.getMaxAnisotropy) {
+    tex.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+  }
+  return tex;
 }
 
 const _eclipseRay = { v: null, fwd: null, initialized: false };
@@ -186,11 +207,18 @@ function buildEclipsePortal() {
   backRim.position.set(-1.5, 2.6, -1.4);
   eclipseRig.add(rimLight, purpleFill, backRim);
 
+  const slotEl = document.querySelector('#inicio .eclipse-o');
+  if (slotEl) {
+    renderState(slotEl, { state: 'loading', variant: 'slot' });
+  }
+
   scene.add(eclipseRig);
   updateEclipseSlotRect();
 
   loadGlbGroup(T, './assets/models/eclipse.glb')
     .then(model => {
+      if (slotEl) slotEl.replaceChildren();
+      clearState(document.getElementById('cosmos-state'));
       if (!eclipseRig) return;
       eclipseModelPivot = model;
       eclipseMats.length = 0;
@@ -213,10 +241,21 @@ function buildEclipsePortal() {
       eclipseRig.add(model);
       updateEclipseSlotRect();
       eclipseRig.visible = activeRoute === 'inicio' || eclipsePhase === 'transition';
-      wakeLoop();
+      if (eclipseRig.visible) wakeLoop();
     })
     .catch(() => {
+      if (slotEl) slotEl.replaceChildren();
       if (eclipseRig) eclipseRig.visible = false;
+      if (activeRoute === 'inicio') {
+        renderState(document.getElementById('cosmos-state'), {
+          state: 'error',
+          variant: 'compact',
+          title: 'Modelo 3D del eclipse no disponible',
+          detail: 'Comprueba assets/models/eclipse.glb o continúa hacia la bóveda.',
+          actionLabel: 'Reintentar',
+          onAction: () => buildEclipsePortal()
+        });
+      }
     });
 }
 
@@ -544,7 +583,7 @@ function buildInicioScene() {
 }
 
 /* ==========================================================================
-   3. Escena Panel 2: Explorar (Bóveda ICRS + Retícula HEALPix + Recorte 0.05°)
+   3. Escena Panel 2: Explorar (Plano Focal IR SPHEREx + Telemetría ICRS)
    ========================================================================== */
 const VAULT_CENTER_Z = 110;
 
@@ -562,8 +601,8 @@ function projectICRS(ra, dec, radius, centerZ = VAULT_CENTER_Z) {
 }
 
 function getExploreObjectPos3D(o, monthsElapsed) {
-  // Estrellas fijas como anclas astrométricas sobre la bóveda profunda;
-  // cometas y asteroides se desplazan en primer plano frente al fondo ICRS.
+  // Estrellas fijas como anclas astrométricas sobre el campo profundo;
+  // cometas y asteroides se desplazan en el plano frontal de paralaje IR.
   const angle = o[3] + monthsElapsed * o[8];
   const ra = Math.cos(angle) * o[2] * 0.52;
   const dec = Math.sin(angle) * o[2] * 0.34;
@@ -573,11 +612,97 @@ function getExploreObjectPos3D(o, monthsElapsed) {
   return projectICRS(ra, dec, radius, centerZ);
 }
 
+function setBovedaObjectStyle(obj, colorHex, opacity, emissiveIntensity) {
+  if (!obj) return;
+  const applyMat = m => {
+    if (!m) return;
+    if (m.color && colorHex !== null) m.color.setHex(colorHex);
+    if (m.emissive && colorHex !== null) m.emissive.setHex(colorHex);
+    if (typeof opacity === 'number') {
+      const scale = typeof m.userData?.baseOpacityScale === 'number' ? m.userData.baseOpacityScale : 1;
+      const finalOpacity = Math.min(1, opacity * scale);
+      m.transparent = finalOpacity < 1;
+      m.opacity = finalOpacity;
+    }
+    if (typeof emissiveIntensity === 'number' && typeof m.emissiveIntensity === 'number') {
+      m.emissiveIntensity = emissiveIntensity;
+    }
+  };
+  if (obj.material) {
+    applyMat(obj.material);
+  } else if (typeof obj.traverse === 'function') {
+    obj.traverse(child => {
+      if (child.material) applyMat(child.material);
+    });
+  }
+}
+
+function makeLockedReticle(color, radius, withCrosshairs = false) {
+  const group = new T.Group();
+  const ringPts = [];
+  for (let i = 0; i <= 48; i++) {
+    const a = (i / 48) * Math.PI * 2;
+    ringPts.push(new T.Vector3(Math.cos(a) * radius, Math.sin(a) * radius, 0));
+  }
+  group.add(new T.Line(
+    new T.BufferGeometry().setFromPoints(ringPts),
+    new T.LineBasicMaterial({ color, transparent: true, opacity: withCrosshairs ? 0.85 : 0.72 })
+  ));
+
+  const bracketSegs = [];
+  const inner = radius * 0.78;
+  const outer = radius * 1.24;
+  if (withCrosshairs) {
+    for (let k = 0; k < 4; k++) {
+      const a = (k * Math.PI) / 2;
+      const ca = Math.cos(a);
+      const sa = Math.sin(a);
+      bracketSegs.push(
+        new T.Vector3(ca * inner, sa * inner, 0),
+        new T.Vector3(ca * outer, sa * outer, 0)
+      );
+    }
+    const c = radius * 0.92;
+    const arm = radius * 0.28;
+    for (const sx of [-1, 1]) {
+      for (const sy of [-1, 1]) {
+        bracketSegs.push(
+          new T.Vector3(sx * c, sy * (c - arm), 0), new T.Vector3(sx * c, sy * c, 0),
+          new T.Vector3(sx * (c - arm), sy * c, 0), new T.Vector3(sx * c, sy * c, 0)
+        );
+      }
+    }
+  } else {
+    const d = radius * 0.95;
+    bracketSegs.push(
+      new T.Vector3(0, d, 0), new T.Vector3(d, 0, 0),
+      new T.Vector3(d, 0, 0), new T.Vector3(0, -d, 0),
+      new T.Vector3(0, -d, 0), new T.Vector3(-d, 0, 0),
+      new T.Vector3(-d, 0, 0), new T.Vector3(0, d, 0)
+    );
+  }
+  group.add(new T.LineSegments(
+    new T.BufferGeometry().setFromPoints(bracketSegs),
+    new T.LineBasicMaterial({ color, transparent: true, opacity: 0.95 })
+  ));
+  group.visible = false;
+  return group;
+}
+
 function buildExplorarScene() {
   explorarGroup = new T.Group();
   const R = rng(5);
 
-  // 1. Campo profundo de 2.400 estrellas astrométricas fijas sobre bóveda ICRS
+  // Iluminación PBR dedicada para el plano focal infrarrojo
+  const keyLight = new T.DirectionalLight(0x8fd2ff, 1.05);
+  keyLight.position.set(45, 38, 95);
+  const fillLight = new T.PointLight(0xb57bff, 0.95, 220);
+  fillLight.position.set(-42, -28, 80);
+  const rimLight = new T.DirectionalLight(0xeef3ff, 0.55);
+  rimLight.position.set(0, -45, 120);
+  explorarGroup.add(keyLight, fillLight, rimLight);
+
+  // 1. Campo profundo de 2.400 estrellas astrométricas ICRS con paralaje en Z
   const count = 2400;
   const pos = new Float32Array(count * 3);
   const col = new Float32Array(count * 3);
@@ -586,7 +711,7 @@ function buildExplorarScene() {
   for (let i = 0; i < count; i++) {
     const ra = (R() - 0.5) * 1.95;
     const dec = (R() - 0.5) * 1.28;
-    const depth = 117 + R() * 14;
+    const depth = 117 + R() * 18;
     const pt = projectICRS(ra, dec, depth);
     pos.set([pt.x, pt.y, pt.z], i * 3);
 
@@ -612,42 +737,139 @@ function buildExplorarScene() {
   }));
   explorarGroup.add(vaultPoints);
 
-  // 2. Retícula ICRS curva (Ascensión Recta y Declinación)
-  const gridMat = new T.LineBasicMaterial({ color: 0x5bb8ff, transparent: true, opacity: 0.14 });
-  for (let r = -0.6; r <= 0.61; r += 0.2) {
-    const pts = [];
-    for (let d = -0.5; d <= 0.51; d += 0.05) pts.push(projectICRS(r, d, 116));
-    explorarGroup.add(new T.Line(new T.BufferGeometry().setFromPoints(pts), gridMat));
-  }
-  for (let d = -0.4; d <= 0.41; d += 0.2) {
-    const pts = [];
-    for (let r = -0.7; r <= 0.71; r += 0.05) pts.push(projectICRS(r, d, 116));
-    explorarGroup.add(new T.Line(new T.BufferGeometry().setFromPoints(pts), gridMat));
-  }
+  // 2. Proyección tangente ICRS + Volumen Astrométrico (sin bóveda/astrolabio arcaico)
+  healpixDome = new T.Group();
+  const makeScaledLineMat = (color, baseOpacityScale) => {
+    const mat = new T.LineBasicMaterial({
+      color,
+      transparent: true,
+      opacity: baseOpacityScale
+    });
+    mat.userData = { baseOpacityScale };
+    return mat;
+  };
 
-  // 3. Malla geodésica HEALPix (subdivisión esférica estándar IRSA)
-  healpixDome = new T.Mesh(
-    new T.IcosahedronGeometry(116.5, 2),
-    new T.MeshBasicMaterial({ color: 0x5bb8ff, wireframe: true, transparent: true, opacity: 0.09 })
-  );
-  healpixDome.position.set(0, 0, VAULT_CENTER_Z);
+  const gridSegs = [];
+  for (let r = -0.56; r <= 0.57; r += 0.14) {
+    for (let d = -0.38; d < 0.38; d += 0.06) {
+      gridSegs.push(projectICRS(r, d, 116), projectICRS(r, Math.min(0.38, d + 0.06), 116));
+    }
+  }
+  for (let d = -0.36; d <= 0.37; d += 0.12) {
+    for (let r = -0.58; r < 0.58; r += 0.06) {
+      gridSegs.push(projectICRS(r, d, 116), projectICRS(Math.min(0.58, r + 0.06), d, 116));
+    }
+  }
+  healpixDome.add(new T.LineSegments(
+    new T.BufferGeometry().setFromPoints(gridSegs),
+    makeScaledLineMat(0x5bb8ff, 0.32)
+  ));
+
+  // Anillos concéntricos de escala angular (15", 30", 60") y struts de paralaje en Z
+  const scaleSegs = [];
+  [13, 25, 39].forEach(rad => {
+    const steps = 48;
+    for (let k = 0; k < steps; k += 2) {
+      const a0 = (k / steps) * Math.PI * 2;
+      const a1 = ((k + 1.15) / steps) * Math.PI * 2;
+      scaleSegs.push(
+        new T.Vector3(Math.cos(a0) * rad, Math.sin(a0) * rad, -4.6),
+        new T.Vector3(Math.cos(a1) * rad, Math.sin(a1) * rad, -4.6)
+      );
+    }
+  });
+  for (const sx of [-1, 1]) {
+    for (const sy of [-1, 1]) {
+      scaleSegs.push(
+        new T.Vector3(sx * 31, sy * 21, -8.5),
+        new T.Vector3(sx * 31, sy * 21, 3.5)
+      );
+    }
+  }
+  healpixDome.add(new T.LineSegments(
+    new T.BufferGeometry().setFromPoints(scaleSegs),
+    makeScaledLineMat(0x5bb8ff, 0.55)
+  ));
+  healpixDome.matrixAutoUpdate = false;
+  healpixDome.updateMatrix();
   explorarGroup.add(healpixDome);
 
-  // 4. Marco del recorte fotométrico SPHEREx (~0.05° × 0.05°)
-  const framePts = [];
-  const half = 0.22;
-  for (let k = -half; k <= half; k += 0.044) framePts.push(projectICRS(k, half, 114.5));
-  for (let k = half; k >= -half; k -= 0.044) framePts.push(projectICRS(half, k, 114.5));
-  for (let k = half; k >= -half; k -= 0.044) framePts.push(projectICRS(k, -half, 114.5));
-  for (let k = -half; k <= half; k += 0.044) framePts.push(projectICRS(-half, k, 114.5));
-  framePts.push(projectICRS(-half, half, 114.5));
-  cutoutFrame = new T.Line(
-    new T.BufferGeometry().setFromPoints(framePts),
-    new T.LineBasicMaterial({ color: 0x5bb8ff, transparent: true, opacity: 0.5 })
-  );
+  // 3. Matriz de Plano Focal SPHEREx 2x3 (Detectores D1–D6 + Escuadras Vernier)
+  cutoutFrame = new T.Group();
+  const fw = 30;
+  const fh = 20;
+  const fz = -4.2;
+  const bezelCornerSegs = [];
+  const cornerLen = 4.6;
+  for (const sx of [-1, 1]) {
+    for (const sy of [-1, 1]) {
+      bezelCornerSegs.push(
+        new T.Vector3(sx * fw, sy * fh, fz), new T.Vector3(sx * (fw - cornerLen), sy * fh, fz),
+        new T.Vector3(sx * fw, sy * fh, fz), new T.Vector3(sx * fw, sy * (fh - cornerLen), fz),
+        new T.Vector3(sx * (fw + 1.2), sy * (fh + 1.2), fz + 0.6), new T.Vector3(sx * (fw - cornerLen * 0.6), sy * (fh + 1.2), fz + 0.6),
+        new T.Vector3(sx * (fw + 1.2), sy * (fh + 1.2), fz + 0.6), new T.Vector3(sx * (fw + 1.2), sy * (fh - cornerLen * 0.6), fz + 0.6)
+      );
+    }
+  }
+  cutoutFrame.add(new T.LineSegments(
+    new T.BufferGeometry().setFromPoints(bezelCornerSegs),
+    makeScaledLineMat(0x5bb8ff, 1.0)
+  ));
+
+  // Sub-división 2×3 del mosaico de detectores D1–D6 y cruz óptica central
+  bovedaBezelGuides = new T.Group();
+  const guideSegs = [
+    new T.Vector3(-fw, 0, fz), new T.Vector3(fw, 0, fz),
+    new T.Vector3(-fw / 3, -fh, fz), new T.Vector3(-fw / 3, fh, fz),
+    new T.Vector3(fw / 3, -fh, fz), new T.Vector3(fw / 3, fh, fz),
+    new T.Vector3(-fw, -fh, fz), new T.Vector3(fw, -fh, fz),
+    new T.Vector3(-fw, fh, fz), new T.Vector3(fw, fh, fz),
+    new T.Vector3(-fw, -fh, fz), new T.Vector3(-fw, fh, fz),
+    new T.Vector3(fw, -fh, fz), new T.Vector3(fw, fh, fz)
+  ];
+  bovedaBezelGuides.add(new T.LineSegments(
+    new T.BufferGeometry().setFromPoints(guideSegs),
+    makeScaledLineMat(0xb57bff, 0.55)
+  ));
+  bovedaBezelGuides.matrixAutoUpdate = false;
+  bovedaBezelGuides.updateMatrix();
+  cutoutFrame.add(bovedaBezelGuides);
+  cutoutFrame.matrixAutoUpdate = false;
+  cutoutFrame.updateMatrix();
   explorarGroup.add(cutoutFrame);
 
-  // 5. Cuerpos celestes interactivos (Estrellas, Cometas con cola 3D, Asteroides) + Vectores de cambio
+  // 4. Anillo Dicróico de Calibración Óptica (Vernier micrométrico rotatorio)
+  bovedaAstrolabe = new T.Group();
+  bovedaAstrolabe.position.set(0, 0, -3.8);
+  const vernierPts = [];
+  const tickInner = 40.5;
+  const tickOuter = 42.4;
+  for (let i = 0; i < 72; i++) {
+    const a = (i / 72) * Math.PI * 2;
+    const len = i % 6 === 0 ? tickOuter + 1.2 : tickOuter;
+    vernierPts.push(
+      new T.Vector3(Math.cos(a) * tickInner, Math.sin(a) * tickInner, 0),
+      new T.Vector3(Math.cos(a) * len, Math.sin(a) * len, 0)
+    );
+  }
+  bovedaAstrolabe.add(new T.LineSegments(
+    new T.BufferGeometry().setFromPoints(vernierPts),
+    makeScaledLineMat(0x5bb8ff, 0.48)
+  ));
+  for (const offsetA of [0.35, Math.PI + 0.35]) {
+    const arcPts = [];
+    for (let s = 0; s <= 24; s++) {
+      const a = offsetA + (s / 24) * 0.95;
+      arcPts.push(new T.Vector3(Math.cos(a) * 44.2, Math.sin(a) * 44.2, 0));
+    }
+    bovedaAstrolabe.add(new T.Line(
+      new T.BufferGeometry().setFromPoints(arcPts),
+      makeScaledLineMat(0xb57bff, 0.65)
+    ));
+  }
+  explorarGroup.add(bovedaAstrolabe);
+
+  // 5. Fuentes celestes interactivas (Spikes IR, Cometas coaxiales, Apertura fotométrica)
   const starTex = makeGlowTexture('#ffffff', 'rgba(91, 184, 255, 0.72)');
 
   OBJ.forEach((o, idx) => {
@@ -660,56 +882,99 @@ function buildExplorarScene() {
     hitMesh.userData = { type: 'object', index: idx };
     holder.add(hitMesh);
 
+    const visualGroup = new T.Group();
+    holder.add(visualGroup);
+
     if (o[1] === 'Cometa') {
       const head = new T.Mesh(
-        new T.SphereGeometry(1.5, 16, 16),
+        new T.SphereGeometry(1.4, 16, 16),
         new T.MeshBasicMaterial({ color: colorHex })
       );
-      holder.add(head);
+      visualGroup.add(head);
 
       const glow = new T.Sprite(new T.SpriteMaterial({
         map: starTex,
         color: colorHex,
         blending: T.AdditiveBlending,
         transparent: true,
+        opacity: 0.48,
         depthWrite: false
       }));
-      glow.scale.set(9.2, 9.2, 1);
+      glow.scale.set(7.8, 7.8, 1);
       holder.add(glow);
 
-      const tailGeom = new T.ConeGeometry(1.05, 11, 10, 1, true);
-      tailGeom.translate(0, 5.5, 0);
+      const tailGeom = new T.ConeGeometry(1.1, 12.5, 12, 1, true);
+      tailGeom.translate(0, 6.2, 0);
       tailGeom.rotateX(Math.PI / 2);
-      const tailMesh = new T.Mesh(tailGeom, new T.MeshBasicMaterial({
+      visualGroup.add(new T.Mesh(tailGeom, new T.MeshBasicMaterial({
         color: colorHex,
         transparent: true,
-        opacity: 0.42,
+        opacity: 0.34,
         side: T.DoubleSide,
         blending: T.AdditiveBlending,
         depthWrite: false
-      }));
-      holder.add(tailMesh);
+      })));
+
+      const ionGeom = new T.ConeGeometry(0.45, 14.5, 10, 1, true);
+      ionGeom.translate(0, 7.2, 0);
+      ionGeom.rotateX(Math.PI / 2);
+      visualGroup.add(new T.Mesh(ionGeom, new T.MeshBasicMaterial({
+        color: 0x5bb8ff,
+        transparent: true,
+        opacity: 0.48,
+        side: T.DoubleSide,
+        blending: T.AdditiveBlending,
+        depthWrite: false
+      })));
     } else if (o[1] === 'Asteroide') {
+      const isCand = o[7] === 'Candidato';
       const rock = new T.Mesh(
-        new T.DodecahedronGeometry(o[7] === 'Candidato' ? 1.95 : 1.6, 0),
+        isCand ? new T.OctahedronGeometry(1.85, 1) : new T.IcosahedronGeometry(1.55, 0),
         new T.MeshStandardMaterial({
           color: colorHex,
-          emissive: o[7] === 'Candidato' ? 0xb57bff : 0x222222,
-          emissiveIntensity: o[7] === 'Candidato' ? 0.55 : 0.2,
-          roughness: 0.7
+          emissive: isCand ? 0xb57bff : 0x2a3b52,
+          emissiveIntensity: isCand ? 0.65 : 0.25,
+          roughness: 0.58,
+          metalness: 0.2
         })
       );
-      holder.add(rock);
+      visualGroup.add(rock);
+
+      const apPts = [
+        new T.Vector3(0, 3.4, 0), new T.Vector3(3.4, 0, 0),
+        new T.Vector3(0, -3.4, 0), new T.Vector3(-3.4, 0, 0),
+        new T.Vector3(0, 3.4, 0)
+      ];
+      holder.add(new T.Line(
+        new T.BufferGeometry().setFromPoints(apPts),
+        new T.LineBasicMaterial({
+          color: isCand ? 0xb57bff : colorHex,
+          transparent: true,
+          opacity: isCand ? 0.85 : 0.45
+        })
+      ));
+
+      if (isCand) {
+        const ringPts = [];
+        for (let s = 0; s <= 32; s++) {
+          const a = (s / 32) * Math.PI * 2;
+          ringPts.push(new T.Vector3(Math.cos(a) * 4.5, Math.sin(a) * 4.5, 0));
+        }
+        holder.add(new T.Line(
+          new T.BufferGeometry().setFromPoints(ringPts),
+          new T.LineBasicMaterial({ color: 0xc9a2ff, transparent: true, opacity: 0.62 })
+        ));
+      }
 
       const halo = new T.Sprite(new T.SpriteMaterial({
         map: starTex,
-        color: o[7] === 'Candidato' ? 0xb57bff : colorHex,
+        color: isCand ? 0xb57bff : colorHex,
         blending: T.AdditiveBlending,
         transparent: true,
-        opacity: 0.65,
+        opacity: isCand ? 0.52 : 0.36,
         depthWrite: false
       }));
-      halo.scale.set(7.2, 7.2, 1);
+      halo.scale.set(6.8, 6.8, 1);
       holder.add(halo);
     } else {
       const starCore = new T.Sprite(new T.SpriteMaterial({
@@ -717,10 +982,24 @@ function buildExplorarScene() {
         color: colorHex,
         blending: T.AdditiveBlending,
         transparent: true,
+        opacity: 0.62,
         depthWrite: false
       }));
-      starCore.scale.set(9.2, 9.2, 1);
+      starCore.scale.set(7.6, 7.6, 1);
       holder.add(starCore);
+
+      const spikeLen = 3.8;
+      const diag = 2.0;
+      const spikes = new T.LineSegments(
+        new T.BufferGeometry().setFromPoints([
+          new T.Vector3(-spikeLen, 0, 0), new T.Vector3(spikeLen, 0, 0),
+          new T.Vector3(0, -spikeLen, 0), new T.Vector3(0, spikeLen, 0),
+          new T.Vector3(-diag, -diag, 0), new T.Vector3(diag, diag, 0),
+          new T.Vector3(-diag, diag, 0), new T.Vector3(diag, -diag, 0)
+        ]),
+        new T.LineBasicMaterial({ color: colorHex, transparent: true, opacity: 0.52 })
+      );
+      holder.add(spikes);
     }
 
     const vecGeom = new T.BufferGeometry().setFromPoints([new T.Vector3(), new T.Vector3()]);
@@ -731,34 +1010,43 @@ function buildExplorarScene() {
     }));
     vecLine.visible = false;
 
+    const epochGeom = new T.BufferGeometry();
+    epochGeom.setAttribute('position', new T.BufferAttribute(new Float32Array(12), 3));
+    const epochDots = new T.Points(epochGeom, new T.PointsMaterial({
+      color: 0xc9a2ff,
+      size: 2.2,
+      transparent: true,
+      opacity: 0.9,
+      depthWrite: false
+    }));
+    epochDots.visible = false;
+
     const originDot = new T.Mesh(
-      new T.SphereGeometry(0.9, 10, 10),
+      new T.SphereGeometry(0.95, 10, 10),
       new T.MeshBasicMaterial({ color: 0xb57bff })
     );
     originDot.visible = false;
 
-    explorarGroup.add(holder, vecLine, originDot);
-    objEntries.push({ holder, hitMesh, vecLine, originDot, data: o });
+    explorarGroup.add(holder, vecLine, epochDots, originDot);
+    objEntries.push({
+      holder,
+      visualGroup,
+      model3D: visualGroup,
+      hitMesh,
+      vecLine,
+      epochDots,
+      originDot,
+      data: o
+    });
   });
 
-  // 6. Anillos de selección y hover orientados tangentes a la bóveda
-  const mkRing = (color, r) => {
-    const pts = [];
-    for (let i = 0; i <= 48; i++) {
-      const a = (i / 48) * 6.283;
-      pts.push(new T.Vector3(Math.cos(a) * r, Math.sin(a) * r, 0));
-    }
-    const m = new T.Line(
-      new T.BufferGeometry().setFromPoints(pts),
-      new T.LineBasicMaterial({ color, transparent: true, opacity: 0.95 })
-    );
-    m.visible = false;
-    explorarGroup.add(m);
-    return m;
-  };
-  selectRing = mkRing(0x5bb8ff, 5.8);
-  hoverRing = mkRing(0xffffff, 4.8);
+  // 6. Retículas gimbal astrométricas de selección y hover
+  selectRing = makeLockedReticle(0x5bb8ff, 5.8, true);
+  hoverRing = makeLockedReticle(0xffffff, 4.9, false);
+  explorarGroup.add(selectRing, hoverRing);
 
+  bovedaPolycount = 640 + objEntries.length * 42;
+  bovedaModelLoaded = true;
   scene.add(explorarGroup);
   syncExplorarVisuals();
 }
@@ -767,9 +1055,13 @@ export function syncExplorarVisuals() {
   if (!isInitialized) return;
   const elapsed = getElapsedMonths();
   const isIRLong = exploreState.band === 1;
+  const activeAccent = isIRLong ? 0xb57bff : 0x5bb8ff;
+  const secondaryAccent = isIRLong ? 0x5bb8ff : 0xb57bff;
+  const isHighlighted = Boolean(exploreState.compare || exploreState.blink);
 
-  // Tinte espectral dinámico de la bóveda según banda SPHEREx (IR Corto azul vs IR Largo naranja)
-  if (vaultPoints && vaultBaseColors) {
+  // Tinte espectral dinámico del plano focal únicamente cuando cambia la banda SPHEREx
+  if (vaultPoints && vaultBaseColors && exploreState.band !== lastVaultBand) {
+    lastVaultBand = exploreState.band;
     const attr = vaultPoints.geometry.attributes.color;
     for (let i = 0; i < attr.count; i++) {
       const br = vaultBaseColors[i * 3];
@@ -784,20 +1076,27 @@ export function syncExplorarVisuals() {
     attr.needsUpdate = true;
   }
 
+  if (bovedaAstrolabe) {
+    setBovedaObjectStyle(bovedaAstrolabe, activeAccent, isHighlighted ? 0.95 : 0.72);
+  }
   if (healpixDome) {
-    healpixDome.material.opacity = exploreState.mode === 'cientifico' ? 0.24 : 0.085;
-    healpixDome.material.color.setHex(isIRLong ? 0xc9a2ff : 0x5bb8ff);
+    const gridOp = exploreState.mode === 'cientifico' ? 0.72 : (isHighlighted ? 0.62 : 0.44);
+    setBovedaObjectStyle(healpixDome, activeAccent, gridOp);
   }
   if (cutoutFrame) {
-    cutoutFrame.material.color.setHex(isIRLong ? 0xb57bff : 0x5bb8ff);
-    cutoutFrame.material.opacity = exploreState.compare || exploreState.blink ? 0.72 : 0.45;
+    setBovedaObjectStyle(cutoutFrame, activeAccent, isHighlighted ? 0.96 : 0.74);
+  }
+  if (bovedaBezelGuides) {
+    setBovedaObjectStyle(bovedaBezelGuides, secondaryAccent, isHighlighted ? 0.88 : 0.56);
   }
 
-  // Posiciones 3D sobre la bóveda ICRS y vectores de verificación entre épocas
+  // Posiciones ICRS, vector Δθ y traza discreta de épocas E1–E4 + lista cacheada de hitTest
+  exploreHitMeshes.length = 0;
   objEntries.forEach((entry, i) => {
     const o = entry.data;
     const match = exploreState.filter === 'Todos' || exploreState.filter === o[1];
     entry.holder.visible = match;
+    if (match) exploreHitMeshes.push(entry.hitMesh);
 
     const pNow = getExploreObjectPos3D(o, elapsed);
     entry.holder.position.copy(pNow);
@@ -808,6 +1107,7 @@ export function syncExplorarVisuals() {
     const showVec = exploreState.compare && match && o[8] > 0 && elapsed > 0;
     entry.vecLine.visible = showVec;
     entry.originDot.visible = showVec;
+    if (entry.epochDots) entry.epochDots.visible = showVec;
     if (showVec) {
       const p0 = getExploreObjectPos3D(o, 0);
       entry.originDot.position.copy(p0);
@@ -815,9 +1115,18 @@ export function syncExplorarVisuals() {
       posAttr.setXYZ(0, p0.x, p0.y, p0.z);
       posAttr.setXYZ(1, pNow.x, pNow.y, pNow.z);
       posAttr.needsUpdate = true;
+
+      if (entry.epochDots) {
+        const eAttr = entry.epochDots.geometry.attributes.position;
+        for (let k = 0; k < 4; k++) {
+          const pk = getExploreObjectPos3D(o, Math.min(elapsed, k * 6));
+          eAttr.setXYZ(k, pk.x, pk.y, pk.z);
+        }
+        eAttr.needsUpdate = true;
+      }
     }
 
-    if (i === exploreState.selected && match) {
+    if (i === exploreState.selected && match && selectRing) {
       selectRing.visible = true;
       selectRing.position.copy(pNow);
       selectRing.lookAt(0, 0, VAULT_CENTER_Z);
@@ -1018,6 +1327,7 @@ function buildFasesScene() {
   phaseSignal.scale.set(10, 10, 1);
   fasesGroup.add(phaseSignal);
 
+  fasesHitMeshes = phaseNodes.map(n => n.mesh);
   scene.add(fasesGroup);
   syncFasesVisuals();
 }
@@ -1036,14 +1346,14 @@ export function syncFasesVisuals() {
    ========================================================================== */
 function pickTarget(clientX, clientY) {
   if (!renderer || !camera) return;
-  const rect = canvas.getBoundingClientRect();
-  pointerNDC.x = ((clientX - rect.left) / rect.width) * 2 - 1;
-  pointerNDC.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+  const w = adaptiveViewport.width || window.innerWidth || 1;
+  const h = adaptiveViewport.height || window.innerHeight || 1;
+  pointerNDC.x = (clientX / w) * 2 - 1;
+  pointerNDC.y = -(clientY / h) * 2 + 1;
   raycaster.setFromCamera(pointerNDC, camera);
 
   if (activeRoute === 'explorar') {
-    const hitList = objEntries.filter(e => e.holder.visible).map(e => e.hitMesh);
-    const hits = raycaster.intersectObjects(hitList, false);
+    const hits = exploreHitMeshes.length ? raycaster.intersectObjects(exploreHitMeshes, false) : [];
     const idx = hits.length ? hits[0].object.userData.index : -1;
     if (idx !== exploreState.hovered) {
       exploreState.hovered = idx;
@@ -1062,27 +1372,27 @@ function pickTarget(clientX, clientY) {
       }
     }
   } else if (activeRoute === 'fases') {
-    const hits = raycaster.intersectObjects(phaseNodes.map(n => n.mesh), false);
+    const hits = fasesHitMeshes.length ? raycaster.intersectObjects(fasesHitMeshes, false) : [];
     canvas.style.cursor = hits.length ? 'pointer' : 'grab';
   }
 }
 
 function handleClick(clientX, clientY) {
   if (!renderer || !camera) return;
-  const rect = canvas.getBoundingClientRect();
-  pointerNDC.x = ((clientX - rect.left) / rect.width) * 2 - 1;
-  pointerNDC.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+  const w = adaptiveViewport.width || window.innerWidth || 1;
+  const h = adaptiveViewport.height || window.innerHeight || 1;
+  pointerNDC.x = (clientX / w) * 2 - 1;
+  pointerNDC.y = -(clientY / h) * 2 + 1;
   raycaster.setFromCamera(pointerNDC, camera);
 
   if (activeRoute === 'explorar') {
-    const hitList = objEntries.filter(e => e.holder.visible).map(e => e.hitMesh);
-    const hits = raycaster.intersectObjects(hitList, false);
+    const hits = exploreHitMeshes.length ? raycaster.intersectObjects(exploreHitMeshes, false) : [];
     if (hits.length) {
       const idx = hits[0].object.userData.index;
       if (typeof exploreState.onSelect === 'function') exploreState.onSelect(idx);
     }
   } else if (activeRoute === 'fases') {
-    const hits = raycaster.intersectObjects(phaseNodes.map(n => n.mesh), false);
+    const hits = fasesHitMeshes.length ? raycaster.intersectObjects(fasesHitMeshes, false) : [];
     if (hits.length) {
       const idx = hits[0].object.userData.index;
       if (typeof fasesState.onSelectPhase === 'function') fasesState.onSelectPhase(idx);
@@ -1097,9 +1407,11 @@ function bindPointerEvents() {
   });
 
   window.addEventListener('pointermove', e => {
-    cursorParallax.x = (e.clientX / window.innerWidth - 0.5) * 0.28;
-    cursorParallax.y = (e.clientY / window.innerHeight - 0.5) * 0.18;
-    if (activeRoute === 'inicio' || activeRoute === 'explorar') {
+    const w = adaptiveViewport.width || window.innerWidth || 1;
+    const h = adaptiveViewport.height || window.innerHeight || 1;
+    cursorParallax.x = (e.clientX / w - 0.5) * 0.28;
+    cursorParallax.y = (e.clientY / h - 0.5) * 0.18;
+    if (activeRoute === 'inicio' || (activeRoute === 'explorar' && e.target === canvas)) {
       wakeLoop();
     }
 
@@ -1128,9 +1440,26 @@ function bindPointerEvents() {
         lastPinchDist = 0;
       }
     } else if (activeRoute === 'explorar' || activeRoute === 'fases') {
-      pickTarget(e.clientX, e.clientY);
+      if (e.pointerType === 'touch') return;
+      if (e.target !== canvas) {
+        if (exploreState.hovered >= 0) {
+          exploreState.hovered = -1;
+          if (hoverRing) hoverRing.visible = false;
+          canvas.style.cursor = 'grab';
+          if (typeof exploreState.onHover === 'function') exploreState.onHover(-1);
+        }
+        return;
+      }
+      pendingPickX = e.clientX;
+      pendingPickY = e.clientY;
+      if (!rafPickId) {
+        rafPickId = requestAnimationFrame(() => {
+          rafPickId = 0;
+          pickTarget(pendingPickX, pendingPickY);
+        });
+      }
     }
-  });
+  }, { passive: true });
 
   window.addEventListener('pointerup', e => {
     if (activePointers.has(e.pointerId)) {
@@ -1166,6 +1495,86 @@ export function getEclipsePortalState() {
     hasModel: Boolean(eclipseModelPivot),
     clipsCount: eclipseModelPivot?.userData?.clips?.length || 0,
     mixerTime: eclipseMixer ? Number(eclipseMixer.time.toFixed(3)) : 0
+  };
+}
+
+let adaptiveViewport = {
+  width: 1280,
+  height: 720,
+  aspect: 1.778,
+  dpr: 1,
+  effectivePixelRatio: 1,
+  qualityTier: 'hd',
+  fitRadius: 132
+};
+
+function computeQualityProfile(w, h) {
+  const safeW = Math.max(1, Number(w) || 1280);
+  const safeH = Math.max(1, Number(h) || 720);
+  const dpr = Math.max(1, Number(window.devicePixelRatio) || 1);
+  const reducedMotion = Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+  const cores = Number(navigator.hardwareConcurrency) || 4;
+  const isPriorityWorkspace = Math.min(safeW, safeH) >= 600 && cores >= 4;
+  const maxDpr = reducedMotion ? 1.5 : 2.5;
+  const pixelBudget = reducedMotion
+    ? 1_600_000
+    : (isPriorityWorkspace ? 3_800_000 : 2_000_000);
+  const cssPixels = safeW * safeH;
+  const budgetCap = Math.sqrt(pixelBudget / Math.max(1, cssPixels));
+  const effectivePixelRatio = Number(Math.max(1, Math.min(dpr, maxDpr, budgetCap)).toFixed(3));
+  const effectivePixels = cssPixels * effectivePixelRatio * effectivePixelRatio;
+  let qualityTier = 'standard';
+  if (reducedMotion) qualityTier = 'eco';
+  else if (effectivePixels >= 2_500_000 && Math.max(safeW, safeH) >= 1440) qualityTier = 'uhd';
+  else if (isPriorityWorkspace || cssPixels >= 750_000) qualityTier = 'hd';
+  return { dpr, effectivePixelRatio, qualityTier };
+}
+
+function computeAdaptiveDistance(baseR, minAspect, w, h) {
+  const safeW = Math.max(1, Number(w) || 1280);
+  const safeH = Math.max(1, Number(h) || 720);
+  const aspect = safeW / safeH;
+  const aspectScale = aspect < minAspect ? Math.min(1.72, minAspect / Math.max(0.46, aspect)) : 1;
+  const shortViewportScale = safeH < 760 && safeW >= 780
+    ? 1 + Math.min(0.14, ((760 - safeH) / 760) * 0.35)
+    : 1;
+  return Number((baseR * aspectScale * shortViewportScale).toFixed(2));
+}
+
+function getRouteFitRadius(route, w = window.innerWidth, h = window.innerHeight) {
+  if (route === 'explorar') return computeAdaptiveDistance(132, 1.38, w, h);
+  if (route === '3d') {
+    const distances = { Sistema: 168, Cometa: 30, Cinturón: 78 };
+    return computeAdaptiveDistance(distances[focus3D] || 168, 1.25, w, h);
+  }
+  if (route === 'fases') return computeAdaptiveDistance(128, 1.25, w, h);
+  return computeAdaptiveDistance(165, 1.15, w, h);
+}
+
+function applyAdaptiveCameraForRoute(route = activeRoute) {
+  const w = window.innerWidth || adaptiveViewport.width;
+  const h = window.innerHeight || adaptiveViewport.height;
+  const fitR = getRouteFitRadius(route, w, h);
+  adaptiveViewport.fitRadius = fitR;
+  camGoal.r = fitR;
+  if (route === 'explorar') {
+    camGoal.ty = h < 760 && w >= 780 ? -2 : 0;
+  }
+  return fitR;
+}
+
+export function getAdaptiveViewportState() {
+  return { ...adaptiveViewport };
+}
+
+export function getBovedaModelState() {
+  return {
+    loaded: bovedaModelLoaded,
+    hasAstrolabe: Boolean(bovedaAstrolabe),
+    hasDome: Boolean(healpixDome),
+    hasBezel: Boolean(cutoutFrame),
+    polycount: bovedaPolycount,
+    rafActive: Boolean(rafId)
   };
 }
 
@@ -1210,19 +1619,19 @@ export function setCosmosRoute(route) {
       camera.fov = 50;
       camera.updateProjectionMatrix();
     }
-    Object.assign(camGoal, { t: 0.4, p: 1.48, r: 165, tx: 0, ty: 0, tz: 0 });
+    Object.assign(camGoal, { t: 0.4, p: 1.48, r: getRouteFitRadius('inicio'), tx: 0, ty: 0, tz: 0 });
+    adaptiveViewport.fitRadius = camGoal.r;
   } else if (route === 'explorar') {
     canvas.style.cursor = 'grab';
-    if (prev !== 'inicio' || !isWarpingFromInicio) {
-      eclipsePhase = 'done';
-      if (eclipseRig) eclipseRig.visible = false;
-    }
-    const fitR = window.innerWidth < 780 ? 198 : 132;
+    eclipsePhase = 'done';
+    if (eclipseRig) eclipseRig.visible = false;
+    const fitR = applyAdaptiveCameraForRoute('explorar');
     if (prev === 'inicio' && isWarpingFromInicio) {
-      camCurr.r = fitR + 72; // entra haciendo zoom hacia la bóveda desde el hiperespacio
+      camCurr.r = fitR + 18; // entra haciendo zoom hacia la bóveda desde el hiperespacio
+      warpBoost = Math.min(warpBoost, 0.2);
     }
     isWarpingFromInicio = false;
-    Object.assign(camGoal, { t: Math.PI / 2, p: 1.54, r: fitR, tx: 0, ty: 0, tz: 0 });
+    Object.assign(camGoal, { t: Math.PI / 2, p: 1.54, r: fitR, tx: 0, ty: camGoal.ty, tz: 0 });
     syncExplorarVisuals();
   } else if (route === '3d') {
     canvas.style.cursor = 'grab';
@@ -1236,13 +1645,19 @@ export function setCosmosRoute(route) {
     focusPhaseNode(fasesState.activeIdx);
   }
 
+  if (!hasRoutedOnce) {
+    Object.assign(camCurr, camGoal);
+    hasRoutedOnce = true;
+  }
+
   wakeLoop();
 }
 
 export function set3DFocus(focusName) {
   focus3D = focusName;
-  const distances = { Sistema: 168, Cometa: 30, Cinturón: 78 };
-  camGoal.r = distances[focusName] || 168;
+  const fitR = getRouteFitRadius('3d');
+  camGoal.r = fitR;
+  if (activeRoute === '3d') adaptiveViewport.fitRadius = fitR;
   camGoal.p = focusName === 'Cometa' ? 1.15 : 1.05;
   const infoEl = document.getElementById('fi');
   if (infoEl) infoEl.textContent = FI[focusName] || '';
@@ -1270,7 +1685,9 @@ export function focusPhaseNode(idx) {
     const a = Math.atan2(n.pos.z, n.pos.x);
     camGoal.t = a + 0.35;
     camGoal.p = 1.25 - idx * 0.05;
-    camGoal.r = 128;
+    const fitR = getRouteFitRadius('fases');
+    camGoal.r = fitR;
+    if (activeRoute === 'fases') adaptiveViewport.fitRadius = fitR;
     camGoal.tx = n.pos.x * 0.25;
     camGoal.ty = n.pos.y * 0.35;
     camGoal.tz = n.pos.z * 0.25;
@@ -1304,15 +1721,36 @@ function renderLoop(now = performance.now()) {
     return;
   }
 
-  const dt = lastLoopTs ? Math.min(100, Math.max(0, now - lastLoopTs)) : 16;
+  const prevTs = lastLoopTs;
+  const dt = prevTs ? Math.min(100, Math.max(0, now - prevTs)) : 16.667;
   lastLoopTs = now;
-
+  const frameScale = Math.min(2.5, Math.max(0.25, dt / 16.667));
   const reduced = Boolean(window.__skyReducedMotion);
-  const speedSlider = document.getElementById('sp');
-  const speed3D = speedSlider ? parseFloat(speedSlider.value) : 1;
+
+  if (!reduced && prevTs > 0 && dt < 80) {
+    emaFrameMs = emaFrameMs * 0.9 + dt * 0.1;
+    if (
+      emaFrameMs > 30 &&
+      now - lastPerfAdjustTs > 1500 &&
+      adaptiveViewport.effectivePixelRatio > 1 &&
+      renderer
+    ) {
+      lastPerfAdjustTs = now;
+      const nextDpr = Math.max(1, Number((adaptiveViewport.effectivePixelRatio * 0.88).toFixed(3)));
+      if (nextDpr < adaptiveViewport.effectivePixelRatio) {
+        adaptiveViewport.effectivePixelRatio = nextDpr;
+        renderer.setPixelRatio(nextDpr);
+        renderer.setSize(adaptiveViewport.width, adaptiveViewport.height, false);
+        emaFrameMs = 16.7;
+      }
+    }
+  }
+
+  const targetVaultRotY = reduced ? 0 : cursorParallax.x * 0.04;
+  const targetVaultRotX = reduced ? 0 : cursorParallax.y * 0.03;
 
   if (!reduced) {
-    simTime += activeRoute === '3d' ? (isPlaying3D ? 0.016 * speed3D : 0) : 0.016;
+    simTime += activeRoute === '3d' ? (isPlaying3D ? 0.016 * frameScale * cachedSpeed3D : 0) : 0.016 * frameScale;
   }
 
   // Animación por escena activa
@@ -1322,11 +1760,11 @@ function renderLoop(now = performance.now()) {
         const s = 1 + (1 - Math.min(1, camCurr.r / 165)) * 0.65;
         inicioGroup.scale.set(s, s, s);
       }
-      inicioGroup.rotation.y += 0.00055 + (isWarpingFromInicio ? 0.006 : 0);
-      if (inicioRing) inicioRing.rotation.z += 0.0011;
-      if (inicioOuterRing) inicioOuterRing.rotation.y -= 0.00085;
+      inicioGroup.rotation.y += (0.00055 + (isWarpingFromInicio ? 0.006 : 0)) * frameScale;
+      if (inicioRing) inicioRing.rotation.z += 0.0011 * frameScale;
+      if (inicioOuterRing) inicioOuterRing.rotation.y -= 0.00085 * frameScale;
       if (inicioNearLayer) {
-        inicioNearLayer.rotation.y += 0.00045;
+        inicioNearLayer.rotation.y += 0.00045 * frameScale;
         inicioNearLayer.position.x = -cursorParallax.x * 26;
         inicioNearLayer.position.y = cursorParallax.y * 18;
       }
@@ -1367,14 +1805,28 @@ function renderLoop(now = performance.now()) {
     camGoal.p = 1.48 + cursorParallax.y * 1.15;
   } else if (activeRoute === 'explorar' && explorarGroup) {
     if (!reduced) {
-      // Parallax reactivo según puntero sobre la bóveda y anclaje astrométrico ICRS
-      const baseFitR = window.innerWidth < 780 ? 198 : 132;
-      camGoal.t = Math.PI / 2 + cursorParallax.x * 0.18;
-      camGoal.p = 1.54 + cursorParallax.y * 0.14;
-      camGoal.r = baseFitR - cursorParallax.y * 12;
+      // Parallax suave sobre el grupo del plano focal independiente de la tasa de refresco
+      const parallaxK = 1 - Math.pow(0.88, frameScale);
+      explorarGroup.rotation.y += (targetVaultRotY - explorarGroup.rotation.y) * parallaxK;
+      explorarGroup.rotation.x += (targetVaultRotX - explorarGroup.rotation.x) * parallaxK;
+      if (Math.abs(targetVaultRotY - explorarGroup.rotation.y) < 0.0002) {
+        explorarGroup.rotation.y = targetVaultRotY;
+      }
+      if (Math.abs(targetVaultRotX - explorarGroup.rotation.x) < 0.0002) {
+        explorarGroup.rotation.x = targetVaultRotX;
+      }
 
-      explorarGroup.rotation.y = Math.sin(simTime * 0.14) * 0.012 + cursorParallax.x * 0.04;
-      explorarGroup.rotation.x = cursorParallax.y * 0.03;
+      if (bovedaAstrolabe) {
+        bovedaAstrolabe.rotation.z += 0.0018 * frameScale;
+      }
+      for (let i = 0; i < objEntries.length; i++) {
+        const entry = objEntries[i];
+        if (entry.model3D && entry.data[1] === 'Asteroide' && entry.holder.visible) {
+          const spin = (entry.data[0] === 'Candidato SPX-26' ? 0.018 : 0.01) * frameScale;
+          entry.model3D.rotation.y += spin;
+          entry.model3D.rotation.x += spin * 0.65;
+        }
+      }
 
       if (exploreState.blink && typeof exploreState.onBlinkTick === 'function') {
         blinkAccumMs += dt;
@@ -1383,6 +1835,8 @@ function renderLoop(now = performance.now()) {
           exploreState.onBlinkTick();
         }
       }
+    } else {
+      explorarGroup.rotation.set(0, 0, 0);
     }
   } else if (activeRoute === '3d' && sistemaGroup) {
     if (isPlaying3D && !reduced) {
@@ -1401,26 +1855,26 @@ function renderLoop(now = performance.now()) {
       cometHead.position.set(70 * (Math.cos(E) - 0.82), 0, 40 * Math.sin(E));
 
       const d = cometHead.position.length() || 1;
-      const norm = cometHead.position.clone().normalize();
+      _tmpVecA.copy(cometHead.position).normalize();
       const len = Math.min(46, 700 / d);
       const posAttr = cometTail.geometry.attributes.position;
       for (let i = 0; i < 50; i++) {
+        const k = len * (i / 50);
         posAttr.setXYZ(
           i,
-          cometHead.position.x + norm.x * len * (i / 50),
-          cometHead.position.y + norm.y * len * (i / 50),
-          cometHead.position.z + norm.z * len * (i / 50)
+          cometHead.position.x + _tmpVecA.x * k,
+          cometHead.position.y + _tmpVecA.y * k,
+          cometHead.position.z + _tmpVecA.z * k
         );
       }
       posAttr.needsUpdate = true;
     }
 
     if (focus3D === 'Cometa' && cometHead) {
-      const wp = new T.Vector3();
-      cometHead.getWorldPosition(wp);
-      camGoal.tx = wp.x;
-      camGoal.ty = wp.y;
-      camGoal.tz = wp.z;
+      cometHead.getWorldPosition(_tmpVecB);
+      camGoal.tx = _tmpVecB.x;
+      camGoal.ty = _tmpVecB.y;
+      camGoal.tz = _tmpVecB.z;
     } else {
       camGoal.tx = 0;
       camGoal.ty = 0;
@@ -1428,26 +1882,25 @@ function renderLoop(now = performance.now()) {
     }
 
     if (!activePointers.size && !reduced && focus3D === 'Sistema' && isPlaying3D) {
-      camGoal.t += 0.0012;
+      camGoal.t += 0.0012 * frameScale;
     }
   } else if (activeRoute === 'fases' && fasesGroup) {
     if (!reduced) {
-      if (fasesCore) fasesCore.rotation.y += 0.0022;
+      if (fasesCore) fasesCore.rotation.y += 0.0022 * frameScale;
       if (fasesCones) {
-        fasesCones.rotation.y -= 0.0065;
+        fasesCones.rotation.y -= 0.0065 * frameScale;
         fasesCones.rotation.x = Math.sin(simTime * 0.5) * 0.35;
       }
       if (phaseSignal && phaseCurve) {
-        const pt = phaseCurve.getPointAt((simTime * 0.09) % 1);
-        phaseSignal.position.copy(pt);
+        phaseCurve.getPointAt((simTime * 0.09) % 1, phaseSignal.position);
       }
-      if (!activePointers.size) camGoal.t += 0.0008;
+      if (!activePointers.size) camGoal.t += 0.0008 * frameScale;
     }
   }
 
   // Decaimiento suave de hiper-zoom warp al cruzar desde #inicio hacia #explorar
   if (!reduced && warpBoost > 0.004) {
-    if (!isWarpingFromInicio) warpBoost *= 0.9;
+    if (!isWarpingFromInicio) warpBoost *= Math.pow(0.9, frameScale);
     camera.fov = 50 + warpBoost * 24;
     camera.updateProjectionMatrix();
   } else if (camera.fov !== 50) {
@@ -1456,14 +1909,22 @@ function renderLoop(now = performance.now()) {
     camera.updateProjectionMatrix();
   }
 
-  // Interpolación suave de cámara
-  const lerpK = reduced ? 1 : (isWarpingFromInicio ? 0.14 : 0.09);
+  // Interpolación suave de cámara independiente del framerate con cierre limpio sin cola asintótica
+  const baseLerp = isWarpingFromInicio ? 0.14 : 0.09;
+  const lerpK = reduced ? 1 : (1 - Math.pow(1 - baseLerp, frameScale));
   camCurr.t += (camGoal.t - camCurr.t) * lerpK;
   camCurr.p += (camGoal.p - camCurr.p) * lerpK;
   camCurr.r += (camGoal.r - camCurr.r) * lerpK;
   camCurr.tx += (camGoal.tx - camCurr.tx) * lerpK;
   camCurr.ty += (camGoal.ty - camCurr.ty) * lerpK;
   camCurr.tz += (camGoal.tz - camCurr.tz) * lerpK;
+
+  if (Math.abs(camGoal.t - camCurr.t) < 0.002) camCurr.t = camGoal.t;
+  if (Math.abs(camGoal.p - camCurr.p) < 0.002) camCurr.p = camGoal.p;
+  if (Math.abs(camGoal.r - camCurr.r) < 0.1) camCurr.r = camGoal.r;
+  if (Math.abs(camGoal.tx - camCurr.tx) < 0.05) camCurr.tx = camGoal.tx;
+  if (Math.abs(camGoal.ty - camCurr.ty) < 0.05) camCurr.ty = camGoal.ty;
+  if (Math.abs(camGoal.tz - camCurr.tz) < 0.05) camCurr.tz = camGoal.tz;
 
   camera.position.set(
     camCurr.tx + camCurr.r * Math.sin(camCurr.p) * Math.cos(camCurr.t),
@@ -1480,13 +1941,24 @@ function renderLoop(now = performance.now()) {
 
   renderer.render(scene, camera);
 
-  // Ponytail: dormir loop si reduced-motion y cámara estable, o en #3d pausado
+  // Ponytail: dormir loop si reduced-motion, en #explorar en reposo sin blink, o en #3d pausado
+  const vaultParallaxSettled = activeRoute !== 'explorar' || !explorarGroup || (
+    Math.abs(explorarGroup.rotation.y - targetVaultRotY) < 0.0003 &&
+    Math.abs(explorarGroup.rotation.x - targetVaultRotX) < 0.0003
+  );
   const settled =
     eclipsePhase !== 'transition' &&
+    warpBoost <= 0.004 &&
     Math.abs(camCurr.r - camGoal.r) < 0.05 &&
     Math.abs(camCurr.t - camGoal.t) < 0.002 &&
+    Math.abs(camCurr.p - camGoal.p) < 0.002 &&
+    vaultParallaxSettled &&
     activePointers.size === 0;
-  if ((reduced && settled) || (activeRoute === '3d' && !isPlaying3D && settled)) {
+  if (
+    (reduced && settled) ||
+    (activeRoute === 'explorar' && !exploreState.blink && settled) ||
+    (activeRoute === '3d' && !isPlaying3D && settled)
+  ) {
     rafId = 0;
     return;
   }
@@ -1503,20 +1975,54 @@ export async function initCosmos3D(initialRoute = 'inicio') {
   canvas = document.getElementById('cosmos');
   if (!canvas) return;
 
+  const stateHost = document.getElementById('cosmos-state');
+  const slotEl = document.querySelector('#inicio .eclipse-o');
+  if (slotEl && initialRoute === 'inicio') {
+    renderState(slotEl, { state: 'loading', variant: 'slot' });
+  }
+
   try {
     T = await ensureThreeLoaded();
+    const initW = window.innerWidth || 1280;
+    const initH = window.innerHeight || 720;
+    const powerPreference = Math.max(initW, initH) >= 900 ? 'high-performance' : 'default';
+    renderer = new T.WebGLRenderer({ canvas, antialias: true, powerPreference, alpha: false });
   } catch (err) {
+    if (slotEl) slotEl.replaceChildren();
+    renderState(stateHost, {
+      state: 'error',
+      title: 'No se pudo iniciar el lienzo 3D',
+      detail: 'WebGL no está activo o falló la carga del motor local. Puedes reintentar o usar el Laboratorio FITS.',
+      actionLabel: 'Reintentar 3D',
+      onAction: () => {
+        clearState(stateHost);
+        initCosmos3D(activeRoute);
+      }
+    });
     return;
   }
 
+  clearState(stateHost);
+  _tmpVecA = new T.Vector3();
+  _tmpVecB = new T.Vector3();
   scene = new T.Scene();
   camera = new T.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.5, 3200);
   raycaster = new T.Raycaster();
   raycaster.params.Points.threshold = 4;
 
-  renderer = new T.WebGLRenderer({ canvas, antialias: true, powerPreference: 'low-power', alpha: false });
+  const speedSlider = document.getElementById('sp');
+  if (speedSlider) {
+    const syncSpeed = () => {
+      const v = parseFloat(speedSlider.value);
+      cachedSpeed3D = Number.isFinite(v) ? v : 1;
+    };
+    syncSpeed();
+    speedSlider.addEventListener('input', syncSpeed, { passive: true });
+    speedSlider.addEventListener('change', syncSpeed, { passive: true });
+  }
+
   renderer.setClearColor(0x000000, 1);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(computeQualityProfile(window.innerWidth, window.innerHeight).effectivePixelRatio);
 
   scene.add(new T.AmbientLight(0xffffff, 0.45), new T.PointLight(0xffffff, 1.8));
 
@@ -1527,17 +2033,49 @@ export async function initCosmos3D(initialRoute = 'inicio') {
   buildSistemaScene();
   buildFasesScene();
 
+  let dprMediaQuery = null;
+  let dprMediaHandler = null;
+
   const onResize = () => {
     const w = window.innerWidth;
     const h = window.innerHeight;
     if (!w || !h) return;
+    emaFrameMs = 16.7;
+    const profile = computeQualityProfile(w, h);
+    renderer.setPixelRatio(profile.effectivePixelRatio);
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    adaptiveViewport = {
+      width: w,
+      height: h,
+      aspect: Number((w / h).toFixed(3)),
+      dpr: profile.dpr,
+      effectivePixelRatio: profile.effectivePixelRatio,
+      qualityTier: profile.qualityTier,
+      fitRadius: applyAdaptiveCameraForRoute(activeRoute)
+    };
     updateEclipseSlotRect();
     wakeLoop();
   };
-  window.addEventListener('resize', onResize);
+
+  const watchDprChange = () => {
+    if (dprMediaQuery && dprMediaHandler) {
+      dprMediaQuery.removeEventListener('change', dprMediaHandler);
+    }
+    if (typeof window.matchMedia !== 'function') return;
+    const currentDpr = window.devicePixelRatio || 1;
+    dprMediaQuery = window.matchMedia(`(resolution: ${currentDpr}dppx)`);
+    dprMediaHandler = () => {
+      watchDprChange();
+      onResize();
+    };
+    dprMediaQuery.addEventListener('change', dprMediaHandler, { once: true });
+  };
+
+  window.addEventListener('resize', onResize, { passive: true });
+  window.visualViewport?.addEventListener('resize', onResize, { passive: true });
+  watchDprChange();
   onResize();
 
   bindPointerEvents();

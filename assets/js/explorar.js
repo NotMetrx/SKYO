@@ -11,10 +11,13 @@ import {
   MODOS_LECTURA,
   ETAPAS_EXPLORACION,
   MISIONES_HERA,
+  getObjectProvenance,
   rng
 } from './data.js';
 import { updateExploreState } from './cosmos3d.js';
 import { initScienceLab } from './science-lab-ui.js';
+import { initAladinViewer, pauseAladin, resumeAladin } from './aladin-viewer.js';
+import { renderState, clearState } from './ui-states.js';
 
 const STORAGE_KEY = 'skyo_bitacora_v1';
 
@@ -131,8 +134,14 @@ function renderThumbnail(index) {
   const tCtx = thumbCanvas.getContext('2d');
   const w = thumbCanvas.clientWidth || 280;
   const h = thumbCanvas.clientHeight || 96;
-  thumbCanvas.width = w;
-  thumbCanvas.height = h;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+  const targetW = Math.max(1, Math.round(w * dpr));
+  const targetH = Math.max(1, Math.round(h * dpr));
+  if (thumbCanvas.width !== targetW || thumbCanvas.height !== targetH) {
+    thumbCanvas.width = targetW;
+    thumbCanvas.height = targetH;
+  }
+  tCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   const isIRLong = currentBand === 1;
   tCtx.fillStyle = '#000000';
@@ -273,10 +282,16 @@ function renderBitacora() {
 
   listEl.innerHTML = '';
   if (!bitacoraEntries.length) {
-    const empty = document.createElement('p');
-    empty.className = 'bit-empty';
-    empty.textContent = 'Aún no hay capturas. Toca un cuerpo celeste y pulsa «Registrar en bitácora» para guardar tu evidencia.';
-    listEl.appendChild(empty);
+    renderState(listEl, {
+      state: 'empty',
+      title: 'Bitácora sin capturas',
+      detail: 'Toca una fuente celeste en el plano focal y pulsa «Registrar en bitácora» para archivar evidencia.',
+      actionLabel: 'Ir al Plano Focal',
+      onAction: () => {
+        toggleBitacoraPanel(false);
+        setSubView('boveda');
+      }
+    });
     return;
   }
 
@@ -292,6 +307,17 @@ function renderBitacora() {
 
     const meta = document.createElement('div');
     meta.className = 'bit-meta';
+    let checksHtml = '';
+    if (item.catalogChecks) {
+      checksHtml = `
+        <div class="bit-checks" style="margin-top:4px;font-size:10px;color:var(--tx-2);line-height:1.3">
+          <div>✓ JPL SBDB: ${item.catalogChecks.jpl_sbdb.match}</div>
+          <div>✓ Gaia DR3: ${item.catalogChecks.gaia_dr3.match}</div>
+          <div>✓ ePSF: ${item.catalogChecks.epsf.status}</div>
+        </div>
+      `;
+    }
+
     meta.innerHTML = `
       <div class="bit-row">
         <strong>${item.name}</strong>
@@ -299,6 +325,7 @@ function renderBitacora() {
       </div>
       <div class="bit-tech">Δθ ≈ ${item.deltaArcsec}" · ${item.bandLabel} · ${item.epochLabel}</div>
       <div class="bit-coords">${item.icrsLabel}</div>
+      ${checksHtml}
     `;
 
     const del = document.createElement('button');
@@ -337,10 +364,12 @@ export function addExternalBitacoraEntry(entry) {
     status: entry.status,
     epochLabel: entry.epoch,
     bandLabel: 'WCS TAN-SIP',
-    deltaArcsec: '4.2',
+    deltaArcsec: entry.deltaArcsec || '4.2',
     icrsLabel: entry.coords,
     motionNote: entry.motion,
-    thumbUrl: 'assets/img/hera.webp',
+    catalogChecks: entry.catalogChecks || null,
+    disclaimer: entry.disclaimer || null,
+    thumbUrl: localStorage.getItem('skyo_custom_avatar') || 'icon.svg',
     timestamp: Date.now()
   });
   saveBitacora();
@@ -354,6 +383,7 @@ export function setSubView(view) {
   const hint = document.querySelector('#explorar .hint');
   const viewLab = document.getElementById('view-lab');
   const viewCol = document.getElementById('view-coleccion');
+  const viewAladin = document.getElementById('view-aladin');
   const cosmosCanvas = document.getElementById('cosmos');
 
   document.querySelectorAll('#explore-view-tabs button').forEach(b => {
@@ -361,6 +391,11 @@ export function setSubView(view) {
     b.classList.toggle('on', isTarget);
     b.setAttribute('aria-selected', String(isTarget));
   });
+
+  if (view !== 'aladin') {
+    pauseAladin();
+    if (viewAladin) viewAladin.hidden = true;
+  }
 
   if (view === 'boveda') {
     if (bovedaHud) bovedaHud.hidden = false;
@@ -397,6 +432,20 @@ export function setSubView(view) {
     if (typeof onHeraSpeak === 'function') {
       onHeraSpeak('Colección científica: explora candidatos sin identificar y cuerpos confirmados por JPL con su desplazamiento observado.', false);
     }
+  } else if (view === 'aladin') {
+    if (bovedaHud) bovedaHud.hidden = true;
+    if (tbar) tbar.hidden = true;
+    if (hint) hint.hidden = true;
+    closeObjectInfo();
+    if (viewLab) viewLab.hidden = true;
+    if (viewCol) viewCol.hidden = true;
+    if (viewAladin) viewAladin.hidden = false;
+    if (cosmosCanvas) cosmosCanvas.style.opacity = '0.05';
+    initAladinViewer();
+    resumeAladin();
+    if (typeof onHeraSpeak === 'function') {
+      onHeraSpeak('Contexto astronómico HiPS All-Sky (Aladin Lite v3 / CDS Strasbourg). Visualiza mosaicos de cielo completo desacoplados de la calibración temporal L2.', false);
+    }
   }
 }
 
@@ -412,6 +461,22 @@ function renderCandidateCollection(filter = collectionFilter) {
     if (filter === 'candidatos') return status === 'Candidato';
     return true;
   });
+
+  if (!filtered.length) {
+    renderState(grid, {
+      state: 'empty',
+      title: 'Sin objetos en esta categoría',
+      detail: 'No existen cuerpos registrados para el filtro seleccionado.',
+      actionLabel: 'Mostrar todos',
+      onAction: () => {
+        document.querySelectorAll('#col-filter-bar button').forEach(b => {
+          b.classList.toggle('on', b.dataset.colFilter === 'all');
+        });
+        renderCandidateCollection('all');
+      }
+    });
+    return;
+  }
 
   filtered.forEach(o => {
     const originalIdx = OBJ.indexOf(o);
@@ -431,9 +496,10 @@ function renderCandidateCollection(filter = collectionFilter) {
       <div class="col-meta-row">
         <span><b>Desplazamiento:</b> ${o[8] > 0 ? (o[8] * 120).toFixed(1) + '" / época' : 'Deriva nula (ICRS fijo)'}</span>
         <span><b>Dato:</b> ${o[6]}</span>
+        <span><b>Procedencia:</b> ${getObjectProvenance(o).label}</span>
       </div>
       <div class="col-actions-row">
-        <button type="button" class="btn subtle-sm btn-focus-boveda" data-idx="${originalIdx}">🔭 Ver en Bóveda</button>
+        <button type="button" class="btn subtle-sm btn-focus-boveda" data-idx="${originalIdx}">◎ Ver en Plano Focal</button>
         <button type="button" class="btn subtle-sm ok btn-analyze-lab" data-idx="${originalIdx}">🔬 Analizar FITS</button>
       </div>
     `;
@@ -537,6 +603,12 @@ export function selectObject(index) {
     statusEl.textContent = o[7];
     statusEl.className = o[7] === 'Candidato' ? 'tg cand' : 'tg st';
   }
+  const provEl = document.getElementById('iprov');
+  if (provEl) {
+    const prov = getObjectProvenance(o);
+    provEl.textContent = prov.label;
+    provEl.className = prov.type === 'synthetic' ? 'tg prov prov-syn' : 'tg prov prov-cat';
+  }
   if (nameEl) nameEl.textContent = o[0];
   if (descEl) descEl.textContent = o[5];
   if (detailEl) detailEl.textContent = o[6];
@@ -558,6 +630,7 @@ export function selectObject(index) {
   renderThumbnail(index);
 
   updateExploreState({ selected: selectedIndex });
+  renderQuickObjectRail();
 
   const prevDone = completedMissions.has(MISIONES_HERA[missionIndex]?.id);
   evaluateMission(false);
@@ -576,6 +649,7 @@ export function closeObjectInfo() {
     infoPanel.inert = true;
   }
   updateExploreState({ selected: -1 });
+  renderQuickObjectRail();
 }
 
 export function pauseExplorarBlink() {
@@ -596,14 +670,46 @@ export function openClassroomMission() {
   }
 }
 
+function renderQuickObjectRail() {
+  const rail = document.getElementById('obj-quick-rail');
+  if (!rail) return;
+  rail.replaceChildren();
+  OBJ.forEach((o, idx) => {
+    if (activeFilter !== 'Todos' && o[1] !== activeFilter) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    const isSel = idx === selectedIndex;
+    const isCand = o[7] === 'Candidato';
+    btn.className = `obj-chip${isSel ? ' on' : ''}${isCand ? ' is-cand' : ''}`;
+    btn.dataset.idx = String(idx);
+    btn.setAttribute('aria-pressed', String(isSel));
+    btn.textContent = o[0];
+    rail.appendChild(btn);
+  });
+}
+
 function updateTemporalDescription() {
-  const descEl = document.getElementById('tdesc');
-  if (!descEl) return;
   const ep = EPOCAS[currentEpoch];
-  const mo = MESES[currentMonth];
   const bd = BANDAS[currentBand];
-  const blinkNote = blinkMode ? ' · Parpadeo Época 1 ⇄ 4 activo' : '';
-  descEl.textContent = `${ep.label} (${ep.span}) · ${bd.label} (${bd.range})${blinkNote}${compareMode ? ' · Vector morado visible' : ''}`;
+  const descEl = document.getElementById('tdesc');
+  if (descEl) {
+    const blinkNote = blinkMode ? ' · Parpadeo Época 1 ⇄ 4 activo' : '';
+    descEl.textContent = `${ep.label} (${ep.span}) · ${bd.label} (${bd.range})${blinkNote}${compareMode ? ' · Vector morado visible' : ''}`;
+  }
+
+  const bandEl = document.getElementById('fpa-tele-band');
+  if (bandEl) {
+    const det = currentBand === 1 ? 'D4–D6' : 'D1–D3';
+    bandEl.innerHTML = `<b class="fpa-k">DET</b> ${det} · ${bd.range}`;
+    bandEl.classList.toggle('is-mwir', currentBand === 1);
+  }
+
+  const epochEl = document.getElementById('fpa-tele-epoch');
+  if (epochEl) {
+    const dtMonths = getElapsedMonths();
+    epochEl.innerHTML = `<b class="fpa-k">ÉPOCA</b> E${currentEpoch + 1} · Δt +${dtMonths}m${blinkMode ? ' ⇄' : ''}`;
+    epochEl.classList.toggle('is-blink', blinkMode);
+  }
 }
 
 function syncUI() {
@@ -630,7 +736,29 @@ function syncUI() {
   }
 
   updateTemporalDescription();
+  renderQuickObjectRail();
   renderMissionBar();
+
+  const bovedaStateEl = document.getElementById('boveda-state');
+  const visibleCount = OBJ.filter(o => activeFilter === 'Todos' || o[1] === activeFilter).length;
+  if (bovedaStateEl) {
+    if (visibleCount === 0 && currentSubView === 'boveda') {
+      renderState(bovedaStateEl, {
+        state: 'empty',
+        variant: 'compact',
+        title: `Sin cuerpos para «${activeFilter}»`,
+        detail: 'Cambia el filtro superior para ver las fuentes disponibles en el plano focal ICRS.',
+        actionLabel: 'Mostrar todos',
+        onAction: () => {
+          activeFilter = 'Todos';
+          document.querySelectorAll('#flt button').forEach(b => b.classList.toggle('on', b.dataset.t === 'Todos'));
+          syncUI();
+        }
+      });
+    } else {
+      clearState(bovedaStateEl);
+    }
+  }
   if (selectedIndex >= 0) {
     updateSelectedMovementText(OBJ[selectedIndex]);
     renderThumbnail(selectedIndex);
@@ -654,6 +782,15 @@ function buildExplorarUI() {
   const cmpBtn = document.getElementById('cmp');
   const blinkBtn = document.getElementById('blink');
   const fltEl = document.getElementById('flt');
+  const quickRail = document.getElementById('obj-quick-rail');
+
+  if (quickRail) {
+    quickRail.onclick = e => {
+      const btn = e.target.closest('button[data-idx]');
+      if (!btn) return;
+      selectObject(Number(btn.dataset.idx));
+    };
+  }
 
   if (epEl && !epEl.hasChildNodes()) {
     EPOCAS.forEach((ep, i) => {
@@ -898,6 +1035,10 @@ function buildExplorarUI() {
       }
     });
   });
+
+  window.addEventListener('resize', () => {
+    if (selectedIndex >= 0) renderThumbnail(selectedIndex);
+  }, { passive: true });
 }
 
 export function startExplorar(heraHandler, initialSub) {

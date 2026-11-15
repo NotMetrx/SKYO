@@ -1,0 +1,58 @@
+{
+  "generatedUtc": "2026-11-14T21:49:43.364Z",
+  "baseUrl": "http://127.0.0.1:35545",
+  "syntheticOnly": true,
+  "varyOrigin": [
+    {
+      "varyOrigin": false,
+      "labOffline": true,
+      "indexOffline": true,
+      "offlineSuccess": true
+    },
+    {
+      "varyOrigin": true,
+      "labOffline": true,
+      "indexOffline": true,
+      "offlineSuccess": true
+    }
+  ],
+  "staleReport": {
+    "beforeReportIsNegativeControl": true,
+    "beforeReportHasSnapshot": true,
+    "beforeReportHasShaA": true,
+    "actualDownloadEnabledAfterReload": false,
+    "tableResetText": "ESTADO\nSin análisis\nCALIDAD\nNo evaluada\nCOMPARACIÓN ESPECTRAL\nNo evaluada"
+  },
+  "opfsAtomicity": {
+    "threwOnMissingSecond": true,
+    "restoredNameA": "orig_A.fits",
+    "restoredNameB": "orig_B.fits",
+    "restoredSizeA": 279360,
+    "restoredSizeB": 279360,
+    "expectedSizeA": 279360,
+    "expectedSizeB": 279360
+  },
+  "browserWorkerConcurrency": {
+    "eventsCount": 3,
+    "loadedEvents": [
+      {
+        "event": "loaded",
+        "jobId": 2,
+        "side": "B"
+      },
+      {
+        "event": "loaded",
+        "jobId": 3,
+        "side": "A"
+      }
+    ],
+    "snapshot": {
+      "jobA": 3,
+      "jobB": 2,
+      "sha256A": null,
+      "sha256B": null
+    },
+    "offset": 0,
+    "isNegativeControl": true
+  }
+}

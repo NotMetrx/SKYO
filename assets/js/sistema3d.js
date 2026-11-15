@@ -21,6 +21,8 @@ export function startSistema3D() {
         const playing = toggle3DPlay();
         btn.textContent = playing ? '⏸' : '▶';
         btn.setAttribute('aria-label', playing ? 'Pausar simulación' : 'Reanudar simulación');
+        btn.setAttribute('aria-pressed', String(!playing));
+        btn.classList.toggle('on', !playing);
       } else if (btn.id === 'zi') {
         adjust3DZoom(0.75);
       } else if (btn.id === 'zo') {

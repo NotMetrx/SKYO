@@ -3,14 +3,21 @@ import {compareJavaScript} from './pipeline.js';
 let wasm=null;
 let state='JavaScript (WASM pendiente de compilar)';
 export async function initKernel(){
-  try {
-    const mod=await import('../wasm/pkg/skyo_wasm.js');
-    await mod.default();
-    wasm=mod;
-    state='Rust / WebAssembly';
-  } catch(_error) {
-    // Demo utilizable sin wasm-pack instalado; mensaje visible en la UI.
-    wasm=null;
+  const candidates=[
+    new URL('./wasm/pkg/skyo_wasm.js',import.meta.url).href,
+    new URL('../wasm/pkg/skyo_wasm.js',import.meta.url).href
+  ];
+  for(const url of candidates){
+    try {
+      const mod=await import(/* @vite-ignore */ url);
+      await mod.default();
+      wasm=mod;
+      state='Rust / WebAssembly';
+      return state;
+    } catch(_error) {
+      // Demo utilizable sin wasm-pack instalado; mensaje visible en la UI.
+      wasm=null;
+    }
   }
   return state;
 }

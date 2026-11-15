@@ -4,11 +4,12 @@
 - Fondo siempre negro `#000000`; Wayland nativo. Paleta oficial en `docs/PALETA.md` (usar solo variables CSS). Acento secundario MORADO `#b57bff` (no naranja). Maqueta en `docs/LAYOUT.md`.
 - Idioma: español. Enlaces `file://` clicables al citar archivos.
 - Proyecto: `/home/emi/Documentos/SKYO` (SPA `#inicio`, `#explorar`, `#3d`, `#fases`). Servidor: `python3 -m http.server 8000 -d /home/emi/Documentos/SKYO`.
-- H.E.R.A 7: el usuario RECHAZÓ el astronauta vintage de primitivas. Usar SIEMPRE la imagen real `hera.webp` con 3D solo en las partes más visibles (casco/visor/torso). No rediseñarlo.
+- H.E.R.A 7: ranura de avatar personalizable libre (permite subir cualquier imagen con persistencia local y botón de reset; no avatar fijo). 3D con relieve adaptativo en el botón `#ha`.
 - Prohibido: página estática, estilo no humano.
 - Obligatorio: cada cambio se apunta en `memories.md`; leer `memories.md` y `history.md` al inicio de cada petición.
 - Estructura: raíz mínima; lo ajeno/legado vive en `_archivo/` (no borrar sin permiso). Ver README.md.
 - `#inicio` minimalista: solo wordmark **SKYO** con modelo 3D del eclipse (`assets/models/eclipse.glb`) en la `O`; `Enter` y `Espacio` avanzan a `#explorar` haciendo volar el eclipse 3D hacia el frente y ocultándolo al terminar.
-- `#explorar` simplificado: sin botones redundantes (`#modebar`, `#scale-pill`, `#stage-tabs`, `#meses`); conserva vista/filtro/misión/épocas/banda/blink/comparar y `Bitácora`.
+- `#explorar` simplificado: sin botones redundantes (`#modebar`, `#scale-pill`, `#stage-tabs`, `#meses`); conserva vista/filtro/misión/épocas/banda/blink/comparar y `Bitácora`, e integra el conjunto 3D PBR de Blender (`assets/models/boveda.glb`) con `0 rAF/s` en reposo.
 - `#nav` mantiene solo 3 botones (`Explorar`, `3D`, `Fases`). Todos los paneles usan estética Liquid Glass.
 - H.E.R.A 7 sin acceso rápido por botones (`#hc`) y nunca visible en `#inicio`.
+- Fusión de Paneles (investigación Sofía): Bóveda ICRS continua, Catálogo como Rail táctico, Lab FITS como Drawer contextual deslizante y Bitácora unificada (Triángulo de Descubrimiento).

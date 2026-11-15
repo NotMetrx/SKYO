@@ -49,9 +49,71 @@ export const hera = {
   }
 };
 
+const heraImg = document.getElementById('hera-img');
+const heraPlaceholder = document.getElementById('hera-placeholder');
+const avatarInput = document.getElementById('avatar-input');
+const avatarResetBtn = document.getElementById('avatar-reset-btn');
+
+function setCustomAvatar(dataUrl) {
+  if (dataUrl && heraImg) {
+    heraImg.src = dataUrl;
+    heraImg.hidden = false;
+    if (heraPlaceholder) heraPlaceholder.hidden = true;
+    if (avatarResetBtn) avatarResetBtn.hidden = false;
+    initHera3d(heraAvatarBtn);
+  } else if (heraImg) {
+    heraImg.src = '';
+    heraImg.hidden = true;
+    if (heraPlaceholder) heraPlaceholder.hidden = false;
+    if (avatarResetBtn) avatarResetBtn.hidden = true;
+    initHera3d(heraAvatarBtn);
+  }
+}
+
+const savedAvatar = localStorage.getItem('skyo_custom_avatar');
+setCustomAvatar(savedAvatar);
+
+if (avatarInput) {
+  avatarInput.addEventListener('change', e => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      hera.say('Formato no compatible. Por favor sube una imagen (PNG, JPG o WebP).', true);
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      hera.say('La imagen supera los 5 MB. Por favor elige una imagen más ligera.', true);
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const dataUrl = ev.target?.result;
+      if (typeof dataUrl === 'string') {
+        try {
+          localStorage.setItem('skyo_custom_avatar', dataUrl);
+          setCustomAvatar(dataUrl);
+          hera.say('¡Avatar actualizado! Ahora este es tu asistente personalizado.');
+        } catch {
+          hera.say('Almacenamiento local lleno. Prueba con una imagen más pequeña.', true);
+        }
+      }
+    };
+    reader.readAsDataURL(file);
+    avatarInput.value = '';
+  });
+}
+
+if (avatarResetBtn) {
+  avatarResetBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    localStorage.removeItem('skyo_custom_avatar');
+    setCustomAvatar(null);
+    hera.say('Avatar restablecido. Pulsa «Subir avatar» para asignar tu imagen preferida.');
+  });
+}
+
 if (heraAvatarBtn) {
   heraAvatarBtn.onclick = () => hera.toggle();
-  initHera3d(heraAvatarBtn);
 }
 
 // 3. Router Reactivo por Hash con Transiciones GPU + Vuelo de Cámara 3D
@@ -167,21 +229,27 @@ window.addEventListener('keydown', e => {
     triggerWarpZoom();
     setTimeout(() => {
       window.location.hash = '#explorar';
-      setTimeout(() => {
-        document.body.classList.remove('warp-zoom');
-        isWarping = false;
-      }, 480);
-    }, 340);
+    }, 220);
+    setTimeout(() => {
+      document.body.classList.remove('warp-zoom');
+      isWarping = false;
+    }, 560);
   }
 });
 
 // 4. Gestión de C-States (Page Visibility API)
 document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    pauseExplorarBlink();
+  }
   setCosmosVisible(!document.hidden);
 });
 
 // 6. Inicialización inmediata
 function initApp() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  }
   navigate();
   initCosmos3D(currentRoute);
 

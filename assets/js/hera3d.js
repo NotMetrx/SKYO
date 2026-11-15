@@ -4,8 +4,10 @@
  * Ponytail: un solo plano 48x48, render SOLO bajo demanda (puntero/clic), pausa con document.hidden.
  */
 export function initHera3d(button, onLaugh) {
+  const existingCv = button.querySelector('.hera-3d');
+  if (existingCv) existingCv.remove();
   const img = button.querySelector('img');
-  if (!img) return;
+  if (!img || !img.src || img.hidden) return;
   const load = window.THREE ? Promise.resolve() : new Promise((ok, no) => {
     const s = document.createElement('script');
     s.src = 'assets/js/vendor/three.min.js'; s.onload = ok; s.onerror = no;
@@ -20,9 +22,18 @@ function build(T, button, img, src, onLaugh) {
   let renderer;
   try { renderer = new T.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' }); } catch { return; }
   const W = 2.6, H = W * src.naturalHeight / src.naturalWidth;
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  renderer.setSize(112, 112);
+  const getBoxSize = () => {
+    const rect = button.getBoundingClientRect();
+    const side = Math.round(Math.max(rect.width || 0, rect.height || 0));
+    return side >= 24 ? side : 112;
+  };
+  let lastSize = getBoxSize();
+  let lastDpr = Math.min(window.devicePixelRatio || 1, 2.5);
+  renderer.setPixelRatio(lastDpr);
+  renderer.setSize(lastSize, lastSize);
   const cv = renderer.domElement;
+  cv.style.maxWidth = '100%';
+  cv.style.maxHeight = '100%';
   cv.className = 'hera-3d';
   cv.setAttribute('aria-hidden', 'true');
 
@@ -110,5 +121,19 @@ function build(T, button, img, src, onLaugh) {
   }, { passive: true });
   button.addEventListener('click', () => { st.laugh = 0.9; wake(); onLaugh?.(); });
   document.addEventListener('visibilitychange', () => { if (!document.hidden) render(); });
+  if (typeof ResizeObserver === 'function') {
+    const ro = new ResizeObserver(() => {
+      const nextSize = getBoxSize();
+      const nextDpr = Math.min(window.devicePixelRatio || 1, 2.5);
+      if (nextSize !== lastSize || nextDpr !== lastDpr) {
+        lastSize = nextSize;
+        lastDpr = nextDpr;
+        renderer.setPixelRatio(nextDpr);
+        renderer.setSize(nextSize, nextSize);
+        if (!document.hidden) render();
+      }
+    });
+    ro.observe(button);
+  }
   render();
 }

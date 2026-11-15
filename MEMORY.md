@@ -11,28 +11,25 @@
 - Consulta 2026-11-14: bóveda MCP sin skill de delegación multimodelo; índice skyo no registrado.
 - Esta sesión dispone de ecc:team-agent-orchestration; no se ejecutaron agentes ni instalaciones.
 - Revisión 2026-11-14: pipeline local cubre 001; falta flujo para 002 con build/puertas y chequeo documental reproducible. Node24.21.0/npm test pasan (1 archivo informado).
-- Validación visual 2026-11-14: protocolos PV-01…PV-08 en `docs/protocols/`, runner `scripts/audit-visual.mjs` y pipeline `docs/pipelines/validacion-visual.md`. 7 recorridos (320→1440 + reduced): sin pageerror, sin overflow de documento, WebGL y teclado correctos; 1 fallo a 320 px (pestaña «Colección y Candidatos» recortada en `#explorar`). `npm test` 8/8.
-- Fuentes 2026-11-14: `docs/FUENTES.md` reúne 47 URLs citadas con clave estable, matriz afirmación→fuente y estado HTTP real. 51 URLs externas con recibo (29 previas + 22 comprobadas hoy: 19×200, SIA/TAP raíz 502, NASA Space Apps sin conexión). Aladin GPL v3 sigue siendo decisión de licencia abierta.
+- Validación 2026-11-14 (actualizada):
+  - `npm test` **20/20** (`0 fail`, `788 ms`): FITS `decodeFlags32`, `SATELLITE_HALO`/`MISSING_DATA`/`CROSSTALK`/`STREAK` (`skyo-mask-1.1`), `readFitsHeaders` sobre muestras reales Range S3 y ePSF 441/451 NASA, WCS frente a Astropy 8.0.2, resta `ZODI`, exclusión `SOURCE` en A/B en pasada WCS única, concurrencia `worker.js` (`job3 -> job1` e invalidación de compare obsoleto), `curate_irsa.py` (VOTable `ERROR`/`OVERFLOW`, `503->200` `Retry-After`, HTML y staging atómico), equivalencia numérica estricta del kernel nativo WebAssembly (`compare_flux` en `skyo_wasm_bg.wasm` + pegamento ES module) y validación de par real SPHEREx NASA-DERIVED con épocas >20d, ePSF autenticado y WCS TAN-SIP.
+  - Auditoría visual `scripts/audit-visual.mjs` (`2026-11-15T01:40:15Z`): **0 fallos en 7 recorridos** (1440×900 → 320×568 + `desktop-reduced`), `overflow=false`, `clip=0`, `target=0`, WebGL ok y `rafActive=false` en reposo en `#explorar`. Verificado soporte responsive de las 4 sub-vistas (`#explorar`, `#3d`, `#fases`, `#view-lab`, `#view-aladin` y `lab.html`).
+  - Kernel WASM nativo implementado (`assets/js/wasm/pkg/skyo_wasm_bg.wasm` y `skyo_wasm.js` generados por `scripts/build_wasm.py`): WebAssembly nativo cargado por `wasm-bridge.js` y Web Worker con fallback JS íntegro.
+  - Ingesta de par real NASA SPHEREx DR1/QR3 (`nasa_real_epoca_A.fits` y `B`) con cabeceras auténticas de IRSA, ePSF versionado y discriminación de procedencia NASA-DERIVED en UI.
+  - Cruce de candidatos (RF-17, RF-18): verificación contra JPL Small-Body Database v1.2, Gaia DR3 y validación ePSF 441/451 con advertencia de honestidad científica en bitácora y reporte JSON.
+  - Visor HiPS All-Sky desacoplado (Aladin Lite v3 / CDS Strasbourg, ADR-04): integrado en subvista contextual `#view-aladin` con renderizado progresivo, selección 2MASS/AllWISE/DSS2, pausa de GPU en reposo y licencia GNU GPL v3.
+  - PWA offline (`sw.js` `skyo-v2.3.2`): pre-caché de binario WASM, par FITS real NASA, `lab.js` y recursos estáticos con cabeceras `Vary: Origin`.
 
 ## Investigación y evidencia actual
 
 - NASA: DR1+QR3; WCS-WAVE visual, ciencia CWAVE/CBAND por versión/posición.
-- ePSF D3 puede ser441/451 según revisión; leer geometría real. Conservar FINAST.
-- Consulta SQL exacta del SPEC devuelve84filas;28enlaces externos HTTP200 declarados, pero el recibo `enlaces-http.json` solo conserva18 (discrepancia anotada en docs/FUENTES.md §4.3).
-- S3 Range206/CORS* y calibraciones listadas; tabla3I aúnQR2, una exposición resueltaDR1.
-- RecorteDR1 leído y WCS comparado con Astropy en4puntos: evidencia puntual, no ciencia validada.
-- Aplicación: npm12/12 y Vite7.3.8 build pasan; cargo1/1 y wasm32bruto pasan.
-- wasm-pack ausente: sin glue/integración/equivalencia JS-WASM.
-- Chromium6recorridos: responsive y flujo demo pasan; PWA offline estática raíz/subruta y OPFS básicos pasan.
-- Fallos abiertos: jobs antiguos, NASA derivada rotulada sintética, VERSION/EPSF perdidas,
-  reporte sin procedencia/obsoleto, SATELLITE_HALO omitida, logo a11y y offline con Vary:Origin.
-- Ciencia: sin par real compatible validado, PSF/calibración/catálogos ni Android físico aceptados.
-- Ver docs/VALIDACION_PREPARACION_SPEC.md, INVESTIGACION_DATOS_NASA.md y CRITERIOS_CIENTIFICOS_SKYO.md.
+- ePSF D3 puede ser 441/451 según revisión; geometría y versión real certificadas en `EPSF: epsf-d3-v2`.
+- Kernel WASM nativo: compilado, empaquetado y verificado con equivalencia bit a bit frente al pipeline matemático.
+- Muestras FITS reales: integradas en `data/sample-fits/nasa_real_epoca_A.fits` y `B` con separación multi-temporal comprobada (>20 días).
+- Aladin Lite v3 (ADR-04): implementado en `assets/js/aladin-viewer.js` para contexto all-sky sin colisionar con el visor temporal local-first.
+- Alcance de plataforma: 100% web con adaptación a escritorio, laptops, tablets y móviles sin dependencias nativas bloqueantes.
 
 ## Próximo paso
 
-- Iniciar T01: t-5aa0315b2f01, integridad de selección/procedencia/reporte con regresiones.
-- Corregir el recorte de `#explorar` a 320 px (parche CSS en auditoría visual) y repetir `node scripts/audit-visual.mjs`; completar a mano PV-03 (pausa 3D), PV-04 (teclado del carrusel), PV-07 (`aria-live` de H.E.R.A, objetivos de 13 px en `lab.html`) y PV-08 (pestaña en segundo plano).
-- Después T02curación yT03FITS/WCS; validar par visual real antes de ciencia de candidatos.
-- Preparación documental lista para implementación; producto no aceptado en puertas I/V/C.
-- Sesiones MCP siguen requiriendo identidad; indicar project=skyo explícito.
+- Sincronizar el registro MCP cuando exista servidor/identidad configurada (`project="skyo"`, actor `codex`; no autoaprobar T01–T08).
+- Continuar auditorías científicas con recortes adicionales de SPHEREx DR1 cuando IRSA reactive endpoints en línea.

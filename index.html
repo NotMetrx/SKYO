@@ -7,12 +7,14 @@
   <meta name="description" content="SKYO — Explorador público multitemporal del cielo infrarrojo (Ref. SPHEREx / JPL) con sistema solar 3D y asistente H.E.R.A 7.">
   <title>SKYO — Atrévete a explorar</title>
   <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/states.css">
   <script type="module" src="assets/js/app.js"></script>
 </head>
 <body data-route="inicio" data-dir="forward">
 
   <!-- Lienzo 3D Three.js compartido en negro puro (#000000) para todos los paneles -->
   <canvas id="cosmos" aria-label="Universo interactivo 3D de SKYO"></canvas>
+  <div id="cosmos-state" class="cosmos-state-layer" hidden></div>
 
   <!-- Barra de navegación principal -->
   <header class="top">
@@ -52,13 +54,13 @@
       </div>
     </section>
 
-    <!-- Vista 2: Explorar Bóveda ICRS 3D + Blink, Misiones H.E.R.A 7 y Bitácora -->
+    <!-- Vista 2: Explorar Plano Focal IR SPHEREx + Blink, Misiones H.E.R.A 7 y Bitácora -->
     <section class="sec" id="explorar" aria-hidden="true" inert>
       <div class="explore-hud-top">
         <div class="explore-subnav-row">
           <div class="explore-view-tabs" id="explore-view-tabs" role="tablist" aria-label="Modos de exploración">
             <button type="button" class="view-tab on" data-view="boveda" role="tab" aria-selected="true">
-              <span>🔭 Bóveda Celeste</span>
+              <span>◎ Plano Focal IR</span>
             </button>
             <button type="button" class="view-tab" data-view="lab" role="tab" aria-selected="false">
               <span>🔬 Laboratorio FITS</span>
@@ -67,6 +69,10 @@
             <button type="button" class="view-tab" data-view="coleccion" role="tab" aria-selected="false">
               <span>📑 Colección y Candidatos</span>
             </button>
+            <button type="button" class="view-tab" data-view="aladin" role="tab" aria-selected="false">
+              <span>🌐 HiPS All-Sky</span>
+              <span class="view-tag-new">Aladin v3</span>
+            </button>
           </div>
 
           <div class="explore-right">
@@ -74,7 +80,7 @@
           </div>
         </div>
 
-        <!-- HUD exclusivo de la Bóveda Celeste -->
+        <!-- HUD exclusivo del Plano Focal IR -->
         <div id="boveda-hud" class="boveda-hud">
           <div class="explore-top">
             <div class="flt" id="flt" role="toolbar" aria-label="Filtro de cuerpos celestes">
@@ -84,7 +90,13 @@
               <button type="button" data-t="Asteroide">Asteroides</button>
             </div>
 
-            <div id="hover-pill" class="hover-pill" aria-live="polite"></div>
+            <div class="scale-pill fpa-telemetry" aria-label="Telemetría del plano focal SPHEREx">
+              <span class="fpa-chip"><b class="fpa-k">INSTR</b> SPHEREx LVF</span>
+              <span class="fpa-chip fpa-chip-fov" id="fpa-tele-fov"><b class="fpa-k">FOV</b> 0.05°×0.05° · TAN-SIP</span>
+              <span class="fpa-chip" id="fpa-tele-band"><b class="fpa-k">DET</b> D1–D3 · 0.75–2.41 µm</span>
+              <span class="fpa-chip" id="fpa-tele-epoch"><b class="fpa-k">ÉPOCA</b> E1 · Δt +0m</span>
+              <a href="https://irsa.ipac.caltech.edu/Missions/spherex.html" target="_blank" rel="noopener">IRSA ↗</a>
+            </div>
           </div>
 
           <div class="explore-subrow">
@@ -96,11 +108,14 @@
                 <button type="button" id="m-next">Siguiente</button>
               </div>
             </div>
+            <div id="hover-pill" class="hover-pill" aria-live="polite"></div>
           </div>
         </div>
+        <div id="boveda-state" class="boveda-state-host" hidden></div>
       </div>
 
       <div class="tbar" id="tbar" aria-label="Controles temporales y espectrales">
+        <div class="obj-quick-rail" id="obj-quick-rail" role="group" aria-label="Seleccionar fuente celeste en el plano focal"></div>
         <div class="trow" id="epocas" role="group" aria-label="Épocas SPHEREx"></div>
         <div class="trow tmeta">
           <div id="bandas" class="tgroup" role="group" aria-label="Banda espectral"></div>
@@ -112,13 +127,14 @@
         <p id="tdesc" class="tdesc" aria-live="polite"></p>
       </div>
 
-      <div class="hint">Arrastra la bóveda ICRS · Recorte astrométrico 0.05° · Datos ilustrativos Ref. NASA/IPAC IRSA (SPHEREx) y JPL</div>
+      <div class="hint">Arrastra para reencuadrar el plano focal · Rueda para zoom · Clic en una fuente para telemetría astrométrica</div>
 
       <div id="info" class="info-panel" aria-live="polite" aria-hidden="true" inert>
         <canvas id="ith"></canvas>
         <div class="badges">
           <span class="tg" id="it"></span>
           <span class="tg st" id="ist"></span>
+          <span class="tg prov" id="iprov">Recreación educativa</span>
         </div>
         <h3 id="in"></h3>
         <p id="id"></p>
@@ -194,7 +210,10 @@
           <div class="lab-step-box">
             <div class="lab-box-head">
               <h4>01. Ingesta de observaciones FITS</h4>
-              <button type="button" id="lab-load-demo" class="btn btn-demo">✦ Cargar simulación SPHEREx (Épocas A y B)</button>
+              <div class="lab-load-actions">
+                <button type="button" id="lab-load-demo" class="btn btn-demo">✦ Simulación sintética (Demo)</button>
+                <button type="button" id="lab-load-nasa" class="btn btn-nasa">★ Par Real NASA SPHEREx (M101)</button>
+              </div>
             </div>
             <p class="lab-help">Selecciona dos archivos FITS (recortes SPHEREx L2 de hasta 512×512 px) con extensiones IMAGE, FLAGS y VARIANCE.</p>
             <div class="lab-upload-grid">
@@ -231,9 +250,9 @@
                 </div>
                 <div class="canvas-wrap">
                   <canvas id="canvas-lab-a" width="320" height="240" aria-label="Visualización FITS de Época A"></canvas>
-                  <span class="canvas-hint" id="hint-lab-a">Esperando FITS A...</span>
+                  <div class="canvas-hint is-state" id="hint-lab-a"></div>
                 </div>
-                <div class="canvas-meta" id="meta-lab-a">Esperando imagen…</div>
+                <div class="canvas-meta" id="meta-lab-a">Sin archivo cargado</div>
               </article>
               <article class="lab-canvas-card">
                 <div class="card-title-bar">
@@ -242,9 +261,9 @@
                 </div>
                 <div class="canvas-wrap">
                   <canvas id="canvas-lab-b" width="320" height="240" aria-label="Visualización FITS de Época B"></canvas>
-                  <span class="canvas-hint" id="hint-lab-b">Esperando FITS B...</span>
+                  <div class="canvas-hint is-state" id="hint-lab-b"></div>
                 </div>
-                <div class="canvas-meta" id="meta-lab-b">Esperando imagen…</div>
+                <div class="canvas-meta" id="meta-lab-b">Sin archivo cargado</div>
               </article>
             </div>
           </div>
@@ -260,9 +279,7 @@
             <div class="lab-analysis-grid">
               <div class="lab-diff-preview">
                 <canvas id="canvas-lab-difference" width="320" height="240" aria-label="Mapa de diferencia reproyectada"></canvas>
-                <div class="diff-placeholder" id="lab-diff-placeholder">
-                  <span>Aquí se proyectará la sustracción de imágenes alineadas por coordenadas astrométricas WCS TAN-SIP.</span>
-                </div>
+                <div class="diff-placeholder is-state" id="lab-diff-placeholder"></div>
               </div>
               <div class="lab-results-card">
                 <div class="results-head">INFORME DEL MOTOR CIENTÍFICO</div>
@@ -322,6 +339,47 @@
           </div>
         </div>
       </div>
+
+      <!-- Subvista 4: Contexto HiPS All-Sky (Aladin Lite v3 / CDS Strasbourg) -->
+      <div id="view-aladin" class="subview-workspace" hidden>
+        <div class="col-card-pane">
+          <div class="col-pane-head">
+            <div>
+              <div class="mini-label">03 / CONTEXTO ALL-SKY (ADR-04)</div>
+              <h3>Mosaicos Progresivos HiPS (Aladin Lite v3)</h3>
+              <p class="aladin-desc">Contexto multirrango desacoplado del pipeline diferencial L2. Navegación en 2MASS (NIR), AllWISE (Mid-IR) y DSS2 (Óptico).</p>
+            </div>
+            <div class="aladin-target-badge">
+              <span class="mini-label">CAMPO OBJETIVO</span>
+              <strong>M101 · SPHEREx D2</strong>
+              <code>RA 210.8023° · Dec +54.3490°</code>
+            </div>
+          </div>
+
+          <div class="aladin-controls-row">
+            <div class="aladin-select-group">
+              <label for="aladin-survey">Mosaico HiPS:</label>
+              <select id="aladin-survey" class="aladin-survey-select">
+                <option value="CDS/P/2MASS/color">2MASS All-Sky (Infrarrojo Cercano J/H/K)</option>
+                <option value="CDS/P/allWISE/color">AllWISE W1-W4 (Infrarrojo Medio)</option>
+                <option value="CDS/P/DSS2/color">DSS2 Color (Óptico / Fotográfico)</option>
+              </select>
+            </div>
+            <div class="aladin-action-btns">
+              <button type="button" id="aladin-center-m101" class="btn btn-sm">Centrar en M101</button>
+            </div>
+          </div>
+
+          <div id="aladin-lite-mount" class="aladin-mount">
+            <canvas id="aladin-canvas" width="840" height="420" class="aladin-canvas"></canvas>
+            <div class="aladin-reticle-info" id="aladin-reticle-info">M101 · RA 210.8023° · Dec +54.3490° · FOV 0.50°</div>
+          </div>
+
+          <div class="aladin-footer-notice">
+            <small>Aladin Lite v3 © CDS Strasbourg (GNU GPL v3). Visualización progresiva HiPS (IVOA). Desacoplado de la calibración de flujo temporal L2.</small>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Vista 3: Sistema Solar 3D -->
@@ -331,7 +389,7 @@
           <button type="button" class="on" data-f="Sistema">Sistema</button>
           <button type="button" data-f="Cometa">Cometa</button>
           <button type="button" data-f="Cinturón">Cinturón</button>
-          <button type="button" id="pp" aria-label="Pausar simulación">⏸</button>
+          <button type="button" id="pp" aria-label="Pausar simulación" aria-pressed="false">⏸</button>
           <label class="speed-ctl">
             <span>Velocidad</span>
             <input type="range" id="sp" min="0.2" max="4" step="0.2" value="1" aria-label="Velocidad orbital">
@@ -363,15 +421,32 @@
     </section>
   </main>
 
-  <!-- Asistente de IA: H.E.R.A 7 (oculta en #inicio, sin acceso rápido por botón) -->
+  <!-- Asistente de IA (oculta en #inicio, avatar libre y personalizable) -->
   <aside id="hera">
-    <div id="hb" role="dialog" aria-label="Mensaje de H.E.R.A 7">
-      <b>H.E.R.A 7</b>
+    <div id="hb" role="dialog" aria-label="Mensaje de asistente" aria-live="polite" aria-atomic="true">
+      <b id="hb-title">Asistente</b>
       <p id="ht"></p>
     </div>
-    <button type="button" id="ha" aria-label="Abrir asistente H.E.R.A 7">
-      <img alt="H.E.R.A 7, asistente astronauta de IA" src="assets/img/hera.webp" width="96" height="96">
-    </button>
+    <div class="hera-avatar-wrap">
+      <button type="button" id="ha" aria-label="Abrir asistente de IA">
+        <img id="hera-img" alt="Avatar del asistente" hidden width="96" height="96">
+        <span id="hera-placeholder" class="hera-placeholder" aria-hidden="true">
+          <svg viewBox="0 0 48 48" width="38" height="38" fill="none">
+            <circle cx="24" cy="24" r="21" stroke="currentColor" stroke-dasharray="4 4" stroke-width="1.8" stroke-opacity="0.45"/>
+            <circle cx="24" cy="18" r="7.5" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 36 C13 27, 35 27, 36 36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="35" cy="13" r="5" fill="#b57bff"/>
+            <path d="M35 10.5 V15.5 M32.5 13 H37.5" stroke="#000000" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          <span class="slot-text">Subir avatar</span>
+        </span>
+      </button>
+      <label class="hera-upload-badge" for="avatar-input" title="Subir o cambiar avatar">
+        <span class="badge-icon">↥</span>
+        <input type="file" id="avatar-input" accept="image/*" aria-label="Subir avatar personalizado">
+      </label>
+      <button type="button" id="avatar-reset-btn" class="hera-reset-btn" title="Quitar avatar personalizado" hidden aria-label="Quitar avatar personalizado">✕</button>
+    </div>
   </aside>
 
 </body>

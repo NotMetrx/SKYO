@@ -108,6 +108,7 @@ function selectPhase(index) {
     btn.classList.toggle('on', selected);
     btn.setAttribute('aria-selected', String(selected));
     btn.tabIndex = selected ? 0 : -1;
+    if (selected) btn.scrollIntoView?.({ block: 'nearest', inline: 'center' });
   });
 
   focusPhaseNode(activeIndex);
@@ -151,10 +152,15 @@ function buildFasesUI() {
     });
 
     rail.addEventListener('keydown', e => {
-      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(e.key)) return;
       e.preventDefault();
-      const delta = e.key === 'ArrowRight' ? 1 : -1;
-      const next = (activeIndex + delta + FASES_PROYECTO.length) % FASES_PROYECTO.length;
+      let next = activeIndex;
+      if (e.key === 'Home') next = 0;
+      else if (e.key === 'End') next = FASES_PROYECTO.length - 1;
+      else {
+        const delta = e.key === 'ArrowRight' ? 1 : -1;
+        next = (activeIndex + delta + FASES_PROYECTO.length) % FASES_PROYECTO.length;
+      }
       selectPhase(next);
       const nextBtn = rail.querySelector(`button[data-idx="${next}"]`);
       if (nextBtn) nextBtn.focus();
