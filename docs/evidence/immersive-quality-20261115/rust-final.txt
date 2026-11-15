@@ -1,0 +1,21 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.17s
+     Running unittests src/lib.rs (science-core/target/debug/deps/skyo_wasm-1a70b1e20f45d539)
+
+running 8 tests
+test texture::tests::zscale_handles_constant_and_outliers ... ok
+test tests::preserves_offset_precision_and_large_finite_variance ... ok
+test tests::subtracts_with_variance_and_mask ... ok
+test texture::tests::raw_cube_plane_preserves_flux_scaling_and_nan ... ok
+test texture::tests::rejects_truncation_and_abusive_dimensions ... ok
+test texture::tests::decodes_big_endian_asinh_and_nan ... ok
+test healpix::tests::bounds_and_cardinal_geometry ... ok
+test texture::tests::stretch_matches_reference_bytes_including_boundaries ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.80s
+
+   Doc-tests skyo_wasm
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

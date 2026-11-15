@@ -262,3 +262,27 @@
 - Rama local `main` consolidada y activa en el servidor local.
 
 
+
+## Archivo e inspector simplificados — 2026-11-15
+
+- Implementación local autorizada: tabla de observaciones y huellas de resultados
+  enlazadas al inspector 2D de `espectral.html`; FITS local, HDU/planos/cabeceras
+  originales, contraste, máscaras compatibles y regla angular ICRS TAN/SIP.
+- RGB omitido porque los previews no tienen registro/campo común verificado;
+  se conserva la alineación WCS automática del laboratorio. Sin dependencias nuevas.
+  Plan: docs/specs/002-comparador-local/archivo-plan.md; informe y límites:
+  [Archivo simplificado](docs/ARCHIVO_SIMPLIFICADO_20261115.md).
+- `npm test`: 62/62, build final 55 precache/WASM presente, validate:build y validate:docs
+  pasan. Inspector Chromium4/4 y FPA3/3 pasan en raíz/subruta, teclado, móvil y Axe.
+  Prueba de lectura pendiente corregida para trabajo ya iniciado: repetición3/3.
+- La batería global detectó timeouts en detalle/precarga 3D (también al repetirlo)
+  y KRYO-9 raíz/subruta. No se anuncia pipeline global verde ni se cambia ese
+  motor en esta entrega. Evidencia: docs/evidence/archivo-simple-20261115/.
+- Corregida también la referencia PWA que la integración trasladaba a `assets/`:
+  manifiesto público de raíz en index/lab, identidad nueva conservada y validador
+  comprueba el enlace real. Repetición Chromium raíz/subruta: 2/2 pasan.
+- TAP real devolvió502; cobertura de mocks y cubo pequeño son sintéticos, FITS
+  NASA preservados identificados aparte. No acreditar servicio remoto ni Android/VR
+  físico. scienceReady=false; originales intactos. Preview local en puerto4195.
+- Tarea central t-e7004c435816 sigue pendiente sin claim/finish ni autoaprobación.
+  Siguiente: revisar los timeouts3D y disponibilidad IRSA, sin ampliar el inspector.

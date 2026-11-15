@@ -1,0 +1,158 @@
+{
+  "project": "skyo",
+  "actor": "codex",
+  "date": "2026-11-15T13:51:04.241Z",
+  "head": "9022f46c8657428124562d96bb1947ba2d897717",
+  "dirtySharedCheckout": true,
+  "task": "t-fba4afca4066",
+  "administrativeTaskStatus": "pending; not autoapproved, claimed or finished",
+  "validation": {
+    "node": {
+      "passed": 53,
+      "skipped": 0,
+      "evidence": "node-final.txt"
+    },
+    "rust": {
+      "passed": 6,
+      "evidence": "rust-final.txt"
+    },
+    "python": {
+      "passed": 6,
+      "interpreter": ".venv/bin/python",
+      "evidence": "validation-final.txt"
+    },
+    "scienceGaps": {
+      "passed": 4,
+      "evidence": "validation-final.txt"
+    },
+    "fullBrowser": {
+      "startTime": "2026-11-15T13:27:36.679Z",
+      "duration": 412722.368,
+      "expected": 39,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "finalAffectedBrowser": {
+      "startTime": "2026-11-15T13:43:00.686Z",
+      "duration": 60997.40700000001,
+      "expected": 9,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "build": "passed; 45 resources; root/subpath entries validated",
+    "documents": "passed",
+    "syntax": "passed",
+    "diffCheck": "passed; staged and unstaged"
+  },
+  "review": {
+    "agent": "/root/immersive_review",
+    "importantFindingsCorrected": [
+      "mutable HiPS editions before gate",
+      "stale final HUD",
+      "cached PNG edition relabelling"
+    ],
+    "remainingCritical": 0,
+    "remainingImportant": 0,
+    "followup": "ICRS parity, exact bounded chunks and stream cancellation checked; no new findings; read-only"
+  },
+  "live": {
+    "date": "2026-11-15T13:43:07.255Z",
+    "source": "Real IRSA curated PNGs + live AWS FITS Range, no mocks",
+    "status": "Plano FITS real · Rust/WASM 112 ms · sin máscara científica",
+    "coordinates": "ICRS RA 60.81100° · Dec 51.34040°",
+    "flux": "Flujo 12.0051 MJy/sr",
+    "epochs": "Mosaico UTC 2025-08-19T23:48:47.813 → 2026-02-22T13:12:40.649",
+    "errors": []
+  },
+  "limits": [
+    "No physical VR/headset/controller, mobile gyro, Android or Safari validation",
+    "No measured 60 fps or comparative performance result",
+    "No HTTPS deployment validation",
+    "Illustrative depth only; scienceReady=false; no FLAGS/VARIANCE in panorama pixel route",
+    "New panorama edition requires verified raw cube association before flux is enabled"
+  ],
+  "files": {
+    "inmersivo.html": {
+      "bytes": 3873,
+      "sha256": "7200623455aed4a9173416e779a5a2bf7d10c005dbea4a39b71b21956e99eb02"
+    },
+    "assets/js/immersive/controls.js": {
+      "bytes": 5840,
+      "sha256": "24d50f5b436e566918085f0bf243eefad80b7202308f34e057157b308d9ee394"
+    },
+    "assets/js/immersive/cube-worker.js": {
+      "bytes": 1690,
+      "sha256": "ae5f4622b6325bcaea142b185aa5d02508582ef0e77a3829dcaf761b1db7926e"
+    },
+    "assets/js/immersive/cube.js": {
+      "bytes": 2309,
+      "sha256": "e413bb298f796cbeb9e2f037e3ebf4dac3fe3755a2145bc64b2957cc8a51ba0f"
+    },
+    "assets/js/immersive/hips.js": {
+      "bytes": 6842,
+      "sha256": "eedf1fb9bd7e68007e9eec70c7dcd8d31f9b60a12f5c8d7962832ed153046a9e"
+    },
+    "assets/js/immersive/irsa.js": {
+      "bytes": 1878,
+      "sha256": "b44c86645a30d20ac20abbf1a4698e2bbaf4de14aa6275b97ef36af9a03881c6"
+    },
+    "assets/js/immersive/main.js": {
+      "bytes": 14963,
+      "sha256": "c684defb3ed00a5e742a770fe9d84c606277c568bd89e8cb8bd81bf277888252"
+    },
+    "assets/js/immersive/sky-math.js": {
+      "bytes": 2816,
+      "sha256": "b61d0b468994f935a6c8136567ba9099f2dbdd7375bb958a9dd13e1e38ef145e"
+    },
+    "assets/js/immersive/style.css": {
+      "bytes": 3561,
+      "sha256": "abecabcdb05ea63a1e98c07fece0604b1561a33278e8b4b67b568a45456a88ce"
+    },
+    "assets/js/immersive/xr.js": {
+      "bytes": 5440,
+      "sha256": "606befb3f24eebbc542b646524451b8850be8d1f5d6d7db3a9795d09d51e3c5b"
+    },
+    "science-core/src/texture.rs": {
+      "bytes": 11147,
+      "sha256": "d44d17f79444066977bdbcde1660fb285d0797cd85faa6b11e3ea78a0594307c"
+    },
+    "assets/js/science/fits.js": {
+      "bytes": 9905,
+      "sha256": "23555cb12bec4adc7068ad3d48eaf67796ff8eef3573f3d8b203f5fa0ed5be48"
+    },
+    "assets/js/science/wasm-bridge.js": {
+      "bytes": 2655,
+      "sha256": "324e3c153533172743bd7a36d71a42d0e99c3f18939783ee4d8b65020504a468"
+    },
+    "assets/js/science/wasm/pkg/skyo_wasm_bg.wasm": {
+      "bytes": 102109,
+      "sha256": "ad4422eed36f72b4f48c84e32d7a5e933d0b1cf1f83a3a02344f477129d82128"
+    },
+    "scripts/curate_immersive_sky.py": {
+      "bytes": 2778,
+      "sha256": "cbf8f127354f689877cf67b236ba269cd77c623ad8d472153208d018cd84295b"
+    },
+    "scripts/immersive.test.mjs": {
+      "bytes": 8535,
+      "sha256": "efb74e26410c4f9f7c670b2474ab72bab588fda5f47df4dd8cfbd589837bcf9a"
+    },
+    "tests/browser/immersive.spec.mjs": {
+      "bytes": 10354,
+      "sha256": "2dd605816bb5e915e0d69b065f9c454756d9618a10f3799da6a681b322a90404"
+    },
+    "public/datasets/immersive-sky/manifest.json": {
+      "bytes": 7575,
+      "sha256": "1b8e177c935836342ae8993790a74f292cb976d229ed20df310de6a5b1fd6c8d"
+    },
+    "docs/VALIDACION_INMERSIVA_20261115.md": {
+      "bytes": 6402,
+      "sha256": "c129b5a0602023603d9dae3517ea9f262357e4ed3eeffc92a10d38bf0b693a75"
+    },
+    "MEMORY.md": {
+      "bytes": 12885,
+      "sha256": "2b097dbdb9016214ab63c6694c7f448a7fa9becf7151fb213ef7ce9f42b31515"
+    }
+  }
+}

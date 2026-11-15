@@ -1,0 +1,7 @@
+{
+  "date": "2026-11-15T06:20:29.766Z",
+  "elapsedMs": 15625,
+  "source": "Real AWS GET, no mocked response",
+  "card": "D1 · 0.75–1.11 µm\n\nNASA-ORIGINAL · DR1 · 2025W31_2A_0156_1\n2025-08-01T08:00:09.189\n2040×2040 · 1905.8 ms FITS→RGBA\nMJy / sr\nIMAGE completa a resolución original, sin máscara de calidad\n\nIntegridad y motor\nFITS original IRSA ↗",
+  "errors": []
+}

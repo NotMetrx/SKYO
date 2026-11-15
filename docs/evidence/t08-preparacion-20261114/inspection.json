@@ -1,0 +1,165 @@
+{
+  "status": "inspection-only",
+  "scienceReady": false,
+  "items": [
+    {
+      "observationId": "2025W19_2B_0377_1",
+      "inputFile": "noroeste-A-6038108f4da33652.fits",
+      "inputSha256": "6038108f4da33652d4e2d17fb1e24d50ea81e23e9f5530c77beb42f1e2a82c62",
+      "sourceCalibrationUrl": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/spectral_wcs/cal-swcs-v5-2026-191/2/spectral_wcs_D2_spx_cal-swcs-v5-2026-191.fits",
+      "sourceCalibrationSha256": "0eb4e27f351e6161e21372818f9e811480a7ab8bab9295722f180791e151a463",
+      "calibrationProductSoftwareVersion": "7.0.0b6.post2+g6b3a1a7",
+      "observationProcessingVersion": "7.0.5",
+      "versionCompatibilityVerified": false,
+      "detectorOriginXY": [
+        1737,
+        85
+      ],
+      "shapeHW": [
+        12,
+        12
+      ],
+      "parentHeaderUrl": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W19_2B/l2b-v27-2026-198/2/level2_2025W19_2B_0377_1D2_spx_l2b-v27-2026-198.fits",
+      "parentHeaderRangeSha256": "4cc5854c729b3d35b464d51abaa52ddf3e06a9b456db2e7e6b482e03044ffa73",
+      "calibrationRoi": "data/calibrations/roi/m101-visual-v2/noroeste-A-6038108f4da33652-calibration.fits",
+      "calibrationRoiSha256": "1a4d1523f9032cfd80db8b6e2504ae70c37a17e8e16d0b2aa322050ca18afbe9",
+      "epsfRoi": "data/calibrations/roi/m101-visual-v2/noroeste-A-6038108f4da33652-epsf.json",
+      "epsfRoiSha256": "d03e6599eef0054a42a4ac45f776c96c4f3e8b014d205823f7659d66d60aa9e1",
+      "epsfRows": 441,
+      "selectedZone": 17,
+      "epsfShape": [
+        33,
+        33
+      ],
+      "oversamplingXY": [
+        5,
+        5
+      ],
+      "rawEpsfSum": 1.0,
+      "timeScale": "UTC",
+      "mjdMid": 60805.91604884,
+      "observerGeometryVerified": false
+    },
+    {
+      "observationId": "2025W20_2D_0120_1",
+      "inputFile": "noroeste-B-819c9c3bcfd2c4fd.fits",
+      "inputSha256": "819c9c3bcfd2c4fd355a340c449a3249dea56580d28c33e20d72751e0804f081",
+      "sourceCalibrationUrl": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/spectral_wcs/cal-swcs-v5-2026-191/2/spectral_wcs_D2_spx_cal-swcs-v5-2026-191.fits",
+      "sourceCalibrationSha256": "0eb4e27f351e6161e21372818f9e811480a7ab8bab9295722f180791e151a463",
+      "calibrationProductSoftwareVersion": "7.0.0b6.post2+g6b3a1a7",
+      "observationProcessingVersion": "7.0.5",
+      "versionCompatibilityVerified": false,
+      "detectorOriginXY": [
+        90,
+        100
+      ],
+      "shapeHW": [
+        12,
+        12
+      ],
+      "parentHeaderUrl": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W20_2D/l2b-v27-2026-198/2/level2_2025W20_2D_0120_1D2_spx_l2b-v27-2026-198.fits",
+      "parentHeaderRangeSha256": "26fe6459ba3317036f22fdf9ba2b9a618fdb9812e0d3b9005e570776a3bb74e0",
+      "calibrationRoi": "data/calibrations/roi/m101-visual-v2/noroeste-B-819c9c3bcfd2c4fd-calibration.fits",
+      "calibrationRoiSha256": "1e48af552b3a0915c3427190dc7c8d908a467f9852067c8d7296606a1b904375",
+      "epsfRoi": "data/calibrations/roi/m101-visual-v2/noroeste-B-819c9c3bcfd2c4fd-epsf.json",
+      "epsfRoiSha256": "21967c7c730d47a9573c04d8be1596b7eaadd1265c10aaafaeaa3a9a8a6aeaa7",
+      "epsfRows": 441,
+      "selectedZone": 21,
+      "epsfShape": [
+        33,
+        33
+      ],
+      "oversamplingXY": [
+        5,
+        5
+      ],
+      "rawEpsfSum": 1.0,
+      "timeScale": "UTC",
+      "mjdMid": 60811.215360576,
+      "observerGeometryVerified": false
+    },
+    {
+      "observationId": "2025W19_2B_0377_1",
+      "inputFile": "sureste-A-241de57504766e36.fits",
+      "inputSha256": "241de57504766e3664e4cf440a71808a1b7cfd3d9302c2f0cca2e5fc12c18354",
+      "sourceCalibrationUrl": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/spectral_wcs/cal-swcs-v5-2026-191/2/spectral_wcs_D2_spx_cal-swcs-v5-2026-191.fits",
+      "sourceCalibrationSha256": "0eb4e27f351e6161e21372818f9e811480a7ab8bab9295722f180791e151a463",
+      "calibrationProductSoftwareVersion": "7.0.0b6.post2+g6b3a1a7",
+      "observationProcessingVersion": "7.0.5",
+      "versionCompatibilityVerified": false,
+      "detectorOriginXY": [
+        1752,
+        100
+      ],
+      "shapeHW": [
+        12,
+        12
+      ],
+      "parentHeaderUrl": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W19_2B/l2b-v27-2026-198/2/level2_2025W19_2B_0377_1D2_spx_l2b-v27-2026-198.fits",
+      "parentHeaderRangeSha256": "4cc5854c729b3d35b464d51abaa52ddf3e06a9b456db2e7e6b482e03044ffa73",
+      "calibrationRoi": "data/calibrations/roi/m101-visual-v2/sureste-A-241de57504766e36-calibration.fits",
+      "calibrationRoiSha256": "a61f6cf2190ff911e15bd50e497b79503824ff153f09b1c9d80b87a2fcf238fb",
+      "epsfRoi": "data/calibrations/roi/m101-visual-v2/sureste-A-241de57504766e36-epsf.json",
+      "epsfRoiSha256": "49ab28edc993bc1e533b82ae5605b06669f9e1ac32ad0c3fdf2661028bda16c3",
+      "epsfRows": 441,
+      "selectedZone": 39,
+      "epsfShape": [
+        33,
+        33
+      ],
+      "oversamplingXY": [
+        5,
+        5
+      ],
+      "rawEpsfSum": 1.0,
+      "timeScale": "UTC",
+      "mjdMid": 60805.91604884,
+      "observerGeometryVerified": false
+    },
+    {
+      "observationId": "2025W20_2D_0120_1",
+      "inputFile": "sureste-B-33d3502290356ea7.fits",
+      "inputSha256": "33d3502290356ea76373b30a9c2c802824b14db90d0042ffe3609132e3fc81a0",
+      "sourceCalibrationUrl": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/spectral_wcs/cal-swcs-v5-2026-191/2/spectral_wcs_D2_spx_cal-swcs-v5-2026-191.fits",
+      "sourceCalibrationSha256": "0eb4e27f351e6161e21372818f9e811480a7ab8bab9295722f180791e151a463",
+      "calibrationProductSoftwareVersion": "7.0.0b6.post2+g6b3a1a7",
+      "observationProcessingVersion": "7.0.5",
+      "versionCompatibilityVerified": false,
+      "detectorOriginXY": [
+        104,
+        116
+      ],
+      "shapeHW": [
+        12,
+        12
+      ],
+      "parentHeaderUrl": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W20_2D/l2b-v27-2026-198/2/level2_2025W20_2D_0120_1D2_spx_l2b-v27-2026-198.fits",
+      "parentHeaderRangeSha256": "26fe6459ba3317036f22fdf9ba2b9a618fdb9812e0d3b9005e570776a3bb74e0",
+      "calibrationRoi": "data/calibrations/roi/m101-visual-v2/sureste-B-33d3502290356ea7-calibration.fits",
+      "calibrationRoiSha256": "fca3b9decf239c23800bafa7964754f79e75102633638f74f5ef008a37b2d724",
+      "epsfRoi": "data/calibrations/roi/m101-visual-v2/sureste-B-33d3502290356ea7-epsf.json",
+      "epsfRoiSha256": "768a7e539cebef8cb1fb711f3e9bb218f01b766153cc07a583ada5566689e2fe",
+      "epsfRows": 441,
+      "selectedZone": 22,
+      "epsfShape": [
+        33,
+        33
+      ],
+      "oversamplingXY": [
+        5,
+        5
+      ],
+      "rawEpsfSum": 1.0,
+      "timeScale": "UTC",
+      "mjdMid": 60811.215360576,
+      "observerGeometryVerified": false
+    }
+  ],
+  "remaining": [
+    "Verificar compatibilidad de versi\u00f3n de CWAVE/CBAND con el procesamiento de cada observaci\u00f3n.",
+    "Integrar ePSF a p\u00edxel nativo y fase subp\u00edxel antes de matching/flujo.",
+    "Propagar incertidumbre de fondo, calibraci\u00f3n, PSF y covarianza.",
+    "Resolver observador/\u00e9poca y referencia astrom\u00e9trica/cat\u00e1logos.",
+    "Ejecutar inyecci\u00f3n/recuperaci\u00f3n, controles FPR/completitud y revisi\u00f3n independiente."
+  ]
+}

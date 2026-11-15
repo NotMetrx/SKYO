@@ -1,0 +1,125 @@
+✖ Worker rechaza load3→load1 y compara el par vigente (2207.772774ms)
+✖ Worker clear invalida entradas y resultado anterior (1563.429019ms)
+✖ Worker rechaza hash declarado incorrecto (534.74129ms)
+✖ Worker rechaza metadatos corruptos en la frontera (711.33859ms)
+✖ Subir un FITS con ORIGIN SKYO no lo convierte en demo (615.882749ms)
+✖ Metadatos NASA declarados se preservan sin autenticar el manifiesto del usuario (398.597432ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 0
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6941.587304
+
+✖ failing tests:
+
+test at scripts/integrity.test.mjs:21:1
+✖ Worker rechaza load3→load1 y compara el par vigente (2207.772774ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 0
+  - -6.992616653442383
+  
+      at TestContext.<anonymous> (file:///home/metrx/Proyectos/SKYO/scripts/integrity.test.mjs:31:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: -6.992616653442383,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/integrity.test.mjs:33:1
+✖ Worker clear invalida entradas y resultado anterior (1563.429019ms)
+  AssertionError [ERR_ASSERTION]: No puede compararse después de vaciar A
+      at TestContext.<anonymous> (file:///home/metrx/Proyectos/SKYO/scripts/integrity.test.mjs:41:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at scripts/integrity.test.mjs:53:1
+✖ Worker rechaza hash declarado incorrecto (534.74129ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'loaded' !== 'error'
+  
+      at TestContext.<anonymous> (file:///home/metrx/Proyectos/SKYO/scripts/integrity.test.mjs:54:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'loaded',
+    expected: 'error',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/integrity.test.mjs:56:1
+✖ Worker rechaza metadatos corruptos en la frontera (711.33859ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'loaded' !== 'error'
+  
+      at TestContext.<anonymous> (file:///home/metrx/Proyectos/SKYO/scripts/integrity.test.mjs:57:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'loaded',
+    expected: 'error',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/integrity.test.mjs:59:1
+✖ Subir un FITS con ORIGIN SKYO no lo convierte en demo (615.882749ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'USER-LOCAL'
+  
+      at TestContext.<anonymous> (file:///home/metrx/Proyectos/SKYO/scripts/integrity.test.mjs:61:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'USER-LOCAL',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/integrity.test.mjs:63:1
+✖ Metadatos NASA declarados se preservan sin autenticar el manifiesto del usuario (398.597432ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'USER-LOCAL'
+  
+      at TestContext.<anonymous> (file:///home/metrx/Proyectos/SKYO/scripts/integrity.test.mjs:65:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'USER-LOCAL',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

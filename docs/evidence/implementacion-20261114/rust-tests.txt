@@ -1,0 +1,16 @@
+   Compiling skyo_wasm v0.1.0 (/home/metrx/Proyectos/SKYO/science-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.76s
+     Running unittests src/lib.rs (science-core/target/debug/deps/skyo_wasm-1a70b1e20f45d539)
+
+running 2 tests
+test tests::preserves_offset_precision_and_large_finite_variance ... ok
+test tests::subtracts_with_variance_and_mask ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests skyo_wasm
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

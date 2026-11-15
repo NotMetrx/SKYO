@@ -1,0 +1,67 @@
+{
+  "timestamp": "2026-11-15T04:42:00Z",
+  "commitHead": "9022f46c8657428124562d96bb1947ba2d897717",
+  "status": "VALIDACION_EXITOSA",
+  "unmergedResolved": [
+    "assets/css/lab.css",
+    "assets/css/main.css",
+    "assets/js/app.js",
+    "assets/js/cosmos3d.js",
+    "assets/js/hera3d.js",
+    "assets/js/science-lab-ui.js",
+    "assets/js/science/lab.js",
+    "index.html",
+    "lab.html",
+    "sw.js"
+  ],
+  "autoMergedReviewed": [
+    "assets/js/explorar.js",
+    "assets/js/data.js",
+    "history.md"
+  ],
+  "verification": {
+    "npmTest": {
+      "command": "node --test scripts/pipeline.test.mjs scripts/integrity.test.mjs scripts/session.test.mjs scripts/fits-boundary.test.mjs scripts/comparison.test.mjs scripts/science-regressions.test.mjs scripts/curated-dataset.test.mjs scripts/opfs.test.mjs scripts/wasm-equivalence.test.mjs",
+      "total": 43,
+      "passed": 43,
+      "failed": 0,
+      "durationMs": 7941
+    },
+    "webBuild": {
+      "command": "vite build && node tools/postbuild.mjs",
+      "status": "OK",
+      "precacheResources": 36,
+      "wasmPresent": true
+    },
+    "validateBuild": {
+      "command": "node scripts/validate-build.mjs",
+      "status": "OK"
+    },
+    "validateDocs": {
+      "command": "node scripts/validate-docs.mjs",
+      "status": "OK",
+      "specSha256": "05d54609a6219728b7a8cc98f9f6c603852173cab69125e2ed2a043caa4f2bc7"
+    },
+    "browserTests": {
+      "command": "playwright test",
+      "total": 27,
+      "passed": 27,
+      "failed": 0,
+      "suites": [
+        "accessibility.spec.mjs (lab.html, contexto.html)",
+        "curated.spec.mjs (NASA real integrado/independiente, 320px tabs)",
+        "graphics.spec.mjs (WebGL2 Aladin, pausa Three.js fuera de vista)",
+        "integration.spec.mjs (KRYO-9, GLTFLoader, DRACOLoader, carga diferida, raíz y /skyo/, responsive)",
+        "migration.spec.mjs (navegación teclado, Worker export, offline Vary Origin, aislamiento caché, contexto HiPS, actualización PWA)",
+        "storage.spec.mjs (OPFS independiente/integrado, escape y snapshot)",
+        "t01.spec.mjs (T01 independiente/integrado: demo invalidación, A/A->demo A/B, export y diagnóstico)",
+        "wasm.spec.mjs (WASM Worker / y /skyo/, fallback, benchmark Chromium)"
+      ]
+    }
+  },
+  "visualAndScientificHonesty": {
+    "kryo9Stage": "Integrado con carga bajo demanda, iluminación IBL RoomEnvironment y animación orbital",
+    "provenance": "Fuentes etiquetadas como recreación sintética educativa o referencia catalogada sin cruce JPL verificado",
+    "astrometry": "WCS-WAVE y SNR documentados como cálculos exploratorios educativos, sin afirmación de detección astronómica"
+  }
+}

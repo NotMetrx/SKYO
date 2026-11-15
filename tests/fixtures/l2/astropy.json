@@ -1,0 +1,42 @@
+{
+  "source": "data/datasets/m101-search-epoch-20261114/originals/5a5a18a74a30b81af5457ec719d49f1d5b5e3849252b19938014feeae430a1b7.fits",
+  "sha256": "5a5a18a74a30b81af5457ec719d49f1d5b5e3849252b19938014feeae430a1b7",
+  "samples": [
+    {
+      "x": 0,
+      "y": 0,
+      "ra": 210.79945433034783,
+      "dec": 54.3828699158317,
+      "wavelength": 1.1971699359577475,
+      "bandwidth": 0.02891368592044794
+    },
+    {
+      "x": 15,
+      "y": 15,
+      "ra": 210.8005798819627,
+      "dec": 54.34658512732025,
+      "wavelength": 1.193491654526516,
+      "bandwidth": 0.02884088370479096
+    },
+    {
+      "x": 28,
+      "y": 28,
+      "ra": 210.8015502074434,
+      "dec": 54.31513239969252,
+      "wavelength": 1.1903051182945765,
+      "bandwidth": 0.028776987477284945
+    },
+    {
+      "x": 6.2,
+      "y": 21.7,
+      "ra": 210.76839979420805,
+      "dec": 54.348740011393154,
+      "wavelength": 1.19180925478345,
+      "bandwidth": 0.02881040226622241
+    }
+  ],
+  "detector": 2,
+  "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W20_2D/l2b-v27-2026-198/2/level2_2025W20_2D_0065_1D2_spx_l2b-v27-2026-198.fits?center=210.80227%2C54.34895d&size=0.05",
+  "observation_id": "2025W20_2D_0065_1",
+  "astropy_version": "8.0.2"
+}

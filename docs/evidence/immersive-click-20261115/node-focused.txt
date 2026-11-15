@@ -1,0 +1,21 @@
+✔ Caché HiPS expulsa detalle fuera de pantalla durante una órbita completa (1538.760303ms)
+✔ Curación HiPS rechaza una edición nueva antes de reutilizar o relabelar los PNG (147.995772ms)
+✔ ICRS: cardinales, costura RA y polos conservan coordenadas (1.114263ms)
+✔ Range FITS rechaza HTTP200 y un rango truncado sin aceptar el cubo entero (5.433768ms)
+✔ WebXR r128: sesión, panel, mandos, vuelo y giro con antirrepetición (30.455708ms)
+✔ Rust/WASM: plano IMAGE real y flujo bajo retícula coinciden con binario NASA (43.061877ms)
+✔ Rust HEALPix: geometría y cobertura de toda la pantalla en polos, costura y vuelo (507.222509ms)
+✔ HiPS: metadatos reales,102canales y URLs incluidas carpetas por Npix (7.387657ms)
+✔ FITS HPX: orientación de texela y píxel contra WCS Astropy real (9.407871ms)
+✔ HEALPix: cara y NEST contra 48 posiciones independientes Astropy (4.729279ms)
+✔ L2 original: WCS espacial y espectral contrastados con Astropy sin cambiar originales (165.147643ms)
+✔ L2 rechaza otro detector/canal, datos fuera de tabla y fuentes no permitidas (117.256178ms)
+✔ Capa L2 conserva la misma esfera celeste durante vuelo tangencial (198.725335ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2620.195321

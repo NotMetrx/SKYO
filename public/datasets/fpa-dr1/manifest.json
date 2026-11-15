@@ -1,0 +1,163 @@
+{
+  "schema": "skyo-fpa-display-1",
+  "retrieved_utc": "2026-11-15T05:39:26.980972+00:00",
+  "description": "Six detectors from one exposure; schematic arrangement, not a sky mosaic.",
+  "items": [
+    {
+      "detector": 1,
+      "file": "D1.fits",
+      "sha256": "5a35c45f907d0d095c3add94a3738bb2d969bcac1b1905719a5c71d643cda03f",
+      "bytes": 264960,
+      "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W31_2A/l2b-v27-2026-225/1/level2_2025W31_2A_0156_1D1_spx_l2b-v27-2026-225.fits",
+      "cloud_url": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W31_2A/l2b-v27-2026-225/1/level2_2025W31_2A_0156_1D1_spx_l2b-v27-2026-225.fits",
+      "original_sha256": "f16e61d656615cb027426236c1b19d9585a5267de7aefbdade120b513c257ec1",
+      "original_bytes": 65839680,
+      "observation_id": "2025W31_2A_0156_1",
+      "observation_utc": "2025-08-01T08:00:09.189",
+      "processing_version": "7.0.5",
+      "release": "DR1",
+      "sourceKind": "NASA-DERIVED",
+      "original_shape": [
+        2040,
+        2040
+      ],
+      "display_shape": [
+        255,
+        255
+      ],
+      "transform": "finite-only 8x8 block mean, full IMAGE footprint; no mask; no WCS",
+      "units": "MJy / sr",
+      "scienceReady": false
+    },
+    {
+      "detector": 2,
+      "file": "D2.fits",
+      "sha256": "1caf8df50e5af555282c242d9ad77e3fe974c4751424159ad2265d255d5523f6",
+      "bytes": 264960,
+      "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W31_2A/l2b-v27-2026-225/2/level2_2025W31_2A_0156_1D2_spx_l2b-v27-2026-225.fits",
+      "cloud_url": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W31_2A/l2b-v27-2026-225/2/level2_2025W31_2A_0156_1D2_spx_l2b-v27-2026-225.fits",
+      "original_sha256": "2e8b42b52e32f07c6afba88209d609e232276084b0654de3d3792373f99ed7c1",
+      "original_bytes": 63797760,
+      "observation_id": "2025W31_2A_0156_1",
+      "observation_utc": "2025-08-01T08:00:09.188",
+      "processing_version": "7.0.5",
+      "release": "DR1",
+      "sourceKind": "NASA-DERIVED",
+      "original_shape": [
+        2040,
+        2040
+      ],
+      "display_shape": [
+        255,
+        255
+      ],
+      "transform": "finite-only 8x8 block mean, full IMAGE footprint; no mask; no WCS",
+      "units": "MJy / sr",
+      "scienceReady": false
+    },
+    {
+      "detector": 3,
+      "file": "D3.fits",
+      "sha256": "da36f0cc02d81ab8425bd16edfaf0a4e1013c2d5b0392bf2f832aa6b390e94e7",
+      "bytes": 264960,
+      "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W31_2A/l2b-v27-2026-225/3/level2_2025W31_2A_0156_1D3_spx_l2b-v27-2026-225.fits",
+      "cloud_url": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W31_2A/l2b-v27-2026-225/3/level2_2025W31_2A_0156_1D3_spx_l2b-v27-2026-225.fits",
+      "original_sha256": "9df385e01202cc17479cd329b78891d990663c32af6fec4b30c3c44b39742c97",
+      "original_bytes": 61992000,
+      "observation_id": "2025W31_2A_0156_1",
+      "observation_utc": "2025-08-01T08:00:09.189",
+      "processing_version": "7.0.5",
+      "release": "DR1",
+      "sourceKind": "NASA-DERIVED",
+      "original_shape": [
+        2040,
+        2040
+      ],
+      "display_shape": [
+        255,
+        255
+      ],
+      "transform": "finite-only 8x8 block mean, full IMAGE footprint; no mask; no WCS",
+      "units": "MJy / sr",
+      "scienceReady": false
+    },
+    {
+      "detector": 4,
+      "file": "D4.fits",
+      "sha256": "f59f678236d5111db8df88ff873f9f59dea0f616d3f04a0051462701da1d3362",
+      "bytes": 264960,
+      "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W31_2A/l2b-v27-2026-225/4/level2_2025W31_2A_0156_1D4_spx_l2b-v27-2026-225.fits",
+      "cloud_url": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W31_2A/l2b-v27-2026-225/4/level2_2025W31_2A_0156_1D4_spx_l2b-v27-2026-225.fits",
+      "original_sha256": "323e0d855fb7515014c03002a856d46a2b7014da210750ed9b81520e99ea185f",
+      "original_bytes": 64739520,
+      "observation_id": "2025W31_2A_0156_1",
+      "observation_utc": "2025-08-01T08:00:09.189",
+      "processing_version": "7.0.5",
+      "release": "DR1",
+      "sourceKind": "NASA-DERIVED",
+      "original_shape": [
+        2040,
+        2040
+      ],
+      "display_shape": [
+        255,
+        255
+      ],
+      "transform": "finite-only 8x8 block mean, full IMAGE footprint; no mask; no WCS",
+      "units": "MJy / sr",
+      "scienceReady": false
+    },
+    {
+      "detector": 5,
+      "file": "D5.fits",
+      "sha256": "fb52f9e2d7009fa376fc567d40f9d5990c7d25d8e9ed73d0ad93f1a494823f7a",
+      "bytes": 264960,
+      "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W31_2A/l2b-v27-2026-225/5/level2_2025W31_2A_0156_1D5_spx_l2b-v27-2026-225.fits",
+      "cloud_url": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W31_2A/l2b-v27-2026-225/5/level2_2025W31_2A_0156_1D5_spx_l2b-v27-2026-225.fits",
+      "original_sha256": "0980aba4f46c33b3cc49d255ef2786a3374593c5a7626e5973f510c7a76a96df",
+      "original_bytes": 65070720,
+      "observation_id": "2025W31_2A_0156_1",
+      "observation_utc": "2025-08-01T08:00:09.188",
+      "processing_version": "7.0.5",
+      "release": "DR1",
+      "sourceKind": "NASA-DERIVED",
+      "original_shape": [
+        2040,
+        2040
+      ],
+      "display_shape": [
+        255,
+        255
+      ],
+      "transform": "finite-only 8x8 block mean, full IMAGE footprint; no mask; no WCS",
+      "units": "MJy / sr",
+      "scienceReady": false
+    },
+    {
+      "detector": 6,
+      "file": "D6.fits",
+      "sha256": "da65477abff9e29d896f619ef78b4ed8cf3445bfca8fb1693dbc41e1e4c879dc",
+      "bytes": 264960,
+      "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W31_2A/l2b-v27-2026-225/6/level2_2025W31_2A_0156_1D6_spx_l2b-v27-2026-225.fits",
+      "cloud_url": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W31_2A/l2b-v27-2026-225/6/level2_2025W31_2A_0156_1D6_spx_l2b-v27-2026-225.fits",
+      "original_sha256": "080d36ae1f7a0c9aed6f76d0c203f57de70d92caef7007ddd069664d98c5760a",
+      "original_bytes": 64503360,
+      "observation_id": "2025W31_2A_0156_1",
+      "observation_utc": "2025-08-01T08:00:09.189",
+      "processing_version": "7.0.5",
+      "release": "DR1",
+      "sourceKind": "NASA-DERIVED",
+      "original_shape": [
+        2040,
+        2040
+      ],
+      "display_shape": [
+        255,
+        255
+      ],
+      "transform": "finite-only 8x8 block mean, full IMAGE footprint; no mask; no WCS",
+      "units": "MJy / sr",
+      "scienceReady": false
+    }
+  ]
+}

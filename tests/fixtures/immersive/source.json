@@ -1,0 +1,14 @@
+{
+  "url": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/hips5_cube/hips_20261026/Norder5/Dir0/Npix445_cube.fits",
+  "channel": 62,
+  "header_range": [
+    0,
+    17279
+  ],
+  "plane_range": [
+    65020352,
+    66068927
+  ],
+  "header_sha256": "91012ffe3bdb4483dd44aba3e12232d3fbc1b0ba27e7dc9520e27a99de3ae950",
+  "plane_sha256": "874624ab5c6e78fd411e9e0141388a5908c05aee3037aba3d7e62fa7437afccf"
+}

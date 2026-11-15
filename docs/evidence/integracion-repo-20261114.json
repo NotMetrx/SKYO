@@ -1,0 +1,178 @@
+{
+  "date": "2026-11-14T17:41:27.258Z",
+  "scope": "Integración de origin/main conservando migración y T01 local en curso",
+  "head": "4ee3f74cf71120fc68620137270894adb663753b",
+  "remote": "4ee3f74cf71120fc68620137270894adb663753b",
+  "commits": [
+    "c69f828",
+    "4ee3f74"
+  ],
+  "unmergedPaths": [],
+  "backups": [
+    "stash 8df0722",
+    "/tmp/skyo-integracion-ipwz0t17/"
+  ],
+  "commands": {
+    "npm test": {
+      "exit": 0,
+      "passed": 15
+    },
+    "npm run web:build": {
+      "exit": 0
+    },
+    "npm run validate:build": {
+      "exit": 0
+    },
+    "npm run validate:docs": {
+      "exit": 0
+    },
+    "SKYO_TEST_PORT=4188 npm run test:browser": {
+      "exit": 0,
+      "passed": 14
+    },
+    "npm run test:science-gaps": {
+      "exit": 1,
+      "passed": 1,
+      "failed": 3,
+      "knownGaps": [
+        "FLAGS/BZERO",
+        "plano robusto",
+        "ZODI"
+      ]
+    }
+  },
+  "browserTests": [
+    {
+      "name": "accesibilidad de controles en lab.html",
+      "status": "passed"
+    },
+    {
+      "name": "accesibilidad de controles en contexto.html",
+      "status": "passed"
+    },
+    {
+      "name": "WebGL2: Aladin real y pausa del motor Three.js fuera de vista",
+      "status": "passed"
+    },
+    {
+      "name": "Eclipse remoto: marca completa, carga diferida y modelo en raíz/subruta",
+      "status": "passed"
+    },
+    {
+      "name": "/ navegación, teclado y responsive",
+      "status": "passed"
+    },
+    {
+      "name": "/ Worker, export y offline con Vary Origin",
+      "status": "passed"
+    },
+    {
+      "name": "/ manifiesto, iconos y aislamiento de caché",
+      "status": "passed"
+    },
+    {
+      "name": "/skyo/ navegación, teclado y responsive",
+      "status": "passed"
+    },
+    {
+      "name": "/skyo/ Worker, export y offline con Vary Origin",
+      "status": "passed"
+    },
+    {
+      "name": "/skyo/ manifiesto, iconos y aislamiento de caché",
+      "status": "passed"
+    },
+    {
+      "name": "contexto HiPS se carga bajo demanda y se descarga al salir",
+      "status": "passed"
+    },
+    {
+      "name": "actualización PWA espera al usuario y conserva cachés ajenas",
+      "status": "passed"
+    },
+    {
+      "name": "T01 independiente: cambiar demo invalida informe",
+      "status": "passed"
+    },
+    {
+      "name": "T01 integrado: cambiar demo invalida informe",
+      "status": "passed"
+    }
+  ],
+  "build": {
+    "version": "5e37d842f586f524",
+    "precache": [
+      "assets/SpaceGrotesk-Bold-CgbbmG7m.otf",
+      "assets/SpaceGrotesk-Light-B7jmapZk.otf",
+      "assets/SpaceGrotesk-Medium-DBPg_CG_.otf",
+      "assets/SpaceGrotesk-Regular-DJfN3LFJ.otf",
+      "assets/SpaceGrotesk-SemiBold-CvXxrvSi.otf",
+      "assets/SpaceMono-Bold-9tno74N4.ttf",
+      "assets/SpaceMono-Regular-DFDYVJRE.ttf",
+      "assets/contexto-BofdHux-.js",
+      "assets/contexto-DqeE6vLG.css",
+      "assets/hera-B8G6uZcA.webp",
+      "assets/img/hera.webp",
+      "assets/img/icon.svg",
+      "assets/img/logo.jpg",
+      "assets/img/observer-lottie.json",
+      "assets/img/previews/demo_procesamiento_sintetico.png",
+      "assets/img/previews/explorar.png",
+      "assets/img/previews/fases.png",
+      "assets/img/previews/inicio.png",
+      "assets/img/previews/preview_escritorio.png",
+      "assets/img/previews/preview_movil.png",
+      "assets/img/previews/sistema3d.png",
+      "assets/lab-BK5T8ZLP.css",
+      "assets/lab-Bu-Q-Chp.js",
+      "assets/main-CgdimQed.css",
+      "assets/main-DSL87aUp.js",
+      "assets/modulepreload-polyfill-B5Qt9EMX.js",
+      "assets/register-offline-BbA0HBzS.js",
+      "assets/worker-BpCZ2-np.js",
+      "contexto.html",
+      "index.html",
+      "lab.html",
+      "licenses/aladin-lite/COPYING",
+      "licenses/aladin-lite/COPYING.LESSER",
+      "licenses/aladin-lite/LICENSE",
+      "licenses/aladin-lite/README.md",
+      "manifest.webmanifest"
+    ],
+    "runtime": [
+      "assets/aladin-CXPYtL4c.js",
+      "assets/js/vendor/lottie.min.js",
+      "assets/js/vendor/three.min.js",
+      "assets/models/eclipse.glb"
+    ],
+    "wasmPresent": false
+  },
+  "originalFitsChanged": false,
+  "limitations": [
+    "T01 sigue en curso; claim central rechazado por aprobación de spec pendiente/invalidada",
+    "Sin aceptación científica ni validación de WASM integrado o Android físico",
+    "Sin commit/push; stash conservado"
+  ],
+  "sourceSha256": {
+    "package.json": "27565d8202c4bbec57edba715da5e3852ed4a8d1037a89d66c4014fc7781ea4c",
+    "package-lock.json": "a938434bdc9c9def88117dc5f64fa3b320cf2f17162858489b71c9b78c990789",
+    "vite.config.mjs": "6cbd222f49cd92997fcec7252c51ccd10d7b284486027427744a50832858a842",
+    "tools/postbuild.mjs": "3f80712c27b1e7161f880be92181e90217d2d34e6149d7a13ae3ae9d74c4f36c",
+    "index.html": "c698fc21c30703f7cbfc9a26fda8ae80a4e5913267caeb5200518355ceb07fa5",
+    "assets/js/app.js": "7f368ce8136873d961c1f9a418419281b193437997f6c23b783139b99f218666",
+    "assets/js/cosmos3d.js": "2e2c10840bc0400d8da333c83c2e29801111e831126669b9086799e186cedff4",
+    "assets/js/glb-lite.js": "545e92d6e2b251697b6af6523d9fc7fd7b586963f18c8f534c010a2317a27916",
+    "assets/js/explorar.js": "e7f473ac44abb0ff36d65ebb61a4b3c4b590f3c013375a1f6c361fc3e265782a",
+    "assets/js/science-lab-ui.js": "c122b9cd7a36e7cbaf9530ca00c88c37824db7eb86ac6205bdd58da0db27fb20",
+    "assets/js/science/lab.js": "935de20f4b6622c4cbff320b2652e885313aee0927d3c55877c766eec38e1105",
+    "assets/js/science/worker.js": "af42c86f55a93363a98e331e9d81aa65246f4a539727591f0140c2c7d9d37da3",
+    "assets/js/science/contracts.js": "c6828b6c5c7309f19782c9b06bab9afd0eef8e84b324bf470d2d71deff132a8f",
+    "assets/js/science/session.js": "6ebeadd0d0058bb57d56e88aa08dab0bbfc672b7f787bed328280c227d0ce0fa",
+    "assets/js/science/lab-ui.js": "08698f39d75254dd9b19e3470d97adbe1af471e43d4a8e272abc2fadc984306e",
+    "assets/css/main.css": "cdff64f68915957e32fe7b84814a9b9273feec82aa29ea0dd8fb92f93dff37c2",
+    "assets/css/lab.css": "607cb4b8a139a1825a389c49007b9992b31c9c7de910321569b44d9b7c0d510a",
+    "sw.js": "b54afcac1dbf3d39ff392bd6fbaddcda631a8adfb5ee66cca617262e97334464",
+    "public/manifest.webmanifest": "8c838d932375a510f4868d94a27014c755b340e7620017ac933aed7b92d42936",
+    "docs/SPEC_SKYO_2.1_AUDITADO.md": "8dd0e9031250fe6a1c0dd6d4108236a404752c20f0d6864e7350d734e6fce910"
+  }
+}

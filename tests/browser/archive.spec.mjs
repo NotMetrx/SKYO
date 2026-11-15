@@ -1,0 +1,78 @@
+import {test,expect} from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+import fs from 'node:fs/promises';
+
+for(const base of ['/','/skyo/'])test(`Inspector sencillo ${base}: FITS real, máscara, cabecera y regla accesible`,async({page},info)=>{
+  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  await page.goto(`${base}espectral.html`);
+  await expect(page.locator('#fpa')).toHaveAttribute('data-loaded','6',{timeout:45000});
+  await page.getByRole('button',{name:'Inspeccionar D1',exact:true}).click();
+  await expect(page.locator('#fits-status')).toContainText('255 × 255');
+  await expect(page.locator('#fits-measure')).toBeDisabled();await expect(page.locator('#fits-mask')).toBeDisabled();
+  await expect(page.locator('#fits-coordinates')).toContainText('Sin WCS compatible');
+  await page.getByRole('button',{name:'Cerrar',exact:true}).click();
+  await page.locator('#inspect-local').setInputFiles('tests/fixtures/l2/observation.fits');
+  await expect(page.locator('#fits-status')).toContainText('29 × 29');
+  expect((await page.locator('#fits-image').boundingBox()).width).toBeGreaterThan(200);
+  await expect(page.locator('#fits-origin')).toContainText('USER-LOCAL');
+  await expect(page.locator('#fits-mask')).toBeEnabled();
+  await expect(page.locator('#fits-quality')).toContainText('11 píxeles señalados');
+  const before=await page.locator('#fits-image').screenshot();
+  await page.locator('#fits-mask').check();
+  expect((await page.locator('#fits-image').screenshot()).equals(before)).toBe(false);
+  await page.locator('#fits-contrast').selectOption('1.6');
+  await expect(page.locator('#fits-status')).toContainText('29 × 29');
+  await page.getByRole('button',{name:'Medir entre dos puntos',exact:true}).click();
+  await page.keyboard.press('Enter');await page.keyboard.press('ArrowRight');await page.keyboard.press('ArrowUp');await page.keyboard.press('Enter');
+  await expect(page.locator('#fits-measurement')).toContainText('Separación:');
+  await expect(page.locator('#fits-measurement')).not.toContainText('NaN');
+  await page.getByText('Detalles del archivo',{exact:true}).click();
+  await expect(page.locator('#fits-hdu option')).toHaveCount(7);
+  await expect(page.locator('#fits-header')).toContainText('CTYPE1');
+  await page.locator('#fits-hdu').selectOption('6');
+  await expect(page.locator('#fits-status')).toContainText('Esta extensión no es una imagen compatible');
+  await expect(page.locator('#fits-image')).toBeHidden();
+  await page.locator('#fits-hdu').selectOption('1');
+  await expect(page.locator('#fits-status')).toContainText('29 × 29');
+  await page.screenshot({path:info.outputPath('inspector-real.png')});
+  expect((await new AxeBuilder({page}).analyze()).violations).toEqual([]);
+  await page.setViewportSize({width:390,height:844});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  expect(await page.locator('#fits-inspector').evaluate(e=>e.scrollWidth<=e.clientWidth)).toBe(true);
+  await page.keyboard.press('Escape');await expect(page.locator('#fits-inspector')).not.toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+test('Inspector: cubo local por planos, fuera de rango recuperable y archivo truncado',async({page})=>{
+  const b=Buffer.alloc(5760),values={SIMPLE:'T',BITPIX:-32,NAXIS:3,NAXIS1:2,NAXIS2:2,NAXIS3:3};
+  const cards=Object.entries(values).map(([k,v])=>(k.padEnd(8)+'= '+v).padEnd(80)).join('')+'END'.padEnd(80);
+  b.write(cards.padEnd(2880));for(let i=0;i<12;i++)b.writeFloatBE(i+.5,2880+i*4);
+  await page.goto('/espectral.html');
+  await page.locator('#inspect-local').setInputFiles({name:'cubo-sintetico.fits',mimeType:'application/fits',buffer:b});
+  await expect(page.locator('#fits-status')).toContainText('plano 1/3');
+  await page.getByText('Detalles del archivo',{exact:true}).click();
+  await page.locator('#fits-plane').fill('3');await page.locator('#fits-plane').press('Tab');
+  await expect(page.locator('#fits-status')).toContainText('plano 3/3');
+  await expect(page.locator('#fits-readout')).toContainText('11.50000');
+  await page.locator('#fits-plane').fill('4');await page.locator('#fits-plane').press('Tab');
+  await expect(page.locator('#fits-status')).toContainText('fuera de rango');
+  await page.locator('#fits-plane').fill('2');await page.locator('#fits-plane').press('Tab');
+  await expect(page.locator('#fits-status')).toContainText('plano 2/3');
+  await page.getByRole('button',{name:'Cerrar',exact:true}).click();
+  await page.locator('#inspect-local').setInputFiles({name:'truncado.fits',mimeType:'application/fits',buffer:b.subarray(0,30)});
+  await expect(page.locator('#fits-status')).toContainText('truncado');await expect(page.locator('#fits-image')).toBeHidden();
+});
+
+test('Archivo: error IRSA y reintento sin geometrías inventadas; no sustituye FITS por identidad incorrecta',async({page})=>{
+  let fail=true;
+  await page.route('https://irsa.ipac.caltech.edu/TAP/sync?**',route=>fail?route.fulfill({status:502}):route.fulfill({contentType:'application/xml',body:`<VOTABLE><RESOURCE><INFO name="QUERY_STATUS" value="OVERFLOW"/><TABLE>${['uri','observationid','collection','energy_bandpassname','time_bounds_lower','footprint'].map(name=>`<FIELD name="${name}"/>`).join('')}<DATA><TABLEDATA><TR><TD>ibe/data/spherex/dr1/level2/example.fits</TD><TD>otra-observacion</TD><TD>spherex_dr1</TD><TD>SPHEREx-D2</TD><TD>60888</TD><TD>sin-geometria</TD></TR></TABLEDATA></DATA></TABLE></RESOURCE></VOTABLE>`}));
+  await page.route('https://irsa.ipac.caltech.edu/ibe/data/spherex/**',async route=>route.fulfill({body:await fs.readFile('tests/fixtures/l2/observation.fits')}));
+  await page.goto('/espectral.html');await page.getByRole('button',{name:'Buscar imágenes',exact:true}).click();
+  await expect(page.locator('#search-status')).toContainText('502');
+  fail=false;await page.getByRole('button',{name:'Buscar imágenes',exact:true}).click();
+  await expect(page.locator('#search-status')).toContainText('límite alcanzado');
+  await expect(page.locator('#coverage-map path')).toHaveCount(0);
+  await expect(page.locator('#coverage-status')).toContainText('0/1 huellas');
+  await page.getByRole('button',{name:'Ver imagen D2: otra-observacion',exact:true}).click();
+  await expect(page.locator('#fits-status')).toContainText('OBSID no coincide');await expect(page.locator('#fits-image')).toBeHidden();
+});

@@ -89,10 +89,11 @@ function decodeImage(view, offset, n, bitpix, header, isFlags) {
   return output;
 }
 
-export function parseFits(buffer,{maxPixels=512*512,maxAxis=512}={}) {
+/** Inventory only: large cubes are never decoded in full. */
+export function inspectFits(buffer) {
   if (!(buffer instanceof ArrayBuffer)) throw new TypeError('Se esperaba ArrayBuffer');
   if(!buffer.byteLength||buffer.byteLength%BLOCK)throw Error('Archivo FITS incompleto: bloque truncado');
-  const view = new DataView(buffer), hdus = [];
+  const hdus = [];
   let offset = 0;
   for (let iter=0; offset + CARD <= buffer.byteLength && iter<64; iter++) {
     const {header,end} = readHeader(buffer, offset);
@@ -119,21 +120,41 @@ export function parseFits(buffer,{maxPixels=512*512,maxAxis=512}={}) {
     if (!Number.isSafeInteger(dataBytes) || dataBytes<0 || end+padBlock(dataBytes)>buffer.byteLength) {
       throw new Error(`Archivo FITS incompleto o dimensiones invalidas: ${extension}`);
     }
+    const compressed = xtension==='BINTABLE' && header.ZIMAGE===true;
+    hdus.push({name:extension,header,dims,compressed,xtension,headerOffset:offset,dataOffset:end});
+    offset=end+padBlock(dataBytes);
+    if (offset===buffer.byteLength) break;
+  }
+  if(offset!==buffer.byteLength)throw Error('Archivo FITS contiene demasiadas HDU o datos sin procesar');
+  return hdus;
+}
+
+export function readFitsPlane(buffer,hduIndex,plane=0) {
+  const hdu=inspectFits(buffer)[hduIndex];
+  if(!Number.isInteger(hduIndex)||!hdu||!['PRIMARY','IMAGE'].includes(hdu.xtension)||![2,3].includes(hdu.dims.length)||hdu.compressed)throw Error('HDU sin imagen 2D o cubo compatible');
+  const [width,height,planes=1]=hdu.dims;
+  if(width<1||height<1||width>2048||height>2048)throw Error('Inspector: máximo 2048 por eje; utiliza un recorte FITS');
+  if(!Number.isInteger(plane)||plane<0||plane>=planes)throw Error('Plano FITS fuera de rango');
+  const size=width*height,offset=hdu.dataOffset+plane*size*Math.abs(hdu.header.BITPIX)/8;
+  const image=decodeImage(new DataView(buffer),offset,size,hdu.header.BITPIX,hdu.header,hdu.name==='FLAGS');
+  return {width,height,image,header:hdu.header,plane,planes};
+}
+
+export function parseFits(buffer,{maxPixels=512*512,maxAxis=512}={}) {
+  const hdus=inspectFits(buffer),view=new DataView(buffer);
+  for(const hdu of hdus) {
+    const {name:extension,header,dims,xtension,dataOffset}=hdu;
+    const axes=dims.length,nPixels=axes?dims.reduce((a,b)=>a*b,1):0;
     let data=null;
     const is2dImage=['PRIMARY','IMAGE'].includes(xtension) && axes===2 && nPixels>0;
     if(interested.has(extension)&&xtension!=='BINTABLE'&&axes!==2&&!(extension==='PRIMARY'&&axes===0))throw Error(`${extension} requiere imagen 2D`);
     if (interested.has(extension) && is2dImage) {
       if (nPixels>maxPixels||dims.some(axis=>axis>maxAxis)) throw new Error('Imagen demasiado grande; máximo 512 por eje, solicita un recorte FITS');
-      if(hdus.some(h=>h.name===extension))throw Error(`HDU duplicada: ${extension}`);
-      data=decodeImage(view,end,nPixels,bitpix,header,extension==='FLAGS');
+      if(hdus.some(other=>other!==hdu&&other.name===extension))throw Error(`HDU duplicada: ${extension}`);
+      data=decodeImage(view,dataOffset,nPixels,header.BITPIX,header,extension==='FLAGS');
     }
-    const compressed = xtension==='BINTABLE' && header.ZIMAGE===true;
-    hdus.push({name:extension,header,dims,data,compressed});
-    offset=end+padBlock(dataBytes);
-    if (offset===0) break;
-    if (offset===buffer.byteLength) break;
+    hdu.data=data;
   }
-  if(offset!==buffer.byteLength)throw Error('Archivo FITS contiene demasiadas HDU o datos sin procesar');
   const image=hdus.find(h=>h.name==='IMAGE' && h.data)
     ||hdus.find(h=>h.name==='PRIMARY' && h.data);
   if (!image || image.dims.length!==2) throw new Error('El FITS no contiene IMAGE 2D legible');

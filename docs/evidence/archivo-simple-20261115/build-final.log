@@ -1,0 +1,63 @@
+
+> skyo@2.1.0 preweb:build
+> npm run sync:curated
+
+
+> skyo@2.1.0 sync:curated
+> node scripts/sync-curated-manifest.mjs
+
+Manifiesto curado ya sincronizado
+
+> skyo@2.1.0 web:build
+> vite build && node tools/postbuild.mjs
+
+vite v7.3.8 building client environment for production...
+<script src="assets/js/vendor/three.min.js"> in "/espectral.html" can't be bundled without type="module" attribute
+<script src="assets/js/vendor/three.min.js"> in "/inmersivo.html" can't be bundled without type="module" attribute
+transforming...
+✓ 54 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/contexto.html                                  1.32 kB │ gzip:   0.75 kB
+dist/assets/favicon-B6rQF4JX.svg                    1.78 kB │ gzip:   0.68 kB
+dist/assets/favicon-32x32-BIwezoaV.png              1.95 kB
+dist/inmersivo.html                                 5.27 kB │ gzip:   2.20 kB
+dist/espectral.html                                 5.51 kB │ gzip:   2.42 kB
+dist/assets/cube-worker-BUN8G_ys.js                 5.54 kB
+dist/lab.html                                      10.17 kB │ gzip:   3.26 kB
+dist/assets/fpa-worker-CWG0p-6S.js                 11.92 kB
+dist/assets/detail-worker-5GQB_1EA.js              18.06 kB
+dist/assets/apple-touch-icon-BFocuEgt.png          20.09 kB
+dist/assets/favicon-192x192-DjcM5Fe8.png           21.62 kB
+dist/index.html                                    36.78 kB │ gzip:   9.61 kB
+dist/assets/worker-Ckdgh-wC.js                     51.10 kB
+dist/assets/SpaceGrotesk-Light-B7jmapZk.otf        58.68 kB
+dist/assets/SpaceGrotesk-Regular-DJfN3LFJ.otf      60.38 kB
+dist/assets/SpaceGrotesk-Medium-DBPg_CG_.otf       60.98 kB
+dist/assets/SpaceGrotesk-Bold-CgbbmG7m.otf         61.05 kB
+dist/assets/SpaceGrotesk-SemiBold-CvXxrvSi.otf     61.60 kB
+dist/assets/SpaceMono-Bold-9tno74N4.ttf            98.23 kB
+dist/assets/SpaceMono-Regular-DFDYVJRE.ttf         99.36 kB
+dist/assets/contexto-DqeE6vLG.css                   0.50 kB │ gzip:   0.33 kB
+dist/assets/espectral-BIeYvJxi.css                  4.66 kB │ gzip:   1.65 kB
+dist/assets/register-offline-C_3Du2TC.css           5.05 kB │ gzip:   1.58 kB
+dist/assets/inmersivo-Coev3XZk.css                  5.14 kB │ gzip:   1.74 kB
+dist/assets/lab-BnRIqdEj.css                       13.31 kB │ gzip:   3.57 kB
+dist/assets/main-CeqsA1l6.css                      64.76 kB │ gzip:  12.99 kB
+dist/assets/lab-BxWy8dTV.js                         0.13 kB │ gzip:   0.13 kB
+dist/assets/modulepreload-polyfill-B5Qt9EMX.js      0.71 kB │ gzip:   0.40 kB
+dist/assets/contexto-BofdHux-.js                    2.39 kB │ gzip:   1.31 kB
+dist/assets/fits-ch5ba9ze.js                        3.74 kB │ gzip:   1.78 kB
+dist/assets/contracts-dDeIWvfK.js                   9.89 kB │ gzip:   3.73 kB
+dist/assets/espectral-ChYu7ibx.js                  21.05 kB │ gzip:   8.65 kB
+dist/assets/inmersivo-Ck3jkTbn.js                  40.61 kB │ gzip:  16.24 kB
+dist/assets/register-offline-C8RJeMjt.js           42.53 kB │ gzip:  14.10 kB
+dist/assets/main-BHXRaAe3.js                      123.27 kB │ gzip:  42.88 kB
+dist/assets/aladin-CXPYtL4c.js                  2,390.38 kB │ gzip: 840.29 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 16.11s
+Build SKYO OK: 55 recursos precache; WASM presente

@@ -12,7 +12,7 @@
     "predev": "npm run sync:curated",
     "dev": "vite --host 127.0.0.1 --port 4173",
     "pretest": "npm run sync:curated",
-    "test": "node --test scripts/pipeline.test.mjs scripts/integrity.test.mjs scripts/session.test.mjs scripts/fits-boundary.test.mjs scripts/comparison.test.mjs scripts/science-regressions.test.mjs scripts/curated-dataset.test.mjs scripts/opfs.test.mjs scripts/wasm-equivalence.test.mjs scripts/fpa.test.mjs scripts/immersive.test.mjs scripts/l2.test.mjs",
+    "test": "node --test scripts/pipeline.test.mjs scripts/integrity.test.mjs scripts/session.test.mjs scripts/fits-boundary.test.mjs scripts/comparison.test.mjs scripts/science-regressions.test.mjs scripts/curated-dataset.test.mjs scripts/opfs.test.mjs scripts/wasm-equivalence.test.mjs scripts/fpa.test.mjs scripts/immersive.test.mjs scripts/l2.test.mjs scripts/archive.test.mjs",
     "audit:visual": "node scripts/audit-visual.mjs",
     "demo:generate": "node scripts/generate_demo_fits.mjs",
     "demo:preview": "node scripts/export_demo_preview.mjs",

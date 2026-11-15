@@ -1,0 +1,9 @@
+{
+  "date": "2026-11-15T13:43:07.255Z",
+  "source": "Real IRSA curated PNGs + live AWS FITS Range, no mocks",
+  "status": "Plano FITS real · Rust/WASM 112 ms · sin máscara científica",
+  "coordinates": "ICRS RA 60.81100° · Dec 51.34040°",
+  "flux": "Flujo 12.0051 MJy/sr",
+  "epochs": "Mosaico UTC 2025-08-19T23:48:47.813 → 2026-02-22T13:12:40.649",
+  "errors": []
+}

@@ -1,0 +1,323 @@
+SCENE [{"name":"","type":"AmbientLight"},{"name":"","type":"PointLight"},{"name":"","type":"Points","material":"PointsMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Points","material":"PointsMaterial"},{"name":"","type":"Points","material":"PointsMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Line","material":"LineBasicMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Line","material":"LineBasicMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Line","material":"LineBasicMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Line","material":"LineBasicMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Line","material":"LineBasicMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Line","material":"LineBasicMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Line","material":"LineBasicMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"Line","material":"LineBasicMaterial"},{"name":"","type":"Line","material":"LineBasicMaterial"},{"name":"","type":"Points","material":"PointsMaterial"},{"name":"","type":"Line","material":"LineBasicMaterial"},{"name":"","type":"Line","material":"LineBasicMaterial"},{"name":"","type":"GridHelper","material":"LineBasicMaterial"},{"name":"","type":"Sprite","material":"SpriteMaterial"},{"name":"","type":"DirectionalLight"},{"name":"","type":"PointLight"},{"name":"","type":"DirectionalLight"},{"name":"KryoExhaustPlume","type":"Points","material":"PointsMaterial"}]
+GL START compileShader
+GL END compileShader 0.9
+GL START compileShader
+GL END compileShader 0.4
+GL START linkProgram
+GL END linkProgram 0.5
+GL START getProgramParameter
+GL END getProgramParameter 3.1
+GL START getProgramParameter
+GL END getProgramParameter 1.7
+GL START getProgramParameter
+GL END getProgramParameter 1.0
+GL START compileShader
+GL END compileShader 2.2
+GL START compileShader
+GL END compileShader 0.4
+GL START linkProgram
+GL END linkProgram 0.8
+GL START getProgramParameter
+GL END getProgramParameter 5.6
+GL START getProgramParameter
+GL END getProgramParameter 6.3
+GL START getProgramParameter
+GL END getProgramParameter 1.7
+GL START compileShader
+GL END compileShader 0.9
+GL START compileShader
+GL END compileShader 2.3
+GL START linkProgram
+GL END linkProgram 0.9
+GL START getProgramParameter
+GL END getProgramParameter 2.2
+GL START getProgramParameter
+GL END getProgramParameter 0.6
+GL START getProgramParameter
+GL END getProgramParameter 1.8
+GL START compileShader
+GL END compileShader 1.7
+GL START compileShader
+GL END compileShader 1.0
+GL START linkProgram
+GL END linkProgram 0.4
+GL START getProgramParameter
+GL END getProgramParameter 3.5
+GL START getProgramParameter
+GL END getProgramParameter 2.6
+GL START getProgramParameter
+GL END getProgramParameter 0.9
+GL START compileShader
+GL END compileShader 4.0
+GL START compileShader
+GL END compileShader 0.9
+GL START linkProgram
+GL END linkProgram 0.4
+GL START getProgramParameter
+GL END getProgramParameter 1.5
+GL START getProgramParameter
+GL END getProgramParameter 0.3
+GL START getProgramParameter
+GL END getProgramParameter 0.4
+GL START compileShader
+GL END compileShader 3.0
+GL START compileShader
+GL END compileShader 1.9
+GL START linkProgram
+GL END linkProgram 2.9
+GL START getProgramParameter
+GL END getProgramParameter 2.2
+GL START getProgramParameter
+GL END getProgramParameter 0.3
+GL START getProgramParameter
+GL END getProgramParameter 2.2
+GL START compileShader
+GL END compileShader 0.8
+GL START compileShader
+GL END compileShader 0.7
+GL START linkProgram
+GL END linkProgram 0.2
+GL START getProgramParameter
+GL END getProgramParameter 5.4
+GL START getProgramParameter
+GL END getProgramParameter 0.8
+GL START getProgramParameter
+GL END getProgramParameter 0.9
+GL START compileShader
+GL END compileShader 1.9
+GL START compileShader
+GL END compileShader 1.2
+GL START linkProgram
+GL END linkProgram 1.8
+GL START getProgramParameter
+GL END getProgramParameter 6.6
+GL START getProgramParameter
+GL END getProgramParameter 6.3
+GL START getProgramParameter
+GL END getProgramParameter 0.8
+GL START compileShader
+GL END compileShader 1.5
+GL START compileShader
+GL END compileShader 0.9
+GL START linkProgram
+GL END linkProgram 1.1
+GL START getProgramParameter
+GL END getProgramParameter 2.2
+GL START getProgramParameter
+GL END getProgramParameter 0.7
+GL START compileShader
+GL END compileShader 0.5
+GL START compileShader
+GL END compileShader 0.7
+GL START linkProgram
+GL END linkProgram 0.4
+GL START getProgramParameter
+GL END getProgramParameter 9.1
+GL START getProgramParameter
+GL END getProgramParameter 1.2
+GL START compileShader
+GL END compileShader 1.9
+GL START compileShader
+GL END compileShader 1.5
+GL START linkProgram
+GL END linkProgram 1.8
+GL START getProgramParameter
+GL END getProgramParameter 3.3
+GL START getProgramParameter
+GL END getProgramParameter 0.6
+GL START getProgramParameter
+GL END getProgramParameter 1.8
+GL START compileShader
+GL END compileShader 0.6
+GL START compileShader
+GL END compileShader 3.9
+GL START linkProgram
+GL END linkProgram 0.3
+GL START getProgramParameter
+GL END getProgramParameter 14.4
+GL START getProgramParameter
+GL END getProgramParameter 0.4
+GL START getProgramParameter
+GL END getProgramParameter 0.6
+GL START compileShader
+GL END compileShader 1.0
+GL START compileShader
+GL END compileShader 0.6
+GL START linkProgram
+GL END linkProgram 0.3
+GL START getProgramParameter
+GL END getProgramParameter 1.9
+GL START getProgramParameter
+GL END getProgramParameter 0.4
+GL START getProgramParameter
+GL END getProgramParameter 0.5
+GL START compileShader
+GL END compileShader 4.3
+GL START compileShader
+GL END compileShader 0.5
+GL START linkProgram
+GL END linkProgram 0.5
+GL START getProgramParameter
+GL END getProgramParameter 3.6
+GL START getProgramParameter
+GL END getProgramParameter 2.4
+GL START getProgramParameter
+GL END getProgramParameter 2.4
+GL START getProgramParameter
+GL END getProgramParameter 1.9
+GL START compileShader
+GL END compileShader 0.5
+GL START compileShader
+GL END compileShader 0.4
+GL START linkProgram
+GL END linkProgram 0.3
+GL START getProgramParameter
+GL END getProgramParameter 3.0
+GL START getProgramParameter
+GL END getProgramParameter 1.8
+GL START compileShader
+GL END compileShader 0.6
+GL START compileShader
+GL END compileShader 2.8
+GL START linkProgram
+GL END linkProgram 0.9
+GL START getProgramParameter
+GL END getProgramParameter 2.4
+GL START getProgramParameter
+GL END getProgramParameter 4.3
+GL START getProgramParameter
+GL END getProgramParameter 0.8
+GL START compileShader
+GL END compileShader 2.9
+GL START compileShader
+GL END compileShader 15.0
+GL START linkProgram
+GL END linkProgram 0.5
+GL START getProgramParameter
+GL END getProgramParameter 8.4
+GL START getProgramParameter
+GL END getProgramParameter 0.8
+GL START getProgramParameter
+GL END getProgramParameter 4.0
+GL START compileShader
+GL END compileShader 5.4
+GL START compileShader
+GL END compileShader 7.5
+GL START linkProgram
+GL END linkProgram 5.2
+GL START getProgramParameter
+GL END getProgramParameter 3.4
+GL START getProgramParameter
+GL END getProgramParameter 3.2
+GL START getProgramParameter
+GL END getProgramParameter 0.6
+GL START compileShader
+GL END compileShader 0.6
+GL START compileShader
+GL END compileShader 4.0
+GL START linkProgram
+GL END linkProgram 1.5
+GL START getProgramParameter
+GL END getProgramParameter 8.4
+GL START getProgramParameter
+GL END getProgramParameter 0.3
+GL START getProgramParameter
+GL END getProgramParameter 0.5
+GL START getProgramParameter
+GL END getProgramParameter 2.7
+GL START compileShader
+GL END compileShader 0.6
+GL START compileShader
+GL END compileShader 0.5
+GL START linkProgram
+GL END linkProgram 0.4
+GL START getProgramParameter
+GL END getProgramParameter 2.1
+GL START getProgramParameter
+GL END getProgramParameter 0.5
+GL START getProgramParameter
+GL END getProgramParameter 1.2
+{
+  "errors": [],
+  "requests": [
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:4176/assets/models/eclipse.glb"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:4176/assets/models/focal_plane.glb"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:4176/assets/js/vendor/GLTFLoader.js"
+    },
+    {
+      "status": 200,
+      "url": "http://127.0.0.1:4176/assets/js/vendor/RoomEnvironment.js"
+    }
+  ],
+  "probes": [
+    {
+      "i": 0,
+      "responseMs": 50,
+      "frames": {
+        "started": 2,
+        "ended": 2,
+        "maxMs": 0.2999999998137355
+      },
+      "status": "KRYO-9 · ACTIVA LA VISTA 3D",
+      "route": "inicio"
+    },
+    {
+      "i": 1,
+      "responseMs": 18,
+      "frames": {
+        "started": 2,
+        "ended": 2,
+        "maxMs": 0.2999999998137355
+      },
+      "status": "KRYO-9 · ACTIVA LA VISTA 3D",
+      "route": "inicio"
+    },
+    {
+      "i": 2,
+      "responseMs": 4228,
+      "frames": {
+        "started": 3,
+        "ended": 3,
+        "maxMs": 874.9000000003725
+      },
+      "status": "KRYO-9 · EN ÓRBITA DE ESPERA",
+      "route": "inicio"
+    },
+    {
+      "i": 3,
+      "responseMs": 200,
+      "frames": {
+        "started": 4,
+        "ended": 4,
+        "maxMs": 874.9000000003725
+      },
+      "status": "KRYO-9 · EN ÓRBITA DE ESPERA",
+      "route": "inicio"
+    },
+    {
+      "i": 4,
+      "responseMs": 1397,
+      "frames": {
+        "started": 5,
+        "ended": 5,
+        "maxMs": 874.9000000003725
+      },
+      "status": "KRYO-9 · EN ÓRBITA DE ESPERA",
+      "route": "inicio"
+    },
+    {
+      "i": 5,
+      "error": "main thread timeout"
+    }
+  ],
+  "hung": true,
+  "probeError": "main thread timeout"
+}

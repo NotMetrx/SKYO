@@ -1,0 +1,481 @@
+{
+  "schema_version": "skyo-curated-0.1",
+  "dataset_id": "m101-visual-v1",
+  "profile": "visual",
+  "status": "complete",
+  "source": "NASA/IPAC IRSA SPHEREx DR1",
+  "regions": [
+    {
+      "id": "noroeste",
+      "label": "Noroeste de M101",
+      "files": {
+        "A": "noroeste-A-1376df7120039b7b.fits",
+        "B": "noroeste-B-c1035e83eef28969.fits"
+      },
+      "observationIds": [
+        "2025W19_2B_0377_1",
+        "2025W20_2D_0120_1"
+      ],
+      "epochGroups": [
+        "2025W19_2B_0377",
+        "2025W20_2D_0120"
+      ],
+      "deltaDays": 5.299311736001982,
+      "footprintICRS": [
+        [
+          210.8013206528474,
+          54.37856218636693
+        ],
+        [
+          210.82342691951843,
+          54.36504248404752
+        ],
+        [
+          210.80043610881708,
+          54.35197241860978
+        ],
+        [
+          210.77832854207995,
+          54.36548852056696
+        ]
+      ],
+      "spectralMap": "noroeste-spectral-visual.json",
+      "spatialPixels": 121,
+      "spectralCompatiblePixels": 121,
+      "compatibleFractionOfOverlap": 1.0,
+      "thresholdPolicy": "Project preselection |lambdaA-lambdaB| <=0.25*min(bandwidth); not NASA science criterion",
+      "negativeControl": {
+        "A": "noroeste-A-1376df7120039b7b.fits",
+        "B": "noroeste-A-1376df7120039b7b.fits"
+      }
+    },
+    {
+      "id": "sureste",
+      "label": "Sureste de M101",
+      "files": {
+        "A": "sureste-A-cd157ea08deda008.fits",
+        "B": "sureste-B-e2da6bf857d92748.fits"
+      },
+      "observationIds": [
+        "2025W19_2B_0377_1",
+        "2025W20_2D_0120_1"
+      ],
+      "epochGroups": [
+        "2025W19_2B_0377",
+        "2025W20_2D_0120"
+      ],
+      "deltaDays": 5.299311736001982,
+      "footprintICRS": [
+        [
+          210.8022032784019,
+          54.343490949152205
+        ],
+        [
+          210.82428755656787,
+          54.329967819038465
+        ],
+        [
+          210.8013164571672,
+          54.31689634716201
+        ],
+        [
+          210.7792308782412,
+          54.33041588450832
+        ]
+      ],
+      "spectralMap": "sureste-spectral-visual.json",
+      "spatialPixels": 121,
+      "spectralCompatiblePixels": 121,
+      "compatibleFractionOfOverlap": 1.0,
+      "thresholdPolicy": "Project preselection |lambdaA-lambdaB| <=0.25*min(bandwidth); not NASA science criterion",
+      "negativeControl": {
+        "A": "sureste-A-cd157ea08deda008.fits",
+        "B": "sureste-A-cd157ea08deda008.fits"
+      }
+    }
+  ],
+  "items": [
+    {
+      "local_file": "noroeste-A-1376df7120039b7b.fits",
+      "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W19_2B/l2b-v27-2026-198/2/level2_2025W19_2B_0377_1D2_spx_l2b-v27-2026-198.fits?center=210.80227%2C54.34895d&size=0.05",
+      "parent_mef_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W19_2B/l2b-v27-2026-198/2/level2_2025W19_2B_0377_1D2_spx_l2b-v27-2026-198.fits",
+      "source_release": "DR1",
+      "collection": "spherex_dr1",
+      "observation_id": "2025W19_2B_0377_1",
+      "plane_id": "01a0cf8f-37c0-7650-9366-bb2540edb4e6",
+      "obsid": "01a0cf8f-1f89-7167-a856-d6dfbecfad76",
+      "sha256": "1376df7120039b7b9b17d58641e8d85d025caa2b23da88da3bccd90f1ef5bc11",
+      "source_sha256": "7ec10cc88adab613ba867d80dd285a1065d3b3541a5d5fbc709b53a62e2c3a10",
+      "parent_sha256": null,
+      "bytes": 86400,
+      "retrieved_utc": "2026-11-14T18:12:17.614083Z",
+      "sourceKind": "NASA-DERIVED",
+      "curator_version": "skyo-curator-0.2",
+      "processing_version": "7.0.5",
+      "metadata_processing_version": "7.0.5",
+      "observation_utc": "2025-05-10T21:58:09.061",
+      "native_time_cards": {
+        "DATE-OBS": "2025-05-10T21:58:09.061",
+        "MJD-OBS": 60805.91538265,
+        "MJD-BEG": 60805.91538265,
+        "MJD-END": 60805.916715029,
+        "MJD-AVG": 60805.91604884,
+        "TIMESYS": "UTC",
+        "TIMEUNIT": null,
+        "TREFPOS": null
+      },
+      "mjd": 60805.915383,
+      "mjd_start": 60805.91538265,
+      "mjd_end": 60805.916715029,
+      "mjd_mid": 60805.91604884,
+      "time_scale": "UTC",
+      "metadata_time_bounds": {
+        "lower": 60805.915383,
+        "upper": 60805.916715
+      },
+      "detector": 2,
+      "ra_deg": 210.8008784616743,
+      "dec_deg": 54.36526775615838,
+      "size_deg": 0.05,
+      "units": "MJy / sr",
+      "finast": 0,
+      "wavelength_um": 1.6578693210288038,
+      "bandwidth_um": 0.039529397837361674,
+      "wavelength_quality": "center_only_from_WCS_WAVE",
+      "has_uncompressed_flags": true,
+      "has_variance": true,
+      "epsf": {
+        "rows": 441,
+        "columns": [
+          "BINX",
+          "BINY",
+          "XCENTER",
+          "YCENTER",
+          "XWIDTH",
+          "YWIDTH",
+          "NSTAR",
+          "NEFF_MEAN",
+          "CWAVE",
+          "CBAND",
+          "EPSF"
+        ]
+      },
+      "available_hdus": [
+        "PRIMARY",
+        "IMAGE",
+        "FLAGS",
+        "VARIANCE",
+        "ZODI",
+        "WCS-WAVE"
+      ],
+      "omitted_hdus": [
+        "EPSF"
+      ],
+      "transforms": [
+        {
+          "software": "skyo-curator-0.2",
+          "operation": "preserve all HDUs; decompress tiled image extensions; update checksums"
+        },
+        {
+          "software": "skyo-visual-dataset-0.1",
+          "operation": "Crop origin=1,1; shape=12,12; update spatial/alternate CRPIX; input SHA256=c40190b243b4e46167cf2cf71058bad371a1439a385f849cfd4adfb243747ef4; omit EPSF, retain original URL/hash"
+        }
+      ],
+      "missing_reasons": {
+        "parent_sha256": "MEF completo no descargado; source_sha256 identifica el recorte recibido.",
+        "spectral_calibration": "WCS-WAVE central visual; CWAVE/CBAND cient\u00edficos no verificados.",
+        "time_scale": null,
+        "epsf": "Omitida del perfil visual; conservada en el original curado fuera de dist y recuperable por source_url/source_sha256."
+      },
+      "dataset_id": "m101-visual-v1"
+    },
+    {
+      "local_file": "noroeste-B-c1035e83eef28969.fits",
+      "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W20_2D/l2b-v27-2026-198/2/level2_2025W20_2D_0120_1D2_spx_l2b-v27-2026-198.fits?center=210.80227%2C54.34895d&size=0.05",
+      "parent_mef_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W20_2D/l2b-v27-2026-198/2/level2_2025W20_2D_0120_1D2_spx_l2b-v27-2026-198.fits",
+      "source_release": "DR1",
+      "collection": "spherex_dr1",
+      "observation_id": "2025W20_2D_0120_1",
+      "plane_id": "01a0d019-4ef4-7c96-a52a-4a2daea967ed",
+      "obsid": "01a0d017-ab3d-7820-8581-728548462816",
+      "sha256": "c1035e83eef28969241b80b475c49100dd8b6869fd4f963d34cce72590c1b23f",
+      "source_sha256": "22872a54bf64866ad460bbccd018f598e831d2580363c6bca722985902153692",
+      "parent_sha256": null,
+      "bytes": 86400,
+      "retrieved_utc": "2026-11-14T18:12:49.130882Z",
+      "sourceKind": "NASA-DERIVED",
+      "curator_version": "skyo-curator-0.2",
+      "processing_version": "7.0.5",
+      "metadata_processing_version": "7.0.5",
+      "observation_utc": "2025-05-16T05:09:09.595",
+      "native_time_cards": {
+        "DATE-OBS": "2025-05-16T05:09:09.595",
+        "MJD-OBS": 60811.214694387,
+        "MJD-BEG": 60811.214694387,
+        "MJD-END": 60811.216026765,
+        "MJD-AVG": 60811.215360576,
+        "TIMESYS": "UTC",
+        "TIMEUNIT": null,
+        "TREFPOS": null
+      },
+      "mjd": 60811.214694,
+      "mjd_start": 60811.214694387,
+      "mjd_end": 60811.216026765,
+      "mjd_mid": 60811.215360576,
+      "time_scale": "UTC",
+      "metadata_time_bounds": {
+        "lower": 60811.214694,
+        "upper": 60811.216027
+      },
+      "detector": 2,
+      "ra_deg": 210.8008784616743,
+      "dec_deg": 54.36526775615838,
+      "size_deg": 0.05,
+      "units": "MJy / sr",
+      "finast": 0,
+      "wavelength_um": 1.655412912062272,
+      "bandwidth_um": 0.03981490767528583,
+      "wavelength_quality": "center_only_from_WCS_WAVE",
+      "has_uncompressed_flags": true,
+      "has_variance": true,
+      "epsf": {
+        "rows": 441,
+        "columns": [
+          "BINX",
+          "BINY",
+          "XCENTER",
+          "YCENTER",
+          "XWIDTH",
+          "YWIDTH",
+          "NSTAR",
+          "NEFF_MEAN",
+          "CWAVE",
+          "CBAND",
+          "EPSF"
+        ]
+      },
+      "available_hdus": [
+        "PRIMARY",
+        "IMAGE",
+        "FLAGS",
+        "VARIANCE",
+        "ZODI",
+        "WCS-WAVE"
+      ],
+      "omitted_hdus": [
+        "EPSF"
+      ],
+      "transforms": [
+        {
+          "software": "skyo-curator-0.2",
+          "operation": "preserve all HDUs; decompress tiled image extensions; update checksums"
+        },
+        {
+          "software": "skyo-visual-dataset-0.1",
+          "operation": "Crop origin=1,1; shape=12,12; update spatial/alternate CRPIX; input SHA256=b7c0ccc4981117b97439eff3b8ff8bfee131a44acd0bd6dd66e91e70b4b562cc; omit EPSF, retain original URL/hash"
+        }
+      ],
+      "missing_reasons": {
+        "parent_sha256": "MEF completo no descargado; source_sha256 identifica el recorte recibido.",
+        "spectral_calibration": "WCS-WAVE central visual; CWAVE/CBAND cient\u00edficos no verificados.",
+        "time_scale": null,
+        "epsf": "Omitida del perfil visual; conservada en el original curado fuera de dist y recuperable por source_url/source_sha256."
+      },
+      "dataset_id": "m101-visual-v1"
+    },
+    {
+      "local_file": "sureste-A-cd157ea08deda008.fits",
+      "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W19_2B/l2b-v27-2026-198/2/level2_2025W19_2B_0377_1D2_spx_l2b-v27-2026-198.fits?center=210.80227%2C54.34895d&size=0.05",
+      "parent_mef_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W19_2B/l2b-v27-2026-198/2/level2_2025W19_2B_0377_1D2_spx_l2b-v27-2026-198.fits",
+      "source_release": "DR1",
+      "collection": "spherex_dr1",
+      "observation_id": "2025W19_2B_0377_1",
+      "plane_id": "01a0cf8f-37c0-7650-9366-bb2540edb4e6",
+      "obsid": "01a0cf8f-1f89-7167-a856-d6dfbecfad76",
+      "sha256": "cd157ea08deda0085404af06237af9cab603e8b41ac6bb93ce372529bcec11fc",
+      "source_sha256": "7ec10cc88adab613ba867d80dd285a1065d3b3541a5d5fbc709b53a62e2c3a10",
+      "parent_sha256": null,
+      "bytes": 86400,
+      "retrieved_utc": "2026-11-14T18:12:17.614083Z",
+      "sourceKind": "NASA-DERIVED",
+      "curator_version": "skyo-curator-0.2",
+      "processing_version": "7.0.5",
+      "metadata_processing_version": "7.0.5",
+      "observation_utc": "2025-05-10T21:58:09.061",
+      "native_time_cards": {
+        "DATE-OBS": "2025-05-10T21:58:09.061",
+        "MJD-OBS": 60805.91538265,
+        "MJD-BEG": 60805.91538265,
+        "MJD-END": 60805.916715029,
+        "MJD-AVG": 60805.91604884,
+        "TIMESYS": "UTC",
+        "TIMEUNIT": null,
+        "TREFPOS": null
+      },
+      "mjd": 60805.915383,
+      "mjd_start": 60805.91538265,
+      "mjd_end": 60805.916715029,
+      "mjd_mid": 60805.91604884,
+      "time_scale": "UTC",
+      "metadata_time_bounds": {
+        "lower": 60805.915383,
+        "upper": 60805.916715
+      },
+      "detector": 2,
+      "ra_deg": 210.8017599478588,
+      "dec_deg": 54.33019410341241,
+      "size_deg": 0.05,
+      "units": "MJy / sr",
+      "finast": 0,
+      "wavelength_um": 1.6536096361784787,
+      "bandwidth_um": 0.03943210713665518,
+      "wavelength_quality": "center_only_from_WCS_WAVE",
+      "has_uncompressed_flags": true,
+      "has_variance": true,
+      "epsf": {
+        "rows": 441,
+        "columns": [
+          "BINX",
+          "BINY",
+          "XCENTER",
+          "YCENTER",
+          "XWIDTH",
+          "YWIDTH",
+          "NSTAR",
+          "NEFF_MEAN",
+          "CWAVE",
+          "CBAND",
+          "EPSF"
+        ]
+      },
+      "available_hdus": [
+        "PRIMARY",
+        "IMAGE",
+        "FLAGS",
+        "VARIANCE",
+        "ZODI",
+        "WCS-WAVE"
+      ],
+      "omitted_hdus": [
+        "EPSF"
+      ],
+      "transforms": [
+        {
+          "software": "skyo-curator-0.2",
+          "operation": "preserve all HDUs; decompress tiled image extensions; update checksums"
+        },
+        {
+          "software": "skyo-visual-dataset-0.1",
+          "operation": "Crop origin=16,15; shape=12,12; update spatial/alternate CRPIX; input SHA256=c40190b243b4e46167cf2cf71058bad371a1439a385f849cfd4adfb243747ef4; omit EPSF, retain original URL/hash"
+        }
+      ],
+      "missing_reasons": {
+        "parent_sha256": "MEF completo no descargado; source_sha256 identifica el recorte recibido.",
+        "spectral_calibration": "WCS-WAVE central visual; CWAVE/CBAND cient\u00edficos no verificados.",
+        "time_scale": null,
+        "epsf": "Omitida del perfil visual; conservada en el original curado fuera de dist y recuperable por source_url/source_sha256."
+      },
+      "dataset_id": "m101-visual-v1"
+    },
+    {
+      "local_file": "sureste-B-e2da6bf857d92748.fits",
+      "source_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W20_2D/l2b-v27-2026-198/2/level2_2025W20_2D_0120_1D2_spx_l2b-v27-2026-198.fits?center=210.80227%2C54.34895d&size=0.05",
+      "parent_mef_url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W20_2D/l2b-v27-2026-198/2/level2_2025W20_2D_0120_1D2_spx_l2b-v27-2026-198.fits",
+      "source_release": "DR1",
+      "collection": "spherex_dr1",
+      "observation_id": "2025W20_2D_0120_1",
+      "plane_id": "01a0d019-4ef4-7c96-a52a-4a2daea967ed",
+      "obsid": "01a0d017-ab3d-7820-8581-728548462816",
+      "sha256": "e2da6bf857d9274888cbdda6b22b97227b2d0b659e5a58a87d0f6b9fd3b2c61b",
+      "source_sha256": "22872a54bf64866ad460bbccd018f598e831d2580363c6bca722985902153692",
+      "parent_sha256": null,
+      "bytes": 86400,
+      "retrieved_utc": "2026-11-14T18:12:49.130882Z",
+      "sourceKind": "NASA-DERIVED",
+      "curator_version": "skyo-curator-0.2",
+      "processing_version": "7.0.5",
+      "metadata_processing_version": "7.0.5",
+      "observation_utc": "2025-05-16T05:09:09.595",
+      "native_time_cards": {
+        "DATE-OBS": "2025-05-16T05:09:09.595",
+        "MJD-OBS": 60811.214694387,
+        "MJD-BEG": 60811.214694387,
+        "MJD-END": 60811.216026765,
+        "MJD-AVG": 60811.215360576,
+        "TIMESYS": "UTC",
+        "TIMEUNIT": null,
+        "TREFPOS": null
+      },
+      "mjd": 60811.214694,
+      "mjd_start": 60811.214694387,
+      "mjd_end": 60811.216026765,
+      "mjd_mid": 60811.215360576,
+      "time_scale": "UTC",
+      "metadata_time_bounds": {
+        "lower": 60811.214694,
+        "upper": 60811.216027
+      },
+      "detector": 2,
+      "ra_deg": 210.8017599478588,
+      "dec_deg": 54.33019410341241,
+      "size_deg": 0.05,
+      "units": "MJy / sr",
+      "finast": 0,
+      "wavelength_um": 1.6496697779328078,
+      "bandwidth_um": 0.039736797789075747,
+      "wavelength_quality": "center_only_from_WCS_WAVE",
+      "has_uncompressed_flags": true,
+      "has_variance": true,
+      "epsf": {
+        "rows": 441,
+        "columns": [
+          "BINX",
+          "BINY",
+          "XCENTER",
+          "YCENTER",
+          "XWIDTH",
+          "YWIDTH",
+          "NSTAR",
+          "NEFF_MEAN",
+          "CWAVE",
+          "CBAND",
+          "EPSF"
+        ]
+      },
+      "available_hdus": [
+        "PRIMARY",
+        "IMAGE",
+        "FLAGS",
+        "VARIANCE",
+        "ZODI",
+        "WCS-WAVE"
+      ],
+      "omitted_hdus": [
+        "EPSF"
+      ],
+      "transforms": [
+        {
+          "software": "skyo-curator-0.2",
+          "operation": "preserve all HDUs; decompress tiled image extensions; update checksums"
+        },
+        {
+          "software": "skyo-visual-dataset-0.1",
+          "operation": "Crop origin=15,17; shape=12,12; update spatial/alternate CRPIX; input SHA256=b7c0ccc4981117b97439eff3b8ff8bfee131a44acd0bd6dd66e91e70b4b562cc; omit EPSF, retain original URL/hash"
+        }
+      ],
+      "missing_reasons": {
+        "parent_sha256": "MEF completo no descargado; source_sha256 identifica el recorte recibido.",
+        "spectral_calibration": "WCS-WAVE central visual; CWAVE/CBAND cient\u00edficos no verificados.",
+        "time_scale": null,
+        "epsf": "Omitida del perfil visual; conservada en el original curado fuera de dist y recuperable por source_url/source_sha256."
+      },
+      "dataset_id": "m101-visual-v1"
+    }
+  ],
+  "warnings": [
+    "Dos subregiones del mismo campo M101, no dos blancos independientes.",
+    "No se garantiza movimiento ni variabilidad detectables.",
+    "WCS-WAVE visual; CWAVE/CBAND, PSF y significancia cient\u00edfica no verificados.",
+    "Consulta hist\u00f3rica con recibo; archivos descargados nuevamente y verificados."
+  ]
+}

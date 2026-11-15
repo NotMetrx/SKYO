@@ -1,0 +1,8 @@
+{
+  "source": "https://irsa.ipac.caltech.edu/TAP/sync",
+  "query": "SELECT TOP 1 p.poly AS footprint FROM spherex.plane p WHERE 1=CONTAINS(POINT('ICRS',210.80227,54.34895),p.poly)",
+  "observedDate": "2026-11-15",
+  "status": 502,
+  "message": "Proxy Error: Error reading from remote server",
+  "scope": "Bounded live query; does not prove archive/geometry unavailability. Browser feature tests use controlled remote responses and preserved real FITS."
+}

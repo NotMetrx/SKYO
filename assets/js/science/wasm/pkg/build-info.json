@@ -1,0 +1,6 @@
+{
+  "crateVersion": "0.1.0",
+  "generator": "wasm-bindgen 0.2.130",
+  "wasmSha256": "c61e0668dea746c4ddaacbbc9e7923c7faa1f7411994c6054d4c89ee3bf2cac2",
+  "cargoLockSha256": "cf21147e33938a9917caad44916d39505587d45e31c9e9c52f8034ccbd947d30"
+}

@@ -1,0 +1,16 @@
+
+> skyo@2.1.0 test:browser
+> playwright test storage.spec.mjs
+
+[WebServer] (node:15052) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:15091) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/browser/storage.spec.mjs:4:38 › OPFS independiente: fallo de segundo archivo, recuperación y borrado (11.3s)
+  ✓  2 tests/browser/storage.spec.mjs:4:38 › OPFS integrado: fallo de segundo archivo, recuperación y borrado (10.7s)
+  ✓  3 tests/browser/storage.spec.mjs:26:1 › Bitácora conserva snapshot, no inventa movimiento y escapa nombres de archivo (6.1s)
+
+  3 passed (40.1s)

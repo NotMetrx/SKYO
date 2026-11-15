@@ -1,0 +1,95 @@
+{
+  "regions": [
+    {
+      "id": "noroeste",
+      "label": "Noroeste de M101",
+      "files": {
+        "A": "noroeste-A-6038108f4da33652.fits",
+        "B": "noroeste-B-819c9c3bcfd2c4fd.fits"
+      },
+      "observationIds": [
+        "2025W19_2B_0377_1",
+        "2025W20_2D_0120_1"
+      ],
+      "epochGroups": [
+        "2025W19_2B_0377",
+        "2025W20_2D_0120"
+      ],
+      "deltaDays": 5.299311736001982,
+      "footprintICRS": [
+        [
+          210.56972802728617,
+          54.312918859395054
+        ],
+        [
+          210.59188807987238,
+          54.29944163163478
+        ],
+        [
+          210.5690014754349,
+          54.2863246796784
+        ],
+        [
+          210.54684020862226,
+          54.29979831287546
+        ]
+      ],
+      "spectralMap": "noroeste-spectral-visual.json",
+      "spatialPixels": 120,
+      "spectralCompatiblePixels": 120,
+      "compatibleFractionOfOverlap": 1.0,
+      "thresholdPolicy": "Project preselection |lambdaA-lambdaB| <=0.25*min(bandwidth); not NASA science criterion",
+      "negativeControl": {
+        "A": "noroeste-A-6038108f4da33652.fits",
+        "B": "noroeste-A-6038108f4da33652.fits"
+      }
+    },
+    {
+      "id": "sureste",
+      "label": "Sureste de M101",
+      "files": {
+        "A": "sureste-A-241de57504766e36.fits",
+        "B": "sureste-B-33d3502290356ea7.fits"
+      },
+      "observationIds": [
+        "2025W19_2B_0377_1",
+        "2025W20_2D_0120_1"
+      ],
+      "epochGroups": [
+        "2025W19_2B_0377",
+        "2025W20_2D_0120"
+      ],
+      "deltaDays": 5.299311736001982,
+      "footprintICRS": [
+        [
+          210.5687370599636,
+          54.27665316389878
+        ],
+        [
+          210.5908751594885,
+          54.26317277473947
+        ],
+        [
+          210.56800932866093,
+          54.25005400169491
+        ],
+        [
+          210.54587001466783,
+          54.26353080404913
+        ]
+      ],
+      "spectralMap": "sureste-spectral-visual.json",
+      "spatialPixels": 121,
+      "spectralCompatiblePixels": 121,
+      "compatibleFractionOfOverlap": 1.0,
+      "thresholdPolicy": "Project preselection |lambdaA-lambdaB| <=0.25*min(bandwidth); not NASA science criterion",
+      "negativeControl": {
+        "A": "sureste-A-241de57504766e36.fits",
+        "B": "sureste-A-241de57504766e36.fits"
+      }
+    }
+  ],
+  "sourceSearch": "data/datasets/m101-surroundings-20261114/search.json",
+  "sourceSearchSha256": "9f9cd0ad7c4258b3d0bdbb9c35008f8d2bf8fa99e0e8af941f4e2a57172489b3",
+  "profile": "visual"
+}

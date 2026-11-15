@@ -1,0 +1,8 @@
+{
+  "date": "2026-11-14T18:11:37.125609+00:00",
+  "operation": "M101 TAP VOTable region query",
+  "status": "failed",
+  "firstAttempt": "HTTP502 Proxy Error",
+  "boundedJobAttempt": "120 segundos; reintento fuera del presupuesto",
+  "fallback": "Consulta CSV hist\u00f3rica verificada del repositorio, con nuevas descargas y hashes. No se presenta como consulta actual completa."
+}

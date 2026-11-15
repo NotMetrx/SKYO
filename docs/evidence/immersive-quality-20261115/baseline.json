@@ -1,0 +1,53 @@
+{
+  "operation": "float_plane_to_texture + rgba/pixels getters",
+  "warmup": 5,
+  "runs": 30,
+  "medianMs": 65.70945600000005,
+  "p95Ms": 107.35477200000014,
+  "node": "v24.21.0",
+  "normalViewOrder": 0,
+  "centerTiles": [
+    {
+      "order": 0,
+      "pixel": 0,
+      "face": 0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "order": 1,
+      "pixel": 1,
+      "face": 0,
+      "x": 1,
+      "y": 0
+    },
+    {
+      "order": 2,
+      "pixel": 6,
+      "face": 0,
+      "x": 2,
+      "y": 1
+    },
+    {
+      "order": 3,
+      "pixel": 27,
+      "face": 0,
+      "x": 5,
+      "y": 3
+    },
+    {
+      "order": 4,
+      "pixel": 111,
+      "face": 0,
+      "x": 11,
+      "y": 7
+    },
+    {
+      "order": 5,
+      "pixel": 445,
+      "face": 0,
+      "x": 23,
+      "y": 14
+    }
+  ]
+}

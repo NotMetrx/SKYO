@@ -1,0 +1,221 @@
+
+> skyo@2.1.0 pretest:browser
+> npm run sync:curated
+
+
+> skyo@2.1.0 sync:curated
+> node scripts/sync-curated-manifest.mjs
+
+Manifiesto curado ya sincronizado
+
+> skyo@2.1.0 test:browser
+> playwright test
+
+[WebServer] (node:46931) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 56 tests using 1 worker
+
+(node:46975) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/browser/accessibility.spec.mjs:3:84 › accesibilidad de controles en lab.html (9.2s)
+  ✓   2 tests/browser/accessibility.spec.mjs:3:84 › accesibilidad de controles en contexto.html (4.4s)
+  ✓   3 tests/browser/accessibility.spec.mjs:3:84 › accesibilidad de controles en espectral.html (8.8s)
+  ✓   4 tests/browser/accessibility.spec.mjs:3:84 › accesibilidad de controles en inmersivo.html (12.1s)
+  ✓   5 tests/browser/accessibility.spec.mjs:9:1 › accesibilidad del cielo completo con controles flotantes en Explorar (20.7s)
+  ✓   6 tests/browser/archive.spec.mjs:5:34 › Inspector sencillo /: FITS real, máscara, cabecera y regla accesible (13.9s)
+  ✓   7 tests/browser/archive.spec.mjs:5:34 › Inspector sencillo /skyo/: FITS real, máscara, cabecera y regla accesible (12.9s)
+  ✓   8 tests/browser/archive.spec.mjs:46:1 › Inspector: cubo local por planos, fuera de rango recuperable y archivo truncado (5.7s)
+  ✓   9 tests/browser/archive.spec.mjs:66:1 › Archivo: error IRSA y reintento sin geometrías inventadas; no sustituye FITS por identidad incorrecta (5.7s)
+  ✓  10 tests/browser/curated.spec.mjs:4:38 › NASA real independiente: regiones, blink manual, informe y offline (21.9s)
+  ✓  11 tests/browser/curated.spec.mjs:4:38 › NASA real integrado: regiones, blink manual, informe y offline (26.1s)
+  ✓  12 tests/browser/curated.spec.mjs:34:1 › 320 px: las cinco pestañas flotantes son accesibles al desplazar la barra (11.2s)
+  ✓  13 tests/browser/fpa.spec.mjs:4:3 › FPA real /: seis texturas WASM, cámara, contraste y móvil (6.9s)
+  ✓  14 tests/browser/fpa.spec.mjs:4:3 › FPA real /skyo/: seis texturas WASM, cámara, contraste y móvil (7.7s)
+  ✓  15 tests/browser/fpa.spec.mjs:24:1 › FPA: hash erróneo controlado, reintento y búsqueda IRSA con inspector enlazado (6.3s)
+  ✓  16 tests/browser/fpa.spec.mjs:44:1 › Explorar abre imágenes reales y descarga el visor al cambiar de pestaña (19.7s)
+  ✓  17 tests/browser/fpa.spec.mjs:59:34 › Entrada directa /index.html#explorar muestra el cielo integrado (41.9s)
+  ✓  18 tests/browser/fpa.spec.mjs:59:34 › Entrada directa /skyo/index.html#explorar muestra el cielo integrado (46.3s)
+  ✓  19 tests/browser/graphics.spec.mjs:2:1 › WebGL2: Aladin real y pausa del motor Three.js fuera de vista (33.3s)
+  ✓  20 tests/browser/immersive.spec.mjs:21:34 › Clic informativo /: fija punto real, copia, exporta y descarta al cambiar canal (27.6s)
+  ✓  21 tests/browser/immersive.spec.mjs:21:34 › Clic informativo /skyo/: fija punto real, copia, exporta y descarta al cambiar canal (13.1s)
+  ✘  22 tests/browser/immersive.spec.mjs:39:1 › Clic pendiente cancela lectura automática anterior y un error libera la retícula (10.2s)
+(node:49981) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  23 tests/browser/immersive.spec.mjs:46:34 › Inmersivo /: cielo real, vuelo, píxel NASA, canales y export (21.1s)
+  ✓  24 tests/browser/immersive.spec.mjs:46:34 › Inmersivo /skyo/: cielo real, vuelo, píxel NASA, canales y export (19.5s)
+  ✓  25 tests/browser/immersive.spec.mjs:60:1 › Inmersivo móvil: arrastre, controles táctiles y permiso gyro rechazado (8.4s)
+  ✓  26 tests/browser/immersive.spec.mjs:68:1 › Giroscopio: calibra la vista actual y responde a orientación sin salto inicial (12.0s)
+  ✓  27 tests/browser/immersive.spec.mjs:79:1 › Ratón capturado selecciona bajo la retícula y no en coordenadas de cursor congeladas (5.2s)
+  ✓  28 tests/browser/immersive.spec.mjs:85:1 › Retícula final actualiza RA/Dec aunque el arrastre termine dentro del intervalo HUD (5.0s)
+  ✓  29 tests/browser/immersive.spec.mjs:91:1 › Una edición nueva bloquea otros canales y LOD antes de aplicar el mosaico (5.5s)
+  ✓  30 tests/browser/immersive.spec.mjs:99:1 › Inmersivo: WebXR denegado conserva cámara y nuevos datos se anuncian sin cambiar selección (8.8s)
+  ✘  31 tests/browser/immersive.spec.mjs:108:1 › Detalle nativo completo, precarga espectral y caché FITS sin nuevas descargas (2.0m)
+(node:51758) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  32 tests/browser/integration.spec.mjs:4:3 › KRYO-9 y GLTF remoto /: carga diferida, Draco y modelo (2.0m)
+(node:53168) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  33 tests/browser/integration.spec.mjs:4:3 › KRYO-9 y GLTF remoto /skyo/: carga diferida, Draco y modelo (2.0m)
+(node:54304) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  34 tests/browser/l2.spec.mjs:21:34 › Zoom L2 /: FITS real, λ/fecha/flujo propios, export y retorno (55.6s)
+  ✓  35 tests/browser/l2.spec.mjs:21:34 › Zoom L2 /skyo/: FITS real, λ/fecha/flujo propios, export y retorno (27.0s)
+  ✓  36 tests/browser/l2.spec.mjs:33:1 › Zoom L2 integrado en Explorar con controles flotantes (25.4s)
+  ✓  37 tests/browser/l2.spec.mjs:39:1 › Zoom L2: respuesta tardía se descarta al cambiar canal y error conserva panorama (18.8s)
+  ✓  38 tests/browser/migration.spec.mjs:4:3 › / navegación, teclado y responsive (16.1s)
+  ✓  39 tests/browser/migration.spec.mjs:26:3 › / Worker, export y offline con Vary Origin (22.9s)
+  ✘  40 tests/browser/migration.spec.mjs:43:3 › / manifiesto, iconos y aislamiento de caché (4.5s)
+(node:55655) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  41 tests/browser/migration.spec.mjs:4:3 › /skyo/ navegación, teclado y responsive (18.7s)
+  ✓  42 tests/browser/migration.spec.mjs:26:3 › /skyo/ Worker, export y offline con Vary Origin (25.8s)
+  ✘  43 tests/browser/migration.spec.mjs:43:3 › /skyo/ manifiesto, iconos y aislamiento de caché (5.0s)
+(node:56260) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  44 tests/browser/migration.spec.mjs:57:1 › contexto HiPS se carga bajo demanda y se descarga al salir (14.8s)
+  ✓  45 tests/browser/migration.spec.mjs:67:1 › actualización PWA espera al usuario y conserva cachés ajenas (8.6s)
+  ✓  46 tests/browser/storage.spec.mjs:4:38 › OPFS independiente: fallo de segundo archivo, recuperación y borrado (9.8s)
+  ✓  47 tests/browser/storage.spec.mjs:4:38 › OPFS integrado: fallo de segundo archivo, recuperación y borrado (15.2s)
+  ✓  48 tests/browser/storage.spec.mjs:26:1 › Bitácora conserva snapshot, no inventa movimiento y escapa nombres de archivo (10.2s)
+  ✓  49 tests/browser/t01.spec.mjs:9:39 › T01 independiente: cambiar demo invalida informe (3.9s)
+  ✓  50 tests/browser/t01.spec.mjs:9:39 › T01 integrado: cambiar demo invalida informe (14.2s)
+  ✓  51 tests/browser/t01.spec.mjs:18:38 › T01 independiente: A/A→demo A/B, export y diagnóstico (8.2s)
+  ✓  52 tests/browser/t01.spec.mjs:18:38 › T01 integrado: A/A→demo A/B, export y diagnóstico (15.6s)
+  ✓  53 tests/browser/wasm.spec.mjs:7:34 › WASM Worker /: carga real, identidad y fallback (8.4s)
+  ✓  54 tests/browser/wasm.spec.mjs:7:34 › WASM Worker /skyo/: carga real, identidad y fallback (9.8s)
+  ✓  55 tests/browser/wasm.spec.mjs:18:1 › WASM corrupto o que lanza excepción conserva fallback explícito (8.2s)
+  ✓  56 tests/browser/wasm.spec.mjs:29:1 › WASM y JavaScript: benchmark de kernel en Worker Chromium (9.5s)
+
+
+  1) tests/browser/immersive.spec.mjs:39:1 › Clic pendiente cancela lectura automática anterior y un error libera la retícula 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 2
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      40 |   await sources(page);await page.addInitScript(()=>{window.__jobs=[];const W=Worker;window.Worker=class extends W{constructor(url,...rest){super(url,...rest);if(String(url).includes('cube-worker'))window.__cube=this;}postMessage(data,...rest){if('pixel' in data){window.__jobs.push(data);return;}return super.postMessage(data,...rest);}};});
+      41 |   await page.goto('/inmersivo.html');await expect(page.locator('#sky')).toHaveAttribute('data-ready','12');await page.mouse.click(760,400);
+    > 42 |   await expect.poll(()=>page.evaluate(()=>window.__jobs.length)).toBe(1);await page.waitForTimeout(1300);expect(await page.evaluate(()=>window.__jobs.length)).toBe(1);
+         |                                                                  ^
+      43 |   await page.evaluate(()=>window.__cube.onmessage({data:{id:window.__jobs[0].id,error:'fallo de prueba'}}));
+      44 |   await expect(page.locator('#selection-status')).toContainText('fallo de prueba');await expect.poll(()=>page.evaluate(()=>window.__jobs.length)).toBeGreaterThan(1);
+      45 | });
+        at /home/metrx/Proyectos/SKYO/tests/browser/immersive.spec.mjs:42:66
+
+    Error Context: test-results/archivo-simple/immersive-Clic-pendiente-c-93ad6-un-error-libera-la-retícula/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/archivo-simple/immersive-Clic-pendiente-c-93ad6-un-error-libera-la-retícula/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/archivo-simple/immersive-Clic-pendiente-c-93ad6-un-error-libera-la-retícula/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/browser/immersive.spec.mjs:108:1 › Detalle nativo completo, precarga espectral y caché FITS sin nuevas descargas 
+
+    Test timeout of 120000ms exceeded.
+
+    Error Context: test-results/archivo-simple/immersive-Detalle-nativo-c-2e214-é-FITS-sin-nuevas-descargas/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/archivo-simple/immersive-Detalle-nativo-c-2e214-é-FITS-sin-nuevas-descargas/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/archivo-simple/immersive-Detalle-nativo-c-2e214-é-FITS-sin-nuevas-descargas/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests/browser/integration.spec.mjs:4:3 › KRYO-9 y GLTF remoto /: carga diferida, Draco y modelo 
+
+    Test timeout of 120000ms exceeded.
+
+    Error Context: test-results/archivo-simple/integration-KRYO-9-y-GLTF--3a946-rga-diferida-Draco-y-modelo/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/archivo-simple/integration-KRYO-9-y-GLTF--3a946-rga-diferida-Draco-y-modelo/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/archivo-simple/integration-KRYO-9-y-GLTF--3a946-rga-diferida-Draco-y-modelo/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) tests/browser/integration.spec.mjs:4:3 › KRYO-9 y GLTF remoto /skyo/: carga diferida, Draco y modelo 
+
+    Test timeout of 120000ms exceeded.
+
+    Error Context: test-results/archivo-simple/integration-KRYO-9-y-GLTF--5c1f4-rga-diferida-Draco-y-modelo/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/archivo-simple/integration-KRYO-9-y-GLTF--5c1f4-rga-diferida-Draco-y-modelo/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/archivo-simple/integration-KRYO-9-y-GLTF--5c1f4-rga-diferida-Draco-y-modelo/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) tests/browser/migration.spec.mjs:43:3 › / manifiesto, iconos y aislamiento de caché ───────────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "/index.html"
+    Received: "/assets/index.html"
+
+      45 |     const manifestUrl=await page.locator('link[rel=manifest]').getAttribute('href');
+      46 |     const url=new URL(manifestUrl,page.url());const response=await request.get(url.href);expect(response.ok()).toBe(true);
+    > 47 |     const manifest=await response.json();expect(new URL(manifest.start_url,url).pathname).toBe(base+'index.html');
+         |                                                                                           ^
+      48 |     for(const icon of manifest.icons) expect((await request.get(new URL(icon.src,url).href)).ok()).toBe(true);
+      49 |     const session=await page.context().newCDPSession(page);
+      50 |     const installability=await session.send('Page.getInstallabilityErrors');
+        at /home/metrx/Proyectos/SKYO/tests/browser/migration.spec.mjs:47:91
+
+    Error Context: test-results/archivo-simple/migration--manifiesto-iconos-y-aislamiento-de-caché/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/archivo-simple/migration--manifiesto-iconos-y-aislamiento-de-caché/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/archivo-simple/migration--manifiesto-iconos-y-aislamiento-de-caché/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) tests/browser/migration.spec.mjs:43:3 › /skyo/ manifiesto, iconos y aislamiento de caché ──────
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "/skyo/index.html"
+    Received: "/skyo/assets/index.html"
+
+      45 |     const manifestUrl=await page.locator('link[rel=manifest]').getAttribute('href');
+      46 |     const url=new URL(manifestUrl,page.url());const response=await request.get(url.href);expect(response.ok()).toBe(true);
+    > 47 |     const manifest=await response.json();expect(new URL(manifest.start_url,url).pathname).toBe(base+'index.html');
+         |                                                                                           ^
+      48 |     for(const icon of manifest.icons) expect((await request.get(new URL(icon.src,url).href)).ok()).toBe(true);
+      49 |     const session=await page.context().newCDPSession(page);
+      50 |     const installability=await session.send('Page.getInstallabilityErrors');
+        at /home/metrx/Proyectos/SKYO/tests/browser/migration.spec.mjs:47:91
+
+    Error Context: test-results/archivo-simple/migration--skyo-manifiesto-iconos-y-aislamiento-de-caché/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/archivo-simple/migration--skyo-manifiesto-iconos-y-aislamiento-de-caché/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/archivo-simple/migration--skyo-manifiesto-iconos-y-aislamiento-de-caché/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6 failed
+    tests/browser/immersive.spec.mjs:39:1 › Clic pendiente cancela lectura automática anterior y un error libera la retícula 
+    tests/browser/immersive.spec.mjs:108:1 › Detalle nativo completo, precarga espectral y caché FITS sin nuevas descargas 
+    tests/browser/integration.spec.mjs:4:3 › KRYO-9 y GLTF remoto /: carga diferida, Draco y modelo 
+    tests/browser/integration.spec.mjs:4:3 › KRYO-9 y GLTF remoto /skyo/: carga diferida, Draco y modelo 
+    tests/browser/migration.spec.mjs:43:3 › / manifiesto, iconos y aislamiento de caché ────────────
+    tests/browser/migration.spec.mjs:43:3 › /skyo/ manifiesto, iconos y aislamiento de caché ───────
+  50 passed (21.0m)

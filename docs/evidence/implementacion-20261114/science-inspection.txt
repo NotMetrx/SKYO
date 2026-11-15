@@ -1,0 +1,1 @@
+{"status": "inspection-only", "regions": 4, "scienceReady": false}

@@ -1,0 +1,20 @@
+[
+  {
+    "detector": 2,
+    "url": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W19_2B/l2b-v27-2026-198/2/level2_2025W19_2B_0007_1D2_spx_l2b-v27-2026-198.fits",
+    "headerBytes": 57600,
+    "status": "downloaded"
+  },
+  {
+    "detector": 3,
+    "url": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W19_2B/l2b-v27-2026-198/3/level2_2025W19_2B_0007_2D3_spx_l2b-v27-2026-198.fits",
+    "headerBytes": 57600,
+    "status": "downloaded"
+  },
+  {
+    "detector": 6,
+    "url": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W19_2B/l2b-v27-2026-198/6/level2_2025W19_2B_0007_1D6_spx_l2b-v27-2026-198.fits",
+    "headerBytes": 57600,
+    "status": "downloaded"
+  }
+]

@@ -1,0 +1,68 @@
+{
+  "date": "2026-11-15T16:42:58.872Z",
+  "project": "skyo",
+  "actor": "codex",
+  "browser": {
+    "startTime": "2026-11-15T16:40:50.477Z",
+    "duration": 38543.344,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "accessible": {
+    "startTime": "2026-11-15T16:41:56.327Z",
+    "duration": 17012.544,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "nodeFocused": {
+    "passed": 13,
+    "skipped": 0
+  },
+  "build": "isolated Vite viewer passed; global blocked by external Git conflict markers",
+  "integration": "index.html#explorar not verified after external merge began",
+  "review": {
+    "critical": 0,
+    "important": 0,
+    "fixed": [
+      "preexisting reticle timer overriding point request",
+      "terminal error retained loading state",
+      "short viewport panel height"
+    ]
+  },
+  "unmergedFiles": [
+    "assets/css/main.css",
+    "assets/js/cosmos3d.js",
+    "assets/js/hera3d.js",
+    "index.html"
+  ],
+  "files": {
+    "assets/js/immersive/inspector.js": {
+      "bytes": 3802,
+      "sha256": "3acbee66b0231698cc48bf746b21654638cc8aea9724f7f00277b0d2e19e879c"
+    },
+    "assets/js/immersive/main.js": {
+      "bytes": 18359,
+      "sha256": "fd0b0d3bfcc3bd4ab506b3fe8737c4f65b94297a975f9a9ae6c015a893b57daa"
+    },
+    "assets/js/immersive/style.css": {
+      "bytes": 5237,
+      "sha256": "43d41f8c31929fd61f4703b3e4b85eea6323323c06cd44f35d938bccfb89fc91"
+    },
+    "inmersivo.html": {
+      "bytes": 4920,
+      "sha256": "d92eabb5b54360f19e06092b4568eba845dad76969b3f7581fb23e3022e61e3f"
+    },
+    "tests/browser/immersive.spec.mjs": {
+      "bytes": 16876,
+      "sha256": "d7ff2f74fa5d62e77dda655760b982faee65961d83cb0531c9dec2df75811d43"
+    },
+    "tests/browser/l2.spec.mjs": {
+      "bytes": 5572,
+      "sha256": "8c15967169df88a4f13b857d4725416402392052625e6e4617bb9dc1b42c2432"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+[WebServer] (node:52156) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:52205) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/browser/immersive.spec.mjs:39:1 › Clic pendiente cancela lectura automática anterior y un error libera la retícula (13.4s)
+(node:52438) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 tests/browser/immersive.spec.mjs:39:1 › Clic pendiente cancela lectura automática anterior y un error libera la retícula (12.6s)
+(node:52669) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 tests/browser/immersive.spec.mjs:39:1 › Clic pendiente cancela lectura automática anterior y un error libera la retícula (14.5s)
+
+  3 passed (1.1m)

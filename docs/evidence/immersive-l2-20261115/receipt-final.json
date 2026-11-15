@@ -1,0 +1,107 @@
+{
+  "date": "2026-11-15T16:29:08.014Z",
+  "project": "skyo",
+  "actor": "codex",
+  "node": {
+    "passed": 58,
+    "skipped": 0
+  },
+  "browser": {
+    "startTime": "2026-11-15T16:21:51.465Z",
+    "duration": 199545.17299999998,
+    "expected": 23,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "finalL2": {
+    "startTime": "2026-11-15T16:26:05.626Z",
+    "duration": 50441.059,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "remote": {
+    "checked_utc": "2026-11-15T16:23:26.906852+00:00",
+    "tap": {
+      "point": [
+        60.8109955,
+        51.3404038
+      ],
+      "detector": 4,
+      "outcome": "Read timeout after35s"
+    },
+    "cutout": {
+      "url": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W20_2D/l2b-v27-2026-198/2/level2_2025W20_2D_0065_1D2_spx_l2b-v27-2026-198.fits?center=210.8005798819627,54.34658512732025d&size=.25",
+      "outcome": "HTTP503ServiceUnavailable"
+    },
+    "conclusion": "Remote successful L2 transition not validated; controlled browser uses unchanged archived real FITS"
+  },
+  "review": {
+    "remainingCritical": 0,
+    "remainingImportant": 0,
+    "fixed": [
+      "matching radius to reticle during flight",
+      "OBSID collection and UTC verification",
+      "suspend L2 when entering VR",
+      "sample wavelength at same rounded pixel as flux"
+    ]
+  },
+  "limitations": [
+    "No successful live remote cutout transition verified: TAP timeout and IBE503",
+    "L2 zoom in screen mode; VR retains panorama",
+    "No physical mobile VR or performance acceptance",
+    "At most6 of12 newest candidates; not exhaustive"
+  ],
+  "files": {
+    "assets/js/immersive/detail.js": {
+      "bytes": 4865,
+      "sha256": "cbac78221161357244e2714c3216456520c0a0f7baad3150cc16aac0949805eb"
+    },
+    "assets/js/immersive/detail-data.js": {
+      "bytes": 2881,
+      "sha256": "d7faa3e03cf35f47e5ea4f06ab4218dc9432b56819199ae7c72d42f7e7e8321c"
+    },
+    "assets/js/immersive/detail-worker.js": {
+      "bytes": 2985,
+      "sha256": "69cfc7d7042dc83f96a27702033cabbcab037e904f90e83b8bd045ee72c3d7e2"
+    },
+    "assets/js/immersive/spectral.js": {
+      "bytes": 3100,
+      "sha256": "65ca64354ea8a549c2be8cdf3631847d802934d9cd6b103b841a693fa34966cb"
+    },
+    "assets/js/immersive/main.js": {
+      "bytes": 17077,
+      "sha256": "14c1f659c8284d9e569a06f0b58b23527cc5bd84ab53b65bd53d36a0d2dcc899"
+    },
+    "assets/js/immersive/controls.js": {
+      "bytes": 5842,
+      "sha256": "1345e5ec052df77800d9163bf0df5f80fc197483d2ea1465009f0169fd769cb5"
+    },
+    "assets/js/immersive/hips.js": {
+      "bytes": 9977,
+      "sha256": "538bef86ad5e58751f2ca98c0ef8c4a0fd86490f187da3dd8c6e503f73f77081"
+    },
+    "inmersivo.html": {
+      "bytes": 3986,
+      "sha256": "8b27200cb7f22f694fb078612a9d25640ac5035fa46bfce1b03284798f2880cc"
+    },
+    "scripts/l2.test.mjs": {
+      "bytes": 3496,
+      "sha256": "9fe27c435867ee7cd9198e9dec82ad897819f7161d7239c3022337631fdb40b2"
+    },
+    "tests/browser/l2.spec.mjs": {
+      "bytes": 5197,
+      "sha256": "8fc6218bf1152fec1a644c22e8017d5ac3e30fa52eb455c123c20e5d61f80f91"
+    },
+    "tests/fixtures/l2/astropy.json": {
+      "bytes": 1265,
+      "sha256": "a118ff92e66d5e28f240ecb1411b41d9021927eff14f5aead36469a01a8ac171"
+    },
+    "tests/fixtures/l2/observation.fits": {
+      "bytes": 3965760,
+      "sha256": "5a5a18a74a30b81af5457ec719d49f1d5b5e3849252b19938014feeae430a1b7"
+    }
+  }
+}

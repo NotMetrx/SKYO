@@ -1,0 +1,1793 @@
+{
+  "config": {
+    "argv": [
+      "/home/metrx/.nvm/versions/node/v24.21.0/bin/node",
+      "/home/metrx/Proyectos/SKYO/node_modules/.bin/playwright",
+      "test"
+    ],
+    "configFile": "/home/metrx/Proyectos/SKYO/playwright.config.mjs",
+    "rootDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/metrx/Proyectos/SKYO/test-results/immersive-quality",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+        "testIgnore": [],
+        "testMatch": [
+          "*.spec.mjs"
+        ],
+        "timeout": 90000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/home/metrx/Proyectos/SKYO/test-results/immersive-quality",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+        "snapshotDir": "/home/metrx/Proyectos/SKYO/tests/browser",
+        "testIgnore": [],
+        "testMatch": "*.spec.mjs",
+        "timeout": 90000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4199",
+          "headless": true,
+          "reducedMotion": "reduce",
+          "trace": "retain-on-failure",
+          "launchOptions": {
+            "args": [
+              "--disable-gpu"
+            ]
+          }
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/evidence/immersive-quality-20261115/browser-full.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.65.1",
+    "workers": 1,
+    "webServer": {
+      "command": "node tests/browser/server.mjs",
+      "url": "http://127.0.0.1:4199",
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "accessibility.spec.mjs",
+      "file": "accessibility.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "accesibilidad de controles en lab.html",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1867,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:36:23.797Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a334d9d3eb462d454b6a-bfdd3dc0e94f355b5936",
+          "file": "accessibility.spec.mjs",
+          "line": 3,
+          "column": 84
+        },
+        {
+          "title": "accesibilidad de controles en contexto.html",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1226,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:36:25.895Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a334d9d3eb462d454b6a-2e78aecb32ba98b90f15",
+          "file": "accessibility.spec.mjs",
+          "line": 3,
+          "column": 84
+        },
+        {
+          "title": "accesibilidad de controles en espectral.html",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1937,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:36:27.149Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a334d9d3eb462d454b6a-e4dca0dba12df2e49d1f",
+          "file": "accessibility.spec.mjs",
+          "line": 3,
+          "column": 84
+        },
+        {
+          "title": "accesibilidad de controles en inmersivo.html",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1773,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:36:29.111Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a334d9d3eb462d454b6a-b156737f84b34663e08c",
+          "file": "accessibility.spec.mjs",
+          "line": 3,
+          "column": 84
+        },
+        {
+          "title": "accesibilidad del cielo completo con controles flotantes en Explorar",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4149,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:36:30.909Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a334d9d3eb462d454b6a-7bf41387c0ea5481cc13",
+          "file": "accessibility.spec.mjs",
+          "line": 9,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "curated.spec.mjs",
+      "file": "curated.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "NASA real independiente: regiones, blink manual, informe y offline",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4447,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:36:35.095Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a47a7c4a20f00dc2cf68-27d2889ca24a5a648daf",
+          "file": "curated.spec.mjs",
+          "line": 4,
+          "column": 38
+        },
+        {
+          "title": "NASA real integrado: regiones, blink manual, informe y offline",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5972,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:36:39.568Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a47a7c4a20f00dc2cf68-a76d5a4a50241b3e64c6",
+          "file": "curated.spec.mjs",
+          "line": 4,
+          "column": 38
+        },
+        {
+          "title": "320 px: las cinco pestañas quedan completas y accesibles",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 2486,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: <= \u001b[32m320\u001b[39m\nReceived:    \u001b[31m403\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: <= \u001b[32m320\u001b[39m\nReceived:    \u001b[31m403\u001b[39m\n    at /home/metrx/Proyectos/SKYO/tests/browser/curated.spec.mjs:37:121",
+                    "location": {
+                      "file": "/home/metrx/Proyectos/SKYO/tests/browser/curated.spec.mjs",
+                      "column": 121,
+                      "line": 37
+                    },
+                    "snippet": " \u001b[90m 35 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39msetViewportSize({width\u001b[33m:\u001b[39m\u001b[35m320\u001b[39m\u001b[33m,\u001b[39mheight\u001b[33m:\u001b[39m\u001b[35m568\u001b[39m})\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/#explorar'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 36 |\u001b[39m   \u001b[36mfor\u001b[39m(\u001b[36mconst\u001b[39m tab \u001b[36mof\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'tab'\u001b[39m)\u001b[33m.\u001b[39mall()){\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 37 |\u001b[39m     \u001b[36mawait\u001b[39m tab\u001b[33m.\u001b[39mfocus()\u001b[33m;\u001b[39m\u001b[36mconst\u001b[39m box\u001b[33m=\u001b[39m\u001b[36mawait\u001b[39m tab\u001b[33m.\u001b[39mboundingBox()\u001b[33m;\u001b[39mexpect(box\u001b[33m.\u001b[39mx)\u001b[33m.\u001b[39mtoBeGreaterThanOrEqual(\u001b[35m0\u001b[39m)\u001b[33m;\u001b[39mexpect(box\u001b[33m.\u001b[39mx\u001b[33m+\u001b[39mbox\u001b[33m.\u001b[39mwidth)\u001b[33m.\u001b[39mtoBeLessThanOrEqual(\u001b[35m320\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                                                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 38 |\u001b[39m   }\n \u001b[90m 39 |\u001b[39m   \u001b[36mconst\u001b[39m tabs\u001b[33m=\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'#explore-view-tabs'\u001b[39m)\u001b[33m.\u001b[39mboundingBox()\u001b[33m;\u001b[39m\n \u001b[90m 40 |\u001b[39m   \u001b[36mconst\u001b[39m frame\u001b[33m=\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'#view-espectral'\u001b[39m)\u001b[33m.\u001b[39mboundingBox()\u001b[33m;\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/metrx/Proyectos/SKYO/tests/browser/curated.spec.mjs",
+                        "column": 121,
+                        "line": 37
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: <= \u001b[32m320\u001b[39m\nReceived:    \u001b[31m403\u001b[39m\n\n  35 |   await page.setViewportSize({width:320,height:568});await page.goto('/#explorar');\n  36 |   for(const tab of await page.getByRole('tab').all()){\n> 37 |     await tab.focus();const box=await tab.boundingBox();expect(box.x).toBeGreaterThanOrEqual(0);expect(box.x+box.width).toBeLessThanOrEqual(320);\n     |                                                                                                                         ^\n  38 |   }\n  39 |   const tabs=await page.locator('#explore-view-tabs').boundingBox();\n  40 |   const frame=await page.locator('#view-espectral').boundingBox();\n    at /home/metrx/Proyectos/SKYO/tests/browser/curated.spec.mjs:37:121"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:36:45.566Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/metrx/Proyectos/SKYO/test-results/immersive-quality/curated-320-px-las-cinco-p-fd660-edan-completas-y-accesibles/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/metrx/Proyectos/SKYO/test-results/immersive-quality/curated-320-px-las-cinco-p-fd660-edan-completas-y-accesibles/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/metrx/Proyectos/SKYO/tests/browser/curated.spec.mjs",
+                    "column": 121,
+                    "line": 37
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "a47a7c4a20f00dc2cf68-c6bb11abf4d83b6b4a99",
+          "file": "curated.spec.mjs",
+          "line": 34,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "fpa.spec.mjs",
+      "file": "fpa.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "FPA real /: seis texturas WASM, cámara, contraste y móvil",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2238,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:36:49.647Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f98d9a0bbf2c66098092-502f6d1950456a41ecd7",
+          "file": "fpa.spec.mjs",
+          "line": 4,
+          "column": 3
+        },
+        {
+          "title": "FPA real /skyo/: seis texturas WASM, cámara, contraste y móvil",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2009,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:36:52.090Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f98d9a0bbf2c66098092-70dace064e039a070482",
+          "file": "fpa.spec.mjs",
+          "line": 4,
+          "column": 3
+        },
+        {
+          "title": "FPA: hash erróneo controlado, reintento y búsqueda IRSA con carga de resultado",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1292,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:36:54.128Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f98d9a0bbf2c66098092-0d6c0ad073a07c6706fc",
+          "file": "fpa.spec.mjs",
+          "line": 24,
+          "column": 1
+        },
+        {
+          "title": "Explorar abre imágenes reales y descarga el visor al cambiar de pestaña",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4579,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:36:55.447Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f98d9a0bbf2c66098092-384f0d853cac1ad034a9",
+          "file": "fpa.spec.mjs",
+          "line": 42,
+          "column": 1
+        },
+        {
+          "title": "Entrada directa /index.html#explorar muestra el cielo integrado",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9032,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:37:00.068Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f98d9a0bbf2c66098092-8a4ae532d0b1c4319c5c",
+          "file": "fpa.spec.mjs",
+          "line": 57,
+          "column": 34
+        },
+        {
+          "title": "Entrada directa /skyo/index.html#explorar muestra el cielo integrado",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9609,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:37:09.124Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f98d9a0bbf2c66098092-2707e00188b46b8565cc",
+          "file": "fpa.spec.mjs",
+          "line": 57,
+          "column": 34
+        }
+      ]
+    },
+    {
+      "title": "graphics.spec.mjs",
+      "file": "graphics.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "WebGL2: Aladin real y pausa del motor Three.js fuera de vista",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5720,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:37:18.776Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5da9f961d34ca1202064-6427eb9f7b602efb6b87",
+          "file": "graphics.spec.mjs",
+          "line": 2,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "immersive.spec.mjs",
+      "file": "immersive.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Inmersivo /: cielo real, vuelo, píxel NASA, canales y export",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5481,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:37:24.564Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a2edaa4f28c1479b21d6-4a148c8d56005873df30",
+          "file": "immersive.spec.mjs",
+          "line": 20,
+          "column": 34
+        },
+        {
+          "title": "Inmersivo /skyo/: cielo real, vuelo, píxel NASA, canales y export",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5510,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:37:30.072Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a2edaa4f28c1479b21d6-60a81c2f04fa3c0b2e54",
+          "file": "immersive.spec.mjs",
+          "line": 20,
+          "column": 34
+        },
+        {
+          "title": "Inmersivo móvil: arrastre, controles táctiles y permiso gyro rechazado",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1791,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:37:35.605Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a2edaa4f28c1479b21d6-e41500acad6494e4cdad",
+          "file": "immersive.spec.mjs",
+          "line": 34,
+          "column": 1
+        },
+        {
+          "title": "Giroscopio: calibra la vista actual y responde a orientación sin salto inicial",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2198,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:37:37.425Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a2edaa4f28c1479b21d6-d3ea84204107bf9bd9b3",
+          "file": "immersive.spec.mjs",
+          "line": 42,
+          "column": 1
+        },
+        {
+          "title": "Ratón capturado selecciona bajo la retícula y no en coordenadas de cursor congeladas",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1957,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:37:39.661Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a2edaa4f28c1479b21d6-d8555ec4ec43d66193c1",
+          "file": "immersive.spec.mjs",
+          "line": 52,
+          "column": 1
+        },
+        {
+          "title": "Retícula final actualiza RA/Dec aunque el arrastre termine dentro del intervalo HUD",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1649,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:37:41.655Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a2edaa4f28c1479b21d6-e663472f595b61773d90",
+          "file": "immersive.spec.mjs",
+          "line": 58,
+          "column": 1
+        },
+        {
+          "title": "Una edición nueva bloquea otros canales y LOD antes de aplicar el mosaico",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1610,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:37:43.329Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a2edaa4f28c1479b21d6-c698edac625dad19749e",
+          "file": "immersive.spec.mjs",
+          "line": 64,
+          "column": 1
+        },
+        {
+          "title": "Inmersivo: WebXR denegado conserva cámara y nuevos datos se anuncian sin cambiar selección",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2375,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:37:44.963Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "a2edaa4f28c1479b21d6-f57390abfcc2042d5aed",
+          "file": "immersive.spec.mjs",
+          "line": 72,
+          "column": 1
+        },
+        {
+          "title": "Detalle nativo completo, precarga espectral y caché FITS sin nuevas descargas",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 18857,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('#sky')\nExpected: \u001b[32m\"5\"\u001b[39m\nReceived: \u001b[31m\"3\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" locator('#sky') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#sky')\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"48\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"49\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"53\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"61\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"68\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"75\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"82\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"90\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"98\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('#sky')\nExpected: \u001b[32m\"5\"\u001b[39m\nReceived: \u001b[31m\"3\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" locator('#sky') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#sky')\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"48\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"49\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"53\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"61\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"68\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"75\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"82\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"90\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"98\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\n    at /home/metrx/Proyectos/SKYO/tests/browser/immersive.spec.mjs:109:26",
+                    "location": {
+                      "file": "/home/metrx/Proyectos/SKYO/tests/browser/immersive.spec.mjs",
+                      "column": 26,
+                      "line": 109
+                    },
+                    "snippet": " \u001b[90m 107 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'#previous'\u001b[39m)\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m expect(canvas)\u001b[33m.\u001b[39mtoHaveAttribute(\u001b[32m'data-display-channel'\u001b[39m\u001b[33m,\u001b[39m\u001b[32m'62'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 108 |\u001b[39m     \u001b[36mawait\u001b[39m canvas\u001b[33m.\u001b[39mfocus()\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mmouse\u001b[33m.\u001b[39mmove(\u001b[35m640\u001b[39m\u001b[33m,\u001b[39m\u001b[35m400\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mmouse\u001b[33m.\u001b[39mwheel(\u001b[35m0\u001b[39m\u001b[33m,\u001b[39m\u001b[33m-\u001b[39m\u001b[35m4000\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 109 |\u001b[39m     \u001b[36mawait\u001b[39m expect(canvas)\u001b[33m.\u001b[39mtoHaveAttribute(\u001b[32m'data-lod'\u001b[39m\u001b[33m,\u001b[39m\u001b[32m'5'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 110 |\u001b[39m     \u001b[36mawait\u001b[39m expect\u001b[33m.\u001b[39mpoll(\u001b[36masync\u001b[39m()\u001b[33m=>\u001b[39m\u001b[36mawait\u001b[39m canvas\u001b[33m.\u001b[39mgetAttribute(\u001b[32m'data-detail-ready'\u001b[39m)\u001b[33m===\u001b[39m\u001b[36mawait\u001b[39m canvas\u001b[33m.\u001b[39mgetAttribute(\u001b[32m'data-detail-wanted'\u001b[39m)\u001b[33m,\u001b[39m{timeout\u001b[33m:\u001b[39m\u001b[35m60000\u001b[39m})\u001b[33m.\u001b[39mtoBe(\u001b[36mtrue\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 111 |\u001b[39m   }\u001b[36mfinally\u001b[39m{\u001b[36mawait\u001b[39m context\u001b[33m.\u001b[39mclose()\u001b[33m;\u001b[39m}\n \u001b[90m 112 |\u001b[39m })\u001b[33m;\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/metrx/Proyectos/SKYO/tests/browser/immersive.spec.mjs",
+                        "column": 26,
+                        "line": 109
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('#sky')\nExpected: \u001b[32m\"5\"\u001b[39m\nReceived: \u001b[31m\"3\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" locator('#sky') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#sky')\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"48\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"49\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"53\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"61\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"68\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"75\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"82\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"90\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\u001b[2m    - locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"3\" width=\"2560\" height=\"1600\" data-ready=\"12\" data-tiles=\"229\" data-channel=\"62\" data-ra=\"60.81100\" data-travel=\"0.00\" data-dec=\"51.34040\" data-detail-ready=\"98\" data-detail-wanted=\"126\" data-display-channel=\"62\" data-spatial-kernel=\"Rust/WASM\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m    - unexpected value \"3\"\u001b[22m\n\n\n  107 |     await page.locator('#previous').click();await expect(canvas).toHaveAttribute('data-display-channel','62');\n  108 |     await canvas.focus();await page.mouse.move(640,400);await page.mouse.wheel(0,-4000);\n> 109 |     await expect(canvas).toHaveAttribute('data-lod','5');\n      |                          ^\n  110 |     await expect.poll(async()=>await canvas.getAttribute('data-detail-ready')===await canvas.getAttribute('data-detail-wanted'),{timeout:60000}).toBe(true);\n  111 |   }finally{await context.close();}\n  112 | });\n    at /home/metrx/Proyectos/SKYO/tests/browser/immersive.spec.mjs:109:26"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:37:47.364Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/metrx/Proyectos/SKYO/test-results/immersive-quality/immersive-Detalle-nativo-c-2e214-é-FITS-sin-nuevas-descargas/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/metrx/Proyectos/SKYO/test-results/immersive-quality/immersive-Detalle-nativo-c-2e214-é-FITS-sin-nuevas-descargas/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/metrx/Proyectos/SKYO/tests/browser/immersive.spec.mjs",
+                    "column": 26,
+                    "line": 109
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "a2edaa4f28c1479b21d6-ebbbd7bee981f0ae0671",
+          "file": "immersive.spec.mjs",
+          "line": 81,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "integration.spec.mjs",
+      "file": "integration.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "KRYO-9 y GLTF remoto /: carga diferida, Draco y modelo",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 25996,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:38:09.086Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d2e5af720b2b561d2ec7-73a1b6e10e705d2b8eee",
+          "file": "integration.spec.mjs",
+          "line": 4,
+          "column": 3
+        },
+        {
+          "title": "KRYO-9 y GLTF remoto /skyo/: carga diferida, Draco y modelo",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 25799,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:38:35.181Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d2e5af720b2b561d2ec7-e39d8a616ca43b7d0d09",
+          "file": "integration.spec.mjs",
+          "line": 4,
+          "column": 3
+        }
+      ]
+    },
+    {
+      "title": "migration.spec.mjs",
+      "file": "migration.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "/ navegación, teclado y responsive",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5775,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:39:01.133Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "94dbda98a2b05a3033e6-e095243cb3be5a76ccb9",
+          "file": "migration.spec.mjs",
+          "line": 4,
+          "column": 3
+        },
+        {
+          "title": "/ Worker, export y offline con Vary Origin",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7517,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:39:07.024Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "94dbda98a2b05a3033e6-af28532e470cc0ddf7d1",
+          "file": "migration.spec.mjs",
+          "line": 26,
+          "column": 3
+        },
+        {
+          "title": "/ manifiesto, iconos y aislamiento de caché",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 913,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:39:14.564Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "94dbda98a2b05a3033e6-8b30ca2a6099df95bd8e",
+          "file": "migration.spec.mjs",
+          "line": 43,
+          "column": 3
+        },
+        {
+          "title": "/skyo/ navegación, teclado y responsive",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5415,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:39:15.498Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "94dbda98a2b05a3033e6-f9bd58a394101310568d",
+          "file": "migration.spec.mjs",
+          "line": 4,
+          "column": 3
+        },
+        {
+          "title": "/skyo/ Worker, export y offline con Vary Origin",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7210,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:39:20.934Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "94dbda98a2b05a3033e6-4cf6216d03d5f30792f5",
+          "file": "migration.spec.mjs",
+          "line": 26,
+          "column": 3
+        },
+        {
+          "title": "/skyo/ manifiesto, iconos y aislamiento de caché",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 952,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:39:28.178Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "94dbda98a2b05a3033e6-7921eeecb7d88cb1a6a7",
+          "file": "migration.spec.mjs",
+          "line": 43,
+          "column": 3
+        },
+        {
+          "title": "contexto HiPS se carga bajo demanda y se descarga al salir",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3674,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:39:29.165Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "94dbda98a2b05a3033e6-721f25347418b9b67149",
+          "file": "migration.spec.mjs",
+          "line": 57,
+          "column": 1
+        },
+        {
+          "title": "actualización PWA espera al usuario y conserva cachés ajenas",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3287,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:39:32.863Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "94dbda98a2b05a3033e6-c4e6068d35eeefd481ff",
+          "file": "migration.spec.mjs",
+          "line": 67,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "storage.spec.mjs",
+      "file": "storage.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "OPFS independiente: fallo de segundo archivo, recuperación y borrado",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2818,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:39:36.190Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "41a9034ffaaff0acdbbb-f8951f4d2e08d113e1a1",
+          "file": "storage.spec.mjs",
+          "line": 4,
+          "column": 38
+        },
+        {
+          "title": "OPFS integrado: fallo de segundo archivo, recuperación y borrado",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6480,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:39:39.028Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "41a9034ffaaff0acdbbb-bbe6994f36da4d5a2bf0",
+          "file": "storage.spec.mjs",
+          "line": 4,
+          "column": 38
+        },
+        {
+          "title": "Bitácora conserva snapshot, no inventa movimiento y escapa nombres de archivo",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3614,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:39:45.528Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "41a9034ffaaff0acdbbb-df93261ca1419a9d2ff7",
+          "file": "storage.spec.mjs",
+          "line": 26,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "t01.spec.mjs",
+      "file": "t01.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "T01 independiente: cambiar demo invalida informe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1313,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:39:49.174Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c9b6c2fa4be684cc3ed1-d31229963d6782f31e2a",
+          "file": "t01.spec.mjs",
+          "line": 9,
+          "column": 39
+        },
+        {
+          "title": "T01 integrado: cambiar demo invalida informe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3273,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:39:50.510Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c9b6c2fa4be684cc3ed1-a91268b3298f8955f15e",
+          "file": "t01.spec.mjs",
+          "line": 9,
+          "column": 39
+        },
+        {
+          "title": "T01 independiente: A/A→demo A/B, export y diagnóstico",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2654,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:39:53.801Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c9b6c2fa4be684cc3ed1-1aa77757cdb5dc8a5dd1",
+          "file": "t01.spec.mjs",
+          "line": 18,
+          "column": 38
+        },
+        {
+          "title": "T01 integrado: A/A→demo A/B, export y diagnóstico",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4799,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:39:56.475Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c9b6c2fa4be684cc3ed1-dc9f924ba1081b89063e",
+          "file": "t01.spec.mjs",
+          "line": 18,
+          "column": 38
+        }
+      ]
+    },
+    {
+      "title": "wasm.spec.mjs",
+      "file": "wasm.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "WASM Worker /: carga real, identidad y fallback",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1981,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:40:01.313Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d56206561e218ea8f657-d763367b2437445ae809",
+          "file": "wasm.spec.mjs",
+          "line": 7,
+          "column": 34
+        },
+        {
+          "title": "WASM Worker /skyo/: carga real, identidad y fallback",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2139,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:40:03.312Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d56206561e218ea8f657-408cdf3e03b14c4d0387",
+          "file": "wasm.spec.mjs",
+          "line": 7,
+          "column": 34
+        },
+        {
+          "title": "WASM corrupto o que lanza excepción conserva fallback explícito",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2290,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:40:05.471Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d56206561e218ea8f657-afbce537f226bc538619",
+          "file": "wasm.spec.mjs",
+          "line": 18,
+          "column": 1
+        },
+        {
+          "title": "WASM y JavaScript: benchmark de kernel en Worker Chromium",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2024,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-15T15:40:07.783Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d56206561e218ea8f657-b9c39f37be7147c8c890",
+          "file": "wasm.spec.mjs",
+          "line": 29,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-15T15:36:20.190Z",
+    "duration": 229864.688,
+    "expected": 43,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

@@ -16,7 +16,7 @@ function quantiles(data,valid){
   }
   return [percentile(sample,.02),percentile(sample,.995)];
 }
-export function imageRgba(data,width,height,valid=null,{kind='science'}={}) {
+export function imageRgba(data,width,height,valid=null,{kind='science',contrast=1}={}) {
   if(data.length!==width*height)throw new Error('Tamanos incompatibles de render');
   const rgba=new Uint8ClampedArray(width*height*4);
   let [lo,hi]=quantiles(data,valid);
@@ -39,7 +39,7 @@ export function imageRgba(data,width,height,valid=null,{kind='science'}={}) {
       const color=z>=0?pos:neg;
       for(let k=0;k<3;k++)rgba[j+k]=base[k]+mag*(color[k]-base[k]);
     }else{
-      const t=clamp((data[i]-lo)/span,0,1);
+      const t=clamp((data[i]-lo)/span,0,1)**(1/contrast);
       const g=Math.round(255*Math.asinh(10*t)/Math.asinh(10));
       rgba[j]=g;rgba[j+1]=g;rgba[j+2]=g;
     }

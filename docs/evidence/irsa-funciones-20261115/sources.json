@@ -1,0 +1,127 @@
+{
+  "method": "Official documentation read and compared against local code; HTTP retrieval receipts; no interactive UI validation or remote jobs.",
+  "sources": [
+    {
+      "page": "searching.html",
+      "url": "https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/searching.html",
+      "status": 200,
+      "bytes": 16323,
+      "sha256": "d9c43af64b834965ba14510026a0347e18040055a34f88a22f504291b06cb5ef",
+      "retrievedUtc": "2026-11-15T17:23:25.697723+00:00"
+    },
+    {
+      "page": "visualization.html",
+      "url": "https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/visualization.html",
+      "status": 200,
+      "bytes": 87130,
+      "sha256": "ce2f5c0a9d47a03dd4c053d11e2bb94314ea13d5c8d0ec9c4e00bd8c7a843b3e",
+      "retrievedUtc": "2026-11-15T17:23:25.986862+00:00"
+    },
+    {
+      "page": "results.html",
+      "url": "https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/results.html",
+      "status": 200,
+      "bytes": 10598,
+      "sha256": "750304df46c5df286bd73ea1cd267b4ecad6e8c3dc37a4ea176c8cfc12b92897",
+      "retrievedUtc": "2026-11-15T17:23:25.515913+00:00"
+    },
+    {
+      "page": "tables.html",
+      "url": "https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/tables.html",
+      "status": 200,
+      "bytes": 32549,
+      "sha256": "3865407bb5b0efba34edac5567137a61c5abf7ef4c33b0045f848b9254ea0b85",
+      "retrievedUtc": "2026-11-15T17:23:25.684264+00:00"
+    },
+    {
+      "page": "catalogs.html",
+      "url": "https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/catalogs.html",
+      "status": 200,
+      "bytes": 21747,
+      "sha256": "6d59937d8a9fb0362017eb1e29a856463789078c6dc9c4ee579831e26eb4afd4",
+      "retrievedUtc": "2026-11-15T17:23:26.200121+00:00"
+    },
+    {
+      "page": "plots.html",
+      "url": "https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/plots.html",
+      "status": 200,
+      "bytes": 34807,
+      "sha256": "958d0bdf0c5a9f51fe7026933e84426c84ae49fce4532c2e78eea3f48df286a7",
+      "retrievedUtc": "2026-11-15T17:23:26.368468+00:00"
+    },
+    {
+      "page": "spectra.html",
+      "url": "https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/spectra.html",
+      "status": 200,
+      "bytes": 8219,
+      "sha256": "1dd2376f8557468bfa7070cdcfb77ecdc79ae1f5168d095270a1fb93feae2fc5",
+      "retrievedUtc": "2026-11-15T17:23:26.205344+00:00"
+    },
+    {
+      "page": "downloads.html",
+      "url": "https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/downloads.html",
+      "status": 200,
+      "bytes": 14868,
+      "sha256": "81f5c7369faccee1cf1ea0de65e24420dfbe8710166050dc49ce86f26aeb54ed",
+      "retrievedUtc": "2026-11-15T17:23:26.653656+00:00"
+    },
+    {
+      "page": "sp.html",
+      "url": "https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/sp.html",
+      "status": 200,
+      "bytes": 59130,
+      "sha256": "c65a1e94b251234500c3d2fc6fa081182b42aad7d42d6cc7c10be71c1fa71032",
+      "retrievedUtc": "2026-11-15T17:23:27.129801+00:00"
+    },
+    {
+      "page": "mosaic.html",
+      "url": "https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/mosaic.html",
+      "status": 200,
+      "bytes": 16207,
+      "sha256": "78804b6cf6d0483fa268b166d72c9729d305de5d1970f1f1696c117d76903e17",
+      "retrievedUtc": "2026-11-15T17:23:26.873063+00:00"
+    },
+    {
+      "url": "https://irsa.ipac.caltech.edu/applications/spherex/",
+      "status": 200,
+      "bytes": 1591,
+      "sha256": "7dd4273b122bdc46fad462e91eb89fe227bf007052bc0c3d6bd1ed4da8827cb4",
+      "retrievedUtc": "2026-11-15T17:31:58.307469+00:00"
+    },
+    {
+      "url": "https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/upload.html",
+      "status": 200,
+      "bytes": 13222,
+      "sha256": "0b484cdf5c6f3d0d4aad398d28542c3fb38611f4d95a542ba1319f69660bb785",
+      "retrievedUtc": "2026-11-15T17:31:58.682783+00:00"
+    },
+    {
+      "url": "https://irsa.ipac.caltech.edu/onlinehelp/spherex/spherex/othersearches.html",
+      "status": 200,
+      "bytes": 29126,
+      "sha256": "c71c60e78dfae9db13ddd2517228c6f1eeeb1da725da1534037ab2d4d5d63ae3",
+      "retrievedUtc": "2026-11-15T17:31:58.777271+00:00"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Caltech-IPAC/firefly/dev/docs/firefly-api-overview.md",
+      "status": 200,
+      "bytes": 30154,
+      "sha256": "14e3ab692120d197bd205b0a7ba5e366affe8d7e463bce23dba4cc8abdb60596",
+      "retrievedUtc": "2026-11-15T17:31:58.025644+00:00"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Caltech-IPAC/firefly/dev/README.md",
+      "status": 200,
+      "bytes": 7511,
+      "sha256": "b9359e2417dd4cbd047700b183767613697fce888b531dd404477094811122e8",
+      "retrievedUtc": "2026-11-15T17:31:58.239468+00:00"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/Caltech-IPAC/firefly/dev/docs/firefly-docker.md",
+      "status": 200,
+      "bytes": 1448,
+      "sha256": "078012dd70c80010110075bb39668635a4763d94e2a9e0489261d21865361466",
+      "retrievedUtc": "2026-11-15T17:31:58.456919+00:00"
+    }
+  ]
+}

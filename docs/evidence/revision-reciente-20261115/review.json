@@ -1,0 +1,43 @@
+{
+  "actor": "codex",
+  "project": "skyo",
+  "createdUtc": "2026-11-15T17:19:06.667433+00:00",
+  "head": "156961afd1fd51390bb5e6a0e793d35d6773a6ab",
+  "remote": "dd0b317266f5210fbb726942b444459ce8bb3616",
+  "scope": "Revisión de nuevas vistas FPA/inmersivo, L2 y consulta por clic; sin modificar producto",
+  "tests": {
+    "nodePassed": 58,
+    "nodeFailed": 0,
+    "build": "passed",
+    "validateBuild": "passed",
+    "validateDocs": "passed"
+  },
+  "findings": [
+    {
+      "priority": "P2",
+      "file": "assets/js/immersive/main.js",
+      "line": 88,
+      "title": "Cambio de canal antes de inicialización rompe y desincroniza selección/render",
+      "evidence": "Control habilitado con manifiesto retrasado: TypeError setChannel; selector63 base0 vs motor62 base0 después de inicializar"
+    },
+    {
+      "priority": "P2",
+      "file": "assets/js/immersive/controls.js",
+      "line": 20,
+      "title": "Fin de pellizco dispara selección con último dedo estacionario",
+      "evidence": "Dos pointerdown, mover primer dedo para zoom, soltar primero y luego segundo: onSelect(300,300) invocado"
+    }
+  ],
+  "files": {
+    "assets/js/immersive/main.js": "fd0b0d3bfcc3bd4ab506b3fe8737c4f65b94297a975f9a9ae6c015a893b57daa",
+    "assets/js/immersive/controls.js": "1345e5ec052df77800d9163bf0df5f80fc197483d2ea1465009f0169fd769cb5",
+    "assets/js/immersive/detail.js": "cbac78221161357244e2714c3216456520c0a0f7baad3150cc16aac0949805eb",
+    "assets/js/immersive/detail-worker.js": "69cfc7d7042dc83f96a27702033cabbcab037e904f90e83b8bd045ee72c3d7e2",
+    "assets/js/immersive/inspector.js": "3acbee66b0231698cc48bf746b21654638cc8aea9724f7f00277b0d2e19e879c",
+    "assets/js/immersive/hips.js": "538bef86ad5e58751f2ca98c0ef8c4a0fd86490f187da3dd8c6e503f73f77081",
+    "assets/js/fpa.js": "b032d83a78ba19387a6312394265b90261d8c37382556ac47de6f723480e79bc",
+    "assets/js/science/fpa-worker.js": "27a4975c5411c40d89e1af0a19a2c6e0b380a4e33f30db81a981a51994a999ad",
+    "package.json": "a31fe6ad83928f58746b9d749c8e1f1665ce60d24fdf4ed97d2dfe8e46a96abf",
+    "vite.config.mjs": "a78f09048fa20d162a291eec98f5315f7b5c389df6ca2ac13d196352886fa641"
+  }
+}

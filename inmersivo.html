@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SKYO · Dentro del cielo</title></head>
+<body>
+  <canvas id="sky" tabindex="0" aria-label="Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver."></canvas>
+  <header><div><a href="index.html#explorar" target="_top">SKYO</a><span class="eyebrow">SPHEREx / CIELO INMERSIVO</span></div><nav aria-label="Herramientas científicas"><a href="lab.html" target="_top">Laboratorio FITS</a><a href="espectral.html">Archivo e inspector FITS</a><a href="inmersivo.html" target="_top">Abrir a pantalla completa</a></nav></header>
+  <main>
+    <section class="hud glass" aria-label="Datos bajo la retícula">
+      <h1>Dentro del cielo</h1><p class="source">Imágenes reales NASA / IPAC / IRSA</p>
+      <p id="position" aria-live="off">ICRS · RA — · Dec —</p><p id="wave">Longitud de onda —</p><p id="epoch">Mosaico multiepochas; no es una exposición única.</p><p id="flux">Flujo: pendiente de lectura FITS</p>
+      <p id="status" role="status">Cargando panorama SPHEREx…</p>
+      <p id="detail-status" role="status">Acércate a menos de 1.25° para cargar una observación original.</p>
+      <button id="read" type="button">Leer flujo y detalle FITS</button><button id="origin" type="button">Volver al origen</button>
+      <button id="inspect" type="button">Consultar punto bajo la retícula</button>
+      <details><summary>Controles y procedencia</summary><p>Arrastra para mirar · W/A/S/D o flechas para volar · Q/E para subir/bajar · Mayús para acelerar · rueda/pellizco para zoom · clic para seleccionar.</p><p>Esfera de visualización con radio constante. El vuelo y la profundidad son ilustrativos: no representan distancias ni un nuevo punto de observación astronómica.</p><p>PNG HiPS para apariencia. El flujo se lee del plano IMAGE FITS, sin máscara de calidad; es exploratorio. Los canales50/51 (base0) no contienen datos.</p><a href="https://caltech-ipac.github.io/irsa-tutorials/spherex-hipscube/" target="_blank" rel="noopener">Fuente y límites del mosaico ↗</a><p id="provenance"></p><a id="fits-source" hidden target="_blank" rel="noopener">Cubo FITS original (archivo grande) ↗</a><button id="export" type="button">Guardar selección y procedencia</button></details>
+    </section>
+    <div class="reticle" aria-hidden="true">＋</div>
+    <div id="selection-marker" aria-hidden="true" hidden>⊕</div>
+    <section id="selection-panel" class="glass selection" aria-labelledby="selection-title" hidden>
+      <div class="selection-heading"><h2 id="selection-title">Punto seleccionado</h2><button id="selection-close" type="button" aria-label="Cerrar datos del punto">×</button></div>
+      <p id="selection-status" role="status"></p><dl id="selection-data"></dl>
+      <a id="selection-source" target="_blank" rel="noopener" hidden>Abrir FITS original ↗</a>
+      <div class="selection-buttons"><button id="selection-copy" type="button">Copiar coordenadas</button><button id="selection-save" type="button">Guardar datos del punto</button></div>
+      <p>Selección fija al clic. El mosaico y la observación L2 tienen procedencias distintas; lectura exploratoria.</p>
+    </section>
+    <section class="actions glass" aria-label="Navegación"><button id="vr" type="button" disabled>Comprobando VR…</button><button id="gyro" type="button" aria-pressed="false">Activar giroscopio</button><button id="fly" type="button" aria-pressed="false">Volar hacia delante</button><button id="mouse" type="button">Capturar ratón</button><p id="xr-status" role="status"></p></section>
+    <section class="spectrum glass" aria-label="Canales espectrales"><div class="channel-row"><button id="previous" type="button" aria-label="Canal anterior">−</button><label for="channel">Canal <output id="channel-label">63/102</output></label><button id="next" type="button" aria-label="Canal siguiente">+</button><button id="retry" type="button">Reintentar cielo</button></div><input id="channel" type="range" min="0" max="101" step="1" value="62" aria-label="Canal espectral SPHEREx"><p id="channel-preview">D1 — D2 — D3 — D4 — D5 — D6 · 0.753–4.988 µm</p></section>
+    <section class="updates glass"><details><summary id="updates-title">Publicaciones IRSA</summary><p>Consulta al abrir y cada10min mientras la vista esté visible. Las nuevas observaciones se consultan por posición y detector.</p><button id="refresh" type="button">Consultar publicaciones ahora</button><button id="apply-mosaic" type="button" hidden>Aplicar nuevo mosaico</button><p id="updates-status" role="status"></p><div id="observations"></div></details></section>
+  </main>
+  <script src="assets/js/vendor/three.min.js"></script><script type="module" src="assets/js/immersive/main.js"></script>
+</body></html>

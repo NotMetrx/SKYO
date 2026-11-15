@@ -1,0 +1,9 @@
+.WARNING: FITSFixedWarning: 'datfix' made the change 'Set MJD-OBS to 60805.711548 from DATE-OBS.
+Set DATE-AVG to '2025-05-10T17:05:35.300' from MJD-AVG'. [astropy.wcs.wcs]
+.WARNING: FITSFixedWarning: 'datfix' made the change 'Set MJD-OBS to 60805.711548 from DATE-OBS.
+Set DATE-AVG to '2025-05-10T17:05:35.300' from MJD-AVG'. [astropy.wcs.wcs]
+....
+----------------------------------------------------------------------
+Ran 6 tests in 2.110s
+
+OK

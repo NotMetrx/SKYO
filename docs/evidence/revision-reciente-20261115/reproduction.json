@@ -1,0 +1,23 @@
+{
+  "pinch": {
+    "unexpectedSelections": [
+      [
+        300,
+        300
+      ]
+    ]
+  },
+  "earlyChannel": {
+    "errors": [
+      "Cannot read properties of undefined (reading 'setChannel')"
+    ],
+    "nextEnabled": true,
+    "channelBeforeManifest": "63",
+    "afterManifest": {
+      "controlChannel": "63",
+      "renderedChannel": "62",
+      "label": "64/102",
+      "status": "12/12 base · detalle 0/20 (orden 1) · esperando verificar edición HiPS · 0 pendientes"
+    }
+  }
+}

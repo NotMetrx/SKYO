@@ -1,0 +1,39 @@
+
+> skyo@2.1.0 test:science-gaps
+> node scripts/science-regressions.test.mjs
+
+✖ mascara FLAGS conserva bits altos y BZERO 2^31 sin Float32 (20.497285ms)
+✔ propagacion de varianza bilineal emplea pesos cuadrados (492.79222ms)
+✖ plano robusto corrige fondo espacial sintético (9.678927ms)
+✖ comparacion explora resta de ZODI y declara modelo de fondo (467.493042ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 1
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1050.421874
+
+✖ failing tests:
+
+test at scripts/science-regressions.test.mjs:12:1
+✖ mascara FLAGS conserva bits altos y BZERO 2^31 sin Float32 (20.497285ms)
+  TypeError: decodeFlags32 is not a function
+      at TestContext.<anonymous> (file:///home/metrx/Proyectos/SKYO/scripts/science-regressions.test.mjs:19:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at scripts/science-regressions.test.mjs:40:1
+✖ plano robusto corrige fondo espacial sintético (9.678927ms)
+  TypeError: robustBackgroundPlane is not a function
+      at TestContext.<anonymous> (file:///home/metrx/Proyectos/SKYO/scripts/science-regressions.test.mjs:48:13)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+
+test at scripts/science-regressions.test.mjs:55:1
+✖ comparacion explora resta de ZODI y declara modelo de fondo (467.493042ms)
+  TypeError: Cannot read properties of undefined (reading 'zodiApplied')
+      at TestContext.<anonymous> (file:///home/metrx/Proyectos/SKYO/scripts/science-regressions.test.mjs:58:34)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7)

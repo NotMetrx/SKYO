@@ -1,0 +1,7 @@
+{
+  "cases": 5,
+  "includesRealNasaRegions": 2,
+  "maxAbsoluteError": 0,
+  "nanMaskAgreement": true,
+  "kernelSha256": "c61e0668dea746c4ddaacbbc9e7923c7faa1f7411994c6054d4c89ee3bf2cac2"
+}
