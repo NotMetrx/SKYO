@@ -436,6 +436,7 @@ function buildEclipsePortal() {
         for (const clip of clips) eclipseMixer.clipAction(clip).play();
       }
       eclipseRig.add(model);
+      document.querySelector('#inicio .eclipse-o')?.classList.add('eclipse-ready');
       updateEclipseSlotRect();
       eclipseRig.visible = activeRoute === 'inicio' || eclipsePhase === 'transition';
       if (eclipseRig.visible) wakeLoop();
