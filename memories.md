@@ -53,9 +53,36 @@ Cada cambio se apunta aquí con fecha. Complementa a `history.md` (lo imprescind
 
 ## 2026-11-14 — Paleta de colores
 - Nuevo `docs/PALETA.md`: documenta tokens `:root` de `main.css` (base, acentos `--ac`/`--ac2`/`--ok`, líneas, Liquid Glass, wordmark) y contraste WCAG.
+
+### Historial recibido de origin/main (hasta 9022f46)
+
 - 2026-11-14 — Acento naranja → morado `#b57bff` (`--ac2`) en CSS, SVG, cosmos3d, explorar, data, lab.css. Se conservan colores físicos (Sol, Betelgeuse, Antares, estrellas cálidas). Nuevo `docs/LAYOUT.md` (maqueta por vista). Previews actualizadas.
 - 2026-11-14 — Eclipse 3D de Blender (`assets/models/eclipse.glb`, `assets/js/glb-lite.js`) reemplaza el SVG en la `O` de `SKYO`, reproduce los 5 clips de animación keyframeada en Blender vía `THREE.AnimationMixer` (`sculpted crater moon + astrolabe gimbal + purple arc + corona + diamond flare`), acompaña el salto `Enter`/`Espacio` hacia `#explorar` volando hacia la cámara y se oculta al finalizar (`eclipseRig.visible = false`). Bóveda Celeste (`#explorar`) simplificada sin `#modebar`, `#scale-pill`, `#stage-tabs` ni `#meses`; `sw.js` actualizado a `skyo-v2.2.0`.
 - 2026-11-14 — Sistema unificado de estados UI (`assets/css/states.css`, `assets/js/ui-states.js`) con temática orbital Liquid Glass y WCAG 2.2 (`role="status"` / `role="alert"`, iconos propios, acciones de recuperación, `prefers-reduced-motion`) integrado en `#inicio`/`cosmos3d.js`, Bitácora, Bóveda/Colección (`explorar.js`), Laboratorio FITS (`science-lab-ui.js`) y `lab.html` (`science/lab.js`).
 - 2026-11-14 — Bóveda Celeste 3D modelada en Blender (`assets/models/boveda.glb`, 534 KB, 23 380 triángulos): incluye `Boveda_Astrolabe_Rig`, `Boveda_Healpix_Dome`, `Boveda_Detector_Bezel` + `Boveda_Detector_Guides`, `Boveda_Asteroid_SPX26`, `Boveda_Asteroid_Confirmado`, `Boveda_Comet` + `Boveda_Comet_Tail` y `Boveda_Star_Anchor` con materiales PBR alineados a `docs/PALETA.md`. Integrado en `assets/js/cosmos3d.js` (`getBovedaModelState()`, iluminación PBR de 3 puntos en `explorarGroup`, rotación tumbling de asteroides, sincronización con bandas IR/Blink/Comparar/filtros y reposo Ponytail con `0 rAF/s` cuando la cámara está estable y bajo `prefers-reduced-motion`) y añadido a `sw.js`. Verificado con `npm test` (8/8) y E2E Playwright (`0` errores de consola/WebGL, `0 rAF/s` en reposo).
 - 2026-11-14 — Avatar H.E.R.A 7 personalizable: retirado avatar fijo `assets/img/hera.webp`; habilitada ranura de subida de avatar propio (`#avatar-input`, `<input type="file" accept="image/*">`, tamaño máx 5MB) con botón de reseteo (`#avatar-reset-btn`), placeholder SVG Liquid Glass ("Subir avatar"), persistencia en `localStorage` (`skyo_custom_avatar`), sincronización con `hera3d.js` y fallback seguro en `explorar.js`.
 - 2026-11-14 — Investigación de Sofía y propuesta de fusión de paneles: diagnóstico de fragmentación (Bóveda oculta al cambiar de pestaña, duplicidad de `lab.html`, Colección redundante de 14 tarjetas, Sistema Solar `#3d` desconectado de SPHEREx). Propuesta funcional: "Estación de Observación y Análisis" con Bóveda 3D continua, Catálogo como Rail lateral táctico, Laboratorio FITS como Drawer contextual deslizante precargado con el objeto seleccionado y Bitácora certificadora (Triángulo de Descubrimiento SPHEREx).
+
+### Ajustes locales anteriores a la integración
+
+- 2026-11-14 — Paleta de campaña: Obsidian Black `#07070A`, Chrome Silver `#C9CED6`/`#E6E8EC`, Laser Crimson `#E11D48` y Sky Blue `#7CC8FF` en CSS, SVG, cosmos3d, explorar, data y lab.css. Se conservan colores físicos (Sol, Betelgeuse, Antares, estrellas cálidas). Nuevo `docs/LAYOUT.md` (maqueta por vista). Previews actualizadas.
+- 2026-11-14 — Eclipse 3D de Blender (`assets/models/eclipse.glb`, `assets/js/glb-lite.js`) reemplaza el SVG en la `O` de `SKYO`, reproduce los 5 clips de animación keyframeada en Blender vía `THREE.AnimationMixer` (`sculpted crater moon + astrolabe gimbal + crimson arc + corona + diamond flare`), acompaña el salto `Enter`/`Espacio` hacia `#explorar` volando hacia la cámara y se oculta al finalizar (`eclipseRig.visible = false`). Bóveda Celeste (`#explorar`) simplificada sin `#modebar`, `#scale-pill`, `#stage-tabs` ni `#meses`; `sw.js` actualizado a `skyo-v2.2.0`.
+
+
+
+## 2026-11-14 — Integración remota con respaldo y delegación
+
+- `main` actualizado por fast-forward `4ee3f74` → `9022f46`; tres commits
+  recibidos, sin nuevo commit ni push de los cambios locales.
+- Respaldo externo íntegro y verificado en
+  `/home/metrx/Proyectos/SKYO-backups/integracion-9022f46-20261115T032838Z/`:
+  193 rutas, índice, parches binarios y bundle; stash nuevo `6aa80315` y anterior
+  `8df0722` conservados. Originales FITS y artefactos WASM recuperados.
+- Reaplicar el stash produjo 12 conflictos. Se reparten por propietario entre
+  integrador Git/documentos, resolutor frontend y resolutor científico/Explorar.
+  OpenCode agotó cuota (429) sin propuestas; se reasignaron sus archivos al
+  resolutor científico. Agy revisa refs sin modificarlas.
+- Se conservan los registros históricos recibidos y los ajustes locales de paleta;
+  la paleta normativa vigente es `docs/PALETA.md`, no las anotaciones antiguas.
+- Resolución y revisión en curso; no se atribuyen pruebas anteriores a la fusión.
+  Recibos: `docs/evidence/integracion-9022f46/`. Ciencia T08 sin aceptación.

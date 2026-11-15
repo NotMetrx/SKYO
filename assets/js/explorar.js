@@ -17,11 +17,13 @@ import {
 import { updateExploreState } from './cosmos3d.js';
 import { initScienceLab } from './science-lab-ui.js';
 import { renderState, clearState } from './ui-states.js';
+import { playUiCue } from './sound.js';
+import { triggerKryoGesture } from './hera3d.js';
 
 const STORAGE_KEY = 'skyo_bitacora_v1';
 
 let initialized = false;
-let currentSubView = 'boveda';
+let currentSubView = 'espectral';
 let collectionFilter = 'all';
 let activeFilter = 'Todos';
 let currentEpoch = 0;
@@ -143,12 +145,12 @@ function renderThumbnail(index) {
   tCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   const isIRLong = currentBand === 1;
-  tCtx.fillStyle = '#000000';
+  tCtx.fillStyle = '#07070a';
   tCtx.fillRect(0, 0, w, h);
 
   // Tinte sutil de banda infrarroja SPHEREx sobre el recorte 0.05°
   const glow = tCtx.createRadialGradient(w * 0.56, h * 0.48, 4, w * 0.56, h * 0.48, w * 0.6);
-  glow.addColorStop(0, isIRLong ? 'rgba(181, 123, 255, 0.18)' : 'rgba(91, 184, 255, 0.18)');
+  glow.addColorStop(0, isIRLong ? 'rgba(225, 29, 72, 0.18)' : 'rgba(124, 200, 255, 0.18)');
   glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
   tCtx.fillStyle = glow;
   tCtx.fillRect(0, 0, w, h);
@@ -156,12 +158,12 @@ function renderThumbnail(index) {
   // Estrellas de calibración ICRS fijas
   const R = rng(index + 3);
   for (let k = 0; k < 64; k++) {
-    tCtx.fillStyle = `rgba(238, 243, 255, ${(0.24 + R() * 0.68).toFixed(2)})`;
+    tCtx.fillStyle = `rgba(230, 232, 236, ${(0.24 + R() * 0.68).toFixed(2)})`;
     tCtx.fillRect(R() * w, R() * h, 1.4, 1.4);
   }
 
   // Retícula ICRS del recorte
-  tCtx.strokeStyle = isIRLong ? 'rgba(181, 123, 255, 0.22)' : 'rgba(91, 184, 255, 0.22)';
+  tCtx.strokeStyle = isIRLong ? 'rgba(225, 29, 72, 0.22)' : 'rgba(124, 200, 255, 0.22)';
   tCtx.lineWidth = 1;
   tCtx.beginPath();
   tCtx.moveTo(0, h * 0.5);
@@ -180,7 +182,7 @@ function renderThumbnail(index) {
   const y1 = y0 - (o[8] > 0 ? Math.min(16, elapsed * 0.65) : 0);
 
   if (shiftX > 1) {
-    tCtx.strokeStyle = '#b57bff';
+    tCtx.strokeStyle = '#e11d48';
     tCtx.lineWidth = 1.6;
     tCtx.setLineDash([3, 3]);
     tCtx.beginPath();
@@ -189,7 +191,7 @@ function renderThumbnail(index) {
     tCtx.stroke();
     tCtx.setLineDash([]);
 
-    tCtx.fillStyle = '#b57bff';
+    tCtx.fillStyle = '#e11d48';
     tCtx.beginPath();
     tCtx.arc(x0, y0, 2.8, 0, 6.283);
     tCtx.fill();
@@ -199,7 +201,7 @@ function renderThumbnail(index) {
 
   // Telemetría compacta sobre el recorte para respaldo visual en Bitácora
   const arcsec = o[8] > 0 ? Math.round(o[8] * elapsed * 180) : 0;
-  tCtx.fillStyle = 'rgba(238, 243, 255, 0.72)';
+  tCtx.fillStyle = 'rgba(230, 232, 236, 0.72)';
   tCtx.font = '10px "Space Mono", monospace';
   tCtx.fillText(`${BANDAS[currentBand].id.toUpperCase()} · Δθ ${arcsec}"`, 14, h - 13);
 }
@@ -213,17 +215,17 @@ function updateSelectedMovementText(o) {
     if (elapsed === 0) {
       mvEl.textContent = currentMode === 'vuelo'
         ? 'Posición inicial. Usa «Parpadear épocas» o avanza de época abajo para ver si viajó.'
-        : 'Referencia base (Época 1 · Mes 1). Usa Blink o avanza de época para medir Δθ.';
+        : 'Referencia simulada (Época 1 · Mes 1). Usa Blink o avanza de época para explorar Δθ.';
     } else if (currentMode === 'vuelo') {
       mvEl.textContent = `Se movió respecto al primer barrido tras ${elapsed} meses.`;
     } else if (currentMode === 'cientifico') {
-      mvEl.textContent = `Δθ ≈ ${arcsec}" (umbral > 2") · ${formatICRS(o, elapsed)} · ${BANDAS[currentBand].range}.`;
+      mvEl.textContent = `Δθ ilustrativo ≈ ${arcsec}" (sin umbral de detección) · ${formatICRS(o, elapsed)} · ${BANDAS[currentBand].range}.`;
     } else {
       mvEl.textContent = `Desplazamiento desde Época 1: ~${arcsec}" en ${elapsed} meses · ${formatICRS(o, elapsed)}.`;
     }
   } else {
     mvEl.textContent = currentMode === 'cientifico'
-      ? `Estrella de referencia ICRS fija · ${formatICRS(o, 0)} (calibración WCS).`
+      ? `Referencia ilustrativa ICRS fija · ${formatICRS(o, 0)} (sin calibración medida).`
       : 'Estrella fija de fondo (ancla de referencia ICRS entre épocas).';
   }
 }
@@ -261,10 +263,19 @@ function evaluateMission(loggedNow = false) {
   if (passed) {
     completedMissions.add(m.id);
     renderMissionBar();
+    playUiCue('mission');
+    triggerKryoGesture('Found_PlanetX', { duration: 1.75 });
     if (typeof onHeraSpeak === 'function') {
       onHeraSpeak(m.closure, true);
     }
   }
+}
+
+function evaluateMissionTransition() {
+  const missionId = MISIONES_HERA[missionIndex]?.id;
+  const prevDone = completedMissions.has(missionId);
+  evaluateMission(false);
+  return !prevDone && completedMissions.has(missionId);
 }
 
 function renderBitacora() {
@@ -284,7 +295,7 @@ function renderBitacora() {
     renderState(listEl, {
       state: 'empty',
       title: 'Bitácora sin capturas',
-      detail: 'Toca una fuente celeste en el plano focal y pulsa «Registrar en bitácora» para archivar evidencia.',
+      detail: 'Registra una ilustración educativa del plano focal o una comparación exploratoria del laboratorio FITS.',
       actionLabel: 'Ir al Plano Focal',
       onAction: () => {
         toggleBitacoraPanel(false);
@@ -306,14 +317,11 @@ function renderBitacora() {
 
     const meta = document.createElement('div');
     meta.className = 'bit-meta';
-    meta.innerHTML = `
-      <div class="bit-row">
-        <strong>${item.name}</strong>
-        <span class="tg ${item.status === 'Candidato' ? 'cand' : 'st'}">${item.status}</span>
-      </div>
-      <div class="bit-tech">Δθ ≈ ${item.deltaArcsec}" · ${item.bandLabel} · ${item.epochLabel}</div>
-      <div class="bit-coords">${item.icrsLabel}</div>
-    `;
+    meta.innerHTML = '<div class="bit-row"><strong></strong><span class="tg"></span></div><div class="bit-tech"></div><div class="bit-coords"></div>';
+    meta.querySelector('strong').textContent=item.name;
+    const status=meta.querySelector('.tg');status.textContent=item.status;status.classList.add(item.status==='Candidato'?'cand':'st');
+    meta.querySelector('.bit-tech').textContent=`${item.deltaArcsec==null?'Movimiento no medido':`Δθ ilustrativo ≈ ${item.deltaArcsec}\"`} · ${item.bandLabel} · ${item.epochLabel}`;
+    meta.querySelector('.bit-coords').textContent=item.icrsLabel;
 
     const del = document.createElement('button');
     del.type = 'button';
@@ -351,7 +359,10 @@ export function addExternalBitacoraEntry(entry) {
     status: entry.status,
     epochLabel: entry.epoch,
     bandLabel: 'WCS TAN-SIP',
-    deltaArcsec: '4.2',
+    deltaArcsec: null,
+    analysisId:entry.analysisId??null,
+    snapshot:entry.snapshot??null,
+    sourceKind:entry.sourceKind??'USER-LOCAL',
     icrsLabel: entry.coords,
     motionNote: entry.motion,
     thumbUrl: localStorage.getItem('skyo_custom_avatar') || 'icon.svg',
@@ -363,6 +374,17 @@ export function addExternalBitacoraEntry(entry) {
 
 export function setSubView(view) {
   currentSubView = view;
+  document.body.dataset.exploreView = view;
+  const spectralPanel = document.getElementById('view-espectral');
+  const spectralFrame = document.getElementById('spectral-frame');
+  spectralPanel.hidden = view !== 'espectral';
+  if(view === 'espectral' && spectralFrame.getAttribute('src') === 'about:blank')spectralFrame.src = 'inmersivo.html';
+  if(view !== 'espectral')spectralFrame.src = 'about:blank';
+  const contextFrame = document.getElementById('hips-frame');
+  const contextPanel = document.getElementById('view-contexto');
+  contextPanel.hidden = view !== 'contexto';
+  contextFrame.src = view === 'contexto' ? 'contexto.html' : 'about:blank';
+  document.dispatchEvent(new Event('skyo:subviewchange'));
   const bovedaHud = document.getElementById('boveda-hud');
   const tbar = document.getElementById('tbar');
   const hint = document.querySelector('#explorar .hint');
@@ -397,19 +419,20 @@ export function setSubView(view) {
       onHeraNotify: msg => onHeraSpeak?.(msg, false)
     });
     if (typeof onHeraSpeak === 'function') {
-      onHeraSpeak('Laboratorio FITS activo. Compara dos épocas con WCS TAN-SIP y máscaras FLAGS para detectar fuentes en movimiento.', false);
+      onHeraSpeak('Laboratorio FITS activo: compara recortes con máscaras y WCS. El resultado es exploratorio; consulta su procedencia y las limitaciones del informe.', false);
     }
-  } else if (view === 'coleccion') {
+  } else if (view === 'coleccion' || view === 'contexto' || view === 'espectral') {
     if (bovedaHud) bovedaHud.hidden = true;
     if (tbar) tbar.hidden = true;
     if (hint) hint.hidden = true;
     closeObjectInfo();
     if (viewLab) viewLab.hidden = true;
-    if (viewCol) viewCol.hidden = false;
+    if (viewCol) viewCol.hidden = view !== 'coleccion';
     if (cosmosCanvas) cosmosCanvas.style.opacity = '0.15';
-    renderCandidateCollection();
+    if(view === 'coleccion')renderCandidateCollection();
     if (typeof onHeraSpeak === 'function') {
-      onHeraSpeak('Colección científica: explora candidatos sin identificar y cuerpos confirmados por JPL con su desplazamiento observado.', false);
+      onHeraSpeak(view === 'espectral' ? 'Cielo inmersivo SPHEREx: mira alrededor, selecciona una longitud de onda y consulta el flujo real bajo la retícula. El vuelo es visual y no representa distancias astronómicas.' : view === 'contexto' ? 'Contexto HiPS: mosaico de referencia; no representa una época FITS ni valida cambios temporales.' : 'Colección educativa: posiciones y movimientos ilustrativos. No se ha realizado una consulta JPL/Gaia para estas fuentes.', false);
+      if(view === 'espectral')document.getElementById('hb')?.classList.remove('show');
     }
   }
 }
@@ -459,13 +482,13 @@ function renderCandidateCollection(filter = collectionFilter) {
       </div>
       <p class="col-desc-text">${o[5]}</p>
       <div class="col-meta-row">
-        <span><b>Desplazamiento:</b> ${o[8] > 0 ? (o[8] * 120).toFixed(1) + '" / época' : 'Deriva nula (ICRS fijo)'}</span>
+        <span><b>Desplazamiento ilustrativo:</b> ${o[8] > 0 ? (o[8] * 120).toFixed(1) + '" / época' : 'Deriva nula (ICRS fijo)'}</span>
         <span><b>Dato:</b> ${o[6]}</span>
         <span><b>Procedencia:</b> ${getObjectProvenance(o).label}</span>
       </div>
       <div class="col-actions-row">
         <button type="button" class="btn subtle-sm btn-focus-boveda" data-idx="${originalIdx}">◎ Ver en Plano Focal</button>
-        <button type="button" class="btn subtle-sm ok btn-analyze-lab" data-idx="${originalIdx}">🔬 Analizar FITS</button>
+        <button type="button" class="btn subtle-sm ok btn-analyze-lab" data-idx="${originalIdx}">🔬 Probar demo FITS</button>
       </div>
     `;
 
@@ -502,6 +525,7 @@ function registerCurrentCandidate() {
     id: `${Date.now()}-${selectedIndex}`,
     name: o[0],
     type: o[1],
+    sourceKind:'SYNTHETIC',
     status: o[7],
     bandId: band.id,
     bandLabel: band.label,
@@ -532,7 +556,7 @@ function registerCurrentCandidate() {
 function exportBitacoraJSON() {
   const payload = {
     proyecto: 'SKYO — Modo Aula',
-    atribucion: 'Datos ilustrativos · Ref. NASA/IPAC IRSA (SPHEREx) y JPL',
+    atribucion: 'Bitácora educativa y comparaciones exploratorias; procedencia indicada por registro. Referencias: NASA/IPAC IRSA y JPL.',
     exportadoEn: new Date().toISOString(),
     registros: bitacoraEntries.map(({ thumbUrl, ...rest }) => rest)
   };
@@ -597,11 +621,19 @@ export function selectObject(index) {
   updateExploreState({ selected: selectedIndex });
   renderQuickObjectRail();
 
-  const prevDone = completedMissions.has(MISIONES_HERA[missionIndex]?.id);
-  evaluateMission(false);
-  const completedNow = !prevDone && completedMissions.has(MISIONES_HERA[missionIndex]?.id);
-  if (!completedNow && typeof onHeraSpeak === 'function') {
-    onHeraSpeak(`${o[0]} (${o[7]}): ${o[5]}`);
+  const completedNow = evaluateMissionTransition();
+  if (!completedNow) {
+    const isCandidate = o[7] === 'Candidato';
+    playUiCue(isCandidate ? 'candidate' : 'select');
+    triggerKryoGesture(isCandidate ? 'Found_PlanetX' : 'Scan_Sky', {
+      duration: isCandidate ? 1.65 : 1.25
+    });
+    if (typeof onHeraSpeak === 'function') {
+      const note = isCandidate
+        ? `${o[0]} (Candidato sin cruce JPL): se desplaza entre pasadas de SPHEREx, pero requiere PSF y validación astrométrica antes de afirmar su naturaleza.`
+        : `${o[0]} (${o[7]}): ${o[5]}`;
+      onHeraSpeak(note);
+    }
   }
 }
 
@@ -772,7 +804,10 @@ function buildExplorarUI() {
       blinkMode = false;
       currentEpoch = Number(b.dataset.ep);
       syncUI();
-      evaluateMission(false);
+      if (!evaluateMissionTransition()) {
+        playUiCue('epoch');
+        triggerKryoGesture('Scan_Sky', { duration: 1.05 });
+      }
     };
   }
 
@@ -789,7 +824,14 @@ function buildExplorarUI() {
       if (!b) return;
       currentBand = Number(b.dataset.ba);
       syncUI();
-      evaluateMission(false);
+      if (!evaluateMissionTransition()) {
+        const bd = BANDAS[currentBand];
+        playUiCue(currentBand === 1 ? 'band_long' : 'band_short');
+        triggerKryoGesture('Scan_Sky', { duration: 1.4 });
+        if (window.innerWidth > 780 && typeof onHeraSpeak === 'function') {
+          onHeraSpeak(`Filtro SPHEREx en ${bd.label} (${bd.range}): ${bd.desc}`);
+        }
+      }
     };
   }
 
@@ -808,7 +850,13 @@ function buildExplorarUI() {
         }
       }
       syncUI();
-      evaluateMission(false);
+      if (!evaluateMissionTransition()) {
+        playUiCue('blink');
+        triggerKryoGesture('Scan_Sky', { duration: 1.4 });
+        if (blinkMode && window.innerWidth > 780 && typeof onHeraSpeak === 'function') {
+          onHeraSpeak('Parpadeo activo (Época 1 ⇄ 4): las estrellas lejanas permanecen quietas como ancla ICRS mientras los cuerpos cercanos saltan.');
+        }
+      }
     };
   }
 
@@ -818,7 +866,10 @@ function buildExplorarUI() {
       currentStage = 2;
       cmpBtn.setAttribute('aria-pressed', String(compareMode));
       syncUI();
-      evaluateMission(false);
+      if (!evaluateMissionTransition()) {
+        playUiCue('epoch');
+        triggerKryoGesture('Scan_Sky', { duration: 1.2 });
+      }
     };
   }
 
@@ -942,27 +993,53 @@ function buildExplorarUI() {
       if (selectedIndex >= 0 && typeof onHeraSpeak === 'function') {
         const o = OBJ[selectedIndex];
         const ep = EPOCAS[currentEpoch];
-        onHeraSpeak(`En ${ep.label}, ${o[0]} (${o[7]}): ${o[5]} ${o[6]}.`, true);
+        onHeraSpeak(`Ilustración educativa en ${ep.label}: ${o[0]} (${o[7]}). ${o[5]} ${o[6]}.`, true);
       }
     };
   }
 
   const hoverPill = document.getElementById('hover-pill');
+  let hoveredObjIdx = -1;
+  let hoveredDetSpec = null;
+  const syncHoverPill = () => {
+    if (!hoverPill) return;
+    if (hoveredObjIdx >= 0) {
+      hoverPill.textContent = `${OBJ[hoveredObjIdx][0]} · ${OBJ[hoveredObjIdx][1]}`;
+      hoverPill.classList.add('on');
+    } else if (hoveredDetSpec) {
+      hoverPill.textContent = `Detector ${hoveredDetSpec.label} · ${hoveredDetSpec.range} (${hoveredDetSpec.bandName})`;
+      hoverPill.classList.add('on');
+    } else {
+      hoverPill.classList.remove('on');
+    }
+  };
   updateExploreState({
     onSelect: idx => selectObject(idx),
     onHover: idx => {
-      if (!hoverPill) return;
-      if (idx >= 0) {
-        hoverPill.textContent = `${OBJ[idx][0]} · ${OBJ[idx][1]}`;
-        hoverPill.classList.add('on');
-      } else {
-        hoverPill.classList.remove('on');
-      }
+      hoveredObjIdx = idx;
+      syncHoverPill();
+    },
+    onDetectorHover: spec => {
+      hoveredDetSpec = spec;
+      syncHoverPill();
     },
     onBlinkTick: () => {
       if (!blinkMode) return;
       currentEpoch = currentEpoch === 0 ? 3 : 0;
       syncUI();
+    },
+    onBandSelect: (bandIdx, detNum) => {
+      if (bandIdx !== currentBand) {
+        currentBand = bandIdx;
+        syncUI();
+        if (!evaluateMissionTransition()) {
+          playUiCue(currentBand === 1 ? 'band_long' : 'band_short');
+          triggerKryoGesture('Scan_Sky', { duration: 1.4 });
+          if (typeof onHeraSpeak === 'function') {
+            onHeraSpeak(`Detector D${detNum} seleccionado · ${BANDAS[currentBand].label} (${BANDAS[currentBand].range}).`);
+          }
+        }
+      }
     }
   });
 

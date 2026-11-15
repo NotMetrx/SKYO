@@ -1,39 +1,205 @@
 # Memoria
 
+## Cielo inmersivo SPHEREx vigente — 2026-11-15
+
+- Transición L2 autorizada e implementada: zoom <1.25° busca recorte IBE de
+  0.25°, fundido hasta 0.5°, zoom mínimo 0.05°. Rust procesa IMAGE; WCS TAN/SIP
+  proyecta sin paralaje sobre radio1000, WCS-WAVE/FLAGS limita píxeles al canal.
+  HUD/export distinguen flujo/λ/UTC/OBSID/versión/hash nativos del mosaico.
+  Hasta seis candidatos; 32 MB/recorte, 64 MB/búsqueda, cancelación y panorama
+  ante error. VR retira L2 y conserva mosaico. Informe: `docs/TRANSICION_L2_20261115.md`.
+  Node 58/58; fixture original y muestras Astropy verificadas. IRSA en vivo:
+  TAP timeout35s e IBE503; no se declara transición remota exitosa en esta sesión.
+  Navegador 23/23 sin omitidas/reintentos (L2 raíz/subruta, retorno/cancelación,
+  visor previo, FPA, integración y Axe). Último ajuste solo aclara texto al alejar.
+  Repetición final L2 4/4 añade transición en `index.html#explorar` y desmontaje
+  al laboratorio: `docs/evidence/immersive-l2-20261115/browser-l2-last.json`.
+- Detalle/rendimiento corregidos: LOD adaptativo y geometría en Rust con fallback
+  JS, píxeles físicos sin cap 1.75, toda región visible hasta orden 5, ancestros
+  progresivos y cuatro descargas. Caché ±2 canales, cinco planos FITS; imagen
+  anterior rotulada mientras carga nueva, sin atribuirle flujo del nuevo canal.
+- Contraste Rust por umbrales exactos, mismos hashes RGBA/píxeles NASA. Medianas
+  repetidas ~3.4–3.8× mejores frente al artefacto previo; no equivalen a fps.
+  WASM vigente 112331 B, SHA256
+  `c61e0668dea746c4ddaacbbc9e7923c7faa1f7411994c6054d4c89ee3bf2cac2`.
+  Node 55/55, Rust 8/8; revisión independiente corrigió caché retenida y LOD
+  excesivo al mirar atrás. Caché 256 expulsable: footprint visible puede superar.
+  Navegador completo 44/45; única carrera del test gyro sincronizada con render
+  y repetida 3/3. Detalle/zoom/caché y demás regresiones pasaron. IRSA real DPR 2:
+  71/71 detalle, canvas 2880×1800, flujo idéntico y cero pageerror.
+  Recibos e informe: `docs/OPTIMIZACION_INMERSIVA_20261115.md`.
+- Usuario autorizó iniciar; Agy confirmó esfera de radio constante y profundidad
+  ilustrativa, HUD esencial, laboratorio/FPA auxiliares y PC/móvil/WebXR.
+- `inmersivo.html` integrado en Explorar: mirar 360°, vuelo visual, zoom,
+  ratón capturable, teclado, tacto y gyro calibrado. WebXR implementa cabeza,
+  mandos, HUD/retícula 3D y acciones dentro de sesión; hardware físico pendiente.
+- Entrada solicitada `http://localhost:4176/index.html#explorar`: pestaña
+  inmersiva seleccionada desde HTML y cielo de borde a borde, sin márgenes ni
+  marco. HUD, navegación y bitácora flotan; no hay cabecera SKYO duplicada ni
+  globo del asistente abierto automáticamente sobre los controles. Enlaces
+  científicos conservados en Controles y procedencia.
+- Validación de este ajuste: npm 53/53; navegador 4/4, raíz/subruta, cámara,
+  bitácora, salida/regreso de laboratorio y Axe. Viewport/canvas completos en
+  1440×900, 390×844, 320×740 y 768×1024; controles sin solapamientos comprobados.
+  Build/validadores pasan. Evidencia: `docs/evidence/immersive-20261115/browser-fullscreen.json`.
+- Base real: 12 PNG HiPS del canal 62 (λ 3.293 µm), 849825 B, con hashes;
+  otros canales/detalle se cargan tras verificar edición. 102 canales, vacíos
+  50/51 base 0. ICRS/HEALPix/HPX y paridad contrastados con Astropy y FITS.
+- Flujo IMAGE real vía Range: 17280 B de cabeceras y 1 MiB por plano, sin
+  bajar cubo completo; Worker/Rust escala/asinh/RGBA/píxeles y export procedente.
+  Ensayo remoto: 12.0051 MJy/sr en RA 60.81100°/Dec 51.34040°, Rust 112 ms.
+- Novedades TAP al entrar/seleccionar/cada 10 min visible. Cambios de mosaico
+  requieren aplicar; bloquean mezclas de edición y flujo de cubo no asociado.
+- Evidencia: Node 53/53 sin omitidas, Rust 6/6, Python 6/6, navegador completo
+  39/39 y repetición final afectada 9/9 tras paridad/streaming/ratón capturado.
+  Build y validadores pasan; revisión independiente sin importantes restantes.
+- WASM de la primera entrega (sustituido por el de arriba): 102109 B, SHA256
+  `ad4422eed36f72b4f48c84e32d7a5e933d0b1cf1f83a3a02344f477129d82128`.
+- Detalle/límites: `docs/VALIDACION_INMERSIVA_20261115.md`. Sin medición de
+  60 fps ni validación física VR/gyro/Android/Safari/HTTPS. No distancias ni
+  fotometría validada; IMAGE sin FLAGS/VARIANCE, scienceReady=false.
+- Tarea central `t-fba4afca4066` sigue pendiente sin claim/finish automático;
+  no hay identidad para sesión MCP. Siguiente: ensayos de hardware/rendimiento
+  y revisión de evidencia; T08 científico conserva sus puertas.
+
+## Vista real FPA e Integración SPHEREx ("Explora") — 2026-11-15
+
+- Corrección exhaustiva de regresiones previas introducidas en "Explora":
+  * Eliminado segundo WebGLRenderer y PMREM duplicado de `hera3d.js`; restaurado relieve 2.5D en `#ha` y arquitectura Ponytail de un solo contexto Three.js primario.
+  * Resueltos conflictos de maquetación en `index.html` y `assets/css/main.css` (`.top-status-chip` y solapamiento de `#nav` sobre `.explore-view-tabs`).
+  * Reubicado script Python de generación de geometría a `scripts/generate_focal_plane.py` evitando empaquetarlo en `dist/assets/models/`.
+  * Resuelto scroll desalineado tras comprobación móvil en `tests/browser/integration.spec.mjs`.
+- Pipeline de decodificación FITS a textura WebGL acelerado en Rust/WASM:
+  * Implementado `FitsTexture` en `science-core/src/texture.rs` con desempaquetado binario big-endian, ZScale y estiramiento no lineal Asinh a RGBA8888.
+  * Compilado con `wasm-bindgen-cli 0.2.130` en `assets/js/science/wasm/pkg/` (96.332 bytes, SHA 7acff41c01e0ff7f78b6452a60fc29063a81d2771c507e665ffa8508964a706d).
+- Explorador SPHEREx D1–D6 interactivo en "Explora":
+  * Conjunto curado NASA DR1 (D1–D6) integrado con distribución 2×3 esquemática, controles orbitales de cámara 3D libres (arrastre, paneo Mayús/botón derecho, zoom rueda/pellizco, teclas de dirección).
+  * Formulario de búsqueda TAP contra IRSA (DR1/QR3) con límite a 60 resultados y cancelación por AbortController.
+  * Distinción científica explícita de procedencia (imágenes de intensidad monocromática, huella 255², previsualización no calibrada para astrometría).
+- Validación de calidad integral:
+  * Node unit tests: 45/45 aprobados (`scripts/*.test.mjs`), incluyendo equivalencia WASM/JS y decodificación FPA.
+  * Build & PWA: `npm run web:build`, `validate:build` y `validate:docs` aprobados sin advertencias críticas.
+  * Playwright browser tests: 32/32 aprobados (accesibilidad, integración KRYO-9 GLTF/Draco en `/` y `/skyo/`, FPA real WASM, PWA offline, Aladin HiPS bajo demanda).
+
 ## Fuente y decisiones vigentes
 
-- Proyecto MCP skyo, actor codex, spec actual 002-comparador-local.
-- Fuente normativa: SPEC_SKYO_2.1_AUDITADO.md (preparación 2026-11-13).
-- 20 RF y T01–T08 definidos; tareas registradas pendientes, sin claim/finish.
-- Plan y validación en specs/002-comparador-local/. 001-inicial es incorporación histórica.
-- Se conserva laboratorio local-first; frontend v1 y SPEC(1).md no disponibles.
-- Skills portátiles: skills/, 83 de11fuentes; no activación global.
-- Consulta 2026-11-14: bóveda MCP sin skill de delegación multimodelo; índice skyo no registrado.
-- Esta sesión dispone de ecc:team-agent-orchestration; no se ejecutaron agentes ni instalaciones.
-- Revisión 2026-11-14: pipeline local cubre 001; falta flujo para 002 con build/puertas y chequeo documental reproducible. Node24.21.0/npm test pasan (1 archivo informado).
-- Validación visual 2026-11-14: protocolos PV-01…PV-08 en `docs/protocols/`, runner `scripts/audit-visual.mjs` y pipeline `docs/pipelines/validacion-visual.md`. 7 recorridos (320→1440 + reduced): sin pageerror, sin overflow de documento, WebGL y teclado correctos; 1 fallo a 320 px (pestaña «Colección y Candidatos» recortada en `#explorar`). `npm test` 8/8.
-- Fuentes 2026-11-14: `docs/FUENTES.md` reúne 47 URLs citadas con clave estable, matriz afirmación→fuente y estado HTTP real. 51 URLs externas con recibo (29 previas + 22 comprobadas hoy: 19×200, SIA/TAP raíz 502, NASA Space Apps sin conexión). Aladin GPL v3 sigue siendo decisión de licencia abierta.
+- Proyecto MCP `skyo`, actor `codex`, spec `002-comparador-local`.
+- Fuente normativa: `docs/SPEC_SKYO_2.1_AUDITADO.md`; plan/tareas/validación
+  en `docs/specs/002-comparador-local/`. `001-inicial` es histórica.
+- `main` avanzó por fast-forward de `4ee3f74` a `9022f46`; después se trajeron
+  los 5 commits de `origin/main` hasta `409d762` (audio espacial, composición
+  ArtCraft, plano focal 3D desde Blender, contraste D1–D6). La reaplicación local
+  produjo conflictos; su resolución por archivo está en curso. Sin commit
+  nuevo/push. Stashes `8df0722` y `6aa80315` conservados.
+- Vite 7.3.8 y lockfile: index.html, lab.html, contexto.html; configuraciones
+  activas en raíz, copias históricas en `_archivo/legacy/`. Motor en assets/js/science/.
+- Paleta local Obsidian/Chrome/Crimson/Sky Blue y contexto HiPS separado. La
+  integración del frontend remoto KRYO-9/Bóveda/HERA está pendiente de verificación;
+  conservar límites de carga, pausa y movimiento reducido al resolverla.
+- PWA por scope/build: shell precache; demo, datos reales, Three/Aladin y WASM
+  por petición. Actualización consentida, sin recarga automática del trabajo.
 
-## Investigación y evidencia actual
+## Implementación y evidencia previas a la integración — 2026-11-14
 
-- NASA: DR1+QR3; WCS-WAVE visual, ciencia CWAVE/CBAND por versión/posición.
-- ePSF D3 puede ser441/451 según revisión; leer geometría real. Conservar FINAST.
-- Consulta SQL exacta del SPEC devuelve84filas;28enlaces externos HTTP200 declarados, pero el recibo `enlaces-http.json` solo conserva18 (discrepancia anotada en docs/FUENTES.md §4.3).
-- S3 Range206/CORS* y calibraciones listadas; tabla3I aúnQR2, una exposición resueltaDR1.
-- RecorteDR1 leído y WCS comparado con Astropy en4puntos: evidencia puntual, no ciencia validada.
-- Aplicación: npm12/12 y Vite7.3.8 build pasan; cargo1/1 y wasm32bruto pasan.
-- wasm-pack ausente: sin glue/integración/equivalencia JS-WASM.
-- Chromium6recorridos: responsive y flujo demo pasan; PWA offline estática raíz/subruta y OPFS básicos pasan.
-- Fallos abiertos: jobs antiguos, NASA derivada rotulada sintética, VERSION/EPSF perdidas,
-  reporte sin procedencia/obsoleto, SATELLITE_HALO omitida, logo a11y y offline con Vary:Origin.
-- Ciencia: sin par real compatible validado, PSF/calibración/catálogos ni Android físico aceptados.
-- Ver docs/VALIDACION_PREPARACION_SPEC.md, INVESTIGACION_DATOS_NASA.md y CRITERIOS_CIENTIFICOS_SKYO.md.
-- Interfaz `#inicio` 2026-11-14: integrado agente 3D KRYO-9 (`assets/models/kryo9.glb`, pista `Takeoff_Launch` de vuelo orbital en `scripts/export_kryo9_skyo.py`) + loaders locales r128 (`GLTFLoader.js`, `DRACOLoader.js`, `RoomEnvironment.js`, `draco/gltf/*`) y caché `sw.js` `skyo-v2.3.3` (preservando `boveda.glb` y cambios de `origin/main`); transición `Enter`/clic hacia `#explorar` con vuelo curvo supersónico por la órbita (conos propulsores, estela, líneas radiales y aterrizaje saludando dentro de la bóveda ICRS) verificada tras el rebase en Firefox 160 headless (`warp < 1 s`, 0 errores consola) y `npm test` 8/8.
+- Usuario autorizó iniciar T01 y continuar las demás tareas. Ponytail full activo.
+- T01: sesión/UI compartidas, selección versionada, hashes, Worker/snapshot,
+  contratos runtime, reporte vigente y diagnóstico separado; carreras probadas.
+- T02: curador robusto/atómico, originales y HDUs/versiones/tiempos/EPSF conservados.
+  TAP nuevo falló 502/timeout; selección desde CSV histórico84 + FITS nuevos verificados.
+- T03: FITS limitado/estricto, FLAGS uint32/BZERO y máscaras por propósito;
+  TAN/SIP ICRS admitidos, 27 muestras D2/D3/D6 contra Astropy (<1e-4 px).
+- T04/T05: paquete public/datasets/m101-visual-v2/, dos ROI12x12 del mismo campo,
+  épocas DR1 D2 distintas (~5.2993d), cobertura λ heurística visual; fondo robusto,
+  SOURCE excluida del fondo A/B, ZODI en copias si ambas capas. Lugar/Tiempo/Luz,
+  blink manual, vistas, procedencia y export en ambos laboratorios. Sin PSF matching.
+- T06: OPFS generaciones/commit, hashes/nombres al reabrir, cuota/fallos inyectados,
+  borrado explícito; PWA raíz/subruta/offline/Vary:Origin y actualización verificados.
+- T07: Rust2/2, wasm32 y glue wasm-bindgen0.2.130, SHA verificado en bridge/Worker;
+  fallback ante ausencia/corrupción/trap. Artefacto25.278B en assets/js/science/wasm/pkg/.
+  SHA173039a1888940f97b3ca1c65603d600d54527343bd92284060c1dec6ba02524.
+  Equivalencia5casos (2ROI NASA), error máximo0. Benchmark no mejora universal.
+- npm test43/43, cero omitidas (incluye cuatro regresiones antes fallidas),
+  Python6/6, Rust2/2, Vite/build y validadores pasan. Resultados de navegador
+  finales26/26, cero omitidos (6.3min), en docs/evidence/implementacion-20261114/browser-final.json.
+  Desarrollo4173 real/Worker/export sin pageerror.
+- Informe: docs/VALIDACION_IMPLEMENTACION_20261114.md; evidencia durable por tarea.
+  .venv y CLI temporal /tmp/skyo-wasm-tools usados; pipeline explica recrearlos.
+- Integración 2026-11-15: traídos `sound.js` (audio Deep Liquid Glass), `focal_plane.glb`
+  + `generate_focal_plane.py`, composición ArtCraft y hover/etiquetas del plano focal.
+  Se conserva la política local de Three.js bajo demanda, enlace «Explorar el cielo»
+  y activación `data-enable-cosmos`; verificación pendiente.
 
-## Próximo paso
+## Límites y siguiente paso
 
-- Iniciar T01: t-5aa0315b2f01, integridad de selección/procedencia/reporte con regresiones.
-- Corregir el recorte de `#explorar` a 320 px (parche CSS en auditoría visual) y repetir `node scripts/audit-visual.mjs`; completar a mano PV-03 (pausa 3D), PV-04 (teclado del carrusel), PV-07 (`aria-live` de H.E.R.A, objetivos de 13 px en `lab.html`) y PV-08 (pestaña en segundo plano).
-- Después T02curación yT03FITS/WCS; validar par visual real antes de ciencia de candidatos.
-- Preparación documental lista para implementación; producto no aceptado en puertas I/V/C.
-- Sesiones MCP siguen requiriendo identidad; indicar project=skyo explícito.
+- T08 solo inspección: CWAVE/CBAND D2 original33.312.960B, SHA0eb4e27f351e6161e21372818f9e811480a7ab8bab9295722f180791e151a463;
+  ROI/zonas ePSF33x33 sobremuestreo5 leídos de cabecera, sin integrar a píxel.
+  Calibración7.0.0b6... vs imágenes7.0.5: asociación no verificada, no incompatibilidad
+  demostrada. scienceReady=false. Originales FITS intactos en data/.
+- Faltan vínculo de versiones, integración/PSF matching, incertidumbres completas,
+  observador/épocas/catálogos, inyección/recuperación/FPR/completitud y revisión
+  independiente. No afirmar detección; WCS-WAVE/SNR siguen exploratorios.
+- Sin Android/Safari físico, rendimiento móvil ni publicación HTTPS validada.
+  No hay baseline visual aprobado ni certificación WCAG. Cuota por fallos inyectados.
+- Claim T01 central rechazado por spec pendiente/invalidada; T01–T08 siguen
+  pendientes sin propietario. No autoaprobar ni finish. Usuario autorizó trabajo local.
+- Sesión MCP sin identidad disponible; no inventar sesión ni copiar secretos.
+  Documentos locales actualizados, bóveda central antigua sin sincronización implícita.
+- Aladin GPLv3 conserva notices; decisión de distribución/licencia pendiente.
+  Siguiente: revisión técnica/administrativa y requisitos científicos restantes de T08.
+
+## Diagnóstico Agy histórico — 2026-11-14
+
+- En el diagnóstico, `git fetch origin` actualizó el remoto a `9022f46`; HEAD seguía `4ee3f74`,
+  tres commits por integrar (`8f3ef32`, `0808f77`, `9022f46`). Sin conflictos Git activos.
+- Se observó Agy activo con auditoría visual y ediciones de app.js, con
+  cambio de warp/clic/tiempos y arranque automático de cosmos, sin validarlos aquí.
+- No se integró encima de otro agente editando, ni se modificó código ni detuvo
+  procesos. Las pruebas previas pertenecen al snapshot anterior a esas ediciones.
+- Recibo histórico: docs/evidence/diagnostico-agy-20261114.json. La integración
+  posterior autorizada se registra abajo; este diagnóstico no describe el HEAD actual.
+
+
+## Integración delegada — 2026-11-14
+
+- Usuario autorizó integrar los tres commits remotos y delegar entre agentes.
+  Se avanzó `main` a `9022f46` y reaplicó el trabajo local, sin commit/push nuevo.
+- Respaldo externo verificado: `/home/metrx/Proyectos/SKYO-backups/integracion-9022f46-20261115T032838Z/`.
+  Incluye 193 rutas (123.925.651 bytes), índice, parches binarios y bundle Git
+  verificado. Todos los contenidos se comprobaron también dentro del stash nuevo
+  `6aa80315bfde0f7854fe11ef0aebef6372f9961d`; no se eliminó ningún stash.
+- Se restauraron FITS originales, WASM, lockfiles y evidencias. Las 178 rutas
+  no conflictivas recuperadas coinciden con su SHA; `data.js`, `explorar.js` e
+  `history.md` se fusionaron automáticamente y requieren revisión semántica.
+- Propiedad: `git_integrator` controla Git y estas memorias; `frontend_resolver`
+  resuelve CSS, app/cosmos/HERA, HTML y SW; `science_resolver` resuelve adaptadores
+  científicos y `explorar.js`. OpenCode agotó cuota del proveedor (429), sin
+  escribir propuestas, y se reasignó esa tarea. Agy revisa refs en modo de solo
+  lectura. No hay escritores paralelos sobre el mismo archivo. Los Agy originales
+  quedan fuera de estas asignaciones; el coordinador controla su pausa/reanudación.
+- Recibos en `docs/evidence/integracion-9022f46/`; snapshots base/remoto/local y
+  con marcadores conservados en `conflicts/` dentro del respaldo externo.
+- Resolución y validación final de integración completadas exitosamente:
+  - Los 10 archivos unmerged (UU) (`assets/css/lab.css`, `assets/css/main.css`,
+    `assets/js/app.js`, `assets/js/cosmos3d.js`, `assets/js/hera3d.js`,
+    `assets/js/science-lab-ui.js`, `assets/js/science/lab.js`, `index.html`,
+    `lab.html`, `sw.js`) y los 3 fusionados automáticamente (`data.js`,
+    `explorar.js`, `history.md`) se revisaron sin marcadores de conflicto y se
+    añadieron individualmente con `git add`.
+  - Se conservó KRYO-9 con GLTF/Draco/RoomEnvironment bajo demanda, el diseño
+    hero-split y los estados UI de WCAG 2.2, combinados con la paleta local
+    (obsidiana, Laser Crimson `#e11d48`, Sky Blue `#7cc8ff`), laboratorios
+    compartidos, snapshots/hashes, procedencia de datos, OPFS y WASM nativo.
+  - Se adaptó `tests/browser/integration.spec.mjs` a las expectativas de KRYO-9
+    y Draco, validando carga diferida (Three.js no cargado en inicio hasta activación),
+    funcionamiento en raíz y `/skyo/`, navegación por enlace/teclado y diseño móvil
+    sin desborde horizontal.
+  - Resultados de verificación integral:
+    - `npm test`: 43/43 tests aprobados (0 fallos).
+    - `npm run web:build`: build Vite 7 + postbuild exitoso (36 precache, WASM presente).
+    - `npm run validate:build`: manifiestos raíz y subruta, y entradas estáticas válidas.
+    - `npm run validate:docs`: especificación 002 verificada (SHA-256 `05d54609a6219728b7a8cc98f9f6c603852173cab69125e2ed2a043caa4f2bc7`).
+    - `npm run test:browser`: 27/27 tests de navegador aprobados en Playwright Chromium headless.
+  - Evidencia registrada en `docs/evidence/integracion-9022f46/validacion-integracion-final.json`.
+  - Sin commit, push ni reset --hard; respaldo externo y stashes conservados intactos.
+- T08 sigue inspection-only/scienceReady=false y el registro central sigue
+  pendiente; sin autoaprobación, claim/finish ni sincronización implícita.

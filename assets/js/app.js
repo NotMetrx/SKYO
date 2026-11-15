@@ -3,12 +3,13 @@
  * Filosofía Ponytail: Cero polling, C-states con Page Visibility API y código conciso.
  */
 
-import { MSG } from './data.js';
-import { initCosmos3D, setCosmosRoute, setCosmosVisible, triggerWarpZoom } from './cosmos3d.js';
+import { MSG, GUIA_SPHEREX } from './data.js';
+import { initCosmos3D, setCosmosRoute, setCosmosVisible, triggerWarpZoom, setKryoDockHandler } from './cosmos3d.js';
 import { startExplorar, pauseExplorarBlink } from './explorar.js';
 import { startSistema3D } from './sistema3d.js';
 import { startFases } from './fases.js';
-import { initHera3d } from './hera3d.js';
+import { initHera3d, triggerKryoGesture } from './hera3d.js';
+import { unlockAudio, isSoundMuted, setSoundMuted, playUiCue } from './sound.js';
 
 // 1. Detección reactiva de preferencia de movimiento reducido
 const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -18,18 +19,25 @@ motionQuery.addEventListener('change', e => {
   window.__skyReducedMotion = e.matches;
 });
 
-// 2. Asistente de IA H.E.R.A 7 (solo fuera de #inicio y sin botones de acceso rápido)
+// 2. Estado de ruta y asistente KRYO-9 / H.E.R.A 7 (oculta en #inicio)
+const ROUTES = ['inicio', 'explorar', '3d', 'fases'];
+let currentRoute = '';
+let leaveTimer = 0;
+
 const topHeader = document.querySelector('.top');
 const heraAside = document.getElementById('hera');
 const heraBubble = document.getElementById('hb');
+const heraTitle = document.getElementById('hb-title');
 const heraText = document.getElementById('ht');
 const heraAvatarBtn = document.getElementById('ha');
+const heraChipsEl = document.getElementById('hera-chips');
+const soundToggleBtn = document.getElementById('sound-toggle-btn');
 
 let heraTimer = 0;
 
 export const hera = {
   say(message, keep = false) {
-    if (currentRoute === 'inicio' || !heraBubble || !heraText) return;
+    if (currentRoute === 'inicio' || !heraBubble || !heraText || (window.innerWidth <= 780 && !keep)) return;
     heraText.textContent = message;
     heraBubble.classList.add('show');
     clearTimeout(heraTimer);
@@ -41,13 +49,55 @@ export const hera = {
   },
   toggle() {
     if (currentRoute === 'inicio' || !heraBubble) return;
+    unlockAudio();
     if (heraBubble.classList.contains('show')) {
       heraBubble.classList.remove('show');
     } else {
-      this.say(MSG[currentRoute] || MSG.explorar, true);
+      playUiCue('guide');
+      triggerKryoGesture('Wave_Hello', { duration: 1.4, timeScale: 1.15 });
+      if (heraText && heraText.textContent.trim()) {
+        heraBubble.classList.add('show');
+        clearTimeout(heraTimer);
+      } else {
+        this.say(MSG[currentRoute] || MSG.explorar, true);
+      }
     }
   }
 };
+
+function syncSoundToggleUI() {
+  if (!soundToggleBtn) return;
+  const muted = isSoundMuted();
+  soundToggleBtn.textContent = muted ? '🔇' : '🔊';
+  soundToggleBtn.setAttribute('aria-pressed', String(muted));
+  soundToggleBtn.setAttribute('aria-label', muted ? 'Activar sonido espacial' : 'Silenciar sonido espacial');
+}
+
+syncSoundToggleUI();
+if (soundToggleBtn) {
+  soundToggleBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    const nextMuted = !isSoundMuted();
+    setSoundMuted(nextMuted);
+    syncSoundToggleUI();
+    if (!nextMuted) playUiCue('guide');
+  });
+}
+
+if (heraChipsEl) {
+  heraChipsEl.addEventListener('click', e => {
+    const btn = e.target.closest('button[data-topic]');
+    if (!btn) return;
+    const topicKey = btn.dataset.topic;
+    const topic = GUIA_SPHEREX[topicKey];
+    if (!topic) return;
+    unlockAudio();
+    heraChipsEl.querySelectorAll('.hera-chip').forEach(b => b.classList.toggle('on', b === btn));
+    playUiCue(topicKey === 'planeta_x' ? 'candidate' : 'guide');
+    triggerKryoGesture(topic.clip, { duration: 1.55, timeScale: 1.1 });
+    hera.say(topic.text, true);
+  });
+}
 
 const heraImg = document.getElementById('hera-img');
 const heraPlaceholder = document.getElementById('hera-placeholder');
@@ -55,22 +105,28 @@ const avatarInput = document.getElementById('avatar-input');
 const avatarResetBtn = document.getElementById('avatar-reset-btn');
 
 function setCustomAvatar(dataUrl) {
+  const canMountNow = currentRoute
+    ? currentRoute !== 'inicio'
+    : ['explorar', '3d', 'fases'].includes(window.location.hash.slice(1));
   if (dataUrl && heraImg) {
     heraImg.src = dataUrl;
     heraImg.hidden = false;
     if (heraPlaceholder) heraPlaceholder.hidden = true;
     if (avatarResetBtn) avatarResetBtn.hidden = false;
-    initHera3d(heraAvatarBtn);
+    if (heraTitle) heraTitle.textContent = 'Asistente H.E.R.A 7';
+    if (canMountNow) initHera3d(heraAvatarBtn);
   } else if (heraImg) {
     heraImg.src = '';
     heraImg.hidden = true;
     if (heraPlaceholder) heraPlaceholder.hidden = false;
     if (avatarResetBtn) avatarResetBtn.hidden = true;
-    initHera3d(heraAvatarBtn);
+    if (heraTitle) heraTitle.textContent = 'KRYO-9 · Guía SPHEREx';
+    if (canMountNow) initHera3d(heraAvatarBtn);
   }
 }
 
-const savedAvatar = localStorage.getItem('skyo_custom_avatar');
+let savedAvatar = null;
+try { savedAvatar = localStorage.getItem('skyo_custom_avatar'); } catch { /* El avatar no impide navegar si el almacenamiento está bloqueado. */ }
 setCustomAvatar(savedAvatar);
 
 if (avatarInput) {
@@ -108,7 +164,7 @@ if (avatarResetBtn) {
     e.stopPropagation();
     localStorage.removeItem('skyo_custom_avatar');
     setCustomAvatar(null);
-    hera.say('Avatar restablecido. Pulsa «Subir avatar» para asignar tu imagen preferida.');
+    hera.say('KRYO-9 3D activado nuevamente como tu guía SPHEREx.');
   });
 }
 
@@ -117,9 +173,35 @@ if (heraAvatarBtn) {
 }
 
 // 3. Router Reactivo por Hash con Transiciones GPU + Vuelo de Cámara 3D
-const ROUTES = ['inicio', 'explorar', '3d', 'fases'];
-let currentRoute = '';
-let leaveTimer = 0;
+let cosmosReady = null;
+function syncCosmosVisibility() {
+  const view = document.body.dataset.exploreView || 'boveda';
+  const frame = document.getElementById('hips-frame');
+  const src = !document.hidden && currentRoute === 'explorar' && view === 'contexto' ? 'contexto.html' : 'about:blank';
+  if (frame && frame.getAttribute('src') !== src) frame.src = src;
+  const spectralFrame=document.getElementById('spectral-frame');
+  const spectralSrc=!document.hidden && currentRoute==='explorar' && view==='espectral' ? 'inmersivo.html' : 'about:blank';
+  if(spectralFrame && spectralFrame.getAttribute('src')!==spectralSrc)spectralFrame.src=spectralSrc;
+  setCosmosVisible(!document.hidden && (currentRoute === 'inicio' || currentRoute === '3d' || (currentRoute === 'explorar' && view === 'boveda')));
+}
+async function enableCosmos() {
+  try {
+    cosmosReady ||= initCosmos3D(currentRoute).then(() => {
+      if (heraAvatarBtn) initHera3d(heraAvatarBtn);
+    });
+    await cosmosReady;
+    setCosmosRoute(currentRoute);
+    syncCosmosVisibility();
+  } catch (error) {
+    cosmosReady = null;
+    document.getElementById('cosmos-status').textContent = 'La vista 3D no está disponible. Puedes usar el laboratorio FITS y el contexto HiPS.';
+    console.warn('Vista 3D:', error);
+  }
+}
+document.addEventListener('click', event => {
+  if (event.target.closest('[data-enable-cosmos], #enable-eclipse')) enableCosmos();
+});
+document.addEventListener('skyo:subviewchange', syncCosmosVisibility);
 
 function clearLeavingSections(exceptId) {
   document.querySelectorAll('.sec.leaving').forEach(el => {
@@ -166,6 +248,10 @@ function navigate() {
   if (prevRoute && !window.__skyReducedMotion) {
     leaveTimer = setTimeout(() => clearLeavingSections(currentRoute), 440);
   }
+  if (currentRoute !== 'inicio') {
+    document.body.classList.remove('warp-zoom');
+    isWarping = false;
+  }
 
   document.querySelectorAll('#nav a').forEach(link => {
     if (link.dataset.s === currentRoute) {
@@ -185,7 +271,9 @@ function navigate() {
     heraAside.setAttribute('aria-hidden', String(isInicio));
   }
 
-  // En móvil (<= 780px) o en #inicio ocultamos el globo de H.E.R.A 7
+  heraChipsEl?.querySelectorAll('.hera-chip').forEach(b => b.classList.remove('on'));
+
+  // En móvil (<= 780px) o en #inicio ocultamos el globo de H.E.R.A 7 / KRYO-9
   if (isInicio) {
     clearTimeout(heraTimer);
     if (heraBubble) heraBubble.classList.remove('show');
@@ -193,46 +281,76 @@ function navigate() {
     hera.say(MSG[currentRoute]);
   } else if (heraBubble && window.innerWidth <= 780) {
     heraBubble.classList.remove('show');
+    if (heraText) heraText.textContent = MSG[currentRoute] || '';
   }
 
   // Cambiar escena dentro del motor unificado Three.js
   if (prevRoute === 'explorar' && currentRoute !== 'explorar') {
     pauseExplorarBlink();
   }
+  if (prevRoute === 'inicio' && !isInicio) {
+    initHera3d(heraAvatarBtn);
+  }
   setCosmosRoute(currentRoute);
+  syncCosmosVisibility();
+  if (currentRoute === '3d') enableCosmos();
 
   if (currentRoute === 'explorar') {
     startExplorar(hera.say.bind(hera));
   } else if (currentRoute === '3d') {
     startSistema3D();
+    triggerKryoGesture('Scan_Sky', { duration: 1.35 });
   } else if (currentRoute === 'fases') {
     startFases(hera.say.bind(hera));
+    triggerKryoGesture('Scan_Sky', { duration: 1.35 });
   }
 }
 
 window.addEventListener('hashchange', navigate);
+window.addEventListener('resize', () => {
+  if (window.innerWidth <= 780) heraBubble?.classList.remove('show');
+});
 
-// Despegue de KRYO-9 y transición hiperespacial desde #inicio hacia #explorar
+// Despegue de KRYO-9 con audio espacial y acoplamiento dentro del módulo guía en #explorar
 let isWarping = false;
-function launchFromInicio() {
+let dockRevealFallback = 0;
+
+setKryoDockHandler(() => {
+  clearTimeout(dockRevealFallback);
+  if (heraAvatarBtn) heraAvatarBtn.classList.remove('is-kryo-incoming');
+  triggerKryoGesture('Wave_Hello', { duration: 1.5, timeScale: 1.15 });
+});
+
+function launchFromInicio(event) {
+  event?.preventDefault();
   if (currentRoute !== 'inicio' || isWarping) return;
+  unlockAudio();
   const promptText = document.getElementById('hero-prompt-text');
   if (window.__skyReducedMotion) {
+    triggerWarpZoom();
     window.location.hash = '#explorar';
     return;
   }
   isWarping = true;
   if (promptText) promptText.textContent = 'Secuencia de despegue en curso…';
+  if (heraAvatarBtn && !localStorage.getItem('skyo_custom_avatar')) {
+    heraAvatarBtn.classList.add('is-kryo-incoming');
+    initHera3d(heraAvatarBtn);
+    clearTimeout(dockRevealFallback);
+    dockRevealFallback = setTimeout(() => {
+      heraAvatarBtn?.classList.remove('is-kryo-incoming');
+    }, 1750);
+  }
   document.body.classList.add('warp-zoom');
   triggerWarpZoom();
   setTimeout(() => {
     window.location.hash = '#explorar';
     setTimeout(() => {
       document.body.classList.remove('warp-zoom');
-      if (promptText) promptText.textContent = 'Iniciar secuencia de despegue';
+      if (promptText) promptText.textContent = 'Explorar el cielo';
       isWarping = false;
-    }, 360);
-  }, 460);
+    }, 280);
+  }, 220);
 }
 
 window.addEventListener('keydown', e => {
@@ -241,11 +359,11 @@ window.addEventListener('keydown', e => {
   if (['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A'].includes(tag) || document.activeElement?.isContentEditable) return;
   if (e.key === 'Enter' || e.code === 'Space') {
     e.preventDefault();
-    launchFromInicio();
+    launchFromInicio(e);
   }
 });
 
-// Activación opcional por clic/toque sobre el prompt o el escenario de KRYO-9 (sin controles <button>/<a> en #inicio)
+// El enlace conserva navegación por teclado; el escenario permite el mismo lanzamiento.
 document.querySelector('#inicio .hero-prompt')?.addEventListener('click', launchFromInicio);
 document.getElementById('kryo9-stage')?.addEventListener('click', launchFromInicio);
 
@@ -254,16 +372,13 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
     pauseExplorarBlink();
   }
-  setCosmosVisible(!document.hidden);
+  syncCosmosVisibility();
 });
 
 // 6. Inicialización inmediata
 function initApp() {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
-  }
   navigate();
-  initCosmos3D(currentRoute);
+  syncCosmosVisibility();
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
@@ -277,3 +392,5 @@ if (document.readyState === 'loading') {
 } else {
   initApp();
 }
+
+import './register-offline.js';

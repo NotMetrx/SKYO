@@ -1,6 +1,6 @@
 # Maqueta del layout — SKYO
 
-Lienzo WebGL a pantalla completa (`#000000`) detrás; la UI flota encima en paneles Liquid Glass. Márgenes de 20 px, separación de 12 px, radio de 16 px (barras 999 px).
+Lienzo WebGL a pantalla completa (obsidiana `#07070A`) detrás; la UI flota encima en paneles Liquid Glass. Márgenes de 20 px, separación de 12 px, radio de 16 px (barras 999 px).
 
 ## Rejilla global (escritorio ≥ 1024 px)
 ```text
@@ -35,7 +35,7 @@ Sin barra, sin H.E.R.A 7. `O` renderizada con el modelo 3D del eclipse (`eclipse
 │ [Todos|Estrellas|Cometas|Asteroides]  ┌ Misión 1/4 ─ texto ─ Pista Sig┐│
 │                                       └──────────────────────────────┘│
 │                     ┌── recorte ICRS + HEALPix ──┐                    │
-│                     │   cuerpos · vector morado  │                    │
+│                     │   cuerpos · vector crimson  │                    │
 │                     └────────────────────────────┘                    │
 │ ┌ Época 1 · Época 2 · Época 3 · Época 4 ┐            ┌ H.E.R.A 7 ┐ [🧑‍🚀]│
 │ │ [IR Corto|IR Largo] [Parpadear] [Cmp] │            └───────────┘      │
@@ -66,8 +66,8 @@ Igual que la rejilla global: escena del Sistema Solar al centro, controles de es
 Una columna: barra arriba, pestañas con desplazamiento horizontal, escena en el centro, dock como hoja inferior a todo el ancho; H.E.R.A 7 se reduce al avatar.
 
 ## Color por zona
-- Azul `--ac` `#5bb8ff`: navegación, pestaña activa, retícula.
-- Morado `--ac2` `#b57bff`: misiones, candidatos, vector de verificación, modo activo, IR Largo.
-- Verde `--ok` `#4ade80`: estado completado.
+- Sky Blue `--ac` `#7CC8FF`: navegación, pestaña activa, retícula y estado completado.
+- Laser Crimson `--ac2` `#E11D48`: misiones, candidatos, vector de verificación, modo activo e IR Largo.
+- Chrome Silver `--chrome` `#C9CED6`: texto, bordes y reflejos.
 
 Capturas reales: [explorar](../assets/img/previews/explorar.png) · [fases](../assets/img/previews/fases.png).

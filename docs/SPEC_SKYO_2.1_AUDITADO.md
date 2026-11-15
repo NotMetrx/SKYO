@@ -2,15 +2,83 @@
 
 > **Revisión:** preparación técnica y científica, 2026-11-13 (America/Lima).
 > **Estado del documento:** requisitos y plan de arranque definidos; la edición y las pruebas fueron solicitadas por el usuario. No representa aprobación automática de la mente general.
-> **Estado del producto:** laboratorio exploratorio existente con fallos conocidos; no aceptado como detector astronómico ni como aplicación de producción.
+> **Estado del producto (2026-11-14):** comparador exploratorio T01–T07 implementado con evidencia local; T08 parcial. Sin aprobación formal ni aceptación como detector astronómico o aplicación de producción.
+> **Ejecución actual:** [informe y límites](VALIDACION_IMPLEMENTACION_20261114.md); los resultados de §11.1 son históricos.
 > **Referencia única de producto:** este archivo. `specs/001-inicial/` documenta la incorporación administrativa, no los requisitos científicos.
 > **Objetivo:** herramienta pública de exploración temporal SPHEREx para el reto «Planet X and SPHEREx». No es un producto oficial de NASA/JPL/IPAC.
 
 ## 0. Qué se construye y qué permite empezar
 
+### Cielo inmersivo aprobado en conversación — 2026-11-15
+
+El usuario corrigió el objetivo: experiencia dentro del espacio, mirar 360° y
+vuelo visual, imágenes reales SPHEREx, actualización de publicaciones IRSA,
+PC/móvil con giroscopio y WebXR cabeza/mandos. Autorizó iniciar la integración.
+La esfera tiene radio constante en unidades de visualización; la profundidad
+se declara ilustrativa y no asigna distancias físicas a fuentes sin catálogo.
+`inmersivo.html` pasa a ser la entrada inicial de Explorar; el plano FPA y el
+laboratorio se conservan como herramientas auxiliares. Diseño/ejecución en
+[inmersivo-plan.md](specs/002-comparador-local/inmersivo-plan.md).
+La presentación en `index.html#explorar` ocupa todo el viewport, sin marco ni
+márgenes; navegación, HUD, selector y herramientas flotan sobre el cielo.
+El detalle usa píxeles físicos y LOD por región en Rust, hasta el orden publicado
+por IRSA. Precarga/caché y contraste optimizado conservan bytes/flujo; sus
+[mediciones](OPTIMIZACION_INMERSIVA_20261115.md) no garantizan fps universales.
+Al acercarse por debajo de 1.25° se solicita un recorte L2 nativo por IBE,
+proyectado con TAN/SIP y máscara FLAGS de visualización. Solo se muestran píxeles
+cuya λ WCS-WAVE pertenece al intervalo del canal elegido. La observación conserva
+OBSID, UTC, versión, λ y flujo propios; al alejarse vuelve el mosaico. Sin datos
+compatibles o ante fallo de IRSA permanece el panorama. Esta transición es de
+zoom en pantalla; al entrar en VR se retira y continúa el panorama envolvente.
+
+El HUD muestra ICRS, canal/λ nominal, intervalo temporal del mosaico y flujo
+IMAGE bajo la retícula cuando existe un plano FITS compatible. PNG HiPS es
+apariencia; no se interpreta como intensidad física. El Worker recupera
+cabeceras y un plano IMAGE 512² del cubo de 102 canales mediante HTTP 206, sin descargar
+el archivo completo. Rust convierte float32 big-endian, escala, RGBA y píxeles;
+no se aplican FLAGS, VARIANCE ni fotometría calibrada en esta vista exploratoria.
+Los canales 50/51 base 0 permanecen vacíos. El detalle usa ZScale aproximado/Asinh.
+
+Las nuevas observaciones se consultan al entrar y cada 10 min visible por posición
+y detector (hasta 12 resultados, truncamiento explícito). La versión panorámica
+se comprueba aparte y se aplica mediante acción del usuario; no se sustituye
+su trabajo activo. Si cambia de edición, no se atribuye flujo de un cubo viejo
+al nuevo panorama: se deshabilita hasta verificar la nueva asociación.
+
+Aceptación: geometría/UV HPX contra Astropy, lectura de flujo real, cancelación
+de resultados tardíos, navegación y lifecycle en raíz/subruta, estado sin WebXR o
+permisos denegados, controles accesibles y tareas previas sin regresiones. El
+soporte físico VR/giroscopio y los 60 fps se validan por dispositivo, no se deducen
+de Chromium, un test simulado o la compilación WASM.
+
+### Ampliación visual solicitada — 2026-11-15
+
+El usuario solicita exploración híbrida: seis imágenes reales curadas de apertura
+inmediata y búsqueda por coordenadas en IRSA; distribución FPA esquemática 2×3
+D1–D6 con zoom, rotación y paneo. `espectral.html`, conservado como herramienta
+auxiliar tras la corrección inmersiva, implementa esta vista sin sustituir el comparador científico.
+La disposición de paneles no constituye un mosaico WCS ni una geometría óptica
+calibrada. Los detectores pueden cubrir campos distintos.
+
+La ruta visual lleva lectura FITS big-endian, escalado BSCALE/BZERO, límites de
+contraste y Asinh→RGBA a Rust/WASM en Worker. El ZScale visual usa ajuste lineal
+muestreado con rechazo iterativo; omite crecimiento de rechazos de IRAF y se
+identifica como aproximado. La cámara reutiliza texturas en GPU; no reprocesa
+FITS por frame. Los 60 fps son objetivo a medir en hardware, no criterio ya
+superado. La ruta de comparación mantiene su fallback JavaScript vigente.
+
+Aceptación visual adicional: seis previews NASA-DERIVED con huella IMAGE completa,
+transformación/resolución y hashes explícitos; MEF originales conservados fuera
+del bundle; consulta TAP DR1/QR3 de hasta 60 observaciones por posición, errores y
+cancelación; carga individual del MEF real con procedencia; cámara por ratón,
+tacto y teclado; rechazo de corrupción, imágenes >2048 por eje o archivos >96 MB;
+build raíz/subruta y pausa del render cuando no hay cambios. La vista procesa
+IMAGE sin máscaras científicas, calibración espectral ni aceptación de detección.
+No replica todavía todos los controles/HDU, HiPS/MOC ni el archivo completo IRSA.
+
 SKYO permitirá elegir **Lugar, Tiempo y Luz**, ver el contexto del cielo, abrir observaciones reales con procedencia y comparar dos épocas compatibles. La aplicación interactiva funcionará en el dispositivo del visitante, con hosting estático, un Worker científico y fallback JavaScript; Rust/WASM será una optimización medible. El procesamiento de curación y las consultas pesadas se harán previamente en PC/CI, sin un VPS permanente.
 
-Se conserva la dirección de interfaz de SKYO: navegación Inicio/Explorar/3D, H.E.R.A 7 contextual, español, accesibilidad y 3D diferido. El código original de esa interfaz y `SPEC(1).md` **no están en este árbol**: su integración no se declara revisada. El punto de partida ejecutable es el laboratorio independiente de `web/`; disponer del frontend original es dependencia de su integración, no impide empezar por datos, contratos y correcciones del laboratorio.
+Se conserva la dirección de interfaz de SKYO: navegación Inicio/Explorar/3D, H.E.R.A 7 contextual, español, accesibilidad y 3D diferido. Desde la incorporación del commit `2bb7e1e`, la interfaz está disponible en `index.html` y `assets/`. Vite compila esa entrada, `lab.html` y `contexto.html`; el motor vigente está en `assets/js/science/` y el crate en `science-core/`. `_archivo/legacy/web/` y `_archivo/legacy/wasm/` conservan el laboratorio previo para consulta histórica. `SPEC(1).md` sigue sin estar disponible. La migración del shell no acredita integridad ni aceptación científica: T01–T08 conservan sus puertas.
 
 **Listo para comenzar** significa que hay fuente principal, requisitos comprobables, contratos, fuentes de datos, tareas ordenadas y pruebas con resultado real. No significa que todos los requisitos estén implementados ni que se hayan validado descubrimientos. Primero se resolverán los fallos de procedencia y concurrencia; después se integrarán datasets reales y la experiencia completa.
 
@@ -18,7 +86,7 @@ Se conserva la dirección de interfaz de SKYO: navegación Inicio/Explorar/3D, H
 
 Plan y seguimiento: [plan](specs/002-comparador-local/plan.md), [tareas registradas](specs/002-comparador-local/tareas-plan.md) y [validación de preparación](specs/002-comparador-local/validacion.md).
 
-La versión previa se conserva en [archivo histórico](docs/archive/SPEC_SKYO_2.1_ANTES_PREPARACION_2026-11-13.md). La [auditoría inicial](docs/AUDITORIA_SPEC_2026-11-13.md) describe el snapshot anterior; la evidencia y los resultados actualizados se incorporan en §11.
+La versión previa se conserva en [archivo histórico](archive/SPEC_SKYO_2.1_ANTES_PREPARACION_2026-11-13.md). La [auditoría inicial](AUDITORIA_SPEC_2026-11-13.md) describe el snapshot anterior; la evidencia y los resultados actualizados se incorporan en §11.
 
 ## 1. Usuarios, requisitos verificables y alcance por etapa
 
@@ -57,7 +125,7 @@ Las siguientes decisiones son la base de esta especificación, no registros de a
 |---|---|---|
 | 01 | Vite + ES Modules y DOM; TypeScript/JSDoc progresivo | Reutilizar módulos actuales; no añadir React/Svelte solo por una skill |
 | 02 | Un Worker científico; Rust/wasm-bindgen opcional | JS es ruta válida; medir equivalencia antes de anunciar motor WASM |
-| 03 | Canvas 2D y WebGL2 para vistas; Three.js diferido | No modificar matrices al ajustar contraste; liberar GPU fuera de vista |
+| 03 | Canvas 2D y WebGL2 para vistas; Three.js diferido | Cargar Three.js al activar 3D; detener render fuera de la vista o pestaña. No modificar matrices al ajustar contraste |
 | 04 | Aladin Lite v3 para contexto HiPS | Fijar versión/licencia/notices; mapa mosaico separado de comparación temporal L2 |
 | 05 | OPFS para archivos, IndexedDB solo cuando haya un índice necesario | No crear backend/Redis/PostgreSQL; manejar cuota y borrado |
 | 06 | Hosting estático HTTPS y PWA | Recortes curados del mismo origen + archivos manuales como ruta garantizada |
@@ -118,7 +186,10 @@ Las calibraciones y los recortes deben referirse a los mismos píxeles del detec
 
 ### 3.3 Contrato normativo de procedencia y del dataset
 
-El `.d.ts` actual es **una referencia parcial**, no una validación de runtime implementada. Se mantendrá un solo esquema de dominio, con adaptador explícito para el manifiesto actual snake_case. Los nombres persistidos de estado serán en inglés y la interfaz traducirá etiquetas al español.
+El contrato vigente vive en `assets/js/science/contracts.js` con tipos en
+`contracts.d.ts`, validación runtime y adaptador para el manifiesto snake_case.
+Su implementación y pruebas se describen en el informe actual; esta sección
+conserva los requisitos normativos del esquema de dominio. Los nombres persistidos de estado serán en inglés y la interfaz traducirá etiquetas al español.
 
 Datos mínimos por observación:
 
@@ -137,14 +208,14 @@ Datos mínimos por observación:
 
 Un SHA confirma integridad respecto de un manifiesto, **no autentica por sí solo un manifiesto arbitrario del usuario**. Confiar en el paquete curado del equipo o en una recuperación verificada de la fuente permitida; no en el nombre del archivo ni en ORIGIN. Validar tipos, valores finitos, límites, versiones, fechas y URLs HTTPS de procedencia; no ejecutar HTML/scripts de metadatos.
 
-Calidad astrométrica: conservar `FINAST` de IMAGE y `quality_flag` de metadatos sin considerar un valor vacío como aprobado. El suplemento v2.1 describe FINAST=0 bueno, 1 parcial y otros malos: una imagen parcial solo se usa con advertencia en exploración y con presupuesto de error explícito antes de ciencia. Fuente fijada en el [recibo del suplemento](docs/evidence/investigacion-nasa-20261113/expsupp-receipt.json).
+Calidad astrométrica: conservar `FINAST` de IMAGE y `quality_flag` de metadatos sin considerar un valor vacío como aprobado. El suplemento v2.1 describe FINAST=0 bueno, 1 parcial y otros malos: una imagen parcial solo se usa con advertencia en exploración y con presupuesto de error explícito antes de ciencia. Fuente fijada en el [recibo del suplemento](evidence/investigacion-nasa-20261113/expsupp-receipt.json).
 
 Tiempos: `time_bounds_lower` sirve para descubrimiento/orden, no es automáticamente el instante representativo de una efeméride. Conservar intervalo; preferir MJD-AVG del producto cuando corresponda al centro de integración. Si se deriva (start+end)/2, registrar que se derivó. Si falta escala o geometría, no emitir asociación astrométrica precisa; no sobrescribir DATE-OBS original para ocultar diferencias de redondeo.
 
 Dos perfiles estáticos:
 
 ```text
-web/public/datasets/<datasetId>/
+public/datasets/<datasetId>/
   manifest.json                 # lista y hashes, perfil visual o científico
   observations/*.fits          # derivados visuales o recortes conservados
   calibrations/*               # solo ROI/mapas necesarios, con procedencia
@@ -272,7 +343,7 @@ Estados `candidate-unverified` y `catalog-matched` indican interpretación exper
 - HERA: explica los campos reales del reporte y ofrece enlaces; si falta algo dice que falta. No genera una medida a partir de una imagen artística.
 - 3D: diferido; órbitas JPL verificadas solo si hay geometría y época; resto ilustrativo rotulado. Carga/animación suspendida al ocultarse.
 
-Mantener CSS y componentes existentes. Tokens propuestos: fondo #080D1B, superficie #111A2C, acento #8DE8FA y alerta #F4BC74; comprobar contraste, no asumirlo por el color. Fuente local con 2–3 pesos; no añadir librerías UI por una recomendación de skill. Controles táctiles objetivo 44×44 px, foco visible, nombres accesibles, aria-live para operaciones y errores, alternativa no cromática y reduced-motion sin blink/rotación automáticos. Objetivo WCAG 2.2 AA, verificado por recorrido y herramientas; no declarado cumplido por inspección visual solamente.
+Mantener CSS y componentes existentes. Paleta vigente: Obsidian Black `#07070A`, Chrome Silver `#C9CED6`, Laser Crimson `#E11D48` (alerta/acento secundario) y Sky Blue `#7CC8FF` (acento primario); comprobar contraste, no asumirlo por el color. Fuente local con 2–3 pesos; no añadir librerías UI por una recomendación de skill. Controles táctiles objetivo 44×44 px, foco visible, nombres accesibles, aria-live para operaciones y errores, alternativa no cromática y reduced-motion sin blink/rotación automáticos. Objetivo WCAG 2.2 AA, verificado por recorrido y herramientas; no declarado cumplido por inspección visual solamente.
 
 ## 7. Protocolo, concurrencia y reporte
 
@@ -309,9 +380,9 @@ Exportar fallos relevantes sin convertir NaN a un número inventado; usar null+m
 
 OPFS: guardado opt-in, estimate/persist cuando proceda, presupuesto y eliminación explícita. Escritura por dataset/snapshot temporal seguida de publicación de estado; una caída entre A/B no debe dejar un state.json viejo apuntando a una pareja mezclada. Recuperar nombres originales y verificar hashes al reabrir. La cuota/evicción dependen del navegador: exportación del usuario es respaldo, no prometer permanencia.
 
-PWA: SW y manifiesto bajo `web/public/`; Vite copia a dist; postbuild incluye nombres reales de assets. Usar una versión de caché ligada al build o una estrategia de actualización comprobada; no conservar por accidente JS viejo con un manifiesto nuevo. No copiar el catálogo de skills ni entornos Python a dist.
+PWA: manifiesto en `public/`, SW fuente en `sw.js`; Vite compila a `dist/` y `tools/postbuild.mjs` incluye nombres reales de assets. El precache contiene el shell; Three.js/Aladin se guardan al solicitarlos y los FITS sintéticos solo tras su carga explícita. Los mosaicos HiPS remotos requieren conexión. Las actualizaciones se ofrecen al usuario antes de recargar para permitir guardar el trabajo. Usar una versión de caché ligada al build o una estrategia de actualización comprobada; no conservar por accidente JS viejo con un manifiesto nuevo. No copiar el catálogo de skills ni entornos Python a dist.
 
-WASM: salida prevista `web/public/wasm/pkg/`; resolver URL desde una base de aplicación explícita y comprobar red/error en raíz y /skyo/. Fallback JS honesto cuando el artefacto falta; que el fallback funcione no prueba que la URL WASM sea correcta. El standalone y el bundle de producción pueden situar worker.js en rutas distintas.
+WASM: salida vigente `assets/js/science/wasm/pkg/`, copiada a la misma ruta en `dist/`; resolver URL desde una base de aplicación explícita y comprobar red/error en raíz y /skyo/. Fallback JS honesto cuando el artefacto falta; que el fallback funcione no prueba que la URL WASM sea correcta. El standalone y el bundle de producción pueden situar worker.js en rutas distintas.
 
 Integridad y OPFS requieren contexto seguro donde corresponda; localhost es desarrollo, HTTP LAN no prueba HTTPS/PWA. CORS debe comprobarse en el origen de publicación para el recurso exacto, incluyendo errores/redirects y preflight si se requieren cabeceras no simples. No introducir un proxy público para evadir CORS sin una decisión de arquitectura. Las URLs NASA y los resultados de API no autorizan ejecutar código ni enviar datos personales.
 
@@ -338,35 +409,60 @@ No comenzar por detección automática. Cada tarea tendrá RF, dependencias, arc
 
 | Tarea | RF | Dependencias | Archivos/responsabilidad | Hecho cuando |
 |---|---|---|---|---|
-| T01 Integridad de selección y procedencia | 03,13,14 | Ninguna | main.js, worker.js, contracts.d.ts y pruebas | cargas fuera de orden, hash inválido y NASA derivada cubiertos; reporte siempre del par visible |
-| T02 Curación reproducible y robusta | 04,05,06 | T01 para consumir esquema | curate_irsa.py y fixtures | VERSION/tiempos/EPSF preservados o declarados, 503 reintenta, escritura interrumpida no daña dataset |
+| T01 Integridad de selección y procedencia | 03,13,14 | Ninguna | assets/js/science-lab-ui.js, assets/js/science/{lab,worker}.js, contrato y pruebas | cargas fuera de orden, hash inválido y NASA derivada cubiertos; reporte siempre del par visible |
+| T02 Curación reproducible y robusta | 04,05,06 | T01 para consumir esquema | scripts/curate_irsa.py y fixtures | VERSION/tiempos/EPSF preservados o declarados, 503 reintenta, escritura interrumpida no daña dataset |
 | T03 Parser y registro espacial soportado | 07,08,09,20 | T01 | fits.js, wcs.js, tests | formatos/ejes/unidades y límites negativos ensayados; muestra real multizona contra Astropy |
 | T04 Dataset real visual | 06,10,11,12 | T02,T03 | datasets y pipeline.js | dos épocas reales, cobertura/λ/ruido registradas, control negativo, estado exploratorio |
-| T05 UX e integración | 01,02,19 | T01,T04; frontend original para migración | main/index/styles; Aladin/3D/HERA graduales | controles Lugar/Tiempo/Luz, blink y vistas, accesibilidad y pausa verificadas |
+| T05 UX e integración | 01,02,19 | T01,T04; interfaz incorporada en 2bb7e1e | index.html, assets/{js,css}; Aladin/3D/HERA graduales | controles Lugar/Tiempo/Luz, blink y vistas, accesibilidad y pausa verificadas |
 | T06 Persistencia y publicación | 14,15,16 | T01,T04 | opfs/sw/postbuild/wasm-bridge | raíz/subruta, offline, recuperación, cuota, actualización y errores verificados |
 | T07 WASM opcional | 12,16,20 | T03,T04 | wasm y bridge | compilación wasm-bindgen + carga real + equivalencia JS y benchmark; si no mejora, JS sigue permitido |
 | T08 Ciencia de candidatos | 10,11,12,17,18 | T04,T06 y revisión científica | calibraciones, PSF, catálogos y tests | CWAVE/CBAND/ePSF correctos, observador/época, inyección/recuperación, FPR/completitud y revisión |
 
-T01 es el primer trabajo recomendado; no necesita disponer del frontend v1 ni resolver detección. T08 no impide entregar un comparador visual honesto. El paquete se puede construir ahora para evaluar su estado, pero no publicar como terminado mientras fallen puertas I/V.
+T01 es la primera dependencia técnica; la interfaz original está incorporada y
+la implementación local actual se registra en §11.0. T08 no impide entregar un comparador visual honesto. El paquete se puede construir ahora para evaluar su estado, pero no publicar como terminado mientras fallen puertas I/V.
 
 ### Comandos de validación
 
 ```sh
-npm install --package-lock=false   # verificación de este snapshot sin crear un lock; no reproducibilidad futura
+npm ci                            # dependencias fijadas por package-lock.json
 npm test
 npm run web:build
+npm run validate:build
+npm run validate:docs
+npm run test:browser
+npm run test:science-gaps         # cuatro regresiones recuperadas; también en npm test
 npm run preview
-cargo test --manifest-path wasm/Cargo.toml
-npm run wasm:build                # requiere wasm-pack; no equivale a cargo build nativo
+cargo test --locked --manifest-path science-core/Cargo.toml
+npm run wasm:build                # CLI wasm-bindgen coincidente con Cargo.lock en PATH
+.venv/bin/python -m unittest discover -s tests -p test_curator.py
 ```
 
-No existe `npm run build` en package.json. Para una instalación futura reproducible se registrará package-lock.json aprobado y se usará npm ci; no declarar reproducibilidad de dependencias por compilar una vez. Usar Node compatible con el engine de Vite fijado, no simplemente «Node 20 cualquiera». El crate actual mantiene edición 2021; no migrarla solo por seguir una skill moderna.
+El comando de compilación es `npm run web:build`. Node debe ser compatible con Vite 7.3.8 (20.19+ o 22.12+). El lockfile fija las dependencias JavaScript; no implica validación científica. WASM es opcional y su prueba de integración/equivalencia pertenece a T07. `npm run test:science-gaps` conserva las cuatro regresiones recuperadas del
+laboratorio previo contra el motor actual; ahora pasan tras T03/T04. No se
+silencian fallos ni se atribuye aceptación científica a ese resultado. El
+[pipeline local](pipelines/validacion-local.md) fija la preparación Python/Rust
+y del generador wasm-bindgen, sin dependencia de wasm-pack.
 
 ## 11. Pruebas, evidencia y puertas de aceptación
 
-### 11.1 Estado ejecutado del snapshot
+### 11.0 Migración del frontend (2026-11-14)
 
-El [reporte de ejecución](docs/VALIDACION_PREPARACION_SPEC.md) y los recibos fijan las condiciones de cada prueba. Node 24.21.0, Vite 7.3.8, Rust/Cargo 1.99.1, Playwright 1.62.1 y Chromium headless 156 se usaron en este entorno. Se generaron node_modules/dist para las pruebas; las huellas de la aplicación, configuración y package.json permanecen iguales. No se creó lockfile raíz.
+El estado posterior a `2bb7e1e`, sus comandos y límites se registran en
+[validación de migración](VALIDACION_MIGRACION_STACK.md). La evidencia anterior
+de §11.1 corresponde al laboratorio histórico; no se transfiere automáticamente
+al motor nuevo. Después de la parada solicitada, el usuario autorizó iniciar
+T01 y continuar las tareas restantes.
+
+El [informe de implementación](VALIDACION_IMPLEMENTACION_20261114.md) registra
+T01–T07 locales, paquete real m101-visual-v2, 43 pruebas Node, seis Python y dos
+Rust, navegador, equivalencia JS/WASM y límites. T08 conserva
+`scienceReady:false`: solo inspección de CWAVE/CBAND y ePSF, sin G8 ni revisión
+científica independiente. El claim central fue rechazado por aprobación
+pendiente/invalidada; no hay autoaprobación, claim/finish ni aceptación formal.
+
+### 11.1 Estado ejecutado del snapshot histórico
+
+El [reporte de ejecución](VALIDACION_PREPARACION_SPEC.md) y los recibos fijan las condiciones de cada prueba. Node 24.21.0, Vite 7.3.8, Rust/Cargo 1.99.1, Playwright 1.62.1 y Chromium headless 156 se usaron en este entorno. Se generaron node_modules/dist para las pruebas; las huellas de la aplicación, configuración y package.json permanecen iguales. No se creó lockfile raíz.
 
 | Comprobación | Resultado real | Qué acredita y qué no |
 |---|---|---|
@@ -385,8 +481,8 @@ El [reporte de ejecución](docs/VALIDACION_PREPARACION_SPEC.md) y los recibos fi
 | Máscara SATELLITE_HALO bit29 | Falla: mask=[1], unsafeBits=0 | Política actual incompleta; regresión necesaria T03 |
 | Worker ante carga job3→job1 | Falla: estado antiguo altera comparación pese a UI ignorar respuesta | T01 bloquea aceptación I |
 | NASA derivada / exportación / VERSION | Fallos previos confirmados | Corregir T01/T02; .d.ts no valida runtime |
-| Referencias del SPEC anterior/README/DOI | 18 HTTP200 | Disponibilidad bibliográfica, no validación científica |
-| Consulta TAP exacta de §4.1 | HTTP200, 84 filas DR1/QR3 | Sintaxis/columnas reales; no prueba λ por píxel |
+| Referencias del SPEC anterior/README/DOI | 18 HTTP 200 | Disponibilidad bibliográfica, no validación científica |
+| Consulta TAP exacta de §4.1 | HTTP 200, 84 filas DR1/QR3 | Sintaxis/columnas reales; no prueba λ por píxel |
 | SIA DR1/QR3/cubo y metadatos HiPS | Responden; ciertos recortes 503 | Disponibilidad parcial y reintentos; no garantía CORS universal |
 | S3 HEAD y GET Range | 200/206; 17,280 bytes y CORS* | Cabeceras reales; no lector remoto ni navegador NASA validado |
 | Recorte DR1 M101 D2 | 3,954,240 bytes; VERSION7.0.5; IMAGE6×6 | Parser JS lee FLAGS/VARIANCE/ZODI; aún no par temporal validado |
@@ -397,9 +493,9 @@ La ruta Worker y el intento WASM opcional observados en el bundle fueron correct
 
 La prueba controlada Vary: Origin usó los mismos archivos con/sin esa cabecera y contextos limpios. T06 debe resolverlo sin mezclar indiscriminadamente variantes de respuestas ajenas; comprobar recursos estáticos y política del host, no aplicar ignoreVary global sin demostrar su seguridad/semántica.
 
-Recibos: [auditoría HTTP](docs/evidence/auditoria-spec-20261113/enlaces-http.json), [WCS real](docs/evidence/auditoria-spec-20261113/wcs-vs-astropy.json), [consulta del SPEC](docs/evidence/preparacion-spec-20261113/spec-query.json), [navegador](docs/evidence/preparacion-spec-20261113/validacion-app-browser.json), [regresiones](docs/evidence/preparacion-spec-20261113/validacion-app-regresiones.json), [compilación](docs/evidence/preparacion-spec-20261113/validacion-app-web-build.txt). Investigación: [datos NASA](docs/INVESTIGACION_DATOS_NASA.md) y [criterios científicos](docs/CRITERIOS_CIENTIFICOS_SKYO.md).
+Recibos: [auditoría HTTP](evidence/auditoria-spec-20261113/enlaces-http.json), [WCS real](evidence/auditoria-spec-20261113/wcs-vs-astropy.json), [consulta del SPEC](evidence/preparacion-spec-20261113/spec-query.json), [navegador](evidence/preparacion-spec-20261113/validacion-app-browser.json), [regresiones](evidence/preparacion-spec-20261113/validacion-app-regresiones.json), [compilación](evidence/preparacion-spec-20261113/validacion-app-web-build.txt). Investigación: [datos NASA](INVESTIGACION_DATOS_NASA.md) y [criterios científicos](CRITERIOS_CIENTIFICOS_SKYO.md).
 
-**Puertas del producto actual:** I no superada (jobs/procedencia/máscara); V no superada (I, datos reales, accesibilidad y persistencia completa); C no superada; WASM integrado no probado. **Preparación documental:** hay requisitos, contratos, consulta ensayada y T01–T08 definidos para empezar, sin necesidad de considerar esos fallos resueltos.
+**Puertas del snapshot histórico:** I no superada (jobs/procedencia/máscara); V no superada (I, datos reales, accesibilidad y persistencia completa); C no superada; WASM integrado no probado. **Preparación documental:** hay requisitos, contratos, consulta ensayada y T01–T08 definidos para empezar, sin necesidad de considerar esos fallos resueltos.
 
 ### 11.2 Matriz de pruebas que debe implementar el proyecto
 
@@ -427,14 +523,14 @@ Si falta calibración/época/observador necesario, degradar explícitamente a vi
 
 | Riesgo o decisión | Respuesta requerida / condición de resolución |
 |---|---|
-| Jobs/procedencia no fiables en el prototipo | Resolver T01 antes de confiar en una demo NASA |
+| Regresión de jobs/procedencia | T01 tiene pruebas locales; conservarlas al cambiar sesión, Worker o contratos |
 | WCS-WAVE confundido con calibración científica | RF-10 y T08; no relajar la distinción por tener mapa por píxel |
 | 503 y endpoints sin CORS | Curación y mismo origen; reintentos; S3 opcional probado por recurso |
 | Dataset truncado o sesgado por TOP/gap | Registrar truncamiento y selección; no asumir cobertura total |
 | Píxel grande/PSF/ruido y movimiento aparente | Medir errores/paralaje y validar PSF; umbrales experimentales versionados |
 | Catálogo no detecta fuente tenue o mezcla/paralaje | No encontrado no significa nuevo; controles y catálogos complementarios |
 | Memoria/descarga exceden móvil | Presupuesto por bytes/HDU y ROI; perf medida en dispositivo real |
-| Frontend original no disponible | Integración v1 pendiente; comenzar por laboratorio y contratos |
+| Divergencia entre interfaz integrada e independiente | Ambas usan la sesión/UI científica compartida; verificar ambos recorridos |
 | Runtime/compatibilidad móvil | Safari/Android/PWA pendientes de dispositivo; fallback y errores claros |
 | Aladin/licencias/atribuciones | Fijar release y conservar notices; comprobar antes de publicar |
 | Límites científicos finos | Umbral de equivalencia espectral/falsos positivos decidido con experimento, no una constante inventada como NASA |
@@ -465,3 +561,5 @@ Un cambio de release, pipeline, esquema o calibración exige guardar versión/fe
 - Se incorporaron los fallos de concurrencia, etiqueta NASA, pérdida de VERSION/EPSF, contrato de reporte y robustez de descargas como requisitos/tareas con pruebas.
 - Se añadieron calibraciones científicas, ePSF D3, canales vacíos, CORS/S3 por recurso, tiempos/observador, máscaras por propósito y límites de AllWISE.
 - Esta revisión cambia el SPEC y los documentos de ejecución/evidencia; no implementa de forma tácita los arreglos de la aplicación.
+
+- 2026-11-14: implementación local T01–T07, evidencia real/Worker/WASM y preparación parcial T08 documentadas; requisitos científicos y aprobaciones centrales permanecen vigentes, sin autoaprobación.

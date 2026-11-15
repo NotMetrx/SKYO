@@ -1,142 +1,174 @@
 # SKYO 🌌
 
-> **Explorador astronómico multitemporal y laboratorio científico local-first (SPHEREx / JPL / NASA)**  
-> Interfaz interactiva 3D con estética **Liquid Glass**, bóveda celeste ICRS, asistente **H.E.R.A 7** y motor de procesamiento astrométrico en el navegador.
+> **Explorador astronómico multitemporal y laboratorio científico local-first (SPHEREx / JPL / NASA)**
+> Interfaz 3D con estética **Liquid Glass**, bóveda celeste ICRS, asistente **H.E.R.A 7** y procesamiento astrométrico en el navegador.
+
+Explorar abre ahora [Dentro del cielo](inmersivo.html): panorama SPHEREx de 360° con
+vuelo visual, zoom, 102 canales, HUD de coordenadas/época/flujo y WebXR.
+Los valores de píxel se leen del plano FITS real mediante Worker/Rust, separados
+de la apariencia PNG. [Datos, pruebas y límites](docs/VALIDACION_INMERSIVA_20261115.md).
+El [plano focal D1–D6](espectral.html) y el laboratorio FITS siguen disponibles.
 
 ---
 
-## 📸 Vista de la Aplicación
+## 📸 Vista de la aplicación
 
-| Inicio Minimalista (Cosmos 3D + Zoom Warp) | Bóveda Celeste ICRS (Retícula + Misiones + H.E.R.A 7) |
+| Inicio minimalista (eclipse 3D + Zoom Warp) | Bóveda Celeste ICRS |
 | :---: | :---: |
 | ![SKYO Inicio](assets/img/previews/inicio.png) | ![SKYO Explorar](assets/img/previews/explorar.png) |
 
-| Sistema Solar 3D | Fases e Infrarrojo Multitemporal |
+| Sistema Solar 3D | Fases e infrarrojo multitemporal |
 | :---: | :---: |
 | ![SKYO 3D](assets/img/previews/sistema3d.png) | ![SKYO Fases](assets/img/previews/fases.png) |
 
 ---
 
-## ✨ Características Principales
+## 🎨 Paleta de campaña
 
-1. **Pantalla de Inicio Cinemática (`#inicio`)**
-   - Wordmark tipográfico de alta fidelidad con eclipse solar, corona respiratoria y destello de diamante.
-   - Espacio 3D interactivo con constelaciones reales y efecto paralaje LERP suave sin consumo en reposo.
-   - **Transición Warp Zoom**: Al presionar <kbd>ENTER</kbd> o la <kbd>BARRA ESPACIADORA</kbd>, la cámara WebGL se proyecta hacia adelante adentrándote en el espacio y transportándote suavemente a la bóveda celeste.
+| Token | Color | Uso |
+|---|---|---|
+| `--obsidian` | `#07070A` | Fondo, lienzo 3D y superficies base |
+| `--chrome` / `--chrome-bright` | `#C9CED6` / `#E6E8EC` | Texto, bordes y reflejos metálicos |
+| `--crimson` | `#E11D48` | Alertas, modo activo, candidatos y vector de movimiento |
+| `--sky` | `#7CC8FF` | Acento primario, foco, enlaces y banda IR corta |
 
-2. **Bóveda Celeste Multitemporal (`#explorar`)**
-   - Ventana astronómica profunda en coordenadas **ICRS** con retícula esférica **HEALPix**.
-   - Selector multitemporal de épocas (Época 1 a Época 4) y bandas infrarrojas (IR Corto D1–D3 vs. IR Largo D4–D6).
-   - **Herramienta Parpadear Épocas (Blink)**: Alterna rápidamente entre dos épocas para localizar asteroides, cometas o transitorios por movimiento propio.
-   - **Asistente H.E.R.A 7**: Modelo interactivo 3D con casco reflectante y visor dinámico que propone retos de aula, da pistas guiadas y explica la física del fenómeno.
+Los tokens viven en `assets/css/main.css` y se replican en `assets/css/lab.css`, `assets/js/contexto.css`, los iconos SVG y el manifiesto PWA. La documentación ampliada está en [`docs/PALETA.md`](docs/PALETA.md) y [`docs/LAYOUT.md`](docs/LAYOUT.md).
+
+---
+
+## ✨ Características principales
+
+1. **Inicio cinemático (`#inicio`)**
+   - Eclipse 3D de Blender (`assets/models/eclipse.glb`) como la «O» de SKYO, al pulsar «Animar eclipse 3D»; marca estática mientras no se activa.
+   - Campo estelar y nebulosas reactivas al puntero, con pausa automática en reposo.
+   - **Warp Zoom**: <kbd>Enter</kbd> o <kbd>Espacio</kbd> lanzan el eclipse hacia la cámara y abren la bóveda celeste.
+
+2. **Bóveda Celeste multitemporal (`#explorar`)**
+   - Coordenadas **ICRS**, retícula **HEALPix**, recorte astrométrico y filtros por tipo de cuerpo.
+   - Épocas SPHEREx y bandas infrarrojas (IR Corto D1–D3 vs. IR Largo D4–D6).
+   - Vistas educativas ilustrativas; las mediciones reales se abren en Laboratorio FITS.
+   - Misiones guiadas de H.E.R.A 7, bitácora de candidatos y exportación JSON.
 
 3. **Sistema Solar y Fases (`#3d` / `#fases`)**
-   - Explorador de órbitas planetarias y cuerpos menores en 3D acelerado por GPU.
-   - Comparador espectral y curvas de luz multitemporales.
+   - Órbitas planetarias y cuerpos menores en 3D.
+   - Curvas de luz, fases del proyecto y lectura espectral.
 
-4. **Laboratorio Científico FITS Local-First (`lab.html`)**
-   - Pipeline de procesamiento astrométrico ejecutado 100% en el dispositivo del usuario mediante Web Workers y Rust/WASM.
-   - Soporte para proyección astronómica TAN-SIP WCS, calibración de fondo, decodificación de flags de calidad de píxel y cálculo de varianza de ruido.
-   - Funcionalidad PWA con Service Worker para operación totalmente offline.
+4. **Laboratorio FITS local-first (`lab.html` / `#explorar` → Laboratorio)**
+   - Pipeline en Web Worker con fallback JavaScript y Rust/WASM opcional.
+   - WCS TAN-SIP, máscaras FLAGS, varianza, reproyección y comparación exploratoria.
+   - Botón «Cargar M101 real»: dos épocas DR1 y dos recortes con procedencia y hashes.
+   - Lugar/Tiempo/Luz, blink manual, vistas A/B/diferencia/SNR, guardado y borrado local.
+   - Reporte JSON del par vigente; calibración/PSF y significancia científica pendientes.
+   - Contexto HiPS 2MASS de IRSA bajo demanda (`contexto.html`, Aladin Lite 3.8.2).
 
-5. **Diseño Líquido (Liquid Glass)**
-   - Paneles translúcidos con desenfoque de fondo dinámico (`backdrop-filter`), destellos especulares y paleta adaptada para sesiones de observación nocturna sobre negro absoluto (`#000000`).
+5. **PWA y accesibilidad**
+   - Shell offline por scope, caché por versión y actualización con consentimiento.
+   - Navegación por teclado, foco visible, `prefers-reduced-motion` y contraste verificado.
 
 ---
 
-## 🚀 Inicio Rápido (Cero Configuración)
+## 🚀 Inicio rápido
 
-No necesitas instalar herramientas pesadas. El proyecto está empaquetado con librerías nativas locales y rutas 100% relativas para funcionar en cualquier computadora (Linux, macOS, Windows).
+Requiere Node.js `^20.19.0` o `>=22.12.0` (Vite 7).
 
-### Opción 1: Con Node.js (Recomendado)
 ```bash
-# 1. Clonar el repositorio
 git clone https://github.com/NotMetrx/SKYO.git
 cd SKYO
-
-# 2. Iniciar el servidor local
+npm ci
 npm start
 ```
-Abre en tu navegador:
-- **Aplicación principal**: [http://localhost:8000/](http://localhost:8000/)
-- **Laboratorio FITS**: [http://localhost:8000/lab.html](http://localhost:8000/lab.html)
 
-### Opción 2: Con Python
-```bash
-python3 -m http.server 8000
-```
-Y abre `http://localhost:8000` en tu navegador.
+Abre `http://127.0.0.1:4173` para la aplicación principal o `http://127.0.0.1:4173/lab.html` para el laboratorio FITS.
 
-### Opción 3: VS Code Live Server u otros servidores estáticos
-Abre la carpeta del proyecto en VS Code y haz clic en **"Go Live"** sobre `index.html`.
+Para publicar en hosting estático, compila con `npm run web:build` y sirve
+`dist/`. El servidor de desarrollo procesa las dependencias de Vite. Los FITS
+manuales se procesan localmente; guardarlos en OPFS requiere pulsar Guardar.
+Los paquetes curados se descargan solo al solicitarlos, y HiPS requiere conexión.
 
 ---
 
-## 🧪 Pruebas del Pipeline Científico
-
-El proyecto incluye una suite de pruebas automatizadas para verificar la precisión del cálculo astrométrico y la reproyección WCS:
+## 🧪 Compilación y pruebas
 
 ```bash
-npm test
+npm test                 # sesión, FITS/WCS, datos reales, OPFS y equivalencia WASM
+npm run web:build        # Vite + recursos de runtime y Service Worker
+npm run validate:build   # verifica dist/, manifiesto y entradas
+npm run validate:docs    # verifica spec, plan, tareas y pipeline
+npm run preview          # sirve dist/ en 127.0.0.1:4174
 ```
 
-Salida esperada:
-```text
-✔ FITS MEF: IMAGE/FLAGS/VARIANCE/ZODI con datos originales
-✔ WCS TAN-SIP respeta transformacion ida/vuelta subpixel
-✔ mascaras decodifican banderas de mala calidad sin eliminar SOURCE
-✔ el motor reproyecta B usando WCS de A
-✔ calculo de diferencia con varianza y filtro de datos nulos
-✔ pipeline extremo a extremo sintético mantiene calificativo exploratorio
-✔ sin longitud de onda calibrada se rechaza validar compatibilidad
-✔ bloquea comparaciones con filtros realmente incompatibles
-ℹ tests 8, pass 8, fail 0
+Pruebas de navegador (Chromium de Playwright):
+
+```bash
+npx playwright install chromium --only-shell
+npm run test:browser
 ```
+
+Regresiones recuperadas (también incluidas en npm test):
+
+```bash
+npm run test:science-gaps
+```
+
+Las cuatro regresiones pasan en la implementación actual. El [informe de
+validación](docs/VALIDACION_IMPLEMENTACION_20261114.md) registra 43 pruebas Node,
+seis Python, dos Rust, navegador, equivalencia y benchmark WASM. El
+[pipeline](docs/pipelines/validacion-local.md) explica cómo repetirlas y regenerar
+el kernel opcional con wasm-bindgen. T08 sigue parcial: no hay detección
+astronómica validada ni prueba en Android físico. Consulta también los
+[criterios científicos](docs/CRITERIOS_CIENTIFICOS_SKYO.md).
 
 ---
 
-## 📁 Estructura del Proyecto
-
-Organización limpia, idiomática y libre de dependencias superfluas:
+## 📁 Estructura del proyecto
 
 ```text
-SKYO/
-├── index.html                 # Punto de entrada principal (SPA con Cosmos 3D)
-├── lab.html                   # Laboratorio científico de comparación FITS
-├── sw.js                      # Service Worker para ejecución offline (PWA)
-├── package.json               # Metadatos del proyecto y scripts npm
-├── LICENSE                    # Licencia MIT
-├── README.md                  # Documentación visual y guía de uso
-├── assets/
-│   ├── css/                   # Estilos Liquid Glass (main.css, lab.css)
-│   ├── fonts/                 # Tipografías Space Grotesk, Space Mono, Poppins
-│   ├── img/                   # Texturas, astronauta H.E.R.A 7 y capturas preview
-│   └── js/
-│       ├── app.js             # Enrutador reactivo SPA y teclado (Enter/Espacio)
-│       ├── cosmos3d.js        # Motor de Three.js para la bóveda celeste y warp zoom
-│       ├── explorar.js        # Retícula ICRS, blink comparator y retos de aula
-│       ├── sistema3d.js       # Simulación 3D del Sistema Solar
-│       ├── fases.js           # Visor de curvas de luz y fases espectrales
-│       ├── hera3d.js          # Asistente interactivo H.E.R.A 7 en 3D
-│       ├── science/           # Pipeline astrométrico (FITS, WCS, worker, render)
-│       └── vendor/            # Three.js y Lottie locales (cero peticiones externas)
-├── data/
-│   ├── sample-fits/           # Archivos FITS de demostración para comparación
-│   └── manifests/             # Manifiesto web para instalación PWA
-├── science-core/              # Crate en Rust para aceleración WebAssembly (WASM)
-├── scripts/                   # Servidor de desarrollo nativo y pruebas de pipeline
-├── docs/                      # Especificaciones, arquitectura y auditoría técnica
-└── _archivo/                  # Archivo histórico y recursos complementarios
+index.html, lab.html, contexto.html   Entradas Vite (portal, FITS y contexto HiPS)
+sw.js                                  Service Worker (shell offline)
+assets/
+  css/                                 Estilos Liquid Glass (main.css, lab.css)
+  fonts/                               Space Grotesk, Space Mono, Poppins
+  img/                                 Assets visuales, previews y H.E.R.A 7
+  js/                                  SPA: app, cosmos3d, explorar, fases, sistema3d, hera3d, data
+  js/science/                          Pipeline FITS/WCS, render, worker y puente WASM
+  js/vendor/                           Three.js y Lottie locales
+science-core/                          Crate Rust para aceleración WebAssembly
+scripts/                               Curador, generadores y suites de pruebas
+public/datasets/                       Paquete visual NASA derivado publicado
+data/                                  Originales FITS, calibraciones y manifiestos
+docs/                                  Arquitectura, spec, auditoría, protocolos y pipelines
+  specs/                               001-inicial (histórica) y 002-comparador-local (activa)
+  pipelines/                           Validación local y visual
+  protocols/                           PV-01…PV-08 de auditoría visual
+_archivo/                              Material legacy y skills de referencia
+MEMORY.md, AGENTS.md                   Memoria operativa y protocolo vigente
 ```
+
+`tools/postbuild.mjs` y `vite.config.mjs` se conservan activos en la raíz para la compilación; sus copias históricas están en `_archivo/legacy/`.
 
 ---
 
-## ⚡ Rendimiento y Buenas Prácticas (Filosofía Ponytail)
+## 📚 Documentación
 
-- **Cero Polling Inútil**: Sin temporizadores `setInterval` en segundo plano que drenen la batería de portátiles. Toda la lógica se activa por eventos del usuario (`pointermove`, `keydown`, `hashchange`).
-- **Pausa Automática**: Si minimizas la pestaña o cambias de ventana (`document.hidden`), los bucles de renderizado 3D entran en suspensión profunda liberando CPU y GPU.
-- **Accesibilidad**: Respeta estrictamente la preferencia del sistema `prefers-reduced-motion` desactivando zooms bruscos para usuarios sensibles.
-- **Autonomía Total**: Los archivos esenciales de Three.js y Lottie están alojados en local, permitiendo que la aplicación funcione en entornos aislados o sin conexión a internet.
+- [SPEC principal](docs/SPEC_SKYO_2.1_AUDITADO.md)
+- [Constitución del proyecto](docs/constitution.md)
+- [Interfaz y UX](docs/INTERFAZ-Y-UX.md)
+- [Paleta](docs/PALETA.md) y [layout](docs/LAYOUT.md)
+- [Criterios científicos](docs/CRITERIOS_CIENTIFICOS_SKYO.md)
+- [Pipeline de validación local](docs/pipelines/validacion-local.md)
+- [Validación de implementación T01–T08](docs/VALIDACION_IMPLEMENTACION_20261114.md)
+- [Protocolos de auditoría visual](docs/protocols/README.md)
+- [Fuentes y procedencia](docs/FUENTES.md)
+- [Roadmap](docs/ROADMAP.md)
+
+---
+
+## ⚡ Rendimiento y buenas prácticas
+
+- **Sin polling inútil**: la lógica se activa por eventos (`pointermove`, `keydown`, `hashchange`).
+- **Pausa automática**: al ocultar la pestaña, los bucles 3D suspenden CPU/GPU.
+- **Accesibilidad**: `prefers-reduced-motion`, foco visible y alternativa no cromática.
+- **Autonomía**: Three.js y Lottie se sirven localmente; la app funciona sin CDN.
 
 ---
 

@@ -5,36 +5,43 @@ Fuente única: variables `:root` en [`assets/css/main.css`](../assets/css/main.c
 ## Base
 | Token | Valor | Uso |
 |---|---|---|
-| `--bg` | `#000000` | Fondo absoluto (cielo nocturno, obligatorio) |
-| `--fg` | `#eef3ff` | Texto principal (blanco frío) |
-| `--mut` | `#a4b2ca` | Texto secundario, etiquetas, metadatos |
+| `--obsidian` / `--bg` | `#07070A` | Fondo, lienzo 3D y superficies base |
+| `--chrome` | `#C9CED6` | Texto secundario y reflejos metálicos |
+| `--chrome-bright` / `--fg` | `#E6E8EC` | Texto principal |
+| `--chrome-dim` / `--mut` | `#A6AFBB` | Metadatos y etiquetas |
 
 ## Acentos
 | Token | Valor | Uso |
 |---|---|---|
-| `--ac` | `#5bb8ff` | Azul estelar: acción primaria, foco, selección, retícula ICRS |
-| `--ac2` | `#b57bff` | Morado: vector de verificación, misiones, alertas de candidato |
-| `--ok` | `#4ade80` | Verde: confirmación, estado válido |
+| `--sky` / `--ac` | `#7CC8FF` | Acción primaria, foco, selección, retícula ICRS y banda IR corta |
+| `--crimson` / `--ac2` | `#E11D48` | Rellenos, bordes, alertas y banda IR larga |
+| `--crimson-soft` | `#FF5C7A` | Texto de acento sobre obsidiana (contraste AA) |
+| `--crimson-pale` | `#FFC2CE` | Texto/insignias sobre fondos crimson |
+| `--ok` | `#7CC8FF` | Confirmación (la paleta no usa verde) |
 
-> Regla: `--ac` para interacción, `--ac2` (morado) solo para señal científica (movimiento/candidato). Nunca ambos como fondo del mismo componente.
+> Regla: `--ac` para interacción; `--ac2` solo para señal científica (movimiento, candidato, alerta). Para texto pequeño sobre obsidiana usar `--crimson-soft` o `--crimson-pale`, no `--crimson` puro.
 
 ## Líneas
 | Token | Valor | Uso |
 |---|---|---|
-| `--ln` | `rgba(255,255,255,.21)` | Bordes de paneles glass |
-| `--ln-ac` | `rgba(91,184,255,.54)` | Borde activo / hover |
+| `--ln` | `rgba(201,206,214,.22)` | Bordes de paneles glass |
+| `--ln-ac` | `rgba(124,200,255,.54)` | Borde activo / hover |
 
 ## Liquid Glass
 | Token | Composición |
 |---|---|
-| `--gl` | blanco 11.5% → azul noche `#101a2e` 34% → `--ac` 8.5% (138°) |
-| `--gl-strong` | blanco 14% → `#0a101e` 56% → `--ac` 11% (142°) — barras y diálogos |
-| `--gl-card` | blanco 9.5% → `#0c1322` 38% → `--ac` 6.5% (148°) — tarjetas |
+| `--gl` | blanco 11.5% → obsidiana `#121318` 34% → `--ac` 8.5% (138°) |
+| `--gl-strong` | blanco 14% → `#0D0E12` 56% → `--ac` 11% (142°) — barras y diálogos |
+| `--gl-card` | blanco 9.5% → `#0F1015` 38% → `--ac` 6.5% (148°) — tarjetas |
 | `--gl-filter` | `blur(22px) saturate(185%) brightness(1.06)` |
 | `--gl-inset` / `--gl-shadow` | brillo especular interno + sombra `rgba(0,0,0,.58)` |
 
 ## Wordmark SKYO
-Degradado vertical `#ffffff` → `#dbe9ff` → `#8fb6e6` con halo `rgba(91,184,255,.3)`.
+Degradado vertical `#FFFFFF` → `#E6E8EC` → `#A6AFBB` con halo `rgba(124,200,255,.3)`.
 
-## Contraste (WCAG sobre `#000000`)
-- `--fg` 18.9:1 · `--mut` 9.8:1 · `--ac` 9.7:1 · `--ac2` 7.2:1 · `--ok` 12.1:1 — todos AAA para texto.
+## Contraste (WCAG sobre `#07070A`)
+- `--chrome-bright` 16.4:1 · `--chrome` 12.7:1 · `--mut` 9.1:1 · `--sky` 11.1:1 — AAA para texto.
+- `--crimson-soft` 6.8:1 · `--crimson-pale` 13.3:1 — AA/AAA para texto.
+- `--crimson` 4.3:1 — reservado para rellenos, bordes e iconos grandes; no para texto pequeño.
+
+La comprobación de contraste es analítica y debe repetirse con herramientas de navegador antes de declarar conformidad WCAG.

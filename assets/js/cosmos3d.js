@@ -1,7 +1,7 @@
 /**
- * SKYO — Motor Unificado Three.js en Vivo para Todos los Paneles (#000000)
+ * SKYO — Motor Unificado Three.js en Vivo para Todos los Paneles (#07070a)
  * Filosofía Ponytail:
- *  - Un único contexto WebGLRenderer en negro absoluto (#000000) para todas las vistas.
+ *  - Un único contexto WebGLRenderer en obsidiana (#07070a) para todas las vistas.
  *  - Carga local diferida/única de three.min.js (r128), cero dependencias externas.
  *  - Pausa automática con Page Visibility API, dirty-render en pausa 3D y respeto a reduced-motion.
  */
@@ -9,6 +9,7 @@
 import { OBJ, PLANETAS, BANDAS, FASES_PROYECTO, FI, rng } from './data.js';
 import { loadGlbGroup } from './glb-lite.js';
 import { renderState, clearState } from './ui-states.js';
+import { startFlightAudio, updateFlightAudio, stopFlightAudio } from './sound.js';
 
 let T = null;
 let canvas = null;
@@ -24,7 +25,6 @@ let emaFrameMs = 16.7;
 let lastPerfAdjustTs = 0;
 
 let isInitialized = false;
-let isLoading = false;
 let isVisible = true;
 let rafId = 0;
 let activeRoute = 'inicio';
@@ -84,6 +84,8 @@ const kryoMats = [];
 let kryoPhase = 'idle'; // 'idle' | 'takeoff' | 'done'
 let kryoWarpT = 0;
 let kryoDidLandingWave = false;
+let kryoDidDock = false;
+let kryoDockHandler = null;
 let kryoOrbitCurve = null;
 let kryoOrbitTrail = null;
 let kryoOrbitTrailPts = [];
@@ -116,6 +118,19 @@ let bovedaModelLoaded = false;
 let bovedaAstrolabe = null;
 let bovedaBezelGuides = null;
 let bovedaPolycount = 0;
+let focalPlaneRig = null;
+let focalPlaneLoaded = false;
+const fpaDetectors = [];
+let fpaDetectorHitMeshes = [];
+let hoveredDetector = -1;
+const FPA_DETECTOR_SPECS = [
+  { id: 1, band: 0, label: 'D1', range: '0.75–1.11 µm', bandName: 'IR Corto', color: 0x3898ff, pos: [-20, 10] },
+  { id: 2, band: 0, label: 'D2', range: '1.11–1.64 µm', bandName: 'IR Corto', color: 0x22ccff, pos: [0, 10] },
+  { id: 3, band: 0, label: 'D3', range: '1.64–2.41 µm', bandName: 'IR Corto', color: 0x00e6d2, pos: [20, 10] },
+  { id: 4, band: 1, label: 'D4', range: '2.42–3.15 µm', bandName: 'IR Largo', color: 0xb57bff, pos: [-20, -10] },
+  { id: 5, band: 1, label: 'D5', range: '3.15–4.10 µm', bandName: 'IR Largo', color: 0xd96bff, pos: [0, -10] },
+  { id: 6, band: 1, label: 'D6', range: '4.10–5.01 µm', bandName: 'IR Largo', color: 0xff9e58, pos: [20, -10] }
+];
 let selectRing = null;
 let hoverRing = null;
 const objEntries = [];
@@ -131,7 +146,9 @@ const exploreState = {
   hovered: -1,
   onSelect: null,
   onHover: null,
-  onBlinkTick: null
+  onBlinkTick: null,
+  onBandSelect: null,
+  onDetectorHover: null
 };
 let blinkAccumMs = 0;
 let lastLoopTs = 0;
@@ -161,26 +178,8 @@ const fasesState = {
 
 function ensureThreeLoaded() {
   if (window.THREE) return Promise.resolve(window.THREE);
-  if (isLoading) {
-    return new Promise(resolve => {
-      const wait = () => (window.THREE ? resolve(window.THREE) : setTimeout(wait, 40));
-      wait();
-    });
-  }
-  isLoading = true;
-  return new Promise((resolve, reject) => {
-    const s = document.createElement('script');
-    s.src = 'assets/js/vendor/three.min.js';
-    s.onload = () => {
-      isLoading = false;
-      resolve(window.THREE);
-    };
-    s.onerror = err => {
-      isLoading = false;
-      reject(err);
-    };
-    document.head.appendChild(s);
-  });
+  return loadClassicScript('assets/js/vendor/three.min.js', () => Boolean(window.THREE))
+    .then(() => window.THREE);
 }
 
 function makeGlowTexture(innerColor, midColor) {
@@ -230,7 +229,7 @@ function buildEclipsePortal() {
   eclipseRig.visible = activeRoute === 'inicio';
 
   const haloMat = new T.SpriteMaterial({
-    map: makeGlowTexture('rgba(181,123,255,0.44)', 'rgba(91,184,255,0.16)'),
+    map: makeGlowTexture('rgba(225,29,72,0.44)', 'rgba(124,200,255,0.16)'),
     transparent: true,
     opacity: 0.62,
     blending: T.AdditiveBlending,
@@ -243,11 +242,11 @@ function buildEclipsePortal() {
 
   const rimLight = new T.DirectionalLight(0x8fd2ff, 2.25);
   rimLight.position.set(2.2, 1.8, 3.6);
-  const purpleFill = new T.PointLight(0xb57bff, 1.75, 16);
-  purpleFill.position.set(-2.4, -1.6, 2.8);
+  const crimsonFill = new T.PointLight(0xe11d48, 1.75, 16);
+  crimsonFill.position.set(-2.4, -1.6, 2.8);
   const backRim = new T.DirectionalLight(0xffffff, 1.15);
   backRim.position.set(-1.5, 2.6, -1.4);
-  eclipseRig.add(rimLight, purpleFill, backRim);
+  eclipseRig.add(rimLight, crimsonFill, backRim);
 
   const slotEl = document.querySelector('#inicio .eclipse-o');
   if (slotEl) {
@@ -282,6 +281,7 @@ function buildEclipsePortal() {
         for (const clip of clips) eclipseMixer.clipAction(clip).play();
       }
       eclipseRig.add(model);
+      document.querySelector('#inicio .eclipse-o')?.classList.add('eclipse-ready');
       updateEclipseSlotRect();
       eclipseRig.visible = activeRoute === 'inicio' || eclipsePhase === 'transition';
       if (eclipseRig.visible) wakeLoop();
@@ -406,16 +406,28 @@ function updateEclipsePortalFrame(dt) {
 /* ==========================================================================
    0b. Agente 3D KRYO-9 (Studio IBL + Seguimiento + Propulsión + Despegue)
    ========================================================================== */
-function loadClassicScript(src) {
+function loadClassicScript(src, isReady) {
+  if (isReady?.()) return Promise.resolve();
   return new Promise((resolve, reject) => {
-    const existing = [...document.scripts].find(sc => sc.getAttribute('src') === src);
+    const existing = [...document.scripts].find(sc => sc.getAttribute('src') === src || sc.src?.endsWith(src));
     if (existing) {
-      resolve();
+      if (existing.dataset.loaded === '1' || isReady?.()) {
+        resolve();
+        return;
+      }
+      existing.addEventListener('load', () => {
+        existing.dataset.loaded = '1';
+        resolve();
+      }, { once: true });
+      existing.addEventListener('error', reject, { once: true });
       return;
     }
     const s = document.createElement('script');
     s.src = src;
-    s.onload = () => resolve();
+    s.onload = () => {
+      s.dataset.loaded = '1';
+      resolve();
+    };
     s.onerror = err => reject(err);
     document.head.appendChild(s);
   });
@@ -425,9 +437,9 @@ function ensureGltfSupport() {
   if (gltfSupportPromise) return gltfSupportPromise;
   gltfSupportPromise = (async () => {
     await ensureThreeLoaded();
-    if (!T.DRACOLoader) await loadClassicScript('assets/js/vendor/DRACOLoader.js');
-    if (!T.GLTFLoader) await loadClassicScript('assets/js/vendor/GLTFLoader.js');
-    if (!T.RoomEnvironment) await loadClassicScript('assets/js/vendor/RoomEnvironment.js');
+    await loadClassicScript('assets/js/vendor/DRACOLoader.js', () => Boolean(T.DRACOLoader));
+    await loadClassicScript('assets/js/vendor/GLTFLoader.js', () => Boolean(T.GLTFLoader));
+    await loadClassicScript('assets/js/vendor/RoomEnvironment.js', () => Boolean(T.RoomEnvironment));
     if (!inicioEnv && renderer && T.PMREMGenerator && T.RoomEnvironment) {
       try {
         const pmrem = new T.PMREMGenerator(renderer);
@@ -758,18 +770,49 @@ function pushKryoOrbitTrail(worldPos, alphaScale = 1) {
   kryoOrbitTrail.visible = alphaScale > 0.02;
 }
 
-function buildOrbitalCurve(slotNdcX, slotNdcY) {
+function getHeraDockTarget() {
+  const w = window.innerWidth || 1280;
+  const h = window.innerHeight || 720;
+  const haEl = document.getElementById('ha');
+  if (haEl) {
+    const r = haEl.getBoundingClientRect();
+    if (r.width > 12 && r.height > 12) {
+      const cx = r.left + r.width * 0.5;
+      const cy = r.top + r.height * 0.5;
+      return {
+        cx,
+        cy,
+        size: r.width,
+        ndcX: (cx / w) * 2 - 1,
+        ndcY: -((cy / h) * 2 - 1)
+      };
+    }
+  }
+  const isNarrow = w <= 780;
+  const size = isNarrow ? 46 : 96;
+  const cx = w - (isNarrow ? 12 : 20) - size * 0.5;
+  const cy = isNarrow ? 6 + size * 0.5 : h - 20 - size * 0.5;
+  return {
+    cx,
+    cy,
+    size,
+    ndcX: (cx / w) * 2 - 1,
+    ndcY: -((cy / h) * 2 - 1)
+  };
+}
+
+function buildOrbitalCurve(slotNdcX, slotNdcY, dock = getHeraDockTarget()) {
   const isNarrow = (window.innerWidth || 1280) < 780;
   const rightSwing = Math.min(0.74, Math.max(0.28, slotNdcX + (isNarrow ? 0.30 : 0.22)));
   const leftSwing = isNarrow ? -0.40 : -0.44;
   return new T.CatmullRomCurve3([
     new T.Vector3(slotNdcX, slotNdcY, 21.0),
     new T.Vector3(rightSwing, slotNdcY - 0.14, 13.8),
-    new T.Vector3(isNarrow ? 0.12 : 0.16, 0.14, 11.4),
-    new T.Vector3(leftSwing, -0.02, 16.0),
-    new T.Vector3(leftSwing * 0.42, -0.14, 22.8),
-    new T.Vector3(0.03, -0.02, 20.5),
-    new T.Vector3(0.0, 0.0, 19.5)
+    new T.Vector3(isNarrow ? 0.12 : 0.16, 0.14, 11.2),
+    new T.Vector3(leftSwing, -0.02, 15.8),
+    new T.Vector3(leftSwing * 0.42, isNarrow ? 0.18 : -0.18, 22.4),
+    new T.Vector3(dock.ndcX * 0.62, dock.ndcY * 0.62 + (isNarrow ? 0.06 : -0.04), 20.6),
+    new T.Vector3(dock.ndcX, dock.ndcY, 19.6)
   ], false, 'centripetal', 0.45);
 }
 
@@ -1129,11 +1172,23 @@ function updateKryoFrame(dt) {
 
   const worldScreenH = 2 * depth * Math.tan((camera.fov * Math.PI) / 360);
   const fitPx = Math.min(stageH * 0.86, stageW * 0.95);
-  kryoBaseScale = ((fitPx / h) * worldScreenH) * 0.44;
-  const arrivalShrink = kryoPhase === 'takeoff' && progress > 0.86
-    ? 1 - 0.32 * ((progress - 0.86) / 0.14)
-    : 1;
-  kryoRig.scale.setScalar(kryoBaseScale * arrivalShrink);
+  let targetPx = fitPx;
+  if (kryoPhase === 'takeoff') {
+    updateFlightAudio(progress, cruiseSpeed, ndcX);
+    if (progress > 0.70) {
+      const dock = getHeraDockTarget();
+      const kShrink = Math.min(1, (progress - 0.70) / 0.28);
+      const smoothShrink = kShrink * kShrink * (3 - 2 * kShrink);
+      const dockPx = Math.max(40, dock.size * 0.94);
+      targetPx = fitPx + (dockPx - fitPx) * smoothShrink;
+    }
+    if (!kryoDidDock && progress >= 0.85) {
+      kryoDidDock = true;
+      kryoDockHandler?.();
+    }
+  }
+  kryoBaseScale = ((targetPx / h) * worldScreenH) * 0.44;
+  kryoRig.scale.setScalar(kryoBaseScale);
 
   // Micro-gestos reactivos y mezcla de animaciones NLA
   if (!reduced && kryoMixer) {
@@ -1310,6 +1365,11 @@ function updateKryoFrame(dt) {
 
   if (kryoPhase === 'takeoff' && progress >= 1) {
     kryoPhase = 'done';
+    if (!kryoDidDock) {
+      kryoDidDock = true;
+      kryoDockHandler?.();
+    }
+    stopFlightAudio();
     kryoRig.visible = false;
     if (kryoJetL) kryoJetL.visible = false;
     if (kryoJetR) kryoJetR.visible = false;
@@ -1340,11 +1400,11 @@ function buildSharedStarfield() {
       Math.sin(b) * Math.sin(a) * radius
     ], i * 3);
 
-    // Estrellas blancas con sutiles temperaturas azul #5bb8ff y cálidas #ff9e58
+    // Estrellas plateadas con sutiles temperaturas azul cielo #7cc8ff y crimson #ff5c7a
     const tint = R();
-    if (tint < 0.22) col.set([0.45, 0.78, 1.0], i * 3);
-    else if (tint > 0.88) col.set([1.0, 0.72, 0.48], i * 3);
-    else col.set([0.94, 0.96, 1.0], i * 3);
+    if (tint < 0.22) col.set([0.49, 0.78, 1.0], i * 3);
+    else if (tint > 0.88) col.set([1.0, 0.55, 0.63], i * 3);
+    else col.set([0.90, 0.92, 0.97], i * 3);
   }
 
   const geom = new T.BufferGeometry();
@@ -1366,11 +1426,11 @@ function buildSharedStarfield() {
 function buildInicioScene() {
   inicioGroup = new T.Group();
   const R = rng(11);
-  const starTex = makeGlowTexture('#ffffff', 'rgba(91, 184, 255, 0.55)');
-  const coolNebTex = makeGlowTexture('rgba(91, 184, 255, 0.22)', 'rgba(30, 82, 185, 0.09)');
-  const warmNebTex = makeGlowTexture('rgba(181, 123, 255, 0.18)', 'rgba(84, 40, 150, 0.06)');
+  const starTex = makeGlowTexture('#ffffff', 'rgba(124, 200, 255, 0.55)');
+  const coolNebTex = makeGlowTexture('rgba(124, 200, 255, 0.22)', 'rgba(30, 90, 140, 0.09)');
+  const warmNebTex = makeGlowTexture('rgba(225, 29, 72, 0.18)', 'rgba(140, 20, 45, 0.06)');
 
-  // Capas de nebulosa infrarroja aditiva muy sutil sobre negro absoluto
+  // Capas de nebulosa infrarroja aditiva muy sutil sobre obsidiana
   inicioNebula = new T.Group();
   const nebSpecs = [
     { tex: coolNebTex, pos: [-38, 16, -24], scale: 128, opacity: 0.45 },
@@ -1396,9 +1456,9 @@ function buildInicioScene() {
     const L = rng(seed);
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
-    const cBlue = new T.Color(0x5bb8ff);
-    const cWhite = new T.Color(0xeef3ff);
-    const cWarm = new T.Color(0xff9e58);
+    const cBlue = new T.Color(0x7cc8ff);
+    const cWhite = new T.Color(0xe6e8ec);
+    const cWarm = new T.Color(0xff5c7a);
     for (let i = 0; i < count; i++) {
       const th = L() * Math.PI * 2;
       const ph = Math.acos(2 * L() - 1);
@@ -1451,7 +1511,7 @@ function buildInicioScene() {
 
       const sp = new T.Sprite(new T.SpriteMaterial({
         map: starTex,
-        color: i === 0 ? 0xb57bff : 0x5bb8ff,
+        color: i === 0 ? 0xe11d48 : 0x7cc8ff,
         blending: T.AdditiveBlending,
         transparent: true,
         depthWrite: false
@@ -1465,7 +1525,7 @@ function buildInicioScene() {
 
     const lineGeom = new T.BufferGeometry().setFromPoints(pts);
     inicioGroup.add(new T.Line(lineGeom, new T.LineBasicMaterial({
-      color: 0x5bb8ff,
+      color: 0x7cc8ff,
       transparent: true,
       opacity: 0.34
     })));
@@ -1485,11 +1545,11 @@ function buildInicioScene() {
   }
   inicioRing.add(new T.Line(
     new T.BufferGeometry().setFromPoints(ringPts),
-    new T.LineBasicMaterial({ color: 0x5bb8ff, transparent: true, opacity: 0.22 })
+    new T.LineBasicMaterial({ color: 0x7cc8ff, transparent: true, opacity: 0.22 })
   ));
   inicioRing.add(new T.Points(
     new T.BufferGeometry().setFromPoints(dotPts),
-    new T.PointsMaterial({ color: 0x5bb8ff, size: 1.5, transparent: true, opacity: 0.5, depthWrite: false })
+    new T.PointsMaterial({ color: 0x7cc8ff, size: 1.5, transparent: true, opacity: 0.5, depthWrite: false })
   ));
   inicioRing.rotation.set(0.32, 0.2, -0.18);
   inicioGroup.add(inicioRing);
@@ -1502,7 +1562,7 @@ function buildInicioScene() {
   }
   inicioOuterRing.add(new T.Line(
     new T.BufferGeometry().setFromPoints(outerPts),
-    new T.LineBasicMaterial({ color: 0xb57bff, transparent: true, opacity: 0.2 })
+    new T.LineBasicMaterial({ color: 0xe11d48, transparent: true, opacity: 0.2 })
   ));
   inicioOuterRing.rotation.set(-0.42, -0.35, 0.24);
   inicioGroup.add(inicioOuterRing);
@@ -1540,6 +1600,16 @@ function buildInicioScene() {
     });
   }
 
+  // Rejilla de perspectiva wireframe técnica estilo ArtCraft Studio
+  const perspectiveGrid = new T.GridHelper(180, 24, 0x00e6d2, 0x5bb8ff);
+  perspectiveGrid.position.set(0, -36, 0);
+  if (perspectiveGrid.material) {
+    perspectiveGrid.material.transparent = true;
+    perspectiveGrid.material.opacity = 0.11;
+    perspectiveGrid.material.depthWrite = false;
+  }
+  inicioGroup.add(perspectiveGrid);
+
   scene.add(inicioGroup);
 }
 
@@ -1562,14 +1632,13 @@ function projectICRS(ra, dec, radius, centerZ = VAULT_CENTER_Z) {
 }
 
 function getExploreObjectPos3D(o, monthsElapsed) {
-  // Estrellas fijas como anclas astrométricas sobre el campo profundo;
-  // cometas y asteroides se desplazan en el plano frontal de paralaje IR.
+  // Estrellas fijas como anclas astrométricas y objetos en el volumen frontal sobre el FPA (z > -8)
   const angle = o[3] + monthsElapsed * o[8];
-  const ra = Math.cos(angle) * o[2] * 0.52;
-  const dec = Math.sin(angle) * o[2] * 0.34;
+  const ra = Math.cos(angle) * o[2] * 0.43;
+  const dec = Math.sin(angle) * o[2] * 0.28;
   const isFixedStar = o[1] === 'Estrella';
-  const radius = isFixedStar ? 116 : 94;
-  const centerZ = isFixedStar ? VAULT_CENTER_Z - 2 : VAULT_CENTER_Z - 14;
+  const radius = isFixedStar ? 112 : 92;
+  const centerZ = isFixedStar ? VAULT_CENTER_Z - 3 : VAULT_CENTER_Z - 15;
   return projectICRS(ra, dec, radius, centerZ);
 }
 
@@ -1650,20 +1719,67 @@ function makeLockedReticle(color, radius, withCrosshairs = false) {
   return group;
 }
 
+function makeDetectorLabelMesh(spec) {
+  const c = document.createElement('canvas');
+  c.width = 320;
+  c.height = 64;
+  const g = c.getContext('2d');
+  const hex = `#${spec.color.toString(16).padStart(6, '0')}`;
+
+  g.clearRect(0, 0, c.width, c.height);
+  g.fillStyle = 'rgba(3, 7, 15, 0.90)';
+  g.strokeStyle = hex;
+  g.lineWidth = 2.5;
+  g.beginPath();
+  if (typeof g.roundRect === 'function') {
+    g.roundRect(4, 4, c.width - 8, c.height - 8, 10);
+  } else {
+    g.rect(4, 4, c.width - 8, c.height - 8);
+  }
+  g.fill();
+  g.stroke();
+
+  g.fillStyle = hex;
+  g.font = '700 25px "Space Mono", monospace';
+  g.textBaseline = 'middle';
+  g.fillText(spec.label, 18, 33);
+
+  g.fillStyle = '#eef3ff';
+  g.font = '500 20px "Space Mono", monospace';
+  g.fillText(spec.range, 68, 33);
+
+  const tex = new T.CanvasTexture(c);
+  tex.minFilter = T.LinearFilter;
+  tex.magFilter = T.LinearFilter;
+  const mat = new T.MeshBasicMaterial({
+    map: tex,
+    transparent: true,
+    opacity: 0.96,
+    depthWrite: false
+  });
+  const mesh = new T.Mesh(new T.PlaneGeometry(1.32, 0.264), mat);
+  // Esquina superior izquierda dentro de cada bahía (en coordenadas locales de focalPlaneRig escala 1:10)
+  mesh.position.set(spec.pos[0] / 10 - 0.19, spec.pos[1] / 10 + 0.65, 0.16);
+  mesh.renderOrder = 3;
+  return { mesh, mat };
+}
+
 function buildExplorarScene() {
   explorarGroup = new T.Group();
   const R = rng(5);
 
-  // Iluminación PBR dedicada para el plano focal infrarrojo
-  const keyLight = new T.DirectionalLight(0x8fd2ff, 1.05);
+  // Iluminación PBR controlada para mantener el chasis oscuro frente a los filtros y estrellas
+  const keyLight = new T.DirectionalLight(0x8fd2ff, 0.92);
   keyLight.position.set(45, 38, 95);
-  const fillLight = new T.PointLight(0xb57bff, 0.95, 220);
+  const fillLight = new T.PointLight(0xb57bff, 0.72, 240);
   fillLight.position.set(-42, -28, 80);
-  const rimLight = new T.DirectionalLight(0xeef3ff, 0.55);
+  const rimLight = new T.DirectionalLight(0xeef3ff, 0.48);
   rimLight.position.set(0, -45, 120);
-  explorarGroup.add(keyLight, fillLight, rimLight);
+  const specWarmLight = new T.PointLight(0xffcb78, 0.55, 180);
+  specWarmLight.position.set(52, 18, 52);
+  explorarGroup.add(keyLight, fillLight, rimLight, specWarmLight);
 
-  // 1. Campo profundo de 2.400 estrellas astrométricas ICRS con paralaje en Z
+  // 1. Campo profundo de 2.400 estrellas astrométricas ICRS detrás del FPA
   const count = 2400;
   const pos = new Float32Array(count * 3);
   const col = new Float32Array(count * 3);
@@ -1672,7 +1788,7 @@ function buildExplorarScene() {
   for (let i = 0; i < count; i++) {
     const ra = (R() - 0.5) * 1.95;
     const dec = (R() - 0.5) * 1.28;
-    const depth = 117 + R() * 18;
+    const depth = 124 + R() * 20;
     const pt = projectICRS(ra, dec, depth);
     pos.set([pt.x, pt.y, pt.z], i * 3);
 
@@ -1798,6 +1914,79 @@ function buildExplorarScene() {
   cutoutFrame.matrixAutoUpdate = false;
   cutoutFrame.updateMatrix();
   explorarGroup.add(cutoutFrame);
+
+  // 3b. Modelo 3D PBR de Alta Calidad del Plano Focal SPHEREx (Blender -> GLB)
+  // Posicionado detrás del plano de estrellas y cometas cercanos para separar chasis y cielo
+  focalPlaneRig = new T.Group();
+  focalPlaneRig.position.set(0, 0, -11.0);
+  focalPlaneRig.scale.setScalar(10);
+  explorarGroup.add(focalPlaneRig);
+
+  loadGlbGroup(T, './assets/models/focal_plane.glb')
+    .then(fpaModel => {
+      if (!focalPlaneRig) return;
+      fpaDetectors.length = 0;
+      fpaDetectorHitMeshes.length = 0;
+      const rimMap = new Map();
+      const paneMap = new Map();
+      let triCount = 0;
+
+      fpaModel.traverse(child => {
+        if (!child.isMesh) return;
+        if (child.geometry?.index) {
+          triCount += Math.round(child.geometry.index.count / 3);
+        } else if (child.geometry?.attributes?.position) {
+          triCount += Math.round(child.geometry.attributes.position.count / 3);
+        }
+
+        const paneMatch = /^Detector_D([1-6])(?:_mesh)?$/.exec(child.name);
+        const rimMatch = /^Detector_D([1-6])_Rim(?:_mesh)?$/.exec(child.name);
+        if (paneMatch && child.material) {
+          const idx = Number(paneMatch[1]);
+          child.material.transparent = true;
+          child.material.depthWrite = false;
+          child.material.opacity = 0.11;
+          child.material.roughness = 0.72;
+          child.material.metalness = 0.15;
+          child.userData = { type: 'fpa-detector', detector: idx, band: idx <= 3 ? 0 : 1 };
+          fpaDetectorHitMeshes.push(child);
+          paneMap.set(idx, child.material);
+        } else if (rimMatch && child.material) {
+          const idx = Number(rimMatch[1]);
+          child.material.transparent = true;
+          rimMap.set(idx, child.material);
+        } else if (child.material && /ColdPlate|Ceramic|Bezel/i.test(child.name)) {
+          // Oscurecer placa fría y portadores cerámicos para evitar fondo gris lechoso detrás del cielo
+          child.material.color.multiplyScalar(/Ceramic/i.test(child.name) ? 0.18 : 0.38);
+          if (typeof child.material.roughness === 'number') {
+            child.material.roughness = Math.max(child.material.roughness, 0.75);
+          }
+        }
+      });
+
+      for (let idx = 1; idx <= 6; idx++) {
+        const spec = FPA_DETECTOR_SPECS[idx - 1];
+        const badge = makeDetectorLabelMesh(spec);
+        focalPlaneRig.add(badge.mesh);
+        fpaDetectors.push({
+          index: idx,
+          bandGroup: idx <= 3 ? 0 : 1,
+          spec,
+          paneMat: paneMap.get(idx) || null,
+          rimMat: rimMap.get(idx) || null,
+          labelMat: badge.mat
+        });
+      }
+
+      focalPlaneRig.add(fpaModel);
+      focalPlaneLoaded = true;
+      bovedaPolycount += triCount;
+      syncExplorarVisuals();
+      wakeLoop();
+    })
+    .catch(() => {
+      focalPlaneLoaded = false;
+    });
 
   // 4. Anillo Dicróico de Calibración Óptica (Vernier micrométrico rotatorio)
   bovedaAstrolabe = new T.Group();
@@ -1965,7 +2154,7 @@ function buildExplorarScene() {
 
     const vecGeom = new T.BufferGeometry().setFromPoints([new T.Vector3(), new T.Vector3()]);
     const vecLine = new T.Line(vecGeom, new T.LineBasicMaterial({
-      color: 0xb57bff,
+      color: 0xe11d48,
       transparent: true,
       opacity: 0.92
     }));
@@ -2051,6 +2240,38 @@ export function syncExplorarVisuals() {
     setBovedaObjectStyle(bovedaBezelGuides, secondaryAccent, isHighlighted ? 0.88 : 0.56);
   }
 
+  // Resaltado PBR de alto contraste para los 6 detectores físicos H2RG (D1–D3 IR Corto vs D4–D6 IR Largo)
+  for (let i = 0; i < fpaDetectors.length; i++) {
+    const det = fpaDetectors[i];
+    const active = det.bandGroup === exploreState.band;
+    const isDetHovered = det.index === hoveredDetector;
+    if (det.paneMat) {
+      if (det.spec) {
+        det.paneMat.color.setHex(det.spec.color);
+        det.paneMat.emissive.setHex(det.spec.color);
+      }
+      det.paneMat.opacity = active
+        ? (isDetHovered ? 0.28 : isHighlighted ? 0.24 : 0.20)
+        : (isDetHovered ? 0.10 : 0.02);
+      det.paneMat.emissiveIntensity = active
+        ? (isDetHovered ? 0.92 : 0.65)
+        : (isDetHovered ? 0.26 : 0.02);
+    }
+    if (det.rimMat) {
+      if (det.spec) {
+        det.rimMat.color.setHex(det.spec.color);
+        det.rimMat.emissive.setHex(det.spec.color);
+      }
+      det.rimMat.opacity = active ? 1 : (isDetHovered ? 0.62 : 0.24);
+      det.rimMat.emissiveIntensity = active
+        ? (isDetHovered ? 2.4 : isHighlighted ? 2.15 : 1.85)
+        : (isDetHovered ? 0.55 : 0.06);
+    }
+    if (det.labelMat) {
+      det.labelMat.opacity = active ? 0.98 : (isDetHovered ? 0.72 : 0.24);
+    }
+  }
+
   // Posiciones ICRS, vector Δθ y traza discreta de épocas E1–E4 + lista cacheada de hitTest
   exploreHitMeshes.length = 0;
   objEntries.forEach((entry, i) => {
@@ -2105,10 +2326,10 @@ export function syncExplorarVisuals() {
 function buildSistemaScene() {
   sistemaGroup = new T.Group();
 
-  const sunTex = makeGlowTexture('#fff7d6', 'rgba(255, 122, 26, 0.52)');
+  const sunTex = makeGlowTexture('#ffe3e8', 'rgba(225, 29, 72, 0.52)');
   const sunMesh = new T.Mesh(
     new T.SphereGeometry(5, 32, 32),
-    new T.MeshBasicMaterial({ color: 0xffb347 })
+    new T.MeshBasicMaterial({ color: 0xff5c7a })
   );
   const sunSprite = new T.Sprite(new T.SpriteMaterial({
     map: sunTex,
@@ -2142,7 +2363,7 @@ function buildSistemaScene() {
     }
     sistemaGroup.add(new T.Line(
       new T.BufferGeometry().setFromPoints(orbitPts),
-      new T.LineBasicMaterial({ color: 0x3b4d7a, transparent: true, opacity: 0.55 })
+      new T.LineBasicMaterial({ color: 0x3c4a5c, transparent: true, opacity: 0.55 })
     ));
   });
 
@@ -2171,10 +2392,10 @@ function buildSistemaScene() {
   }
   cometGrp.add(new T.Line(
     new T.BufferGeometry().setFromPoints(cometPath),
-    new T.LineBasicMaterial({ color: 0x5bb8ff, transparent: true, opacity: 0.42 })
+    new T.LineBasicMaterial({ color: 0x7cc8ff, transparent: true, opacity: 0.42 })
   ));
 
-  cometHead = new T.Mesh(new T.SphereGeometry(1.3, 16, 16), new T.MeshBasicMaterial({ color: 0xdff4ff }));
+  cometHead = new T.Mesh(new T.SphereGeometry(1.3, 16, 16), new T.MeshBasicMaterial({ color: 0xe6e8ec }));
   cometGrp.add(cometHead);
 
   const tailPos = new Float32Array(150);
@@ -2200,22 +2421,22 @@ function buildSistemaScene() {
    ========================================================================== */
 function buildFasesScene() {
   fasesGroup = new T.Group();
-  const glowTex = makeGlowTexture('#ffffff', 'rgba(91, 184, 255, 0.65)');
+  const glowTex = makeGlowTexture('#ffffff', 'rgba(124, 200, 255, 0.65)');
 
   // Núcleo central: Esfera celeste HEALPix + Tierra/Observatorio oscuro
   const earthCore = new T.Mesh(
     new T.SphereGeometry(14, 28, 28),
-    new T.MeshStandardMaterial({ color: 0x0b1626, emissive: 0x071a30, roughness: 0.55 })
+    new T.MeshStandardMaterial({ color: 0x0d0e12, emissive: 0x0a1a26, roughness: 0.55 })
   );
   fasesGroup.add(earthCore);
 
   fasesCore = new T.Mesh(
     new T.IcosahedronGeometry(23, 2),
-    new T.MeshBasicMaterial({ color: 0x5bb8ff, wireframe: true, transparent: true, opacity: 0.25 })
+    new T.MeshBasicMaterial({ color: 0x7cc8ff, wireframe: true, transparent: true, opacity: 0.25 })
   );
   fasesGroup.add(fasesCore);
 
-  // Doble cono de barrido infrarrojo SPHEREx (IR Corto azul + IR Largo naranja)
+  // Doble cono de barrido infrarrojo SPHEREx (IR Corto azul cielo + IR Largo crimson)
   fasesCones = new T.Group();
   const mkCone = (color, rotZ) => {
     const geom = new T.ConeGeometry(22, 68, 24, 1, true);
@@ -2229,7 +2450,7 @@ function buildFasesScene() {
     mesh.rotation.z = rotZ;
     return mesh;
   };
-  fasesCones.add(mkCone(0x5bb8ff, Math.PI / 2.2), mkCone(0xb57bff, -Math.PI / 2.2));
+  fasesCones.add(mkCone(0x7cc8ff, Math.PI / 2.2), mkCone(0xe11d48, -Math.PI / 2.2));
   fasesGroup.add(fasesCones);
 
   // 7 Nodos de Fase (0..6) a lo largo de una hélice orbital interactiva
@@ -2241,7 +2462,7 @@ function buildFasesScene() {
     const pos = new T.Vector3(Math.cos(a) * rad, y, Math.sin(a) * rad);
     curvePts.push(pos);
 
-    const toneColor = phase.tone === 'ac2' ? 0xb57bff : (phase.tone === 'ok' ? 0x4ade80 : 0x5bb8ff);
+    const toneColor = phase.tone === 'ac2' ? 0xe11d48 : 0x7cc8ff;
 
     const mesh = new T.Mesh(
       new T.SphereGeometry(3.1, 20, 20),
@@ -2272,7 +2493,7 @@ function buildFasesScene() {
   phaseCurve = new T.CatmullRomCurve3(curvePts, true);
   const tubeGeom = new T.BufferGeometry().setFromPoints(phaseCurve.getPoints(140));
   fasesGroup.add(new T.Line(tubeGeom, new T.LineBasicMaterial({
-    color: 0x5bb8ff,
+    color: 0x7cc8ff,
     transparent: true,
     opacity: 0.55
   })));
@@ -2280,7 +2501,7 @@ function buildFasesScene() {
   // Pulso viajero a lo largo del pipeline
   phaseSignal = new T.Sprite(new T.SpriteMaterial({
     map: glowTex,
-    color: 0xb57bff,
+    color: 0xe11d48,
     blending: T.AdditiveBlending,
     transparent: true,
     depthWrite: false
@@ -2316,9 +2537,14 @@ function pickTarget(clientX, clientY) {
   if (activeRoute === 'explorar') {
     const hits = exploreHitMeshes.length ? raycaster.intersectObjects(exploreHitMeshes, false) : [];
     const idx = hits.length ? hits[0].object.userData.index : -1;
+    let nextDet = -1;
+    if (idx < 0 && fpaDetectorHitMeshes.length) {
+      const detHits = raycaster.intersectObjects(fpaDetectorHitMeshes, false);
+      if (detHits.length) nextDet = detHits[0].object.userData.detector;
+    }
+
     if (idx !== exploreState.hovered) {
       exploreState.hovered = idx;
-      canvas.style.cursor = idx >= 0 ? 'pointer' : 'grab';
       if (hoverRing) {
         if (idx >= 0) {
           hoverRing.visible = true;
@@ -2332,9 +2558,29 @@ function pickTarget(clientX, clientY) {
         exploreState.onHover(idx);
       }
     }
-  } else if (activeRoute === 'fases') {
-    const hits = fasesHitMeshes.length ? raycaster.intersectObjects(fasesHitMeshes, false) : [];
-    canvas.style.cursor = hits.length ? 'pointer' : 'grab';
+
+    if (nextDet !== hoveredDetector) {
+      hoveredDetector = nextDet;
+      syncExplorarVisuals();
+      wakeLoop();
+      if (typeof exploreState.onDetectorHover === 'function') {
+        exploreState.onDetectorHover(hoveredDetector > 0 ? FPA_DETECTOR_SPECS[hoveredDetector - 1] : null);
+      }
+    }
+
+    canvas.style.cursor = (idx >= 0 || hoveredDetector > 0) ? 'pointer' : 'grab';
+  } else {
+    if (hoveredDetector !== -1) {
+      hoveredDetector = -1;
+      syncExplorarVisuals();
+      if (typeof exploreState.onDetectorHover === 'function') {
+        exploreState.onDetectorHover(null);
+      }
+    }
+    if (activeRoute === 'fases') {
+      const hits = fasesHitMeshes.length ? raycaster.intersectObjects(fasesHitMeshes, false) : [];
+      canvas.style.cursor = hits.length ? 'pointer' : 'grab';
+    }
   }
 }
 
@@ -2351,6 +2597,11 @@ function handleClick(clientX, clientY) {
     if (hits.length) {
       const idx = hits[0].object.userData.index;
       if (typeof exploreState.onSelect === 'function') exploreState.onSelect(idx);
+    } else if (fpaDetectorHitMeshes.length) {
+      const detHits = raycaster.intersectObjects(fpaDetectorHitMeshes, false);
+      if (detHits.length && typeof exploreState.onBandSelect === 'function') {
+        exploreState.onBandSelect(detHits[0].object.userData.band, detHits[0].object.userData.detector);
+      }
     }
   } else if (activeRoute === 'fases') {
     const hits = fasesHitMeshes.length ? raycaster.intersectObjects(fasesHitMeshes, false) : [];
@@ -2544,6 +2795,7 @@ export function getAdaptiveViewportState() {
 export function getBovedaModelState() {
   return {
     loaded: bovedaModelLoaded,
+    hasFocalPlane: focalPlaneLoaded,
     hasAstrolabe: Boolean(bovedaAstrolabe),
     hasDome: Boolean(healpixDome),
     hasBezel: Boolean(cutoutFrame),
@@ -2573,6 +2825,10 @@ function stopKryoVisuals() {
   kryoOrbitTrailPts.length = 0;
   clearKryoExhaust();
 }
+export function setKryoDockHandler(fn) {
+  kryoDockHandler = typeof fn === 'function' ? fn : null;
+}
+
 export function triggerWarpZoom() {
   if (!isInitialized) return;
   if (window.__skyReducedMotion) {
@@ -2580,8 +2836,11 @@ export function triggerWarpZoom() {
     kryoPhase = 'done';
     if (eclipseRig) eclipseRig.visible = false;
     stopKryoVisuals();
+    startFlightAudio();
+    kryoDockHandler?.();
     return;
   }
+  startFlightAudio();
   updateEclipseSlotRect();
   updateKryoSlotRect();
   eclipsePhase = 'transition';
@@ -2596,9 +2855,10 @@ export function triggerWarpZoom() {
   kryoPhase = 'takeoff';
   kryoWarpT = 0;
   kryoDidLandingWave = false;
+  kryoDidDock = false;
   kryoOrbitTrailPts.length = 0;
   if (kryoOrbitTrail) kryoOrbitTrail.visible = false;
-  kryoOrbitCurve = buildOrbitalCurve(slotNdcX, slotNdcY);
+  kryoOrbitCurve = buildOrbitalCurve(slotNdcX, slotNdcY, getHeraDockTarget());
   setKryoStatusLabel('KRYO-9 · VUELO ORBITAL A LA BÓVEDA');
   if (kryoRig && kryoModelPivot) {
     kryoRig.visible = true;
@@ -2647,7 +2907,9 @@ export function setCosmosRoute(route) {
     kryoWarpT = 0;
     kryoIdleTimer = 0;
     kryoDidLandingWave = false;
+    kryoDidDock = false;
     kryoOrbitCurve = null;
+    stopFlightAudio();
     Object.assign(kryoFlightRot, { yaw: -0.22, pitch: 0.04, roll: 0 });
     resetKryoMaterials();
     stopKryoVisuals();
@@ -2672,6 +2934,7 @@ export function setCosmosRoute(route) {
     if (prev !== 'inicio' || !isWarpingFromInicio) {
       eclipsePhase = 'done';
       kryoPhase = 'done';
+      stopFlightAudio();
       if (eclipseRig) eclipseRig.visible = false;
       stopKryoVisuals();
       if (scene) scene.environment = null;
@@ -2680,6 +2943,14 @@ export function setCosmosRoute(route) {
     if (prev === 'inicio' && isWarpingFromInicio) {
       camCurr.r = fitR + 18; // entra haciendo zoom hacia la bóveda desde el hiperespacio
       warpBoost = Math.min(warpBoost, 0.2);
+      requestAnimationFrame(() => {
+        if (kryoOrbitCurve && kryoPhase === 'takeoff') {
+          const dock = getHeraDockTarget();
+          const isNarrow = (window.innerWidth || 1280) < 780;
+          kryoOrbitCurve.points[5].set(dock.ndcX * 0.62, dock.ndcY * 0.62 + (isNarrow ? 0.06 : -0.04), 20.6);
+          kryoOrbitCurve.points[6].set(dock.ndcX, dock.ndcY, 19.6);
+        }
+      });
     }
     isWarpingFromInicio = false;
     Object.assign(camGoal, { t: Math.PI / 2, p: 1.54, r: fitR, tx: 0, ty: camGoal.ty, tz: 0 });
@@ -2688,6 +2959,7 @@ export function setCosmosRoute(route) {
     canvas.style.cursor = 'grab';
     eclipsePhase = 'done';
     kryoPhase = 'done';
+    stopFlightAudio();
     if (eclipseRig) eclipseRig.visible = false;
     stopKryoVisuals();
     if (scene) scene.environment = null;
@@ -2696,6 +2968,7 @@ export function setCosmosRoute(route) {
     canvas.style.cursor = 'grab';
     eclipsePhase = 'done';
     kryoPhase = 'done';
+    stopFlightAudio();
     if (eclipseRig) eclipseRig.visible = false;
     stopKryoVisuals();
     if (scene) scene.environment = null;
@@ -3061,12 +3334,12 @@ export async function initCosmos3D(initialRoute = 'inicio') {
       title: 'No se pudo iniciar el lienzo 3D',
       detail: 'WebGL no está activo o falló la carga del motor local. Puedes reintentar o usar el Laboratorio FITS.',
       actionLabel: 'Reintentar 3D',
-      onAction: () => {
+      onAction: async () => {
         clearState(stateHost);
-        initCosmos3D(activeRoute);
+        try { await initCosmos3D(activeRoute); } catch { /* El intento fallido ya muestra su estado recuperable. */ }
       }
     });
-    return;
+    throw new Error('No se pudo cargar la vista 3D', { cause: err });
   }
 
   clearState(stateHost);

@@ -19,7 +19,7 @@ import { existsSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-const BASE = process.env.BASE || 'http://127.0.0.1:8000';
+const BASE = process.env.BASE || 'http://127.0.0.1:4173';
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const args = process.argv.slice(2);
 const has = name => args.includes(`--${name}`);

@@ -17,12 +17,14 @@
 
 | Elemento | Decisión |
 |---|---|
-| Tema | Oscuro, acorde con el logo y el espacio |
-| Acento | Azul (`--ac`), con naranja de apoyo tomado del traje de H.E.R.A 7 |
-| Tipografía | Poppins |
+| Tema | Obsidian Black (`#07070A`) |
+| Texto | Chrome Silver (`--fg` `#E6E8EC`, `--mut` `#A6AFBB`) |
+| Acento primario | Sky Blue (`--ac`, `#7CC8FF`) |
+| Acento secundario y alertas | Laser Crimson (`--ac2`, `#E11D48`) |
+| Tipografía | Space Grotesk + Space Mono |
 | Superficies | Paneles translúcidos con desenfoque |
 
-Los colores están como variables CSS al inicio de `skyo.html`.
+La paleta está como variables CSS en el bloque `:root` de `assets/css/main.css` (`--obsidian`, `--chrome`, `--crimson`, `--sky`) y se replica en `assets/css/lab.css`, `assets/js/contexto.css`, el manifiesto PWA y los iconos.
 
 ## Responsive
 

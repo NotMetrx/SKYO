@@ -3,6 +3,7 @@
 *.bak
 .DS_Store
 node_modules/
+.venv/
 dist/
 wasm/target/
 __pycache__/
@@ -21,3 +22,11 @@ __pycache__/
 *.jpg
 !assets/img/**
 !docs/demo_procesamiento_sintetico.png
+
+# browser test artifacts
+test-results/
+playwright-report/
+science-core/target/
+data/fpa-originals/
+!public/datasets/immersive-sky/*.png
+!docs/evidence/migracion-stack-20261114/*.png
