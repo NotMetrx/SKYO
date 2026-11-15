@@ -1584,6 +1584,16 @@ function buildInicioScene() {
     });
   }
 
+  // Rejilla de perspectiva wireframe técnica estilo ArtCraft Studio
+  const perspectiveGrid = new T.GridHelper(180, 24, 0x00e6d2, 0x5bb8ff);
+  perspectiveGrid.position.set(0, -36, 0);
+  if (perspectiveGrid.material) {
+    perspectiveGrid.material.transparent = true;
+    perspectiveGrid.material.opacity = 0.11;
+    perspectiveGrid.material.depthWrite = false;
+  }
+  inicioGroup.add(perspectiveGrid);
+
   scene.add(inicioGroup);
 }
 
