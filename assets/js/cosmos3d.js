@@ -54,6 +54,48 @@ let eclipsePhase = 'idle'; // 'idle' | 'transition' | 'done'
 let eclipseWarpT = 0;
 const eclipseSlot = { cx: 0, cy: 0, size: 0 };
 
+// Agente 3D KRYO-9 (Blender GLB + Draco + PBR/IBL) en #inicio y secuencia de despegue
+let kryoRig = null;
+let kryoModelPivot = null;
+let kryoMixer = null;
+let kryoClips = [];
+const kryoActions = {};
+let kryoCurrentAction = null;
+let kryoHeadNode = null;
+let kryoTorsoNode = null;
+let kryoFootL = null;
+let kryoFootR = null;
+let kryoRimCoral = null;
+let kryoThrusterGlowL = null;
+let kryoThrusterGlowR = null;
+let kryoJetL = null;
+let kryoJetR = null;
+let kryoShockwave = null;
+let kryoSpeedGroup = null;
+let kryoSpeedLines = null;
+let kryoSpeedData = null;
+let kryoExhaust = null;
+let kryoExhaustData = null;
+let kryoExhaustAccum = 0;
+let kryoIdleTimer = 0;
+let kryoLastWaveSim = -10;
+let kryoBaseScale = 1;
+const kryoMats = [];
+let kryoPhase = 'idle'; // 'idle' | 'takeoff' | 'done'
+let kryoWarpT = 0;
+let kryoDidLandingWave = false;
+let kryoOrbitCurve = null;
+let kryoOrbitTrail = null;
+let kryoOrbitTrailPts = [];
+const kryoFlightRot = { yaw: -0.22, pitch: 0.04, roll: 0 };
+const KRYO_ORBIT_DURATION = 1.65;
+let kryoLoadStarted = false;
+const kryoSlot = { cx: 0, cy: 0, w: 0, h: 0 };
+const kryoHeadAim = { yaw: 0, pitch: 0 };
+const pointerClient = { x: 0, y: 0, moved: false, overKryo: false };
+let inicioEnv = null;
+let gltfSupportPromise = null;
+
 // Grupos por panel
 let starField = null;
 let inicioGroup = null;
@@ -227,6 +269,7 @@ function buildEclipsePortal() {
         const m = obj.material;
         m.transparent = true;
         m.depthWrite = true;
+        if (m.envMapIntensity !== undefined) m.envMapIntensity = 0.05;
         eclipseMats.push({
           mat: m,
           baseOpacity: typeof m.opacity === 'number' ? m.opacity : 1,
@@ -357,6 +400,924 @@ function updateEclipsePortalFrame(dt) {
     eclipsePhase = 'done';
     eclipseRig.visible = false;
     resetEclipseMaterials();
+  }
+}
+
+/* ==========================================================================
+   0b. Agente 3D KRYO-9 (Studio IBL + Seguimiento + Propulsión + Despegue)
+   ========================================================================== */
+function loadClassicScript(src) {
+  return new Promise((resolve, reject) => {
+    const existing = [...document.scripts].find(sc => sc.getAttribute('src') === src);
+    if (existing) {
+      resolve();
+      return;
+    }
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = () => resolve();
+    s.onerror = err => reject(err);
+    document.head.appendChild(s);
+  });
+}
+
+function ensureGltfSupport() {
+  if (gltfSupportPromise) return gltfSupportPromise;
+  gltfSupportPromise = (async () => {
+    await ensureThreeLoaded();
+    if (!T.DRACOLoader) await loadClassicScript('assets/js/vendor/DRACOLoader.js');
+    if (!T.GLTFLoader) await loadClassicScript('assets/js/vendor/GLTFLoader.js');
+    if (!T.RoomEnvironment) await loadClassicScript('assets/js/vendor/RoomEnvironment.js');
+    if (!inicioEnv && renderer && T.PMREMGenerator && T.RoomEnvironment) {
+      try {
+        const pmrem = new T.PMREMGenerator(renderer);
+        pmrem.compileEquirectangularShader();
+        const room = new T.RoomEnvironment();
+        inicioEnv = pmrem.fromScene(room, 0.04).texture;
+        pmrem.dispose();
+        if (activeRoute === 'inicio' || kryoPhase === 'takeoff') {
+          scene.environment = inicioEnv;
+        }
+      } catch {
+        inicioEnv = null;
+      }
+    }
+    return T;
+  })();
+  return gltfSupportPromise;
+}
+
+function updateKryoSlotRect() {
+  const el = document.getElementById('kryo9-stage');
+  if (!el) return;
+  const r = el.getBoundingClientRect();
+  if (r.width > 12 && r.height > 12) {
+    kryoSlot.cx = r.left + r.width * 0.5;
+    kryoSlot.cy = r.top + r.height * 0.52;
+    kryoSlot.w = r.width;
+    kryoSlot.h = r.height;
+  }
+}
+
+function setKryoStatusLabel(label) {
+  const el = document.getElementById('kryo9-status-text');
+  if (el) el.textContent = label;
+}
+
+function resetKryoMaterials() {
+  for (const entry of kryoMats) {
+    entry.mat.opacity = entry.baseOpacity;
+    entry.mat.transparent = entry.baseTransparent;
+    entry.mat.depthWrite = entry.baseDepthWrite;
+    if (entry.mat.emissiveIntensity !== undefined) {
+      entry.mat.emissiveIntensity = entry.baseEmissive;
+    }
+  }
+  if (kryoRimCoral) kryoRimCoral.intensity = 1.05;
+  if (kryoShockwave) {
+    kryoShockwave.visible = false;
+    kryoShockwave.scale.setScalar(0.35);
+  }
+}
+
+function playKryoAction(name, { fade = 0.35, loopOnce = false, timeScale = 1 } = {}) {
+  const next = kryoActions[name];
+  if (!next || !kryoMixer) return null;
+  if (kryoCurrentAction === next && !loopOnce) return next;
+
+  next.reset();
+  next.enabled = true;
+  next.timeScale = timeScale;
+  if (loopOnce) {
+    next.setLoop(T.LoopOnce, 1);
+    next.clampWhenFinished = name === 'Takeoff_Launch';
+  } else {
+    next.setLoop(T.LoopRepeat, Infinity);
+    next.clampWhenFinished = false;
+  }
+
+  if (kryoCurrentAction && kryoCurrentAction !== next) {
+    next.play();
+    kryoCurrentAction.crossFadeTo(next, fade, true);
+  } else {
+    next.play();
+  }
+  kryoCurrentAction = next;
+  return next;
+}
+
+function buildKryoExhaust() {
+  const count = 260;
+  const pos = new Float32Array(count * 3);
+  const vel = new Float32Array(count * 3);
+  const col = new Float32Array(count * 3);
+  const life = new Float32Array(count);
+  const maxLife = new Float32Array(count);
+  const isHot = new Uint8Array(count);
+
+  for (let i = 0; i < count; i++) {
+    pos[i * 3 + 1] = -9999;
+    life[i] = 0;
+    maxLife[i] = 0.5;
+  }
+
+  const geo = new T.BufferGeometry();
+  geo.setAttribute('position', new T.BufferAttribute(pos, 3));
+  geo.setAttribute('color', new T.BufferAttribute(col, 3));
+
+  const mat = new T.PointsMaterial({
+    size: 0.44,
+    map: makeGlowTexture('rgba(255,255,255,1)', 'rgba(255,105,45,0.22)'),
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.94,
+    blending: T.AdditiveBlending,
+    depthWrite: false,
+    sizeAttenuation: true
+  });
+
+  kryoExhaust = new T.Points(geo, mat);
+  kryoExhaust.name = 'KryoExhaustPlume';
+  kryoExhaust.frustumCulled = false;
+  kryoExhaustData = { count, cursor: 0, pos, vel, col, life, maxLife, isHot, geo, mat };
+  scene.add(kryoExhaust);
+}
+
+const _kryoTmp = {
+  v: null,
+  fwd: null,
+  worldL: null,
+  worldR: null,
+  torsoW: null,
+  down: null,
+  negY: null,
+  tan: null,
+  euler: null,
+  quat: null,
+  ready: false
+};
+
+function ensureKryoTmp() {
+  if (_kryoTmp.ready || !T) return;
+  _kryoTmp.v = new T.Vector3();
+  _kryoTmp.fwd = new T.Vector3();
+  _kryoTmp.worldL = new T.Vector3();
+  _kryoTmp.worldR = new T.Vector3();
+  _kryoTmp.torsoW = new T.Vector3();
+  _kryoTmp.down = new T.Vector3();
+  _kryoTmp.negY = new T.Vector3(0, -1, 0);
+  _kryoTmp.tan = new T.Vector3();
+  _kryoTmp.euler = new T.Euler(0, 0, 0, 'YXZ');
+  _kryoTmp.quat = new T.Quaternion();
+  _kryoTmp.ready = true;
+}
+
+function buildKryoSpeedLines() {
+  const count = 150;
+  const positions = new Float32Array(count * 6);
+  const colors = new Float32Array(count * 6);
+  const seeds = [];
+
+  for (let i = 0; i < count; i++) {
+    let x = (Math.random() - 0.5) * 34;
+    let y = (Math.random() - 0.5) * 20;
+    if (Math.abs(x) < 4.2 && Math.abs(y) < 2.8) {
+      x += (x >= 0 ? 4.5 : -4.5);
+    }
+    const z = -Math.random() * 88;
+    const sp = 0.75 + Math.random() * 0.7;
+    seeds.push({ x, y, z, sp });
+
+    const hotCoral = i % 5 === 0;
+    const r = hotCoral ? 1.0 : (i % 2 === 0 ? 0.45 : 0.85);
+    const g = hotCoral ? 0.58 : (i % 2 === 0 ? 0.88 : 0.94);
+    const b = hotCoral ? 0.35 : 1.0;
+
+    // Cabeza más tenue, estela trasera brillante para sensación de velocidad hacia adelante
+    colors[i * 6] = r * 0.35;
+    colors[i * 6 + 1] = g * 0.35;
+    colors[i * 6 + 2] = b * 0.35;
+    colors[i * 6 + 3] = r;
+    colors[i * 6 + 4] = g;
+    colors[i * 6 + 5] = b;
+
+    positions[i * 6] = x;
+    positions[i * 6 + 1] = y;
+    positions[i * 6 + 2] = z;
+    positions[i * 6 + 3] = x;
+    positions[i * 6 + 4] = y;
+    positions[i * 6 + 5] = z - 2;
+  }
+
+  const geo = new T.BufferGeometry();
+  geo.setAttribute('position', new T.BufferAttribute(positions, 3));
+  geo.setAttribute('color', new T.BufferAttribute(colors, 3));
+
+  const mat = new T.LineBasicMaterial({
+    vertexColors: true,
+    transparent: true,
+    opacity: 0,
+    blending: T.AdditiveBlending,
+    depthWrite: false
+  });
+
+  kryoSpeedGroup = new T.Group();
+  kryoSpeedGroup.name = 'KryoOrbitalSpeedLines';
+  kryoSpeedGroup.visible = false;
+  kryoSpeedLines = new T.LineSegments(geo, mat);
+  kryoSpeedLines.frustumCulled = false;
+  kryoSpeedGroup.add(kryoSpeedLines);
+  kryoSpeedData = { count, positions, seeds, geo, mat };
+  scene.add(kryoSpeedGroup);
+}
+
+function updateKryoSpeedLines(dt, speedFactor) {
+  if (!kryoSpeedGroup || !kryoSpeedData || !camera) return;
+  if (speedFactor <= 0.02 || window.__skyReducedMotion) {
+    kryoSpeedGroup.visible = false;
+    kryoSpeedData.mat.opacity = 0;
+    return;
+  }
+
+  kryoSpeedGroup.visible = true;
+  kryoSpeedGroup.position.copy(camera.position);
+  kryoSpeedGroup.quaternion.copy(camera.quaternion);
+
+  const d = kryoSpeedData;
+  const streakLen = 1.8 + speedFactor * 14.5;
+  const travel = (55 + speedFactor * 165) * dt;
+  d.mat.opacity = Math.min(0.76, speedFactor * 0.85);
+
+  for (let i = 0; i < d.count; i++) {
+    const s = d.seeds[i];
+    s.z += travel * s.sp;
+    if (s.z > 6) s.z -= 94;
+    d.positions[i * 6] = s.x;
+    d.positions[i * 6 + 1] = s.y;
+    d.positions[i * 6 + 2] = s.z;
+    d.positions[i * 6 + 3] = s.x;
+    d.positions[i * 6 + 4] = s.y;
+    d.positions[i * 6 + 5] = s.z - streakLen * s.sp;
+  }
+  d.geo.attributes.position.needsUpdate = true;
+}
+
+function makeJetPlumeTexture() {
+  const c = document.createElement('canvas');
+  c.width = 16;
+  c.height = 128;
+  const g = c.getContext('2d');
+  const grad = g.createLinearGradient(0, 0, 0, 128);
+  // v=1 (arriba del canvas en UV Three.js) = boca propulsora, v=0 (abajo) = cola desvanecida
+  grad.addColorStop(0.0, 'rgba(255, 240, 210, 0.96)');
+  grad.addColorStop(0.28, 'rgba(255, 118, 52, 0.72)');
+  grad.addColorStop(0.68, 'rgba(56, 189, 248, 0.22)');
+  grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 16, 128);
+  return new T.CanvasTexture(c);
+}
+
+function makeJetConeGroup() {
+  const grp = new T.Group();
+  const jetTex = makeJetPlumeTexture();
+  const outerGeo = new T.ConeGeometry(0.068, 0.62, 14, 1, true);
+  outerGeo.rotateX(Math.PI);
+  outerGeo.translate(0, -0.31, 0);
+  const outerMat = new T.MeshBasicMaterial({
+    map: jetTex,
+    transparent: true,
+    opacity: 0,
+    blending: T.AdditiveBlending,
+    depthWrite: false,
+    side: T.DoubleSide
+  });
+  const innerGeo = new T.ConeGeometry(0.036, 0.38, 12, 1, true);
+  innerGeo.rotateX(Math.PI);
+  innerGeo.translate(0, -0.19, 0);
+  const innerMat = new T.MeshBasicMaterial({
+    map: jetTex,
+    color: 0xffe4b8,
+    transparent: true,
+    opacity: 0,
+    blending: T.AdditiveBlending,
+    depthWrite: false,
+    side: T.DoubleSide
+  });
+  const outer = new T.Mesh(outerGeo, outerMat);
+  const inner = new T.Mesh(innerGeo, innerMat);
+  grp.add(outer, inner);
+  grp.userData = { outerMat, innerMat };
+  grp.visible = false;
+  return grp;
+}
+
+function buildKryoOrbitTrail() {
+  const maxPts = 28;
+  const pos = new Float32Array(maxPts * 3);
+  const col = new Float32Array(maxPts * 3);
+  const geo = new T.BufferGeometry();
+  geo.setAttribute('position', new T.BufferAttribute(pos, 3));
+  geo.setAttribute('color', new T.BufferAttribute(col, 3));
+  const mat = new T.LineBasicMaterial({
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.72,
+    blending: T.AdditiveBlending,
+    depthWrite: false
+  });
+  kryoOrbitTrail = new T.Line(geo, mat);
+  kryoOrbitTrail.name = 'KryoOrbitContrail';
+  kryoOrbitTrail.frustumCulled = false;
+  kryoOrbitTrail.visible = false;
+  scene.add(kryoOrbitTrail);
+}
+
+function pushKryoOrbitTrail(worldPos, alphaScale = 1) {
+  if (!kryoOrbitTrail) return;
+  kryoOrbitTrailPts.push(worldPos.clone());
+  if (kryoOrbitTrailPts.length > 28) kryoOrbitTrailPts.shift();
+  const n = kryoOrbitTrailPts.length;
+  if (n < 2) {
+    kryoOrbitTrail.visible = false;
+    return;
+  }
+  const posAttr = kryoOrbitTrail.geometry.attributes.position;
+  const colAttr = kryoOrbitTrail.geometry.attributes.color;
+  for (let i = 0; i < 28; i++) {
+    const pt = kryoOrbitTrailPts[Math.min(i, n - 1)];
+    const u = i / Math.max(1, n - 1);
+    const fade = Math.pow(u, 1.8) * alphaScale * (i < n ? 1 : 0);
+    posAttr.setXYZ(i, pt.x, pt.y, pt.z);
+    // Degradado cian orbital -> naranja cálido cerca de los propulsores
+    colAttr.setXYZ(i, (0.25 + 0.75 * u) * fade, (0.82 - 0.12 * u) * fade, (1.0 - 0.55 * u) * fade);
+  }
+  posAttr.needsUpdate = true;
+  colAttr.needsUpdate = true;
+  kryoOrbitTrail.geometry.setDrawRange(0, n);
+  kryoOrbitTrail.visible = alphaScale > 0.02;
+}
+
+function buildOrbitalCurve(slotNdcX, slotNdcY) {
+  const isNarrow = (window.innerWidth || 1280) < 780;
+  const rightSwing = Math.min(0.74, Math.max(0.28, slotNdcX + (isNarrow ? 0.30 : 0.22)));
+  const leftSwing = isNarrow ? -0.40 : -0.44;
+  return new T.CatmullRomCurve3([
+    new T.Vector3(slotNdcX, slotNdcY, 21.0),
+    new T.Vector3(rightSwing, slotNdcY - 0.14, 13.8),
+    new T.Vector3(isNarrow ? 0.12 : 0.16, 0.14, 11.4),
+    new T.Vector3(leftSwing, -0.02, 16.0),
+    new T.Vector3(leftSwing * 0.42, -0.14, 22.8),
+    new T.Vector3(0.03, -0.02, 20.5),
+    new T.Vector3(0.0, 0.0, 19.5)
+  ], false, 'centripetal', 0.45);
+}
+
+function spawnKryoExhaustParticle(originWorld, intense = false, aftDirWorld = null) {
+  if (!kryoExhaustData || !kryoRig) return;
+  const d = kryoExhaustData;
+  const idx = d.cursor;
+  d.cursor = (d.cursor + 1) % d.count;
+
+  const s = Math.max(0.45, kryoRig.scale.x);
+  const spread = (intense ? 0.18 : 0.07) * s;
+  d.pos[idx * 3] = originWorld.x + (Math.random() - 0.5) * spread;
+  d.pos[idx * 3 + 1] = originWorld.y + (Math.random() - 0.5) * spread * 0.7;
+  d.pos[idx * 3 + 2] = originWorld.z + (Math.random() - 0.5) * spread;
+
+  ensureKryoTmp();
+  if (aftDirWorld) {
+    _kryoTmp.down.copy(aftDirWorld).normalize();
+  } else {
+    _kryoTmp.down.set(0, -1, intense ? 0.35 : 0.05).applyQuaternion(kryoRig.quaternion).normalize();
+  }
+  const speed = (intense ? (9.5 + Math.random() * 6.5) : (1.1 + Math.random() * 0.8)) * s;
+  d.vel[idx * 3] = _kryoTmp.down.x * speed + (Math.random() - 0.5) * spread * 2.2;
+  d.vel[idx * 3 + 1] = _kryoTmp.down.y * speed + (Math.random() - 0.5) * spread * 1.8;
+  d.vel[idx * 3 + 2] = _kryoTmp.down.z * speed + (Math.random() - 0.5) * spread * 2.2;
+
+  d.maxLife[idx] = intense ? (0.42 + Math.random() * 0.34) : (0.38 + Math.random() * 0.25);
+  d.life[idx] = d.maxLife[idx];
+  d.isHot[idx] = intense || Math.random() < 0.7 ? 1 : 0;
+}
+
+function clearKryoExhaust() {
+  if (!kryoExhaustData) return;
+  const d = kryoExhaustData;
+  for (let i = 0; i < d.count; i++) {
+    d.life[i] = 0;
+    d.pos[i * 3 + 1] = -9999;
+    d.col[i * 3] = 0;
+    d.col[i * 3 + 1] = 0;
+    d.col[i * 3 + 2] = 0;
+  }
+  d.geo.attributes.position.needsUpdate = true;
+  d.geo.attributes.color.needsUpdate = true;
+  if (kryoExhaust) kryoExhaust.visible = false;
+}
+
+function updateKryoExhaust(dt) {
+  if (!kryoExhaust || !kryoExhaustData) return;
+  const d = kryoExhaustData;
+  let aliveCount = 0;
+
+  for (let i = 0; i < d.count; i++) {
+    if (d.life[i] <= 0) {
+      d.pos[i * 3 + 1] = -9999;
+      d.col[i * 3] = d.col[i * 3 + 1] = d.col[i * 3 + 2] = 0;
+      continue;
+    }
+    aliveCount++;
+    d.life[i] = Math.max(0, d.life[i] - dt);
+    d.pos[i * 3] += d.vel[i * 3] * dt;
+    d.pos[i * 3 + 1] += d.vel[i * 3 + 1] * dt;
+    d.pos[i * 3 + 2] += d.vel[i * 3 + 2] * dt;
+    d.vel[i * 3] *= 0.96;
+    d.vel[i * 3 + 1] *= 0.96;
+    d.vel[i * 3 + 2] *= 0.96;
+
+    const age = 1 - d.life[i] / d.maxLife[i];
+    const alpha = Math.pow(1 - age, 1.35);
+    if (d.isHot[i]) {
+      // Blanco-dorado -> coral infrarrojo -> cian ionizado
+      d.col[i * 3] = (age < 0.5 ? 1.0 : 0.24) * alpha;
+      d.col[i * 3 + 1] = (age < 0.35 ? 0.62 : 0.68) * alpha;
+      d.col[i * 3 + 2] = (age < 0.4 ? 0.26 : 1.0) * alpha;
+    } else {
+      d.col[i * 3] = 0.2 * alpha;
+      d.col[i * 3 + 1] = 0.85 * alpha;
+      d.col[i * 3 + 2] = 1.0 * alpha;
+    }
+  }
+
+  kryoExhaust.visible = aliveCount > 0 || (activeRoute === 'inicio' && kryoPhase !== 'done');
+  if (kryoRig) {
+    d.mat.size = Math.max(0.18, kryoRig.scale.x * (kryoPhase === 'takeoff' ? 0.23 : 0.11));
+  }
+  d.geo.attributes.position.needsUpdate = true;
+  d.geo.attributes.color.needsUpdate = true;
+}
+
+function loadKryoModel() {
+  if (kryoLoadStarted || !kryoRig) return;
+  kryoLoadStarted = true;
+
+  ensureGltfSupport()
+    .then(() => {
+      if (!kryoRig || !T.GLTFLoader || !T.DRACOLoader) return;
+      const draco = new T.DRACOLoader();
+      draco.setDecoderPath('assets/js/vendor/draco/gltf/');
+      const loader = new T.GLTFLoader();
+      loader.setDRACOLoader(draco);
+
+      loader.load(
+        './assets/models/kryo9.glb',
+        gltf => {
+          draco.dispose();
+          if (!kryoRig) return;
+          const model = gltf.scene;
+          const box = new T.Box3().setFromObject(model);
+          const size = new T.Vector3();
+          const center = new T.Vector3();
+          box.getSize(size);
+          box.getCenter(center);
+
+          const normScale = 1.92 / Math.max(size.y, 0.5);
+          model.position.set(-center.x * normScale, -center.y * normScale, -center.z * normScale);
+          model.scale.setScalar(normScale);
+
+          kryoModelPivot = new T.Group();
+          kryoModelPivot.name = 'Kryo9Pivot';
+          kryoModelPivot.add(model);
+          kryoRig.add(kryoModelPivot);
+
+          const emissiveOverrides = {
+            Mat_InfraredThruster: 2.35,
+            Mat_CyanGlow: 1.85,
+            Mat_CyanRing: 1.65,
+            Mat_PlanetX: 0.9,
+            Mat_PlanetRing: 1.35
+          };
+          const seenMats = new Set();
+          kryoMats.length = 0;
+
+          model.traverse(obj => {
+            if (!obj.isMesh || !obj.material) return;
+            const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+            for (const m of mats) {
+              if (seenMats.has(m)) continue;
+              seenMats.add(m);
+              if (emissiveOverrides[m.name] !== undefined && m.emissiveIntensity !== undefined) {
+                m.emissiveIntensity = emissiveOverrides[m.name];
+              }
+              if (m.name === 'Mat_VisorGlass') {
+                m.envMapIntensity = 1.55;
+              } else if (m.name === 'Mat_Titanium' || m.name === 'Mat_GoldFrame') {
+                m.envMapIntensity = 1.35;
+              } else if (m.envMapIntensity !== undefined) {
+                m.envMapIntensity = 1.05;
+              }
+              kryoMats.push({
+                name: m.name || '',
+                mat: m,
+                baseOpacity: typeof m.opacity === 'number' ? m.opacity : 1,
+                baseEmissive: typeof m.emissiveIntensity === 'number' ? m.emissiveIntensity : 1,
+                baseTransparent: Boolean(m.transparent),
+                baseDepthWrite: m.depthWrite !== false
+              });
+            }
+          });
+
+          kryoHeadNode = model.getObjectByName('Head') || null;
+          kryoTorsoNode = model.getObjectByName('Torso') || model.getObjectByName('Root') || null;
+          kryoFootL = model.getObjectByName('Foot_InfraredThruster_L') || model.getObjectByName('Foot_L') || null;
+          kryoFootR = model.getObjectByName('Foot_InfraredThruster_R') || model.getObjectByName('Foot_R') || null;
+
+          kryoClips = gltf.animations || [];
+          if (kryoClips.length) {
+            kryoMixer = new T.AnimationMixer(model);
+            for (const clip of kryoClips) {
+              kryoActions[clip.name] = kryoMixer.clipAction(clip);
+            }
+            kryoMixer.addEventListener('finished', e => {
+              if (kryoPhase === 'idle' && e.action !== kryoActions.Idle_Float) {
+                playKryoAction('Idle_Float', { fade: 0.45 });
+              }
+            });
+            playKryoAction('Idle_Float', { fade: 0.05 });
+            kryoMixer.update(0.016);
+          }
+
+          updateKryoSlotRect();
+          kryoRig.visible = activeRoute === 'inicio' || kryoPhase === 'takeoff';
+          wakeLoop();
+        },
+        undefined,
+        () => {
+          draco.dispose();
+        }
+      );
+    })
+    .catch(() => {});
+}
+
+function buildKryoShowcase() {
+  kryoRig = new T.Group();
+  kryoRig.name = 'Kryo9Showcase';
+  kryoRig.visible = false;
+
+  const keyLight = new T.DirectionalLight(0xfff4e6, 2.35);
+  keyLight.position.set(3.2, 4.4, 4.8);
+  const rimCyan = new T.DirectionalLight(0x38bdf8, 2.05);
+  rimCyan.position.set(-3.8, 2.6, -2.5);
+  kryoRimCoral = new T.PointLight(0xff6b42, 1.05, 11);
+  kryoRimCoral.position.set(0.15, -1.35, 1.25);
+  const fillHemi = new T.HemisphereLight(0xdbeafe, 0x0b1224, 0.8);
+  kryoRig.add(keyLight, rimCyan, kryoRimCoral, fillHemi);
+
+  const thrusterTex = makeGlowTexture('rgba(255,220,180,0.95)', 'rgba(255,90,48,0.42)');
+  const makeThrusterSprite = () => new T.Sprite(new T.SpriteMaterial({
+    map: thrusterTex,
+    transparent: true,
+    opacity: 0.55,
+    blending: T.AdditiveBlending,
+    depthWrite: false
+  }));
+  kryoThrusterGlowL = makeThrusterSprite();
+  kryoThrusterGlowR = makeThrusterSprite();
+  kryoThrusterGlowL.scale.set(0.35, 0.35, 1);
+  kryoThrusterGlowR.scale.set(0.35, 0.35, 1);
+  kryoRig.add(kryoThrusterGlowL, kryoThrusterGlowR);
+
+  kryoShockwave = new T.Mesh(
+    new T.TorusGeometry(0.46, 0.0055, 10, 80),
+    new T.MeshBasicMaterial({
+      color: 0x38bdf8,
+      transparent: true,
+      opacity: 0,
+      blending: T.AdditiveBlending,
+      depthWrite: false
+    })
+  );
+  kryoShockwave.rotation.x = Math.PI * 0.46;
+  kryoShockwave.position.set(0, -0.92, 0);
+  kryoShockwave.visible = false;
+  kryoRig.add(kryoShockwave);
+
+  kryoJetL = makeJetConeGroup();
+  kryoJetR = makeJetConeGroup();
+  kryoRig.add(kryoJetL, kryoJetR);
+
+  scene.add(kryoRig);
+  buildKryoExhaust();
+  buildKryoSpeedLines();
+  buildKryoOrbitTrail();
+  updateKryoSlotRect();
+
+  if (activeRoute === 'inicio') {
+    loadKryoModel();
+  }
+}
+
+function updateKryoFrame(dt) {
+  if (!kryoRig || !camera) return;
+  const reduced = Boolean(window.__skyReducedMotion);
+
+  if (kryoPhase === 'done' || (kryoPhase === 'idle' && activeRoute !== 'inicio')) {
+    kryoRig.visible = false;
+    if (kryoJetL) kryoJetL.visible = false;
+    if (kryoJetR) kryoJetR.visible = false;
+    updateKryoSpeedLines(dt, 0);
+    updateKryoExhaust(dt);
+    return;
+  }
+
+  if (!kryoModelPivot) {
+    updateKryoSpeedLines(dt, 0);
+    updateKryoExhaust(dt);
+    return;
+  }
+
+  if (kryoSlot.h <= 0) updateKryoSlotRect();
+  const w = window.innerWidth || 1280;
+  const h = window.innerHeight || 720;
+  const fallbackCx = w < 780 ? w * 0.5 : w * 0.72;
+  const fallbackCy = w < 780 ? h * 0.68 : h * 0.5;
+  const cx = kryoSlot.h > 0 ? kryoSlot.cx : fallbackCx;
+  const cy = kryoSlot.h > 0 ? kryoSlot.cy : fallbackCy;
+  const stageH = kryoSlot.h > 0 ? kryoSlot.h : Math.min(w, h) * 0.45;
+  const stageW = kryoSlot.w > 0 ? kryoSlot.w : Math.min(w, h) * 0.45;
+
+  ensureKryoTmp();
+
+  let progress = 0;
+  if (kryoPhase === 'takeoff') {
+    kryoWarpT = Math.min(1, kryoWarpT + dt / KRYO_ORBIT_DURATION);
+    progress = kryoWarpT;
+  }
+
+  const slotNdcX = (cx / w) * 2 - 1;
+  const slotNdcY = -(cy / h) * 2 + 1;
+
+  let ndcX = slotNdcX;
+  let ndcY = slotNdcY;
+  let depth = 22;
+  let ignition = 0;
+  let cruiseSpeed = 0;
+  let targetYaw = -0.22;
+  let targetPitch = 0.04;
+  let targetRoll = 0;
+
+  if (kryoPhase === 'takeoff') {
+    if (!kryoOrbitCurve) kryoOrbitCurve = buildOrbitalCurve(slotNdcX, slotNdcY);
+
+    if (progress < 0.14) {
+      // Fase 1: Ignición en rampa (#inicio)
+      const q = progress / 0.14;
+      ignition = 0.35 + 0.85 * q;
+      cruiseSpeed = 0.14 * q;
+      ndcY = slotNdcY - 0.024 * Math.sin(q * Math.PI);
+      depth = 22 - 1.0 * q;
+      targetYaw = -0.22;
+      targetPitch = -0.08 * q;
+      targetRoll = (Math.random() - 0.5) * 0.03 * q;
+    } else {
+      // Fase 2 y 3: Curva slingshot orbital supersónica -> entrada natural en #explorar
+      const uRaw = (progress - 0.14) / 0.86;
+      const u = uRaw * uRaw * (3 - 2 * uRaw);
+      const pt = kryoOrbitCurve.getPoint(u);
+      const tan = kryoOrbitCurve.getTangent(u);
+
+      ndcX = pt.x;
+      ndcY = pt.y;
+      depth = pt.z;
+
+      const orbitalPhase = Math.max(0, Math.min(1, (progress - 0.14) / 0.64));
+      cruiseSpeed = progress < 0.78 ? Math.sin(orbitalPhase * Math.PI) : 0;
+      ignition = 1.15 + cruiseSpeed * 0.9 - Math.max(0, (progress - 0.76) / 0.24) * 0.85;
+
+      const vx = tan.x * 1.45;
+      const vy = tan.y * 1.0;
+      const vz = -tan.z * 0.065;
+      const tangentYaw = Math.atan2(vx, vz);
+      const diveBlend = progress < 0.74
+        ? Math.sin(Math.min(1, (progress - 0.14) / 0.60) * Math.PI)
+        : 0;
+
+      // En pico de órbita apunta la cabeza en la dirección del vuelo con alabeo; al aterrizar vuelve a mirar al frente
+      const deltaTangent = Math.atan2(Math.sin(tangentYaw - (-0.18)), Math.cos(tangentYaw - (-0.18)));
+      targetYaw = -0.18 + deltaTangent * Math.min(1, diveBlend * 1.25);
+      targetPitch = (0.92 + Math.max(-0.28, Math.min(0.28, -vy * 0.35))) * diveBlend;
+      targetRoll = Math.max(-0.56, Math.min(0.56, -tan.x * 0.45)) * diveBlend;
+
+      if (!kryoDidLandingWave && progress >= 0.75 && kryoActions.Wave_Hello) {
+        kryoDidLandingWave = true;
+        setKryoStatusLabel('KRYO-9 · ENTRANDO EN ÓRBITA ICRS');
+        playKryoAction('Wave_Hello', { fade: 0.24, loopOnce: true, timeScale: 1.35 });
+      }
+    }
+  }
+
+  _kryoTmp.fwd.set(0, 0, -1).applyQuaternion(camera.quaternion).normalize();
+  _kryoTmp.v.set(ndcX, ndcY, 0.5).unproject(camera).sub(camera.position).normalize();
+  const cosTheta = Math.max(0.25, _kryoTmp.v.dot(_kryoTmp.fwd));
+  const rayDist = depth / cosTheta;
+
+  kryoRig.visible = true;
+  kryoRig.position.copy(camera.position).addScaledVector(_kryoTmp.v, rayDist);
+  kryoRig.quaternion.copy(camera.quaternion);
+
+  const worldScreenH = 2 * depth * Math.tan((camera.fov * Math.PI) / 360);
+  const fitPx = Math.min(stageH * 0.86, stageW * 0.95);
+  kryoBaseScale = ((fitPx / h) * worldScreenH) * 0.44;
+  const arrivalShrink = kryoPhase === 'takeoff' && progress > 0.86
+    ? 1 - 0.32 * ((progress - 0.86) / 0.14)
+    : 1;
+  kryoRig.scale.setScalar(kryoBaseScale * arrivalShrink);
+
+  // Micro-gestos reactivos y mezcla de animaciones NLA
+  if (!reduced && kryoMixer) {
+    if (kryoPhase === 'idle') {
+      kryoIdleTimer += dt;
+      if (kryoIdleTimer >= 6.8 && kryoCurrentAction === kryoActions.Idle_Float) {
+        kryoIdleTimer = 0;
+        const nextClip = (Math.floor(simTime / 6) % 2 === 0 && kryoActions.Scan_Sky)
+          ? 'Scan_Sky'
+          : 'Wave_Hello';
+        if (kryoActions[nextClip]) playKryoAction(nextClip, { fade: 0.38, loopOnce: true });
+      }
+      if (pointerClient.overKryo && (simTime - kryoLastWaveSim > 8.5) && kryoActions.Wave_Hello && kryoCurrentAction === kryoActions.Idle_Float) {
+        kryoLastWaveSim = simTime;
+        kryoIdleTimer = 0;
+        playKryoAction('Wave_Hello', { fade: 0.25, loopOnce: true, timeScale: 1.15 });
+      }
+    }
+    kryoMixer.update(dt);
+  }
+
+  // Orientación suave del cuerpo y seguimiento de visor al cursor
+  if (kryoPhase === 'idle') {
+    const hoverYaw = -0.22 + (pointerClient.moved ? cursorParallax.x * 0.42 : 0) + (reduced ? 0 : Math.sin(simTime * 0.55) * 0.05);
+    const hoverPitch = 0.04 - (pointerClient.moved ? cursorParallax.y * 0.18 : 0);
+    kryoFlightRot.yaw += (hoverYaw - kryoFlightRot.yaw) * 0.09;
+    kryoFlightRot.pitch += (hoverPitch - kryoFlightRot.pitch) * 0.09;
+    kryoFlightRot.roll *= 0.9;
+    kryoModelPivot.rotation.set(kryoFlightRot.pitch, kryoFlightRot.yaw, kryoFlightRot.roll, 'YXZ');
+    kryoModelPivot.position.y = reduced ? 0 : Math.sin(simTime * 1.9) * 0.035;
+  } else {
+    const yawDiff = Math.atan2(Math.sin(targetYaw - kryoFlightRot.yaw), Math.cos(targetYaw - kryoFlightRot.yaw));
+    kryoFlightRot.yaw += yawDiff * 0.18;
+    kryoFlightRot.pitch += (targetPitch - kryoFlightRot.pitch) * 0.16;
+    kryoFlightRot.roll += (targetRoll - kryoFlightRot.roll) * 0.16;
+    kryoModelPivot.rotation.set(kryoFlightRot.pitch, kryoFlightRot.yaw, kryoFlightRot.roll, 'YXZ');
+    kryoModelPivot.position.y = 0;
+  }
+
+  if (kryoHeadNode && !reduced) {
+    const aimK = kryoPhase === 'idle' && pointerClient.moved ? 1 : 0;
+    const dx = pointerClient.moved ? Math.max(-1, Math.min(1, (pointerClient.x - cx) / Math.max(240, w * 0.42))) : 0;
+    const dy = pointerClient.moved ? Math.max(-1, Math.min(1, (pointerClient.y - cy) / Math.max(200, h * 0.42))) : 0;
+    kryoHeadAim.yaw += (dx * 0.42 * aimK - kryoHeadAim.yaw) * 0.11;
+    kryoHeadAim.pitch += (dy * 0.22 * aimK - kryoHeadAim.pitch) * 0.11;
+    _kryoTmp.euler.set(kryoHeadAim.pitch, kryoHeadAim.yaw, 0, 'YXZ');
+    _kryoTmp.quat.setFromEuler(_kryoTmp.euler);
+    kryoHeadNode.quaternion.multiply(_kryoTmp.quat);
+  }
+
+  kryoRig.updateMatrixWorld(true);
+
+  // Flares, conos supersónicos de plasma y ondas de choque
+  const glowPulse = 0.72 + ignition * 1.55 + (reduced ? 0 : 0.14 * Math.sin(simTime * 11));
+  const fadeAlpha = kryoPhase === 'takeoff' && progress > 0.87
+    ? Math.max(0, 1 - (progress - 0.87) / 0.13)
+    : 1;
+
+  if (kryoTorsoNode) {
+    kryoTorsoNode.getWorldPosition(_kryoTmp.torsoW);
+    kryoRig.worldToLocal(_kryoTmp.torsoW);
+  } else {
+    _kryoTmp.torsoW.set(0, 0.15, 0);
+  }
+
+  const updateBootFx = (footNode, glowSprite, jetGrp, outWorldPos) => {
+    if (!footNode) return null;
+    footNode.getWorldPosition(outWorldPos);
+    if (glowSprite) {
+      kryoRig.worldToLocal(glowSprite.position.copy(outWorldPos));
+      const s = (0.34 + ignition * 0.62) * fadeAlpha;
+      glowSprite.scale.set(s, s * (1 + ignition * 0.45), 1);
+      glowSprite.material.opacity = Math.min(1, (0.38 + ignition * 0.48) * fadeAlpha);
+    }
+    if (jetGrp) {
+      const showJet = kryoPhase === 'takeoff' && ignition > 0.15 && progress < 0.78 && !reduced;
+      jetGrp.visible = showJet;
+      if (showJet) {
+        kryoRig.worldToLocal(jetGrp.position.copy(outWorldPos));
+        _kryoTmp.tan.copy(jetGrp.position).sub(_kryoTmp.torsoW);
+        if (_kryoTmp.tan.lengthSq() < 0.001) _kryoTmp.tan.set(0, -1, 0);
+        _kryoTmp.tan.normalize();
+        jetGrp.quaternion.setFromUnitVectors(_kryoTmp.negY, _kryoTmp.tan);
+        const jetFade = progress > 0.64 ? Math.max(0, 1 - (progress - 0.64) / 0.14) : 1;
+        const jetLen = 0.24 + ignition * 0.36 + cruiseSpeed * 0.42;
+        const jetRad = 0.8 + ignition * 0.2;
+        jetGrp.scale.set(jetRad, jetLen, jetRad);
+        const op = Math.min(0.84, (0.3 + ignition * 0.4) * fadeAlpha * jetFade);
+        jetGrp.userData.outerMat.opacity = op;
+        jetGrp.userData.innerMat.opacity = op * 0.85;
+        return _kryoTmp.tan.clone().transformDirection(kryoRig.matrixWorld);
+      }
+    }
+    return null;
+  };
+
+  const aftWorldL = updateBootFx(kryoFootL, kryoThrusterGlowL, kryoJetL, _kryoTmp.worldL);
+  const aftWorldR = updateBootFx(kryoFootR, kryoThrusterGlowR, kryoJetR, _kryoTmp.worldR);
+
+  if (kryoShockwave) {
+    if (kryoPhase === 'takeoff' && progress >= 0.04 && progress <= 0.36) {
+      const sp = (progress - 0.04) / 0.32;
+      const se = 1 - Math.pow(1 - sp, 2.2);
+      kryoShockwave.visible = true;
+      kryoShockwave.position.set(0, -0.92, 0);
+      kryoShockwave.scale.setScalar(0.32 + se * 3.2);
+      kryoShockwave.material.opacity = Math.sin(Math.min(1, sp) * Math.PI) * 0.82;
+      kryoShockwave.material.color.setHex(sp < 0.4 ? 0xff7b42 : 0x38bdf8);
+    } else if (kryoPhase === 'takeoff' && progress >= 0.78 && progress <= 0.98) {
+      const sp = (progress - 0.78) / 0.20;
+      const se = 1 - Math.pow(1 - sp, 2.0);
+      kryoShockwave.visible = true;
+      kryoShockwave.position.set(0, 0, 0);
+      kryoShockwave.scale.setScalar(0.45 + se * 3.8);
+      kryoShockwave.material.opacity = Math.sin(Math.min(1, sp) * Math.PI) * 0.72 * fadeAlpha;
+      kryoShockwave.material.color.setHex(0x38bdf8);
+    } else {
+      kryoShockwave.visible = false;
+    }
+  }
+
+  if (kryoRimCoral) {
+    kryoRimCoral.intensity = (1.05 + ignition * 3.4) * fadeAlpha;
+  }
+
+  for (const entry of kryoMats) {
+    const m = entry.mat;
+    if (kryoPhase === 'takeoff' && progress > 0.84) {
+      m.transparent = true;
+      m.depthWrite = false;
+      m.opacity = entry.baseOpacity * fadeAlpha;
+    } else {
+      m.opacity = entry.baseOpacity;
+    }
+    if (m.emissiveIntensity !== undefined) {
+      if (entry.name === 'Mat_InfraredThruster') {
+        m.emissiveIntensity = entry.baseEmissive * (0.9 + glowPulse * (kryoPhase === 'takeoff' ? 1.65 : 0.25)) * fadeAlpha;
+      } else if (entry.name === 'Mat_CyanGlow' || entry.name === 'Mat_CyanRing') {
+        m.emissiveIntensity = entry.baseEmissive * (1 + ignition * 0.55) * fadeAlpha;
+      } else {
+        m.emissiveIntensity = entry.baseEmissive * fadeAlpha;
+      }
+    }
+  }
+
+  // Emisión continua de estela supersónica + líneas orbitales de hipervelocidad
+  if (reduced) {
+    clearKryoExhaust();
+    updateKryoSpeedLines(dt, 0);
+  } else {
+    if (kryoPhase === 'takeoff' && progress >= 0.04 && progress <= 0.94) {
+      const countBurst = cruiseSpeed > 0.25 ? 4 : 2;
+      for (let b = 0; b < countBurst; b++) {
+        if (kryoFootL) spawnKryoExhaustParticle(_kryoTmp.worldL, true, aftWorldL);
+        if (kryoFootR) spawnKryoExhaustParticle(_kryoTmp.worldR, true, aftWorldR);
+      }
+    } else if (kryoPhase === 'idle') {
+      kryoExhaustAccum += dt;
+      if (kryoExhaustAccum >= 0.065) {
+        kryoExhaustAccum = 0;
+        if (kryoFootL) spawnKryoExhaustParticle(_kryoTmp.worldL, false);
+        if (kryoFootR) spawnKryoExhaustParticle(_kryoTmp.worldR, false);
+      }
+    }
+    updateKryoExhaust(dt);
+    updateKryoSpeedLines(dt, kryoPhase === 'takeoff' ? cruiseSpeed : 0);
+    if (kryoPhase === 'takeoff') {
+      const trailFade = progress > 0.72 ? Math.max(0, 1 - (progress - 0.72) / 0.22) : 1;
+      pushKryoOrbitTrail(kryoRig.position, trailFade);
+    } else if (kryoOrbitTrail) {
+      kryoOrbitTrail.visible = false;
+    }
+  }
+
+  if (kryoPhase === 'takeoff' && progress >= 1) {
+    kryoPhase = 'done';
+    kryoRig.visible = false;
+    if (kryoJetL) kryoJetL.visible = false;
+    if (kryoJetR) kryoJetR.visible = false;
+    if (kryoOrbitTrail) kryoOrbitTrail.visible = false;
+    kryoOrbitTrailPts.length = 0;
+    updateKryoSpeedLines(dt, 0);
+    resetKryoMaterials();
+    setKryoStatusLabel('KRYO-9 · EN BÓVEDA ICRS');
   }
 }
 
@@ -1411,6 +2372,19 @@ function bindPointerEvents() {
     const h = adaptiveViewport.height || window.innerHeight || 1;
     cursorParallax.x = (e.clientX / w - 0.5) * 0.28;
     cursorParallax.y = (e.clientY / h - 0.5) * 0.18;
+    pointerClient.x = e.clientX;
+    pointerClient.y = e.clientY;
+    pointerClient.moved = true;
+    if (activeRoute === 'inicio' && kryoSlot.w > 0 && kryoSlot.h > 0) {
+      const halfW = kryoSlot.w * 0.5;
+      const halfH = kryoSlot.h * 0.5;
+      pointerClient.overKryo = (
+        Math.abs(e.clientX - kryoSlot.cx) <= halfW &&
+        Math.abs(e.clientY - kryoSlot.cy) <= halfH
+      );
+    } else {
+      pointerClient.overKryo = false;
+    }
     if (activeRoute === 'inicio' || (activeRoute === 'explorar' && e.target === canvas)) {
       wakeLoop();
     }
@@ -1578,17 +2552,71 @@ export function getBovedaModelState() {
   };
 }
 
+export function getKryoPortalState() {
+  return {
+    phase: kryoPhase,
+    warpT: Number(kryoWarpT.toFixed(3)),
+    visible: Boolean(kryoRig && kryoRig.visible),
+    hasModel: Boolean(kryoModelPivot),
+    clipsCount: kryoClips.length,
+    clipNames: kryoClips.map(c => c.name),
+    mixerTime: kryoMixer ? Number(kryoMixer.time.toFixed(3)) : 0
+  };
+}
+
+function stopKryoVisuals() {
+  if (kryoRig) kryoRig.visible = false;
+  if (kryoJetL) kryoJetL.visible = false;
+  if (kryoJetR) kryoJetR.visible = false;
+  if (kryoSpeedGroup) kryoSpeedGroup.visible = false;
+  if (kryoOrbitTrail) kryoOrbitTrail.visible = false;
+  kryoOrbitTrailPts.length = 0;
+  clearKryoExhaust();
+}
 export function triggerWarpZoom() {
   if (!isInitialized) return;
   if (window.__skyReducedMotion) {
     eclipsePhase = 'done';
+    kryoPhase = 'done';
     if (eclipseRig) eclipseRig.visible = false;
+    stopKryoVisuals();
     return;
   }
   updateEclipseSlotRect();
+  updateKryoSlotRect();
   eclipsePhase = 'transition';
   eclipseWarpT = 0;
   if (eclipseRig) eclipseRig.visible = true;
+
+  const w = window.innerWidth || 1280;
+  const h = window.innerHeight || 720;
+  const slotNdcX = ((kryoSlot.h > 0 ? kryoSlot.cx : w * 0.72) / w) * 2 - 1;
+  const slotNdcY = -(((kryoSlot.h > 0 ? kryoSlot.cy : h * 0.5) / h) * 2 - 1);
+
+  kryoPhase = 'takeoff';
+  kryoWarpT = 0;
+  kryoDidLandingWave = false;
+  kryoOrbitTrailPts.length = 0;
+  if (kryoOrbitTrail) kryoOrbitTrail.visible = false;
+  kryoOrbitCurve = buildOrbitalCurve(slotNdcX, slotNdcY);
+  setKryoStatusLabel('KRYO-9 · VUELO ORBITAL A LA BÓVEDA');
+  if (kryoRig && kryoModelPivot) {
+    kryoRig.visible = true;
+    if (kryoActions.Takeoff_Launch) {
+      const dur = kryoActions.Takeoff_Launch.getClip().duration || 1.83;
+      playKryoAction('Takeoff_Launch', {
+        fade: 0.08,
+        loopOnce: true,
+        timeScale: dur / (KRYO_ORBIT_DURATION * 0.86)
+      });
+    }
+    ensureKryoTmp();
+    for (let i = 0; i < 18; i++) {
+      if (kryoFootL) spawnKryoExhaustParticle(kryoFootL.getWorldPosition(_kryoTmp.worldL), true);
+      if (kryoFootR) spawnKryoExhaustParticle(kryoFootR.getWorldPosition(_kryoTmp.worldR), true);
+    }
+  }
+
   isWarpingFromInicio = true;
   warpBoost = 1;
   camGoal.r = 22;
@@ -1614,6 +2642,24 @@ export function setCosmosRoute(route) {
     resetEclipseMaterials();
     updateEclipseSlotRect();
     if (eclipseRig) eclipseRig.visible = true;
+
+    kryoPhase = 'idle';
+    kryoWarpT = 0;
+    kryoIdleTimer = 0;
+    kryoDidLandingWave = false;
+    kryoOrbitCurve = null;
+    Object.assign(kryoFlightRot, { yaw: -0.22, pitch: 0.04, roll: 0 });
+    resetKryoMaterials();
+    stopKryoVisuals();
+    setKryoStatusLabel('KRYO-9 · EN ÓRBITA DE ESPERA');
+    updateKryoSlotRect();
+    loadKryoModel();
+    if (kryoActions.Idle_Float) {
+      playKryoAction('Idle_Float', { fade: 0.1 });
+    }
+    if (kryoRig) kryoRig.visible = Boolean(kryoModelPivot);
+    if (scene && inicioEnv) scene.environment = inicioEnv;
+
     if (inicioGroup) inicioGroup.scale.set(1, 1, 1);
     if (camera && camera.fov !== 50) {
       camera.fov = 50;
@@ -1623,8 +2669,13 @@ export function setCosmosRoute(route) {
     adaptiveViewport.fitRadius = camGoal.r;
   } else if (route === 'explorar') {
     canvas.style.cursor = 'grab';
-    eclipsePhase = 'done';
-    if (eclipseRig) eclipseRig.visible = false;
+    if (prev !== 'inicio' || !isWarpingFromInicio) {
+      eclipsePhase = 'done';
+      kryoPhase = 'done';
+      if (eclipseRig) eclipseRig.visible = false;
+      stopKryoVisuals();
+      if (scene) scene.environment = null;
+    }
     const fitR = applyAdaptiveCameraForRoute('explorar');
     if (prev === 'inicio' && isWarpingFromInicio) {
       camCurr.r = fitR + 18; // entra haciendo zoom hacia la bóveda desde el hiperespacio
@@ -1636,12 +2687,18 @@ export function setCosmosRoute(route) {
   } else if (route === '3d') {
     canvas.style.cursor = 'grab';
     eclipsePhase = 'done';
+    kryoPhase = 'done';
     if (eclipseRig) eclipseRig.visible = false;
+    stopKryoVisuals();
+    if (scene) scene.environment = null;
     set3DFocus(focus3D);
   } else if (route === 'fases') {
     canvas.style.cursor = 'grab';
     eclipsePhase = 'done';
+    kryoPhase = 'done';
     if (eclipseRig) eclipseRig.visible = false;
+    stopKryoVisuals();
+    if (scene) scene.environment = null;
     focusPhaseNode(fasesState.activeIdx);
   }
 
@@ -1898,10 +2955,14 @@ function renderLoop(now = performance.now()) {
     }
   }
 
-  // Decaimiento suave de hiper-zoom warp al cruzar desde #inicio hacia #explorar
-  if (!reduced && warpBoost > 0.004) {
+  // Decaimiento suave de hiper-zoom warp sincronizado con el vuelo orbital de KRYO-9
+  const orbitalFovBoost = (!reduced && kryoPhase === 'takeoff')
+    ? Math.sin(Math.min(1, kryoWarpT / 0.88) * Math.PI) * 1.1
+    : 0;
+  const activeFovBoost = Math.max(warpBoost, orbitalFovBoost);
+  if (!reduced && activeFovBoost > 0.004) {
     if (!isWarpingFromInicio) warpBoost *= Math.pow(0.9, frameScale);
-    camera.fov = 50 + warpBoost * 24;
+    camera.fov = 50 + activeFovBoost * 24;
     camera.updateProjectionMatrix();
   } else if (camera.fov !== 50) {
     warpBoost = 0;
@@ -1934,6 +2995,10 @@ function renderLoop(now = performance.now()) {
   camera.lookAt(camCurr.tx, camCurr.ty, camCurr.tz);
   camera.updateMatrixWorld(true);
   updateEclipsePortalFrame(dt * 0.001);
+  updateKryoFrame(dt * 0.001);
+  if (kryoPhase === 'done' && activeRoute !== 'inicio' && scene && scene.environment) {
+    scene.environment = null;
+  }
 
   if (starField) {
     starField.position.copy(camera.position);
@@ -1949,6 +3014,8 @@ function renderLoop(now = performance.now()) {
   const settled =
     eclipsePhase !== 'transition' &&
     warpBoost <= 0.004 &&
+    kryoPhase !== 'takeoff' &&
+    !(kryoExhaust && kryoExhaust.visible) &&
     Math.abs(camCurr.r - camGoal.r) < 0.05 &&
     Math.abs(camCurr.t - camGoal.t) < 0.002 &&
     Math.abs(camCurr.p - camGoal.p) < 0.002 &&
@@ -2023,12 +3090,16 @@ export async function initCosmos3D(initialRoute = 'inicio') {
 
   renderer.setClearColor(0x000000, 1);
   renderer.setPixelRatio(computeQualityProfile(window.innerWidth, window.innerHeight).effectivePixelRatio);
+  renderer.outputEncoding = T.sRGBEncoding;
+  renderer.toneMapping = T.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.06;
 
   scene.add(new T.AmbientLight(0xffffff, 0.45), new T.PointLight(0xffffff, 1.8));
 
   buildSharedStarfield();
   buildInicioScene();
   buildEclipsePortal();
+  buildKryoShowcase();
   buildExplorarScene();
   buildSistemaScene();
   buildFasesScene();
@@ -2056,6 +3127,7 @@ export async function initCosmos3D(initialRoute = 'inicio') {
       fitRadius: applyAdaptiveCameraForRoute(activeRoute)
     };
     updateEclipseSlotRect();
+    updateKryoSlotRect();
     wakeLoop();
   };
 

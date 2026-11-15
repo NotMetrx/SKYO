@@ -212,30 +212,42 @@ function navigate() {
 
 window.addEventListener('hashchange', navigate);
 
-// Solo ENTER o BARRA DE ESPACIO activan animación zoom desde #inicio hacia #explorar
+// Despegue de KRYO-9 y transición hiperespacial desde #inicio hacia #explorar
 let isWarping = false;
+function launchFromInicio() {
+  if (currentRoute !== 'inicio' || isWarping) return;
+  const promptText = document.getElementById('hero-prompt-text');
+  if (window.__skyReducedMotion) {
+    window.location.hash = '#explorar';
+    return;
+  }
+  isWarping = true;
+  if (promptText) promptText.textContent = 'Secuencia de despegue en curso…';
+  document.body.classList.add('warp-zoom');
+  triggerWarpZoom();
+  setTimeout(() => {
+    window.location.hash = '#explorar';
+    setTimeout(() => {
+      document.body.classList.remove('warp-zoom');
+      if (promptText) promptText.textContent = 'Iniciar secuencia de despegue';
+      isWarping = false;
+    }, 360);
+  }, 460);
+}
+
 window.addEventListener('keydown', e => {
   if (currentRoute !== 'inicio' || isWarping || e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
   const tag = document.activeElement?.tagName;
   if (['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A'].includes(tag) || document.activeElement?.isContentEditable) return;
   if (e.key === 'Enter' || e.code === 'Space') {
     e.preventDefault();
-    if (window.__skyReducedMotion) {
-      window.location.hash = '#explorar';
-      return;
-    }
-    isWarping = true;
-    document.body.classList.add('warp-zoom');
-    triggerWarpZoom();
-    setTimeout(() => {
-      window.location.hash = '#explorar';
-    }, 220);
-    setTimeout(() => {
-      document.body.classList.remove('warp-zoom');
-      isWarping = false;
-    }, 560);
+    launchFromInicio();
   }
 });
+
+// Activación opcional por clic/toque sobre el prompt o el escenario de KRYO-9 (sin controles <button>/<a> en #inicio)
+document.querySelector('#inicio .hero-prompt')?.addEventListener('click', launchFromInicio);
+document.getElementById('kryo9-stage')?.addEventListener('click', launchFromInicio);
 
 // 4. Gestión de C-States (Page Visibility API)
 document.addEventListener('visibilitychange', () => {

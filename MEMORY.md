@@ -28,6 +28,7 @@
   reporte sin procedencia/obsoleto, SATELLITE_HALO omitida, logo a11y y offline con Vary:Origin.
 - Ciencia: sin par real compatible validado, PSF/calibración/catálogos ni Android físico aceptados.
 - Ver docs/VALIDACION_PREPARACION_SPEC.md, INVESTIGACION_DATOS_NASA.md y CRITERIOS_CIENTIFICOS_SKYO.md.
+- Interfaz `#inicio` 2026-11-14: integrado agente 3D KRYO-9 (`assets/models/kryo9.glb`, pista `Takeoff_Launch` de vuelo orbital en `scripts/export_kryo9_skyo.py`) + loaders locales r128 (`GLTFLoader.js`, `DRACOLoader.js`, `RoomEnvironment.js`, `draco/gltf/*`) y caché `sw.js` `skyo-v2.3.3` (preservando `boveda.glb` y cambios de `origin/main`); transición `Enter`/clic hacia `#explorar` con vuelo curvo supersónico por la órbita (conos propulsores, estela, líneas radiales y aterrizaje saludando dentro de la bóveda ICRS) verificada tras el rebase en Firefox 160 headless (`warp < 1 s`, 0 errores consola) y `npm test` 8/8.
 
 ## Próximo paso
 

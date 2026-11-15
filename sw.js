@@ -2,7 +2,7 @@
  * SKYO Service Worker — PWA offline shell.
  * Caché estricto solo para assets locales de la aplicación y muestras FITS de demostración.
  */
-const VERSION = 'skyo-v2.3.2';
+const VERSION = 'skyo-v2.3.3';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -23,9 +23,16 @@ const ASSETS_TO_CACHE = [
   './assets/js/data.js',
   './assets/js/science-lab-ui.js',
   './assets/js/vendor/three.min.js',
+  './assets/js/vendor/GLTFLoader.js',
+  './assets/js/vendor/DRACOLoader.js',
+  './assets/js/vendor/RoomEnvironment.js',
+  './assets/js/vendor/draco/gltf/draco_decoder.js',
+  './assets/js/vendor/draco/gltf/draco_decoder.wasm',
+  './assets/js/vendor/draco/gltf/draco_wasm_wrapper.js',
   './assets/js/vendor/lottie.min.js',
   './assets/models/eclipse.glb',
   './assets/models/boveda.glb',
+  './assets/models/kryo9.glb',
   './assets/js/science/lab.js',
   './assets/js/science/fits.js',
   './assets/js/science/wcs.js',

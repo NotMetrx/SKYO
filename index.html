@@ -44,13 +44,31 @@
   </header>
 
   <main id="viewport">
-    <!-- Vista 1: Inicio minimalista (Solo SKYO sobre el cosmos 3D vivo en #000000) -->
+    <!-- Vista 1: Inicio minimalista (SKYO + KRYO-9 en 3D sobre el cosmos vivo en #000000) -->
     <section class="sec" id="inicio" aria-hidden="true" inert>
-      <div class="hero">
-        <h1 class="eclipse-wordmark" aria-label="SKYO">
-          <span class="letters">SKY</span>
-          <span class="eclipse-o" aria-hidden="true"></span>
-        </h1>
+      <div class="hero hero-split">
+        <div class="hero-brand">
+          <div class="hero-kicker" aria-hidden="true">
+            <span class="kicker-dot"></span>
+            <span>NASA Space Apps 2026 · Planet X &amp; SPHEREx</span>
+          </div>
+          <h1 class="eclipse-wordmark" aria-label="SKYO">
+            <span class="letters">SKY</span>
+            <span class="eclipse-o" aria-hidden="true"></span>
+          </h1>
+          <p class="hero-sub">Exploración infrarroja multibanda y astrometría local para candidatos transneptunianos.</p>
+          <div class="hero-prompt" aria-hidden="true">
+            <kbd class="hero-key">ENTER</kbd>
+            <span class="hero-prompt-text" id="hero-prompt-text">Iniciar secuencia de despegue</span>
+          </div>
+        </div>
+        <div class="hero-agent-stage" id="kryo9-stage" aria-hidden="true">
+          <div class="agent-hud-ring"></div>
+          <div class="agent-telemetry">
+            <span class="agent-badge-dot"></span>
+            <span id="kryo9-status-text">KRYO-9 · EN ÓRBITA DE ESPERA</span>
+          </div>
+        </div>
       </div>
     </section>
 
