@@ -4,13 +4,13 @@ import fs from 'node:fs/promises';
 import vm from 'node:vm';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
-import {skyDirection,skyCoordinates,healpixFace,healpixTile,skyPixel,sphereHit} from '../assets/js/immersive/sky-math.js';
-import {parseProperties,tileUrl,sameEdition,createSky} from '../assets/js/immersive/hips.js';
-import {cubePixel,cubeHeader,fetchRange} from '../assets/js/immersive/cube.js';
-import {createXR} from '../assets/js/immersive/xr.js';
+import {skyDirection,skyCoordinates,healpixFace,healpixTile,skyPixel,sphereHit} from '../../frontend/assets/js/immersive/sky-math.js';
+import {parseProperties,tileUrl,sameEdition,createSky} from '../../frontend/assets/js/immersive/hips.js';
+import {cubePixel,cubeHeader,fetchRange} from '../../frontend/assets/js/immersive/cube.js';
+import {createXR} from '../../frontend/assets/js/immersive/xr.js';
 const angle=(a,b)=>Math.abs(((a-b+540)%360)-180);
 test('Caché HiPS expulsa detalle fuera de pantalla durante una órbita completa',async()=>{
-  const context={};vm.runInNewContext(await fs.readFile('assets/js/vendor/three.min.js','utf8'),context);const T=context.THREE;
+  const context={};vm.runInNewContext(await fs.readFile('frontend/assets/js/vendor/three.min.js','utf8'),context);const T=context.THREE;
   const before={fetch:global.fetch,location:global.location,createImageBitmap:global.createImageBitmap};let closed=0,sky;
   try{
     global.location={href:'http://localhost/'};const bytes=new Uint8Array(),hash=createHash('sha256').update(bytes).digest('hex');
@@ -24,7 +24,7 @@ test('Caché HiPS expulsa detalle fuera de pantalla durante una órbita completa
   }finally{sky?.dispose();for(const [name,value] of Object.entries(before)){if(value===undefined)delete global[name];else global[name]=value;}}
 });
 test('Curación HiPS rechaza una edición nueva antes de reutilizar o relabelar los PNG',()=>{
-  execFileSync('python3',['-c',`from scripts.curate_immersive_sky import previous_manifest
+  execFileSync('python3',['-c',`from backend.python.curate_immersive_sky import previous_manifest
 from pathlib import Path
 import tempfile,json
 with tempfile.TemporaryDirectory() as root:
@@ -61,7 +61,7 @@ test('Range FITS rechaza HTTP200 y un rango truncado sin aceptar el cubo entero'
   }finally{global.fetch=original;}
 });
 test('WebXR r128: sesión, panel, mandos, vuelo y giro con antirrepetición',async()=>{
-  const context={};vm.runInNewContext(await fs.readFile('assets/js/vendor/three.min.js','utf8'),context);const T=context.THREE;
+  const context={};vm.runInNewContext(await fs.readFile('frontend/assets/js/vendor/three.min.js','utf8'),context);const T=context.THREE;
   const oldDocument=global.document,oldNavigator=Object.getOwnPropertyDescriptor(global,'navigator'),oldSecure=global.isSecureContext;
   const listeners=new Map(),session={visibilityState:'visible',addEventListener:(n,f)=>listeners.set(n,f),end:async()=>listeners.get('end')?.()};
   global.document={createElement:()=>({width:0,height:0,getContext:()=>({fillRect(){},strokeRect(){},fillText(){}})})};
@@ -81,7 +81,7 @@ test('WebXR r128: sesión, panel, mandos, vuelo y giro con antirrepetición',asy
   }finally{global.document=oldDocument;global.isSecureContext=oldSecure;if(oldNavigator)Object.defineProperty(global,'navigator',oldNavigator);else delete global.navigator;}
 });
 test('Rust/WASM: plano IMAGE real y flujo bajo retícula coinciden con binario NASA',async()=>{
-  const w=await import('../assets/js/science/wasm/pkg/skyo_wasm.js');await w.default({module_or_path:await fs.readFile('assets/js/science/wasm/pkg/skyo_wasm_bg.wasm')});
+  const w=await import('../../frontend/assets/js/science/wasm/pkg/skyo_wasm.js');await w.default({module_or_path:await fs.readFile('frontend/assets/js/science/wasm/pkg/skyo_wasm_bg.wasm')});
   const bytes=await fs.readFile('tests/fixtures/immersive/plane-445-ch62.bin'),p=w.float_plane_to_texture(bytes,512,512,1,0,true);
   try{
     const data=p.pixels(),view=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength);
@@ -92,8 +92,8 @@ test('Rust/WASM: plano IMAGE real y flujo bajo retícula coinciden con binario N
   }finally{p.free();}
 });
 test('Rust HEALPix: geometría y cobertura de toda la pantalla en polos, costura y vuelo',async()=>{
-  const w=await import('../assets/js/science/wasm/pkg/skyo_wasm.js');await w.default({module_or_path:await fs.readFile('assets/js/science/wasm/pkg/skyo_wasm_bg.wasm')});
-  const context={};vm.runInNewContext(await fs.readFile('assets/js/vendor/three.min.js','utf8'),context);const T=context.THREE;
+  const w=await import('../../frontend/assets/js/science/wasm/pkg/skyo_wasm.js');await w.default({module_or_path:await fs.readFile('frontend/assets/js/science/wasm/pkg/skyo_wasm_bg.wasm')});
+  const context={};vm.runInNewContext(await fs.readFile('frontend/assets/js/vendor/three.min.js','utf8'),context);const T=context.THREE;
   for(const [ra,dec] of [[0,0],[359.99,50],[60.811,51.34],[170,89.9],[15,-89.9]])for(const [fov,aspect,height] of [[70,1.6,1575],[70,.46,2532],[2,1.6,1575],[95,3,2160]])for(const travel of [0,750])for(const look of [1,-1]){
     const c=new T.PerspectiveCamera(fov,aspect,.1,2200),dir=new T.Vector3(...skyDirection(ra,dec));c.position.copy(dir).multiplyScalar(travel);c.lookAt(c.position.clone().addScaledVector(dir,look));c.updateMatrixWorld();
     const matrix=new T.Matrix4().multiplyMatrices(c.projectionMatrix,c.matrixWorldInverse);
@@ -113,7 +113,7 @@ test('Rust HEALPix: geometría y cobertura de toda la pantalla en polos, costura
   }
 });
 test('HiPS: metadatos reales,102canales y URLs incluidas carpetas por Npix',async()=>{
-  const text=await fs.readFile('public/datasets/immersive-sky/properties.txt','utf8'),p=parseProperties(text);
+  const text=await fs.readFile('frontend/public/datasets/immersive-sky/properties.txt','utf8'),p=parseProperties(text);
   assert.equal(p.wavelengths.length,102);assert.deepEqual(p.blank,[50,51]);
   assert.equal(p.wavelengths[0],.753);assert.equal(p.wavelengths[101],4.988);
   assert.ok(tileUrl(5,12000,0).endsWith('/Norder5/Dir10000/Npix12000/Npix12000.png'));

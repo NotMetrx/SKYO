@@ -11,7 +11,7 @@ from urllib.request import urlopen
 import numpy as np
 from astropy.io import fits
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def prepare(row):
@@ -51,7 +51,7 @@ def prepare(row):
         header['DETECTOR'] = detector
         header['ORIGIN'] = 'SKYO display derivative from NASA/IPAC SPHEREx'
         header['HISTORY'] = 'Full IMAGE footprint, finite-only 8x8 block mean; no WCS or quality masking.'
-        output = ROOT / f'public/datasets/fpa-dr1/D{detector}.fits'
+        output = ROOT / f'frontend/public/datasets/fpa-dr1/D{detector}.fits'
         output.parent.mkdir(parents=True, exist_ok=True)
         fits.PrimaryHDU(preview.astype('float32'), header).writeto(output, overwrite=True)
         return dict(detector=detector, file=output.name, sha256=hashlib.sha256(output.read_bytes()).hexdigest(),
@@ -71,5 +71,5 @@ if __name__ == '__main__':
         items = list(pool.map(prepare, rows))
     manifest = dict(schema='skyo-fpa-display-1', retrieved_utc=datetime.now(timezone.utc).isoformat(),
                     description='Six detectors from one exposure; schematic arrangement, not a sky mosaic.', items=items)
-    (ROOT / 'public/datasets/fpa-dr1/manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+    (ROOT / 'frontend/public/datasets/fpa-dr1/manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     print('Prepared six real full-footprint previews; original MEFs preserved in data/fpa-originals/.')

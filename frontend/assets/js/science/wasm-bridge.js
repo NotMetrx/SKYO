@@ -7,7 +7,7 @@ export async function initKernel(){
   let timer;
   try {
     const loading=(async()=>{
-    const url = new URL('assets/js/science/wasm/pkg/skyo_wasm.js', new URL(import.meta.env.PROD ? '../' : '../../../', import.meta.url)).href;
+    const url = new URL('assets/js/science/wasm/pkg/skyo_wasm.js', new URL(import.meta.env?.PROD ? '../' : '../../../', import.meta.url)).href;
     const mod=await import(/* @vite-ignore */ url);
     if(!mod.SKYO_BUILD?.wasmSha256)throw Error('Falta identidad del kernel compilado');
     const response=await fetch(new URL('skyo_wasm_bg.wasm',url));

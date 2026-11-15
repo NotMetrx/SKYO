@@ -5,7 +5,7 @@
  */
 import fs from 'node:fs/promises';
 
-const source = new URL('../public/datasets/m101-visual-v2/manifest.json', import.meta.url);
+const source = new URL('../frontend/public/datasets/m101-visual-v2/manifest.json', import.meta.url);
 const target = new URL('../data/published/m101-visual-v2/manifest.json', import.meta.url);
 const data = await fs.readFile(source);
 const current = await fs.readFile(target).catch(() => null);

@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
-import {inspectFits,readFitsPlane,parseFits} from '../assets/js/science/fits.js';
-import {angularDistance,parseFootprint,coveragePaths,inspectorFrame} from '../assets/js/science/archive-data.js';
+import {inspectFits,readFitsPlane,parseFits} from '../../frontend/assets/js/science/fits.js';
+import {angularDistance,parseFootprint,coveragePaths,inspectorFrame} from '../../frontend/assets/js/science/archive-data.js';
 const file=await fs.readFile('tests/fixtures/l2/observation.fits');
 const buffer=file.buffer.slice(file.byteOffset,file.byteOffset+file.byteLength);
 

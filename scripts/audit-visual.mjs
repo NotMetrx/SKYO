@@ -19,7 +19,7 @@ import { existsSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-const BASE = process.env.BASE || 'http://127.0.0.1:4173';
+const BASE = process.env.BASE || 'http://127.0.0.1:8000';
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const args = process.argv.slice(2);
 const has = name => args.includes(`--${name}`);
@@ -224,7 +224,11 @@ async function audit({ name, width, height, dpr }, reduced = false) {
   await page.waitForTimeout(650);
   await page.evaluate(() => document.activeElement?.blur());
   await page.keyboard.press('Enter');
-  await page.waitForTimeout(1000);
+  await page.waitForFunction(
+    () => location.hash === '#explorar' && !document.body.classList.contains('warp-zoom'),
+    null,
+    { timeout: 3000 }
+  ).catch(() => {});
   const kb = await page.evaluate(() => ({ hash: location.hash, warp: document.body.classList.contains('warp-zoom') }));
   if (kb.hash !== '#explorar') fail(run, 'E_KEYBOARD', `Enter dejó hash=${kb.hash}`);
   if (kb.warp) fail(run, 'E_WARP', 'body.warp-zoom no se limpió');

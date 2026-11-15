@@ -4,8 +4,8 @@ const bytes=await fs.readFile('tests/fixtures/l2/observation.fits'),ref=JSON.par
 async function setup(page){
   await page.route('https://irsa.ipac.caltech.edu/TAP/sync?**',route=>route.fulfill({contentType:'application/xml',body:`<VOTABLE><RESOURCE><INFO name="QUERY_STATUS" value="OK"/><TABLE>${['uri','observationid','collection','time_bounds_lower'].map(name=>`<FIELD name="${name}"/>`).join('')}<DATA><TABLEDATA><TR><TD>ibe/data/spherex/dr1/level2/fixture.fits</TD><TD>2025W20_2D_0065_1</TD><TD>spherex_dr1</TD><TD>60810</TD></TR></TABLEDATA></DATA></TABLE></RESOURCE></VOTABLE>`}));
   await page.route('https://irsa.ipac.caltech.edu/data/hips/**',async route=>{
-    if(route.request().url().endsWith('/properties'))return route.fulfill({body:await fs.readFile('public/datasets/immersive-sky/properties.txt')});
-    return route.fulfill({contentType:'image/png',body:await fs.readFile('public/datasets/immersive-sky/Npix1_62.png')});
+    if(route.request().url().endsWith('/properties'))return route.fulfill({body:await fs.readFile('frontend/public/datasets/immersive-sky/properties.txt')});
+    return route.fulfill({contentType:'image/png',body:await fs.readFile('frontend/public/datasets/immersive-sky/Npix1_62.png')});
   });
   await page.route('https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/**',route=>route.fulfill({status:404}));
 }

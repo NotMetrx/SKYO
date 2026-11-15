@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {buildComparison,compareJavaScript} from '../assets/js/science/pipeline.js';
+import {buildComparison,compareJavaScript} from '../../frontend/assets/js/science/pipeline.js';
 function image(){
   const width=48,height=48,n=width*height;
   return {width,height,header:{CTYPE1:'RA---TAN',CTYPE2:'DEC--TAN',CRVAL1:210,CRVAL2:54,CRPIX1:24,CRPIX2:24,CDELT1:-.0017,CDELT2:.0017,BUNIT:'MJy / sr'},image:new Float32Array(n),variance:new Float32Array(n).fill(1),flags:new Uint32Array(n),flagNames:{21:'SOURCE'},zodi:new Float32Array(n).fill(2),detector:2,wavelengthUm:1.5,bandwidthUm:.04};

@@ -2,15 +2,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
-import {parseFits,buildQualityMask} from '../assets/js/science/fits.js';
-import {wcsFromHeader,pixelToWorld,worldToPixel,reprojectToReference} from '../assets/js/science/wcs.js';
-import {buildComparison,compareJavaScript,checkSpectralPair} from '../assets/js/science/pipeline.js';
-import {imageRgba} from '../assets/js/science/render.js';
-const dir=new URL('../data/sample-fits/',import.meta.url);
+import {parseFits,buildQualityMask} from '../../frontend/assets/js/science/fits.js';
+import {wcsFromHeader,pixelToWorld,worldToPixel,reprojectToReference} from '../../frontend/assets/js/science/wcs.js';
+import {buildComparison,compareJavaScript,checkSpectralPair} from '../../frontend/assets/js/science/pipeline.js';
+import {imageRgba} from '../../frontend/assets/js/science/render.js';
+const dir=new URL('../../data/sample-fits/',import.meta.url);
 async function fits(epoch){const buf=await fs.readFile(new URL(`epoca_${epoch}.fits`,dir));
  return parseFits(buf.buffer.slice(buf.byteOffset,buf.byteOffset+buf.byteLength));}
 test('mascara FLAGS conserva bits altos y BZERO 2^31 sin Float32', async()=>{
-  const {decodeFlags32}=await import('../assets/js/science/fits.js');
+  const {decodeFlags32}=await import('../../frontend/assets/js/science/fits.js');
   const bytes=new ArrayBuffer(16),view=new DataView(bytes);
   view.setInt32(0,-2147483648,false);
   view.setInt32(4,2147483647,false);
@@ -38,7 +38,7 @@ test('propagacion de varianza bilineal emplea pesos cuadrados',async()=>{
 });
 
 test('plano robusto corrige fondo espacial sintético',async()=>{
-  const {robustBackgroundPlane}=await import('../assets/js/science/pipeline.js');
+  const {robustBackgroundPlane}=await import('../../frontend/assets/js/science/pipeline.js');
   const width=48,height=48,n=width*height;
   const a=new Float32Array(n),b=new Float32Array(n),valid=new Uint8Array(n).fill(1);
   for(let y=0;y<height;y++)for(let x=0;x<width;x++){

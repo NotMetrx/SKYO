@@ -2,11 +2,11 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {parseFits,buildQualityMask} from '../assets/js/science/fits.js';
-import {buildComparison,compareJavaScript} from '../assets/js/science/pipeline.js';
-import {imageRgba} from '../assets/js/science/render.js';
+import {parseFits,buildQualityMask} from '../frontend/assets/js/science/fits.js';
+import {buildComparison,compareJavaScript} from '../frontend/assets/js/science/pipeline.js';
+import {imageRgba} from '../frontend/assets/js/science/render.js';
 const base=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../data/sample-fits');
-const outDir=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../assets/img/previews');
+const outDir=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../frontend/assets/img/previews');
 async function load(which){
  const b=await fs.readFile(path.join(base,`epoca_${which}.fits`));
  return parseFits(b.buffer.slice(b.byteOffset,b.byteOffset+b.byteLength));

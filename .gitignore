@@ -20,15 +20,15 @@ __pycache__/
 # capturas de depuración y temporales
 *.png
 *.jpg
-!assets/img/**
+!frontend/assets/img/**
 !docs/demo_procesamiento_sintetico.png
 
 # browser test artifacts
 test-results/
 playwright-report/
-science-core/target/
+backend/science-core/target/
 data/fpa-originals/
-!public/datasets/immersive-sky/*.png
+!frontend/public/datasets/immersive-sky/*.png
 !docs/evidence/migracion-stack-20261114/*.png
 # páginas guardadas localmente por el navegador
 SKYO*.html

@@ -2,7 +2,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {pixelToWorld,worldToPixel,wcsFromHeader} from '../assets/js/science/wcs.js';
+import {pixelToWorld,worldToPixel,wcsFromHeader} from '../frontend/assets/js/science/wcs.js';
 const outDir=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../data/sample-fits');
 const WIDTH=128,HEIGHT=128;
 const ORIGIN='SKYO SYNTHETIC';

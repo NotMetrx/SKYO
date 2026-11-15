@@ -15,7 +15,7 @@ from mathutils import Vector, Matrix
 
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-OUTPUT_GLB = os.path.join(BASE_DIR, "assets", "models", "focal_plane.glb")
+OUTPUT_GLB = os.path.join(BASE_DIR, "frontend", "assets", "models", "focal_plane.glb")
 
 
 def clear_scene():

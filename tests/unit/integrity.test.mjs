@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import {Worker} from 'node:worker_threads';
 import {createHash} from 'node:crypto';
-import {PARAMETERS} from '../assets/js/science/contracts.js';
-import {parseFits} from '../assets/js/science/fits.js';
-import {buildComparison} from '../assets/js/science/pipeline.js';
-const fixture=async side=>new Uint8Array(await fs.readFile(new URL(`../data/sample-fits/epoca_${side}.fits`,import.meta.url))).buffer;
+import {PARAMETERS} from '../../frontend/assets/js/science/contracts.js';
+import {parseFits} from '../../frontend/assets/js/science/fits.js';
+import {buildComparison} from '../../frontend/assets/js/science/pipeline.js';
+const fixture=async side=>new Uint8Array(await fs.readFile(new URL(`../../data/sample-fits/epoca_${side}.fits`,import.meta.url))).buffer;
 async function run(messages,t){
   const worker=new Worker(new URL('./worker-test-host.mjs',import.meta.url));
   t.after(()=>worker.terminate());
@@ -87,7 +87,7 @@ test('Reporte único conserva ambos archivos y rechaza campos incompletos o no f
   assert.deepEqual(report.observations.map(o=>o.fileName),['original-A.fits','original-B.fits']);
   assert.equal(report.uncertainty.significanceCalibrated,false);
   assert.equal(report.background.zodiApplied,true);
-  const {validateReport}=await import('../assets/js/science/contracts.js');
+  const {validateReport}=await import('../../frontend/assets/js/science/contracts.js');
   assert.deepEqual(validateReport(JSON.parse(JSON.stringify(report))),report);
   const bad=structuredClone(report);delete bad.observations[0].fileName;
   assert.throws(()=>validateReport(bad),/Archivo|fileName/);

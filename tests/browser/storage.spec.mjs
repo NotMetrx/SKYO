@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import fs from 'node:fs/promises';
-import {DEMO_HASHES} from '../../assets/js/science/contracts.js';
+import {DEMO_HASHES} from '../../frontend/assets/js/science/contracts.js';
 for(const integrated of [false,true])test(`OPFS ${integrated?'integrado':'independiente'}: fallo de segundo archivo, recuperación y borrado`,async({page})=>{
   await page.goto(integrated?'/#explorar':'/lab.html');
   if(integrated)await page.getByRole('tab',{name:/Laboratorio FITS/}).click();

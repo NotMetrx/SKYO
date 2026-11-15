@@ -1,4 +1,4 @@
 import {parentPort} from 'node:worker_threads';
 globalThis.self={postMessage:message=>parentPort.postMessage(message)};
-await import('../assets/js/science/worker.js');
+await import('../../frontend/assets/js/science/worker.js');
 parentPort.on('message',data=>self.onmessage({data}));

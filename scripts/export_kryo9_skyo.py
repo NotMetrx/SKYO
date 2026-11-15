@@ -14,7 +14,7 @@ import bpy
 from mathutils import Euler, Vector
 
 SKYO_ROOT = Path(__file__).resolve().parent.parent
-OUT_GLB = SKYO_ROOT / "assets" / "models" / "kryo9.glb"
+OUT_GLB = SKYO_ROOT / "frontend" / "assets" / "models" / "kryo9.glb"
 
 
 def ease_in_out_cubic(t: float) -> float:

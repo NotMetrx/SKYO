@@ -1,8 +1,8 @@
 import {test,expect} from '@playwright/test';
 import fs from 'node:fs/promises';
 import {existsSync} from 'node:fs';
-import {compareJavaScript} from '../../assets/js/science/pipeline.js';
-const present=existsSync(new URL('../../assets/js/science/wasm/pkg/build-info.json',import.meta.url));
+import {compareJavaScript} from '../../frontend/assets/js/science/pipeline.js';
+const present=existsSync(new URL('../../frontend/assets/js/science/wasm/pkg/build-info.json',import.meta.url));
 test.use({serviceWorkers:'block'});
 for(const base of ['/','/skyo/'])test(`WASM Worker ${base}: carga real, identidad y fallback`,async({page,context})=>{
   test.skip(!present,'Kernel opcional no compilado');
@@ -17,7 +17,7 @@ for(const base of ['/','/skyo/'])test(`WASM Worker ${base}: carga real, identida
 });
 test('WASM corrupto o que lanza excepción conserva fallback explícito',async({page})=>{
   test.skip(!present,'Kernel opcional no compilado');
-  const info=JSON.parse(await fs.readFile(new URL('../../assets/js/science/wasm/pkg/build-info.json',import.meta.url)));
+  const info=JSON.parse(await fs.readFile(new URL('../../frontend/assets/js/science/wasm/pkg/build-info.json',import.meta.url)));
   await page.route('**/assets/js/science/wasm/pkg/skyo_wasm.js',route=>route.fulfill({contentType:'text/javascript',body:`export const SKYO_BUILD=${JSON.stringify(info)};export default async()=>{};export function compare_flux(){throw Error('trap de prueba');}`}));
   await page.goto('/lab.html');await page.locator('#load-demo').click();await expect(page.locator('#compare')).toBeEnabled();await page.locator('#compare').click();await expect(page.locator('#save-report')).toBeEnabled();
   await expect(page.locator('#kernel-status')).toContainText('JavaScript (fallback');

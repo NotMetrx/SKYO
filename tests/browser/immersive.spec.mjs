@@ -11,10 +11,10 @@ async function sources(page){
     return route.fulfill({status:206,body:bytes,headers:{'Content-Range':range.replace('=',' ')+'/320909760','Content-Length':String(bytes.length),'Access-Control-Allow-Origin':'*'}});
   });
   await page.route('https://irsa.ipac.caltech.edu/data/hips/**',async route=>{
-    if(route.request().url().endsWith('/properties'))return route.fulfill({contentType:'text/plain',body:await fs.readFile('public/datasets/immersive-sky/properties.txt')});
+    if(route.request().url().endsWith('/properties'))return route.fulfill({contentType:'text/plain',body:await fs.readFile('frontend/public/datasets/immersive-sky/properties.txt')});
     const match=route.request().url().match(/Npix(\d+)(?:_\d+)?\.png$/);if(!match)return route.abort();
     const pixel=Number(match[1]);if(pixel>11)return route.fulfill({status:404,body:'No fixture for LOD'});
-    return route.fulfill({contentType:'image/png',body:await fs.readFile(`public/datasets/immersive-sky/Npix${pixel}_62.png`)});
+    return route.fulfill({contentType:'image/png',body:await fs.readFile(`frontend/public/datasets/immersive-sky/Npix${pixel}_62.png`)});
   });
   await page.route('https://irsa.ipac.caltech.edu/TAP/sync?**',route=>route.fulfill({contentType:'application/xml',body:`<VOTABLE><RESOURCE><INFO name="QUERY_STATUS" value="OK"/><TABLE>${['uri','observationid','collection','time_bounds_lower'].map(name=>`<FIELD name="${name}"/>`).join('')}<DATA><TABLEDATA><TR><TD>ibe/data/spherex/dr1/level2/example.fits</TD><TD>new-published-observation</TD><TD>spherex_dr1</TD><TD>61000</TD></TR></TABLEDATA></DATA></TABLE></RESOURCE></VOTABLE>`}));
 }
@@ -93,7 +93,7 @@ test('Retícula final actualiza RA/Dec aunque el arrastre termine dentro del int
 });
 test('Una edición nueva bloquea otros canales y LOD antes de aplicar el mosaico',async({page})=>{
   await sources(page);let remotePng=0;
-  await page.route('**/spherex_allsky_cube/properties',async route=>route.fulfill({contentType:'text/plain',body:(await fs.readFile('public/datasets/immersive-sky/properties.txt','utf8')).replace('2026-11-01T01:58Z','2026-11-16T00:00Z')}));
+  await page.route('**/spherex_allsky_cube/properties',async route=>route.fulfill({contentType:'text/plain',body:(await fs.readFile('frontend/public/datasets/immersive-sky/properties.txt','utf8')).replace('2026-11-01T01:58Z','2026-11-16T00:00Z')}));
   page.on('request',request=>{if(request.url().startsWith('https://irsa.ipac.caltech.edu/data/hips/')&&request.url().endsWith('.png'))remotePng++;});
   await page.goto('/inmersivo.html');await expect(page.locator('#sky')).toHaveAttribute('data-ready','12');
   await page.locator('#next').click();await expect(page.locator('#sky')).toHaveAttribute('data-channel','63');await page.waitForTimeout(500);expect(remotePng).toBe(0);
@@ -103,7 +103,7 @@ test('Inmersivo: WebXR denegado conserva cámara y nuevos datos se anuncian sin 
   await sources(page);await page.addInitScript(()=>Object.defineProperty(navigator,'xr',{configurable:true,value:{addEventListener(){},removeEventListener(){},isSessionSupported:async()=>true,requestSession:async()=>{throw new DOMException('Permiso VR rechazado','NotAllowedError');}}}));
   await page.goto('/inmersivo.html');await expect(page.locator('#sky')).toHaveAttribute('data-ready','12');await expect(page.locator('#vr')).toBeEnabled();await page.locator('#vr').click();await expect(page.locator('#xr-status')).toContainText('No se pudo entrar');
   await page.locator('#updates-title').click();await expect(page.locator('#observations')).toContainText('new-published-observation');
-  await page.route('**/spherex_allsky_cube/properties',async route=>route.fulfill({contentType:'text/plain',body:(await fs.readFile('public/datasets/immersive-sky/properties.txt','utf8')).replace('2026-11-01T01:58Z','2026-11-16T00:00Z')}));
+  await page.route('**/spherex_allsky_cube/properties',async route=>route.fulfill({contentType:'text/plain',body:(await fs.readFile('frontend/public/datasets/immersive-sky/properties.txt','utf8')).replace('2026-11-01T01:58Z','2026-11-16T00:00Z')}));
   await page.locator('#refresh').click();await expect(page.locator('#apply-mosaic')).toBeVisible();await expect(page.locator('#sky')).toHaveAttribute('data-channel','62');
   await page.locator('#apply-mosaic').click();await expect(page.locator('#updates-status')).toContainText('Flujo deshabilitado');await page.locator('#read').click();await expect(page.locator('#status')).toContainText('cubo FITS asociado/verificado');
 });
@@ -117,7 +117,7 @@ test('Detalle nativo completo, precarga espectral y caché FITS sin nuevas desca
     const rootCounts=new Map();let rangeRequests=0;
     page.on('request',r=>{if(r.url().startsWith('https://nasa-irsa-spherex.'))rangeRequests++;});
     // Deliberately repeated real PNGs exercise scheduling/cache, not sky photometry.
-    const png=await fs.readFile('public/datasets/immersive-sky/Npix1_62.png');
+    const png=await fs.readFile('frontend/public/datasets/immersive-sky/Npix1_62.png');
     await page.route('https://irsa.ipac.caltech.edu/data/hips/**/*.png',route=>{
       const u=route.request().url(),m=u.match(/Norder0\/.*Npix\d+_(\d+)\.png$/);
       if(m)rootCounts.set(Number(m[1]),(rootCounts.get(Number(m[1]))||0)+1);

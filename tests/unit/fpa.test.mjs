@@ -2,14 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import {createHash} from 'node:crypto';
-import {parseFits} from '../assets/js/science/fits.js';
+import {parseFits} from '../../frontend/assets/js/science/fits.js';
 test('FPA: seis FITS reales íntegros, metadatos y decodificación Rust contrastada con JS',async()=>{
-  const manifest=JSON.parse(await fs.readFile('public/datasets/fpa-dr1/manifest.json'));
-  const wasm=await import('../assets/js/science/wasm/pkg/skyo_wasm.js');
-  await wasm.default({module_or_path:await fs.readFile('assets/js/science/wasm/pkg/skyo_wasm_bg.wasm')});
+  const manifest=JSON.parse(await fs.readFile('frontend/public/datasets/fpa-dr1/manifest.json'));
+  const wasm=await import('../../frontend/assets/js/science/wasm/pkg/skyo_wasm.js');
+  await wasm.default({module_or_path:await fs.readFile('frontend/assets/js/science/wasm/pkg/skyo_wasm_bg.wasm')});
   assert.deepEqual(manifest.items.map(m=>m.detector),[1,2,3,4,5,6]);
   for(const item of manifest.items){
-    const bytes=await fs.readFile(`public/datasets/fpa-dr1/${item.file}`);
+    const bytes=await fs.readFile(`frontend/public/datasets/fpa-dr1/${item.file}`);
     assert.equal(createHash('sha256').update(bytes).digest('hex'),item.sha256);
     const fits=parseFits(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength));
     const texture=wasm.fits_to_texture(bytes,false);

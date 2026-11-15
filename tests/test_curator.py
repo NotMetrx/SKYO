@@ -8,7 +8,7 @@ import unittest
 from unittest.mock import patch
 from urllib.error import HTTPError
 
-spec=importlib.util.spec_from_file_location('curator',Path(__file__).parents[1]/'scripts/curate_irsa.py')
+spec=importlib.util.spec_from_file_location('curator',Path(__file__).parents[1]/'backend/python/curate_irsa.py')
 curator=importlib.util.module_from_spec(spec)
 spec.loader.exec_module(curator)
 

@@ -286,3 +286,12 @@
   físico. scienceReady=false; originales intactos. Preview local en puerto4195.
 - Tarea central t-e7004c435816 sigue pendiente sin claim/finish ni autoaprobación.
   Siguiente: revisar los timeouts3D y disponibilidad IRSA, sin ampliar el inspector.
+
+## Fusión `origin/main` (`2e73278`) y reorganización profesional — 2026-11-15
+
+- Fusionadas en frontend y backend las funcionalidades de `origin/main` (`2e73278`: `inmersivo.html` 360° HEALPix + capa L2, `espectral.html` plano focal FPA D1–D6 + inspector FITS/HDU, `contexto.html` HiPS, kernel `skyo_wasm` y 13 suites Node) conservando la portada `#inicio` con showcase Neois/SPHEREx (`E_MINIMAL=0`), paleta vigente (`#000000`/`#5BB8FF`/`#B57BFF`), iluminación `#3d` y mascota KRYO-9 3D en `frontend/assets/js/hera3d.js`.
+- Ordenamiento limpio de carpetas raíz en tres bloques:
+  - `frontend/` (`index.html`, `lab.html`, `espectral.html`, `inmersivo.html`, `contexto.html`, `sw.js`, `icon.svg`, `assets/`, `public/`).
+  - `backend/` (`server/dev-server.mjs`, `science-core/`, `python/`).
+  - Soporte y verificación (`data/`, `docs/`, `tests/`, `scripts/`, `_archivo/`).
+- Actualizados `package.json`, `vite.config.mjs`, `backend/server/dev-server.mjs` (sirve `frontend/` + `frontend/public/` + montaje `/data/`), `scripts/`, `backend/python/`, `tests/unit/`, `tests/browser/`, `tests/test_curator.py` y `.gitignore`.

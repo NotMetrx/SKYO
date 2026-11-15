@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import {existsSync} from 'node:fs';
-import {compareJavaScript} from '../assets/js/science/pipeline.js';
-import {buildComparison} from '../assets/js/science/pipeline.js';
-import {parseFits} from '../assets/js/science/fits.js';
-import {CURATED_DATASETS} from '../assets/js/science/datasets.js';
-const url=new URL('../assets/js/science/wasm/pkg/skyo_wasm.js',import.meta.url);
+import {compareJavaScript} from '../../frontend/assets/js/science/pipeline.js';
+import {buildComparison} from '../../frontend/assets/js/science/pipeline.js';
+import {parseFits} from '../../frontend/assets/js/science/fits.js';
+import {CURATED_DATASETS} from '../../frontend/assets/js/science/datasets.js';
+const url=new URL('../../frontend/assets/js/science/wasm/pkg/skyo_wasm.js',import.meta.url);
 test('WASM/JS: misma salida f32, máscaras, NaN, varianza y offset preciso',{skip:!existsSync(url)},async()=>{
   const module=await import(url.href);await module.default({module_or_path:await fs.readFile(new URL('skyo_wasm_bg.wasm',url))});
   const cases=[
@@ -19,7 +19,7 @@ test('WASM/JS: misma salida f32, máscaras, NaN, varianza y offset preciso',{ski
   for(const region of dataset.regions){
     const fits=[];
     for(const side of ['A','B']){
-      const name=region.files[side],bytes=await fs.readFile(new URL(`../public/datasets/m101-visual-v2/${name}`,import.meta.url));
+      const name=region.files[side],bytes=await fs.readFile(new URL(`../../frontend/public/datasets/m101-visual-v2/${name}`,import.meta.url));
       const fit=parseFits(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength));fit.meta=dataset.items.find(item=>item.local_file===name);fits.push(fit);
     }
     const result=buildComparison(...fits);cases.push(result);

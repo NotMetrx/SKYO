@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
-import {parseFits,buildQualityMask} from '../assets/js/science/fits.js';
-import {wcsFromHeader,pixelToWorld,worldToPixel,reprojectToReference} from '../assets/js/science/wcs.js';
+import {parseFits,buildQualityMask} from '../../frontend/assets/js/science/fits.js';
+import {wcsFromHeader,pixelToWorld,worldToPixel,reprojectToReference} from '../../frontend/assets/js/science/wcs.js';
 const block=2880;
 function hdu(cards,values=[]){
   const raw=Object.entries(cards).map(([k,v])=>(k.padEnd(8)+'= '+(typeof v==='string'?`'${v}'`:typeof v==='boolean'?(v?'T':'F'):String(v))).padEnd(80)).join('')+'END'.padEnd(80);
@@ -49,7 +49,7 @@ test('Reproyección limita cada dimensión antes de reservar matrices',()=>{
   const fit={width:513,height:1,header,image:new Float32Array(513)},mask=new Uint8Array(513).fill(1);
   assert.throws(()=>reprojectToReference(fit,fit,mask,mask),/512|eje/);
 });
-const real=JSON.parse(await fs.readFile(new URL('../tests/fixtures/wcs-real.json',import.meta.url),'utf8'));
+const real=JSON.parse(await fs.readFile(new URL('../fixtures/wcs-real.json',import.meta.url),'utf8'));
 for(const fixture of real)test(`WCS NASA D${fixture.detector}: centro/bordes frente a Astropy ${fixture.astropyVersion}`,t=>{
   const w=wcsFromHeader(fixture.header);let maxPixelError=0;
   for(const sample of fixture.samples){

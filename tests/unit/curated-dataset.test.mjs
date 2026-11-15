@@ -1,15 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
-import {CURATED_DATASETS} from '../assets/js/science/datasets.js';
-import {parseFits} from '../assets/js/science/fits.js';
-import {sha256,observationFromFits,makeSnapshot,analysisReport} from '../assets/js/science/contracts.js';
-import {buildComparison,compareJavaScript} from '../assets/js/science/pipeline.js';
+import {CURATED_DATASETS} from '../../frontend/assets/js/science/datasets.js';
+import {parseFits} from '../../frontend/assets/js/science/fits.js';
+import {sha256,observationFromFits,makeSnapshot,analysisReport} from '../../frontend/assets/js/science/contracts.js';
+import {buildComparison,compareJavaScript} from '../../frontend/assets/js/science/pipeline.js';
 const datasetId='m101-visual-v2',dataset=CURATED_DATASETS[datasetId];
 for(const region of dataset.regions)test(`Par NASA real ${region.id}: cadena, cobertura espectral, comparación y control`,async()=>{
   const images={},observations={};
   for(const side of ['A','B']){
-    const name=region.files[side],bytes=await fs.readFile(new URL(`../public/datasets/${datasetId}/${name}`,import.meta.url));
+    const name=region.files[side],bytes=await fs.readFile(new URL(`../../frontend/public/datasets/${datasetId}/${name}`,import.meta.url));
     const buffer=bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength),digest=await sha256(buffer);
     images[side]=parseFits(buffer);images[side].sha256=digest;
     observations[side]=observationFromFits(images[side],{fileName:name,digest,bytes:buffer.byteLength,mode:'curated',datasetId,meta:{source_url:'https://evil.example/fake'}});
@@ -29,8 +29,8 @@ for(const region of dataset.regions)test(`Par NASA real ${region.id}: cadena, co
 });
 
 test('La copia importable del manifiesto coincide con el paquete publicado',async()=>{
-  const published=JSON.parse(await fs.readFile(new URL('../public/datasets/m101-visual-v2/manifest.json',import.meta.url),'utf8'));
-  const imported=JSON.parse(await fs.readFile(new URL('../data/published/m101-visual-v2/manifest.json',import.meta.url),'utf8'));
+  const published=JSON.parse(await fs.readFile(new URL('../../frontend/public/datasets/m101-visual-v2/manifest.json',import.meta.url),'utf8'));
+  const imported=JSON.parse(await fs.readFile(new URL('../../data/published/m101-visual-v2/manifest.json',import.meta.url),'utf8'));
   assert.deepEqual(imported,published,'Ejecuta npm run sync:curated: la copia quedó desfasada');
   assert.deepEqual(dataset,published);
 });

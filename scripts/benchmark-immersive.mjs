@@ -9,7 +9,7 @@ const arg=name=>process.argv.includes(name)?process.argv[process.argv.indexOf(na
 const plane=await fs.readFile('tests/fixtures/immersive/plane-445-ch62.bin');
 const reference=JSON.parse(await fs.readFile('docs/evidence/immersive-quality-20261115/reference-texture.json'));
 const hash=b=>createHash('sha256').update(b).digest('hex');
-const variants=[...(arg('--baseline')?[{name:'baseline',dir:arg('--baseline')}]:[]),{name:arg('--name')||'current',dir:'assets/js/science/wasm/pkg'}];
+const variants=[...(arg('--baseline')?[{name:'baseline',dir:arg('--baseline')}]:[]),{name:arg('--name')||'current',dir:'frontend/assets/js/science/wasm/pkg'}];
 const modules=[];
 for(const v of variants){
   const mod=await import(pathToFileURL(path.resolve(v.dir,'skyo_wasm.js'))),bytes=await fs.readFile(path.join(v.dir,'skyo_wasm_bg.wasm'));

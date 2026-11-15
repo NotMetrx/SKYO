@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
-import {createLabSession} from '../assets/js/science/session.js';
-import {parseFits} from '../assets/js/science/fits.js';
-import {observationFromFits,analysisReport,sha256} from '../assets/js/science/contracts.js';
+import {createLabSession} from '../../frontend/assets/js/science/session.js';
+import {parseFits} from '../../frontend/assets/js/science/fits.js';
+import {observationFromFits,analysisReport,sha256} from '../../frontend/assets/js/science/contracts.js';
 
-const buffers=Object.fromEntries(await Promise.all(['A','B'].map(async side=>[side,new Uint8Array(await fs.readFile(new URL(`../data/sample-fits/epoca_${side}.fits`,import.meta.url))).buffer])));
+const buffers=Object.fromEntries(await Promise.all(['A','B'].map(async side=>[side,new Uint8Array(await fs.readFile(new URL(`../../data/sample-fits/epoca_${side}.fits`,import.meta.url))).buffer])));
 const observations={};
 for(const side of ['A','B'])observations[side]=observationFromFits(parseFits(buffers[side]),{fileName:`epoca_${side}.fits`,digest:await sha256(buffers[side]),bytes:buffers[side].byteLength});
 const deferred=()=>{let resolve;const promise=new Promise(r=>resolve=r);return {promise,resolve};};

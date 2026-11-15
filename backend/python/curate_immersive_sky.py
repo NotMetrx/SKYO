@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.request import urlopen
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=Path(__file__).resolve().parents[2]
 URL='https://irsa.ipac.caltech.edu/data/hips/SPHEREx/spherex_allsky_cube'
 CHANNEL=62
 
@@ -24,7 +24,7 @@ if __name__=='__main__':
     properties={k.strip():v.strip() for k,v in properties.items()}
     waves=list(map(float,properties['data_cube_crval3_arr'].split()))
     assert len(waves)==102 and properties['hips_frame']=='equatorial'
-    target=ROOT/'public/datasets/immersive-sky';target.mkdir(parents=True,exist_ok=True)
+    target=ROOT/'frontend/public/datasets/immersive-sky';target.mkdir(parents=True,exist_ok=True)
     previous=previous_manifest(target/'manifest.json',properties)
     items=[];files={}
     for pixel in range(12):

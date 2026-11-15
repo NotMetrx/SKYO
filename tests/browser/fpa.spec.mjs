@@ -24,7 +24,7 @@ for(const base of ['/','/skyo/']){
 test('FPA: hash erróneo controlado, reintento y búsqueda IRSA con inspector enlazado',async({page})=>{
   let corrupt=true;
   await page.route('**/datasets/fpa-dr1/D1.fits',async route=>{
-    const data=await fs.readFile('public/datasets/fpa-dr1/D1.fits');if(corrupt)data[3000]^=1;
+    const data=await fs.readFile('frontend/public/datasets/fpa-dr1/D1.fits');if(corrupt)data[3000]^=1;
     await route.fulfill({body:data});
   });
   await page.route('https://irsa.ipac.caltech.edu/TAP/sync?**',route=>route.fulfill({contentType:'application/xml',body:`<VOTABLE><RESOURCE><INFO name="QUERY_STATUS" value="OK"/><TABLE>${['uri','observationid','collection','energy_bandpassname','time_bounds_lower','footprint'].map(name=>`<FIELD name="${name}"/>`).join('')}<DATA><TABLEDATA><TR><TD>ibe/data/spherex/dr1/level2/example.fits</TD><TD>2025W20_2D_0065_1</TD><TD>spherex_dr1</TD><TD>SPHEREx-D2</TD><TD>60888</TD><TD>POLYGON ICRS 210 54 212 54 212 55 210 55</TD></TR></TABLEDATA></DATA></TABLE></RESOURCE></VOTABLE>`}));

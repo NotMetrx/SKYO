@@ -14,7 +14,7 @@ import bmesh
 from mathutils import Vector, Matrix
 
 
-OUTPUT_GLB = "/home/emi/Documentos/SKYO/assets/models/focal_plane.glb"
+OUTPUT_GLB = "/home/emi/Documentos/SKYO/frontend/assets/models/focal_plane.glb"
 
 
 def clear_scene():

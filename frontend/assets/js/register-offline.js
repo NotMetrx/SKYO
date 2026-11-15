@@ -1,5 +1,5 @@
 /** Apply an installed update only after the user has saved their current work. */
-if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+if (import.meta.env?.PROD && 'serviceWorker' in navigator) {
   let reloading=false;
   const controlled=!!navigator.serviceWorker.controller;
   navigator.serviceWorker.addEventListener('controllerchange',()=>{

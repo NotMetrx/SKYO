@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
-import {parseFits,buildQualityMask} from '../assets/js/science/fits.js';
-import {wcsFromHeader,pixelToWorld,worldToPixel,reprojectToReference} from '../assets/js/science/wcs.js';
-import {buildComparison,compareJavaScript,checkSpectralPair} from '../assets/js/science/pipeline.js';
-import {imageRgba} from '../assets/js/science/render.js';
-const dir=new URL('../data/sample-fits/',import.meta.url);
+import {parseFits,buildQualityMask} from '../../frontend/assets/js/science/fits.js';
+import {wcsFromHeader,pixelToWorld,worldToPixel,reprojectToReference} from '../../frontend/assets/js/science/wcs.js';
+import {buildComparison,compareJavaScript,checkSpectralPair} from '../../frontend/assets/js/science/pipeline.js';
+import {imageRgba} from '../../frontend/assets/js/science/render.js';
+const dir=new URL('../../data/sample-fits/',import.meta.url);
 async function fits(epoch){const buf=await fs.readFile(new URL(`epoca_${epoch}.fits`,dir));
  return parseFits(buf.buffer.slice(buf.byteOffset,buf.byteOffset+buf.byteLength));}
 test('FITS MEF: IMAGE/FLAGS/VARIANCE/ZODI con datos originales',async()=>{

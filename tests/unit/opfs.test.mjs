@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import * as opfs from '../assets/js/science/opfs.js';
+import * as opfs from '../../frontend/assets/js/science/opfs.js';
 const {saveLocal,loadLocal,clearLocal}=opfs;
 function storage(t){
   const state={fail:null,quota:1000000},root={children:new Map()};

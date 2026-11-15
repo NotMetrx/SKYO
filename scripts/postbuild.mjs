@@ -3,13 +3,15 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 const root = new URL('../', import.meta.url);
+const frontend = new URL('frontend/', root);
 const dist = new URL('dist/', root);
-for (const rel of ['assets/js/vendor', 'assets/img', 'assets/models', 'data/sample-fits']) {
-  await fs.cp(new URL(rel, root), new URL(rel, dist), {recursive:true});
+for (const rel of ['assets/js/vendor', 'assets/img', 'assets/models']) {
+  await fs.cp(new URL(rel, frontend), new URL(rel, dist), {recursive:true});
 }
+await fs.cp(new URL('data/sample-fits', root), new URL('data/sample-fits', dist), {recursive:true});
 const wasm = 'assets/js/science/wasm/pkg';
-const wasmPresent = !!await fs.stat(new URL(`${wasm}/skyo_wasm.js`, root)).catch(() => null);
-if (wasmPresent) await fs.cp(new URL(wasm, root), new URL(wasm, dist), {recursive:true});
+const wasmPresent = !!await fs.stat(new URL(`${wasm}/skyo_wasm.js`, frontend)).catch(() => null);
+if (wasmPresent) await fs.cp(new URL(wasm, frontend), new URL(wasm, dist), {recursive:true});
 await fs.mkdir(new URL('licenses/aladin-lite/', dist), {recursive:true});
 for (const file of ['LICENSE','COPYING','COPYING.LESSER','README.md']) {
   await fs.copyFile(new URL(`node_modules/aladin-lite/${file}`, root), new URL(`licenses/aladin-lite/${file}`, dist));
@@ -28,7 +30,7 @@ async function allFiles(dir, prefix='') {
 const published=(await allFiles(dist)).filter(file=>!file.startsWith('data/') && !['sw.js','skyo-build-report.json'].includes(file));
 const runtime=published.filter(file=>file.startsWith('assets/js/vendor/') || file.startsWith('assets/js/science/wasm/') || file.startsWith('assets/models/') || file.startsWith('datasets/') || file.startsWith('assets/aladin-'));
 const files=published.filter(file=>!runtime.includes(file));
-const template=await fs.readFile(new URL('sw.js',root),'utf8');
+const template=await fs.readFile(new URL('sw.js',frontend),'utf8');
 const hash=createHash('sha256').update(template);
 for(const file of published) hash.update(file).update(await fs.readFile(new URL(file,dist)));
 const version=hash.digest('hex').slice(0,16);

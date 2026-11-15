@@ -1,10 +1,12 @@
 import http from 'node:http';
-import fs from 'node:fs/promises';
 import { createReadStream, statSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const frontendRoot = path.join(repoRoot, 'frontend');
+const publicRoot = path.join(frontendRoot, 'public');
+const dataRoot = path.join(repoRoot, 'data');
 const PORT = Number(process.env.PORT) || 8000;
 const HOST = process.env.HOST || '127.0.0.1';
 
@@ -17,18 +19,40 @@ const mime = {
   '.webmanifest': 'application/manifest+json',
   '.wasm': 'application/wasm',
   '.fits': 'application/fits',
+  '.glb': 'model/gltf-binary',
   '.png': 'image/png',
   '.webp': 'image/webp',
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
   '.svg': 'image/svg+xml',
+  '.txt': 'text/plain; charset=utf-8',
   '.woff2': 'font/woff2',
   '.otf': 'font/otf',
   '.ttf': 'font/ttf',
   '.ico': 'image/x-icon'
 };
 
-const server = http.createServer(async (req, res) => {
+function safeResolve(baseDir, relPath) {
+  const fullPath = path.resolve(baseDir, '.' + relPath);
+  if (fullPath !== baseDir && !fullPath.startsWith(baseDir + path.sep)) return null;
+  return fullPath;
+}
+
+function statFile(fullPath) {
+  try {
+    let stats = statSync(fullPath);
+    if (stats.isDirectory()) {
+      const indexHtml = path.join(fullPath, 'index.html');
+      stats = statSync(indexHtml);
+      return { fullPath: indexHtml, stats };
+    }
+    return { fullPath, stats };
+  } catch {
+    return null;
+  }
+}
+
+const server = http.createServer((req, res) => {
   try {
     const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     let pathname = decodeURIComponent(parsedUrl.pathname);
@@ -39,7 +63,10 @@ const server = http.createServer(async (req, res) => {
       '/explorar': '/#explorar',
       '/3d': '/#3d',
       '/fases': '/#fases',
-      '/lab': '/lab.html'
+      '/lab': '/lab.html',
+      '/inmersivo': '/inmersivo.html',
+      '/espectral': '/espectral.html',
+      '/contexto': '/contexto.html'
     };
     if (spaRoutes[pathname]) {
       res.writeHead(302, { Location: spaRoutes[pathname] }).end();
@@ -48,24 +75,24 @@ const server = http.createServer(async (req, res) => {
 
     if (pathname === '/' || pathname === '') pathname = '/index.html';
 
-    const fullPath = path.resolve(root, '.' + pathname);
-    if (fullPath !== root && !fullPath.startsWith(root + path.sep)) {
-      res.writeHead(403).end('Forbidden');
-      return;
+    let resolved = null;
+    if (pathname.startsWith('/data/')) {
+      const target = safeResolve(dataRoot, pathname.slice('/data'.length));
+      if (!target) { res.writeHead(403).end('Forbidden'); return; }
+      resolved = statFile(target);
+    } else {
+      const inFrontend = safeResolve(frontendRoot, pathname);
+      const inPublic = safeResolve(publicRoot, pathname);
+      if (!inFrontend && !inPublic) { res.writeHead(403).end('Forbidden'); return; }
+      resolved = (inFrontend && statFile(inFrontend)) || (inPublic && statFile(inPublic));
     }
 
-    let stats;
-    try {
-      stats = statSync(fullPath);
-      if (stats.isDirectory()) {
-        const indexHtml = path.join(fullPath, 'index.html');
-        stats = statSync(indexHtml);
-        pathname = path.join(pathname, 'index.html');
-      }
-    } catch {
+    if (!resolved) {
       res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }).end('Not found: ' + pathname);
       return;
     }
+
+    const { fullPath, stats } = resolved;
 
     const ext = path.extname(fullPath).toLowerCase();
     const contentType = mime[ext] || 'application/octet-stream';

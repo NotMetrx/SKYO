@@ -15,11 +15,11 @@ El [plano focal D1–D6](espectral.html) y el laboratorio FITS siguen disponible
 
 | Inicio minimalista (eclipse 3D + Zoom Warp) | Bóveda Celeste ICRS |
 | :---: | :---: |
-| ![SKYO Inicio](assets/img/previews/inicio.png) | ![SKYO Explorar](assets/img/previews/explorar.png) |
+| ![SKYO Inicio](frontend/assets/img/previews/inicio.png) | ![SKYO Explorar](frontend/assets/img/previews/explorar.png) |
 
 | Sistema Solar 3D | Fases e infrarrojo multitemporal |
 | :---: | :---: |
-| ![SKYO 3D](assets/img/previews/sistema3d.png) | ![SKYO Fases](assets/img/previews/fases.png) |
+| ![SKYO 3D](frontend/assets/img/previews/sistema3d.png) | ![SKYO Fases](frontend/assets/img/previews/fases.png) |
 
 ---
 
@@ -27,12 +27,12 @@ El [plano focal D1–D6](espectral.html) y el laboratorio FITS siguen disponible
 
 | Token | Color | Uso |
 |---|---|---|
-| `--obsidian` | `#07070A` | Fondo, lienzo 3D y superficies base |
+| `--obsidian` (`--bg`) | `#000000` | Fondo, lienzo 3D y superficies base |
 | `--chrome` / `--chrome-bright` | `#C9CED6` / `#E6E8EC` | Texto, bordes y reflejos metálicos |
-| `--crimson` | `#E11D48` | Alertas, modo activo, candidatos y vector de movimiento |
-| `--sky` | `#7CC8FF` | Acento primario, foco, enlaces y banda IR corta |
+| `--crimson` | `#E11D48` | Alertas críticas y vector de movimiento |
+| `--sky` (`--ac`) / `--ac2` | `#5BB8FF` / `#B57BFF` | Acento primario (IR Corto) y secundario (IR Largo) |
 
-Los tokens viven en `assets/css/main.css` y se replican en `assets/css/lab.css`, `assets/js/contexto.css`, los iconos SVG y el manifiesto PWA. La documentación ampliada está en [`docs/PALETA.md`](docs/PALETA.md) y [`docs/LAYOUT.md`](docs/LAYOUT.md).
+Los tokens viven en `frontend/assets/css/main.css` y se replican en `frontend/assets/css/lab.css`, `frontend/assets/js/contexto.css`, los iconos SVG y el manifiesto PWA. La documentación ampliada está en [`docs/PALETA.md`](docs/PALETA.md) y [`docs/LAYOUT.md`](docs/LAYOUT.md).
 
 ---
 
@@ -78,7 +78,7 @@ npm ci
 npm start
 ```
 
-Abre `http://127.0.0.1:4173` para la aplicación principal o `http://127.0.0.1:4173/lab.html` para el laboratorio FITS.
+Abre `http://127.0.0.1:8000` (o `http://127.0.0.1:4173` con `npm run dev`) para la aplicación principal, o `/lab.html` para el laboratorio FITS.
 
 Para publicar en hosting estático, compila con `npm run web:build` y sirve
 `dist/`. El servidor de desarrollo procesa las dependencias de Vite. Los FITS
@@ -123,28 +123,31 @@ astronómica validada ni prueba en Android físico. Consulta también los
 ## 📁 Estructura del proyecto
 
 ```text
-index.html, lab.html, contexto.html   Entradas Vite (portal, FITS y contexto HiPS)
-sw.js                                  Service Worker (shell offline)
-assets/
-  css/                                 Estilos Liquid Glass (main.css, lab.css)
-  fonts/                               Space Grotesk, Space Mono, Poppins
-  img/                                 Assets visuales, previews y H.E.R.A 7
-  js/                                  SPA: app, cosmos3d, explorar, fases, sistema3d, hera3d, data
-  js/science/                          Pipeline FITS/WCS, render, worker y puente WASM
-  js/vendor/                           Three.js y Lottie locales
-science-core/                          Crate Rust para aceleración WebAssembly
-scripts/                               Curador, generadores y suites de pruebas
-public/datasets/                       Paquete visual NASA derivado publicado
-data/                                  Originales FITS, calibraciones y manifiestos
-docs/                                  Arquitectura, spec, auditoría, protocolos y pipelines
-  specs/                               001-inicial (histórica) y 002-comparador-local (activa)
-  pipelines/                           Validación local y visual
-  protocols/                           PV-01…PV-08 de auditoría visual
-_archivo/                              Material legacy y skills de referencia
-MEMORY.md, AGENTS.md                   Memoria operativa y protocolo vigente
+frontend/                              Aplicación web (SPA, WebGL, PWA y núcleo cliente)
+  index.html, lab.html, contexto.html,
+  espectral.html, inmersivo.html       Entradas HTML (portal, FITS, HiPS, FPA e inmersivo)
+  sw.js, icon.svg                      Service Worker e icono principal
+  public/datasets/                     Paquetes NASA curados y manifiesto PWA público
+  assets/
+    css/                               Estilos Liquid Glass (main.css, lab.css, states.css)
+    fonts/                             Space Grotesk, Space Mono, Poppins
+    img/, models/                      Assets visuales, H.E.R.A 7 y modelos GLB de Blender
+    js/                                SPA (app, cosmos3d, explorar, fases, sistema3d, hera3d)
+    js/immersive/, js/science/         Cielo HEALPix/L2, pipeline FITS/WCS, worker y WASM
+    js/vendor/                         Three.js y Lottie locales
+backend/                               Servicios locales y curación científica
+  server/dev-server.mjs                Servidor HTTP/SPA con soporte Range, MIME y montaje /data
+  science-core/                        Crate Rust (Cargo) compilado a WebAssembly (skyo_wasm)
+  python/                              Curadores IRSA/FPA/HiPS e inspección científica
+data/                                  Originales FITS, calibraciones, muestras y manifiestos
+docs/                                  Especificación 002, arquitectura, protocolos y evidencias
+tests/                                 Suites unitarias (tests/unit/), navegador (E2E) y Python
+scripts/                               Build WASM/dist, auditoría visual, generación FITS/Blender
+_archivo/                              Material histórico de referencia y respaldos legacy
+package.json, vite.config.mjs,
+playwright.config.mjs,
+AGENTS.md, MEMORY.md                   Configuración raíz, protocolo operativo y memoria
 ```
-
-`tools/postbuild.mjs` y `vite.config.mjs` se conservan activos en la raíz para la compilación; sus copias históricas están en `_archivo/legacy/`.
 
 ---
 

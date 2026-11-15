@@ -9,10 +9,10 @@ import numpy as np
 from astropy.io import fits
 from astropy.wcs import WCS
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=Path(__file__).resolve().parents[2]
 def sha(data):return hashlib.sha256(data).hexdigest()
 def inspect():
-    dataset=json.loads((ROOT/'public/datasets/m101-visual-v2/manifest.json').read_text())
+    dataset=json.loads((ROOT/'frontend/public/datasets/m101-visual-v2/manifest.json').read_text())
     sources=json.loads((ROOT/'data/datasets/m101-surroundings-20261114/search.json').read_text())['pairs'][0]
     calibration_path=ROOT/'data/calibrations/originals/spectral-wcs-D2-v5.fits'
     receipt=json.loads((ROOT/'docs/evidence/t08-preparacion-20261114/calibration-source.json').read_text())
@@ -33,7 +33,7 @@ def inspect():
                 stream=io.BytesIO(raw);fits.Header.fromfile(stream);header=fits.Header.fromfile(stream)
                 parent_headers[item['observation_id']]={'header':header,'url':url,'rangeSha256':sha(raw)}
             parent=parent_headers[item['observation_id']]
-            with fits.open(ROOT/'public/datasets/m101-visual-v2'/item['local_file'],memmap=False) as roi,fits.open(ROOT/source['directory']/source['local_file'],memmap=False) as original:
+            with fits.open(ROOT/'frontend/public/datasets/m101-visual-v2'/item['local_file'],memmap=False) as roi,fits.open(ROOT/source['directory']/source['local_file'],memmap=False) as original:
                 assert sha((ROOT/source['directory']/source['local_file']).read_bytes())==source['sha256']
                 header=roi['IMAGE'].header;height,width=roi['IMAGE'].data.shape
                 dx=parent['header']['CRPIX1']-header['CRPIX1'];dy=parent['header']['CRPIX2']-header['CRPIX2']
