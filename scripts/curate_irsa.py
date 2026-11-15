@@ -17,104 +17,8 @@ import argparse
 import hashlib
 import io
 import json
-import os
 from pathlib import Path
-import shutil
-import tempfile
 import time
-import xml.etree.ElementTree as ET
-
-
-def check_votable_status(xml_text: str) -> dict:
-    """Inspecciona QUERY_STATUS en VOTable; distingue ERROR y OVERFLOW de OK."""
-    root = ET.fromstring(xml_text)
-    for elem in root.iter():
-        if elem.tag.split("}")[-1] == "INFO" and elem.attrib.get("name") == "QUERY_STATUS":
-            val = elem.attrib.get("value", "").strip().upper()
-            detail = (elem.text or "").strip()
-            if val == "ERROR":
-                raise RuntimeError(detail or "TAP devolvio QUERY_STATUS=ERROR")
-            if val == "OVERFLOW":
-                return {"status": "OVERFLOW", "truncated": True, "detail": detail}
-            if val == "OK":
-                return {"status": "OK", "truncated": False, "detail": detail}
-            return {"status": val or "UNKNOWN", "truncated": False, "detail": detail}
-    raise ValueError("VOTable sin nodo INFO QUERY_STATUS")
-
-
-def fetch_with_retry(
-    url: str,
-    getter,
-    max_attempts: int = 3,
-    budget_seconds: float = 30.0,
-    sleep_fn=time.sleep,
-) -> bytes:
-    """Descarga con reintento acotado ante 429/503/red, Retry-After y firma FITS."""
-    elapsed = 0.0
-    fallback_delays = (5.0, 10.0)
-    for attempt in range(1, max_attempts + 1):
-        try:
-            response = getter(url)
-        except (TimeoutError, ConnectionError, OSError) as exc:
-            if attempt >= max_attempts:
-                raise RuntimeError(f"Error de red tras {attempt} intentos: {exc}") from exc
-            delay = fallback_delays[min(attempt - 1, len(fallback_delays) - 1)]
-            if elapsed + delay > budget_seconds:
-                raise RuntimeError("Presupuesto de tiempo excedido en reintento de red") from exc
-            sleep_fn(delay)
-            elapsed += delay
-            continue
-
-        status = getattr(response, "status_code", 200)
-        if status in (429, 503):
-            headers = {k.lower(): v for k, v in getattr(response, "headers", {}).items()}
-            retry_raw = headers.get("retry-after")
-            try:
-                delay = float(retry_raw) if retry_raw is not None else fallback_delays[min(attempt - 1, len(fallback_delays) - 1)]
-            except ValueError:
-                delay = fallback_delays[min(attempt - 1, len(fallback_delays) - 1)]
-            if delay > budget_seconds - elapsed:
-                raise RuntimeError("Retry-After excede presupuesto del job")
-            if attempt >= max_attempts:
-                raise RuntimeError(f"HTTP {status} persistente tras {attempt} intentos")
-            sleep_fn(delay)
-            elapsed += delay
-            continue
-
-        response.raise_for_status()
-        content = getattr(response, "content", b"")
-        if not isinstance(content, (bytes, bytearray)) or not bytes(content).startswith(b"SIMPLE  ="):
-            raise ValueError("Respuesta no es un archivo FITS valido")
-        return bytes(content)
-    raise RuntimeError("No se pudo completar la descarga")
-
-
-def commit_dataset_atomic(output_dir: Path, staged_files: dict[str, bytes], manifest: dict) -> Path:
-    """Escribe archivos FITS y manifest.json en staging antes de publicar en output_dir."""
-    if not staged_files:
-        raise ValueError("No hay archivos para confirmar en dataset")
-    output_dir.parent.mkdir(parents=True, exist_ok=True)
-    staging = Path(tempfile.mkdtemp(prefix=f".{output_dir.name}.staging-", dir=str(output_dir.parent)))
-    try:
-        for rel_name, payload in staged_files.items():
-            if not isinstance(payload, (bytes, bytearray)) or not bytes(payload).startswith(b"SIMPLE  ="):
-                raise ValueError(f"Payload invalido para {rel_name}")
-            target = staging / rel_name
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(bytes(payload))
-        manifest_bytes = json.dumps(manifest, ensure_ascii=False, indent=2, allow_nan=False).encode("utf-8")
-        (staging / "manifest.json").write_bytes(manifest_bytes)
-
-        output_dir.mkdir(parents=True, exist_ok=True)
-        for item in staging.iterdir():
-            dest = output_dir / item.name
-            if dest.exists() and dest.is_dir():
-                shutil.rmtree(dest)
-            os.replace(str(item), str(dest))
-        return output_dir / "manifest.json"
-    finally:
-        if staging.exists():
-            shutil.rmtree(staging, ignore_errors=True)
 
 
 def parse_args():
@@ -144,19 +48,16 @@ def query_metadata(a):
       'https://irsa.ipac.caltech.edu/' || ar.uri ||
       '?center={a.ra},{a.dec}d&size={a.size_deg}' AS cutout_url,
       p.time_bounds_lower AS mjd,
-      p.energy_bandpassname AS bandpass,
-      o.collection AS collection
+      p.energy_bandpassname AS bandpass
     FROM spherex.artifact ar JOIN spherex.plane p ON ar.planeid=p.planeid
-    JOIN spherex.observation o ON o.obsid=p.obsid
     WHERE 1=CONTAINS(POINT('ICRS',{a.ra},{a.dec}),p.poly)
       AND p.energy_bandpassname='SPHEREx-D{a.detector}'
-      AND o.collection IN ('spherex_dr1','spherex_qr3')
-    ORDER BY p.time_bounds_lower, ar.planeid
+    ORDER BY p.time_bounds_lower
     """
     return Irsa.query_tap(query).to_table()
 
 
-def save_cutout(url, mjd, idx, args, source_release=None, getter=None):
+def save_cutout(url, mjd, idx, args):
     import numpy as np
     import requests
     import astropy.units as u
@@ -165,153 +66,103 @@ def save_cutout(url, mjd, idx, args, source_release=None, getter=None):
     from astropy.coordinates import SkyCoord
     from astropy.time import Time
 
-    if getter is None:
-        getter = lambda u_req: requests.get(
-            u_req,
-            timeout=(20, 180),
-            headers={"User-Agent": "SKYO-scientific-curator/0.1 (hackathon research)"},
-        )
-    raw_bytes = fetch_with_retry(url, getter)
-    original_sha256 = hashlib.sha256(raw_bytes).hexdigest()
-    coord = SkyCoord(ra=args.ra * u.deg, dec=args.dec * u.deg, frame="icrs")
-    with fits.open(io.BytesIO(raw_bytes), memmap=False) as hdus:
-        image = hdus["IMAGE"]
-        spatial = WCS(image.header)
-        x, y = spatial.world_to_pixel(coord)
-        spectral = WCS(image.header, fobj=hdus, key="W")
-        spectral.sip = None
-        wavelength, bandwidth = spectral.pixel_to_world(x, y)
-        wavelength_um = float(wavelength.to_value(u.um))
-        bandwidth_um = float(bandwidth.to_value(u.um))
-        if not np.isfinite(wavelength_um) or bandwidth_um <= 0:
+    response = requests.get(url, timeout=(20,180), headers={"User-Agent":"SKYO-scientific-curator/0.1 (hackathon research)"})
+    response.raise_for_status()
+    original_sha256=hashlib.sha256(response.content).hexdigest()
+    coord=SkyCoord(ra=args.ra*u.deg,dec=args.dec*u.deg,frame="icrs")
+    with fits.open(io.BytesIO(response.content),memmap=False) as hdus:
+        image=hdus["IMAGE"]
+        spatial=WCS(image.header)
+        x,y=spatial.world_to_pixel(coord)
+        spectral=WCS(image.header,fobj=hdus,key="W")
+        spectral.sip=None
+        wavelength,bandwidth=spectral.pixel_to_world(x,y)
+        wavelength_um=float(wavelength.to_value(u.um))
+        bandwidth_um=float(bandwidth.to_value(u.um))
+        if not np.isfinite(wavelength_um) or bandwidth_um<=0:
             raise ValueError("Longitud de onda invalida en el WCS espectral")
 
         if "FLAGS" not in hdus or "VARIANCE" not in hdus:
             raise ValueError("Este recorte no trae FLAGS/VARIANCE; no se curara")
         # Flags originales estan comprimidos; astropy los descomprime.
-        flags = np.asarray(hdus["FLAGS"].data, dtype=np.int32)
-        flag_header = fits.Header()
-        for key, value in hdus["FLAGS"].header.items():
+        flags=np.asarray(hdus["FLAGS"].data,dtype=np.int32)
+        flag_header=fits.Header()
+        for key,value in hdus["FLAGS"].header.items():
             if key.startswith("MSKN") or key.startswith("MSKD"):
-                flag_header[key] = value
+                flag_header[key]=value
         if not any(k.startswith("MSKN") for k in flag_header.keys()):
             raise ValueError("No se encuentran definiciones de flags MSKN*")
 
-        primary_h = fits.PrimaryHDU()
-        for card_key in ("VERSION", "ORIGIN", "DATE", "OBSID", "EXPIDN"):
-            if card_key in hdus[0].header:
-                primary_h.header[card_key] = hdus[0].header[card_key]
-        primary_h.header["HISTORY"] = "Derived uncompressed FLAGS, observation date, wavelength center"
-
-        obs_utc = Time(mjd, format="mjd", scale="utc").isot
-        img_h = image.copy()
-        if "DATE-OBS" in img_h.header:
-            img_h.header["ORIGDATE"] = (img_h.header["DATE-OBS"], "DATE-OBS original del recorte")
-        else:
-            img_h.header["DATE-OBS"] = obs_utc
-        for native_key in ("MJD-OBS", "MJD-AVG", "MJD-BEG", "MJD-END", "FINAST"):
-            if native_key in image.header:
-                img_h.header[native_key] = image.header[native_key]
-        if "VERSION" in hdus[0].header and "VERSION" not in img_h.header:
-            img_h.header["VERSION"] = hdus[0].header["VERSION"]
+        obs_utc=Time(mjd,format="mjd",scale="utc").isot
+        img_h=image.copy()
+        img_h.header["DATE-OBS"]=obs_utc
         # Metadatos sinteticos del curador: NO son el WCS-WAVE completo.
-        img_h.header["WAVELEN"] = (wavelength_um, "SKYO ROI central lambda, micron; no per-pixel")
-        img_h.header["BANDWID"] = (bandwidth_um, "SKYO ROI central bandpass, micron")
-        img_h.header["ORIGIN"] = "NASA/IPAC via SKYO curator"
-
-        flags_h = fits.ImageHDU(data=flags, header=flag_header, name="FLAGS")
-        var_h = hdus["VARIANCE"].copy()
-        zodi_h = hdus["ZODI"].copy() if "ZODI" in hdus else None
+        img_h.header["WAVELEN"]=(wavelength_um,"SKYO ROI central lambda, micron; no per-pixel")
+        img_h.header["BANDWID"]=(bandwidth_um,"SKYO ROI central bandpass, micron")
+        img_h.header["ORIGIN"]="NASA/IPAC via SKYO curator"
+        flags_h=fits.ImageHDU(data=flags,header=flag_header,name="FLAGS")
+        var_h=hdus["VARIANCE"].copy()
+        zodi_h=hdus["ZODI"].copy() if "ZODI" in hdus else None
         # Se preserva la WCS-WAVE para futuros lectores avanzados.
-        wave_h = hdus["WCS-WAVE"].copy() if "WCS-WAVE" in hdus else None
-        has_epsf = "EPSF" in hdus
-        epsf_rows = None
-        if has_epsf:
-            epsf_h = hdus["EPSF"]
-            epsf_rows = int(len(epsf_h.data)) if epsf_h.data is not None else int(epsf_h.header.get("NAXIS2", 0))
-
-        layers = [primary_h, img_h, flags_h, var_h]
-        if zodi_h is not None:
-            layers.append(zodi_h)
-        if wave_h is not None:
-            layers.append(wave_h)
-
-        out_name = f"spherex_d{args.detector}_{idx:03d}.fits"
-        buf = io.BytesIO()
-        fits.HDUList(layers).writeto(buf, checksum=True)
-        curated_bytes = buf.getvalue()
-        curated_sha256 = hashlib.sha256(curated_bytes).hexdigest()
-        release = source_release or ("DR1" if "/dr1/" in url.lower() else "QR3" if "/qr3/" in url.lower() else "CHECK_RELEASE")
-        result = {
-            "local_file": out_name,
-            "source_url": url,
-            "source_release": release,
-            "version": str(hdus[0].header.get("VERSION")).strip() if hdus[0].header.get("VERSION") else None,
-            "source_sha256": original_sha256,
-            "sha256": curated_sha256,
-            "observation_utc": obs_utc,
-            "mjd": float(mjd),
-            "finast": int(image.header["FINAST"]) if "FINAST" in image.header else None,
-            "detector": int(image.header.get("DETECTOR", args.detector)),
-            "bandpass": f"SPHEREx-D{args.detector}",
-            "wavelength_um": wavelength_um,
-            "bandwidth_um": bandwidth_um,
-            "wavelength_quality": "center_only_from_astropy_WCS_WAVE",
-            "ra_deg": args.ra,
-            "dec_deg": args.dec,
-            "size_deg": args.size_deg,
-            "psf_fwhm_arcsec": float(image.header.get("PSF_FWHM", float("nan"))),
-            "epsf_present": has_epsf,
-            "epsf_rows": epsf_rows,
-            "epsf_omitted_in_derived": bool(has_epsf),
-            "has_uncompressed_flags": True,
-            "has_variance": True,
-            "provenance_note": "Observacion NASA/IPAC, archivo derivado localmente para acceso web; radiancias preservadas",
+        wave_h=hdus["WCS-WAVE"].copy() if "WCS-WAVE" in hdus else None
+        layers=[fits.PrimaryHDU(),img_h,flags_h,var_h]
+        if zodi_h is not None:layers.append(zodi_h)
+        if wave_h is not None:layers.append(wave_h)
+        layers[0].header["HISTORY"]="Derived uncompressed FLAGS, observation date, wavelength center"
+        out_name=f"spherex_d{args.detector}_{idx:03d}.fits"
+        output=args.output/out_name
+        fits.HDUList(layers).writeto(output,overwrite=True,checksum=True)
+        curated_sha256=hashlib.sha256(output.read_bytes()).hexdigest()
+        result={
+            "local_file":out_name,
+            "source_url":url,
+            "source_release":"DR1" if "/dr1/" in url.lower() else "QR3" if "/qr3/" in url.lower() else "CHECK_RELEASE",
+            "source_sha256":original_sha256,
+            "sha256":curated_sha256,
+            "observation_utc":obs_utc,
+            "mjd":float(mjd),
+            "detector":int(image.header.get("DETECTOR",args.detector)),
+            "bandpass":f"SPHEREx-D{args.detector}",
+            "wavelength_um":wavelength_um,
+            "bandwidth_um":bandwidth_um,
+            "wavelength_quality":"center_only_from_astropy_WCS_WAVE",
+            "ra_deg":args.ra,
+            "dec_deg":args.dec,
+            "size_deg":args.size_deg,
+            "psf_fwhm_arcsec":float(image.header.get("PSF_FWHM",float('nan'))),
+            "has_uncompressed_flags":True,
+            "has_variance":True,
+            "provenance_note":"Observacion NASA/IPAC, archivo derivado localmente para acceso web; radiancias preservadas"
         }
-        if not np.isfinite(result["psf_fwhm_arcsec"]):
-            result["psf_fwhm_arcsec"] = None
-        return result, curated_bytes
+        if not np.isfinite(result["psf_fwhm_arcsec"]):result["psf_fwhm_arcsec"]=None
+        return result
 
 
 def main():
-    args = parse_args()
-    observations = query_metadata(args)
+    args=parse_args()
+    args.output.mkdir(parents=True,exist_ok=True)
+    observations=query_metadata(args)
     if not len(observations):
         raise SystemExit("Sin observaciones IRSA para estos parametros")
-    items = []
-    staged_files = {}
-    errors = []
+    items=[]
     for row in observations:
-        mjd = float(row["mjd"])
-        if any(abs(mjd - previous["mjd"]) < args.min_gap_days for previous in items):
-            continue
-        url = str(row["cutout_url"])
-        collection = str(row["collection"]).lower() if "collection" in row.colnames else ""
-        release = "DR1" if "dr1" in collection else "QR3" if "qr3" in collection else None
+        mjd=float(row["mjd"])
+        if any(abs(mjd-previous["mjd"]) < args.min_gap_days for previous in items):continue
+        url=str(row["cutout_url"])
         try:
-            entry, payload = save_cutout(url, mjd, len(items) + 1, args, source_release=release)
+            entry=save_cutout(url,mjd,len(items)+1,args)
             items.append(entry)
-            staged_files[entry["local_file"]] = payload
             print(f"Guardado: {entry['local_file']} {entry['observation_utc']} λ={entry['wavelength_um']:.4f} um")
         except Exception as ex:
-            errors.append({"url": url, "error": str(ex)})
             print(f"ADVERTENCIA: falló {url[:65]}: {ex}")
-        if len(items) >= args.max_files:
-            break
-        time.sleep(0.4)
-    if not items:
-        raise SystemExit("No se pudo curar ninguna observacion")
-    status = "complete" if not errors else "partial"
-    manifest = {
-        "schema_version": "skyo-curated-0.1",
-        "source": "NASA/IPAC IRSA SPHEREx",
-        "status": status,
-        "errors": errors,
-        "selection": {"ra_deg": args.ra, "dec_deg": args.dec, "detector": args.detector},
-        "disclaimer": "Exigir verificacion de WCS-WAVE por pixel para concluir movimiento real",
-        "items": items,
-    }
-    manifest_path = commit_dataset_atomic(args.output, staged_files, manifest)
-    print(f"Manifiesto ({status}): {manifest_path}")
+        if len(items)>=args.max_files:break
+        time.sleep(.4)
+    if not items:raise SystemExit("No se pudo curar ninguna observacion")
+    manifest={"schema_version":"skyo-curated-0.1","source":"NASA/IPAC IRSA SPHEREx",
+      "selection":{"ra_deg":args.ra,"dec_deg":args.dec,"detector":args.detector},
+      "disclaimer":"Exigir verificacion de WCS-WAVE por pixel para concluir movimiento real",
+      "items":items}
+    (args.output/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2,allow_nan=False),encoding="utf-8")
+    print(f"Manifiesto: {args.output/'manifest.json'}")
 
 if __name__=="__main__":main()

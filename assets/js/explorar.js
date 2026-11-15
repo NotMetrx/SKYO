@@ -16,7 +16,6 @@ import {
 } from './data.js';
 import { updateExploreState } from './cosmos3d.js';
 import { initScienceLab } from './science-lab-ui.js';
-import { initAladinViewer, pauseAladin, resumeAladin } from './aladin-viewer.js';
 import { renderState, clearState } from './ui-states.js';
 
 const STORAGE_KEY = 'skyo_bitacora_v1';
@@ -307,17 +306,6 @@ function renderBitacora() {
 
     const meta = document.createElement('div');
     meta.className = 'bit-meta';
-    let checksHtml = '';
-    if (item.catalogChecks) {
-      checksHtml = `
-        <div class="bit-checks" style="margin-top:4px;font-size:10px;color:var(--tx-2);line-height:1.3">
-          <div>✓ JPL SBDB: ${item.catalogChecks.jpl_sbdb.match}</div>
-          <div>✓ Gaia DR3: ${item.catalogChecks.gaia_dr3.match}</div>
-          <div>✓ ePSF: ${item.catalogChecks.epsf.status}</div>
-        </div>
-      `;
-    }
-
     meta.innerHTML = `
       <div class="bit-row">
         <strong>${item.name}</strong>
@@ -325,7 +313,6 @@ function renderBitacora() {
       </div>
       <div class="bit-tech">Δθ ≈ ${item.deltaArcsec}" · ${item.bandLabel} · ${item.epochLabel}</div>
       <div class="bit-coords">${item.icrsLabel}</div>
-      ${checksHtml}
     `;
 
     const del = document.createElement('button');
@@ -364,11 +351,9 @@ export function addExternalBitacoraEntry(entry) {
     status: entry.status,
     epochLabel: entry.epoch,
     bandLabel: 'WCS TAN-SIP',
-    deltaArcsec: entry.deltaArcsec || '4.2',
+    deltaArcsec: '4.2',
     icrsLabel: entry.coords,
     motionNote: entry.motion,
-    catalogChecks: entry.catalogChecks || null,
-    disclaimer: entry.disclaimer || null,
     thumbUrl: localStorage.getItem('skyo_custom_avatar') || 'icon.svg',
     timestamp: Date.now()
   });
@@ -383,7 +368,6 @@ export function setSubView(view) {
   const hint = document.querySelector('#explorar .hint');
   const viewLab = document.getElementById('view-lab');
   const viewCol = document.getElementById('view-coleccion');
-  const viewAladin = document.getElementById('view-aladin');
   const cosmosCanvas = document.getElementById('cosmos');
 
   document.querySelectorAll('#explore-view-tabs button').forEach(b => {
@@ -391,11 +375,6 @@ export function setSubView(view) {
     b.classList.toggle('on', isTarget);
     b.setAttribute('aria-selected', String(isTarget));
   });
-
-  if (view !== 'aladin') {
-    pauseAladin();
-    if (viewAladin) viewAladin.hidden = true;
-  }
 
   if (view === 'boveda') {
     if (bovedaHud) bovedaHud.hidden = false;
@@ -431,20 +410,6 @@ export function setSubView(view) {
     renderCandidateCollection();
     if (typeof onHeraSpeak === 'function') {
       onHeraSpeak('Colección científica: explora candidatos sin identificar y cuerpos confirmados por JPL con su desplazamiento observado.', false);
-    }
-  } else if (view === 'aladin') {
-    if (bovedaHud) bovedaHud.hidden = true;
-    if (tbar) tbar.hidden = true;
-    if (hint) hint.hidden = true;
-    closeObjectInfo();
-    if (viewLab) viewLab.hidden = true;
-    if (viewCol) viewCol.hidden = true;
-    if (viewAladin) viewAladin.hidden = false;
-    if (cosmosCanvas) cosmosCanvas.style.opacity = '0.05';
-    initAladinViewer();
-    resumeAladin();
-    if (typeof onHeraSpeak === 'function') {
-      onHeraSpeak('Contexto astronómico HiPS All-Sky (Aladin Lite v3 / CDS Strasbourg). Visualiza mosaicos de cielo completo desacoplados de la calibración temporal L2.', false);
     }
   }
 }

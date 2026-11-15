@@ -2288,25 +2288,6 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
   font-size: 12px;
 }
 
-.lab-load-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.btn-nasa {
-  background: rgba(255, 170, 50, 0.15);
-  border-color: #ffaa32;
-  color: #ffe6c0;
-  font-size: 12px;
-}
-
-.btn-nasa:hover {
-  background: rgba(255, 170, 50, 0.28);
-  border-color: #ffc060;
-  color: #ffffff;
-}
-
 .lab-help {
   margin: 0 0 14px;
   font-size: 12px;
@@ -2691,94 +2672,6 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
 .btn-focus-boveda, .btn-analyze-lab {
   flex: 1;
   text-align: center;
-}
-
-/* Aladin Lite v3 HiPS Context Subview (ADR-04) */
-.aladin-desc {
-  font-size: 13px;
-  color: var(--mut);
-  margin: 4px 0 0;
-  line-height: 1.4;
-}
-
-.aladin-target-badge {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  background: rgba(0, 243, 255, 0.08);
-  border: 1px solid rgba(0, 243, 255, 0.25);
-  border-radius: 8px;
-  padding: 6px 12px;
-}
-
-.aladin-target-badge code {
-  font-size: 11px;
-  color: #00f3ff;
-}
-
-.aladin-controls-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin: 12px 0;
-}
-
-.aladin-select-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--tx-2);
-}
-
-.aladin-survey-select {
-  background: rgba(10, 16, 30, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  border-radius: 6px;
-  padding: 6px 10px;
-  font-size: 12px;
-}
-
-.aladin-mount {
-  position: relative;
-  width: 100%;
-  border-radius: 12px;
-  overflow: hidden;
-  background: #000;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-}
-
-.aladin-canvas {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 2 / 1;
-}
-
-.aladin-reticle-info {
-  position: absolute;
-  top: 10px;
-  left: 12px;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(4px);
-  padding: 4px 8px;
-  border-radius: 4px;
-  border: 1px solid rgba(0, 243, 255, 0.3);
-  font-family: monospace;
-  font-size: 11px;
-  color: #00f3ff;
-  pointer-events: none;
-}
-
-.aladin-footer-notice {
-  margin-top: 10px;
-  font-size: 11px;
-  color: var(--mut);
-  line-height: 1.4;
 }
 
 @media (min-width: 781px) and (max-width: 1180px) {

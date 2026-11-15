@@ -5,7 +5,6 @@
  */
 
 import { saveLocal, loadLocal } from './science/opfs.js';
-import { flipRgbaVertical } from './science/render.js';
 import { renderState, clearState, showToast } from './ui-states.js';
 
 let worker = null;
@@ -98,7 +97,11 @@ function renderFits(canvas, rgba, width, height) {
   canvas.height = height;
   const ctx = canvas.getContext('2d', { alpha: false });
   // FITS tiene origen (0,0) en la esquina inferior izquierda
-  const flipped = flipRgbaVertical(rgba, width, height);
+  const flipped = new Uint8ClampedArray(width * height * 4);
+  const rowBytes = width * 4;
+  for (let y = 0; y < height; y++) {
+    flipped.set(rgba.subarray(y * rowBytes, (y + 1) * rowBytes), (height - 1 - y) * rowBytes);
+  }
   ctx.putImageData(new ImageData(flipped, width, height), 0, 0);
 }
 
@@ -322,77 +325,69 @@ export function initScienceLab(callbacks = {}) {
   const inputB = document.getElementById('file-lab-b');
   if (inputB) inputB.onchange = e => sendFile('B', e.target.files[0]);
 
-  async function loadSamplePair(mode = 'demo') {
-    const isNasa = mode === 'nasa';
-    const jobA = ++loadJobIds.A;
-    const jobB = ++loadJobIds.B;
-    try {
-      loaded.A = false;
-      loaded.B = false;
-      loadingSide.A = true;
-      loadingSide.B = true;
-      selectedFiles.A = null;
-      selectedFiles.B = null;
-      invalidateComparison();
-      const cmpBtn = document.getElementById('lab-compare-btn');
-      if (cmpBtn) cmpBtn.disabled = true;
-      const saveOpfsBtn = document.getElementById('lab-save-local');
-      if (saveOpfsBtn) saveOpfsBtn.disabled = true;
-      for (const s of ['A', 'B']) {
-        renderState(document.getElementById(`hint-lab-${s.toLowerCase()}`), {
-          state: 'loading',
-          title: isNasa ? `Cargando SPHEREx ${s}…` : `Cargando simulación ${s}…`,
-          detail: isNasa ? 'Muestra real derivada NASA/IRSA DR1/QR3' : 'Descargando recorte sintético SPHEREx y ejecutando pipeline.'
-        });
-      }
-      notify(isNasa ? 'Cargando par real SPHEREx DR1/QR3 autenticado NASA/IRSA...' : 'Cargando recortes FITS de simulación SPHEREx (Épocas A y B)...', 'loading');
-      const resources = await Promise.all(['A', 'B'].map(async side => {
-        const file = isNasa ? `./data/sample-fits/nasa_real_epoca_${side}.fits` : `./data/sample-fits/epoca_${side}.fits`;
-        const res = await fetch(file);
-        if (!res.ok) throw new Error(`No se encontró ${file}`);
-        const buffer = await res.arrayBuffer();
-        const hash = await sha256Hex(buffer);
-        return [side, buffer, hash];
-      }));
-
-      for (const [side, buffer, hash] of resources) {
-        const jobId = side === 'A' ? jobA : jobB;
-        if (jobId !== loadJobIds[side]) continue;
-        const nameEl = document.getElementById(`lab-name-${side.toLowerCase()}`);
-        if (nameEl) nameEl.textContent = isNasa ? `SPHEREx ${side} (NASA-DERIVED)` : `Simulación SPHEREx ${side}`;
-        worker.postMessage({
-          event: 'load',
-          side,
-          jobId,
-          buffer,
-          meta: {
-            local_file: isNasa ? `nasa_real_epoca_${side}.fits` : `epoca_${side}.fits`,
-            provenanceKind: isNasa ? 'nasa_derived' : 'synthetic',
-            ...(hash ? { sha256: hash } : {})
-          }
-        }, [buffer]);
-      }
-    } catch (err) {
-      if (jobA === loadJobIds.A) loadingSide.A = false;
-      if (jobB === loadJobIds.B) loadingSide.B = false;
-      for (const s of ['A', 'B']) {
-        renderState(document.getElementById(`hint-lab-${s.toLowerCase()}`), {
-          state: 'error',
-          title: isNasa ? 'Error cargando par NASA' : 'Error cargando simulación',
-          detail: err.message,
-          actionLabel: 'Reintentar',
-          onAction: () => loadSamplePair(mode)
-        });
-      }
-      notify(`Error al cargar datos: ${err.message}`, 'error');
-    }
-  }
-
   const demoBtn = document.getElementById('lab-load-demo');
-  if (demoBtn) demoBtn.onclick = () => loadSamplePair('demo');
+  if (demoBtn) {
+    demoBtn.onclick = async () => {
+      const jobA = ++loadJobIds.A;
+      const jobB = ++loadJobIds.B;
+      try {
+        loaded.A = false;
+        loaded.B = false;
+        loadingSide.A = true;
+        loadingSide.B = true;
+        selectedFiles.A = null;
+        selectedFiles.B = null;
+        invalidateComparison();
+        const cmpBtn = document.getElementById('lab-compare-btn');
+        if (cmpBtn) cmpBtn.disabled = true;
+        const saveOpfsBtn = document.getElementById('lab-save-local');
+        if (saveOpfsBtn) saveOpfsBtn.disabled = true;
+        for (const s of ['A', 'B']) {
+          renderState(document.getElementById(`hint-lab-${s.toLowerCase()}`), {
+            state: 'loading',
+            title: `Cargando simulación ${s}…`,
+            detail: 'Descargando recorte sintético SPHEREx y ejecutando pipeline.'
+          });
+        }
+        notify('Cargando recortes FITS de simulación SPHEREx (Épocas A y B)...', 'loading');
+        const resources = await Promise.all(['A', 'B'].map(async side => {
+          const file = `./data/sample-fits/epoca_${side}.fits`;
+          const res = await fetch(file);
+          if (!res.ok) throw new Error(`No se encontró ${file}`);
+          const buffer = await res.arrayBuffer();
+          const hash = await sha256Hex(buffer);
+          return [side, buffer, hash];
+        }));
 
-  const nasaBtn = document.getElementById('lab-load-nasa');
-  if (nasaBtn) nasaBtn.onclick = () => loadSamplePair('nasa');
+        for (const [side, buffer, hash] of resources) {
+          const jobId = side === 'A' ? jobA : jobB;
+          if (jobId !== loadJobIds[side]) continue;
+          const nameEl = document.getElementById(`lab-name-${side.toLowerCase()}`);
+          if (nameEl) nameEl.textContent = `Simulación SPHEREx ${side}`;
+          worker.postMessage({
+            event: 'load',
+            side,
+            jobId,
+            buffer,
+            meta: { local_file: `epoca_${side}.fits`, ...(hash ? { sha256: hash } : {}) }
+          }, [buffer]);
+        }
+      } catch (err) {
+        if (jobA === loadJobIds.A) loadingSide.A = false;
+        if (jobB === loadJobIds.B) loadingSide.B = false;
+        for (const s of ['A', 'B']) {
+          renderState(document.getElementById(`hint-lab-${s.toLowerCase()}`), {
+            state: 'error',
+            title: 'Error cargando simulación',
+            detail: err.message,
+            actionLabel: 'Reintentar',
+            onAction: () => demoBtn.click()
+          });
+        }
+        notify(`Error al cargar simulación: ${err.message}`, 'error');
+      }
+    };
+  }
 
   const compareBtn = document.getElementById('lab-compare-btn');
   if (compareBtn) {
@@ -460,22 +455,14 @@ export function initScienceLab(callbacks = {}) {
     addBitacoraBtn.onclick = () => {
       if (!lastReport) return;
       if (typeof onBitacoraAdd === 'function') {
-        const isNasa = lastReport.provenanceKind === 'nasa_derived' || String(lastReport.provenanceLabel || '').includes('NASA');
         const entry = {
-          name: isNasa ? 'Candidato SPHEREx M101 (DR1 vs QR3)' : 'Detección FITS Diferencial (A vs B)',
-          type: isNasa ? 'Detección SPHEREx IR (Δt > 20d)' : 'Candidato sin identificar',
+          name: 'Detección FITS Diferencial (A vs B)',
+          type: 'Candidato sin identificar',
           status: 'Candidato',
-          epoch: isNasa ? 'MJD 60805.7 ➔ 60826.8' : 'Época A ➔ B (WCS TAN-SIP)',
+          epoch: 'Época A ➔ B (WCS TAN-SIP)',
           coords: `Offset: ${Number(lastReport.offset).toPrecision(4)} MJy/sr · ${lastReport.validCount} px`,
-          motion: isNasa ? 'Desplazamiento aparente tras resta ZODI y reproyección TAN-SIP' : 'Señal diferencial detectada tras sustracción de fondo zodiacal',
-          deltaArcsec: '4.2',
-          date: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }),
-          catalogChecks: {
-            jpl_sbdb: { checked: true, match: 'Sin coincidencia conocida (r < 2.0")', catalog: 'Horizons/SBDB API v1.2', uncertainty_arcsec: 0.8 },
-            gaia_dr3: { checked: true, match: 'Sin contrapartida estelar (PM incompatible)', catalog: 'Gaia DR3 (epoch 2016.0)', uncertainty_mas: 12.4 },
-            epsf: { status: 'Ajuste ePSF bidimensional (441/451) completado', model: 'epsf-d3-v2' }
-          },
-          disclaimer: 'Principio de honestidad científica (RF-17/RF-18): ausencia en catálogos no equivale a descubrimiento planetario.'
+          motion: 'Señal diferencial detectada tras sustracción de fondo zodiacal',
+          date: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
         };
         onBitacoraAdd(entry);
         notify('✦ Detección diferencial archivada con éxito en la Bitácora de Aula.');

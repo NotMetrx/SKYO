@@ -5,36 +5,19 @@ async function directory(){
   return root.getDirectoryHandle('skyo-local-lab',{create:true});
 }
 export async function saveLocal(files,metadata){
-  if(!files?.A||!files?.B)throw Error('Faltan ambas observaciones (A y B) para guardar');
-  const [bufA,bufB]=await Promise.all([files.A.arrayBuffer(),files.B.arrayBuffer()]);
   const dir=await directory();
-  for(const [side,buffer] of [['A',bufA],['B',bufB]]){
+  for(const [side,file] of Object.entries(files)){
+    if(!file)throw Error(`Falta archivo ${side}`);
     const name=`epoca_${side}.fits`;
     const handle=await dir.getFileHandle(name,{create:true});
     const writer=await handle.createWritable();
-    try{
-      await writer.write(buffer);
-      await writer.close();
-    }catch(err){
-      await writer.abort?.().catch(()=>{});
-      throw err;
-    }
+    await writer.write(await file.arrayBuffer());
+    await writer.close();
   }
   const h=await dir.getFileHandle('state.json',{create:true});
   const writer=await h.createWritable();
-  try{
-    await writer.write(JSON.stringify({saved_utc:new Date().toISOString(),metadata}));
-    await writer.close();
-  }catch(err){
-    await writer.abort?.().catch(()=>{});
-    throw err;
-  }
-}
-export async function clearLocal(){
-  const dir=await directory();
-  for(const name of ['epoca_A.fits','epoca_B.fits','state.json']){
-    await dir.removeEntry(name).catch(()=>{});
-  }
+  await writer.write(JSON.stringify({saved_utc:new Date().toISOString(),metadata}));
+  await writer.close();
 }
 export async function loadLocal(){
   const dir=await directory();

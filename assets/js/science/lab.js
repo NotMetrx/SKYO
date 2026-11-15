@@ -1,5 +1,4 @@
 import {saveLocal,loadLocal} from './opfs.js';
-import {flipRgbaVertical} from './render.js';
 import {renderState,clearState,showToast} from '../ui-states.js';
 const worker=new Worker(new URL('./worker.js',import.meta.url),{type:'module'});
 const $=s=>document.querySelector(s);
@@ -64,7 +63,9 @@ function render(canvas,rgba,width,height){
   canvas.width=width;canvas.height=height;
   const ctx=canvas.getContext('2d',{alpha:false});
   // FITS x=0,y=0 comienza en la parte inferior para vistas astronomicas.
-  const flipped=flipRgbaVertical(rgba,width,height);
+  const flipped=new Uint8ClampedArray(width*height*4);
+  const rowBytes=width*4;
+  for(let y=0;y<height;y++)flipped.set(rgba.subarray(y*rowBytes,(y+1)*rowBytes),(height-1-y)*rowBytes);
   ctx.putImageData(new ImageData(flipped,width,height),0,0);
 }
 function sendFile(side,file){
@@ -136,35 +137,6 @@ $('#load-demo').addEventListener('click',async()=>{
     if(jobA===loadJobIds.A)loadingSide.A=false;
     if(jobB===loadJobIds.B)loadingSide.B=false;
     for(const s of ['A','B'])renderState($(`#hint-${s.toLowerCase()}`),{state:'error',title:'Error cargando simulación',detail:error.message,actionLabel:'Reintentar',onAction:()=>$('#load-demo').click()});
-    toast(error.message,'error');
-  }
-});
-$('#load-nasa')?.addEventListener('click',async()=>{
-  const jobA=++loadJobIds.A,jobB=++loadJobIds.B;
-  try{
-    loaded.A=false;loaded.B=false;$('#compare').disabled=true;
-    selectedFiles.A=null;selectedFiles.B=null;$('#save-local').disabled=true;
-    invalidateComparison();
-    loadingSide.A=true;loadingSide.B=true;
-    for(const s of ['A','B'])renderState($(`#hint-${s.toLowerCase()}`),{state:'loading',title:`Cargando SPHEREx ${s}…`,detail:'Descargando muestra real NASA/IRSA DR1/QR3'});
-    const resources=await Promise.all(['A','B'].map(async side=>{
-      const file=`./data/sample-fits/nasa_real_epoca_${side}.fits`;
-      const response=await fetch(file);
-      if(!response.ok)throw Error(`Falta ${file}`);
-      const buffer=await response.arrayBuffer();
-      const hash=await sha256Hex(buffer);
-      return [side,buffer,hash];
-    }));
-    for(const [side,buffer,hash] of resources){
-      const jobId=side==='A'?jobA:jobB;
-      if(jobId!==loadJobIds[side])continue;
-      $(`#name-${side.toLowerCase()}`).textContent=`SPHEREx ${side} (NASA-DERIVED)`;
-      worker.postMessage({event:'load',side,jobId,buffer,meta:{local_file:`nasa_real_epoca_${side}.fits`,provenanceKind:'nasa_derived',...(hash?{sha256:hash}:{})}},[buffer]);
-    }
-  }catch(error){
-    if(jobA===loadJobIds.A)loadingSide.A=false;
-    if(jobB===loadJobIds.B)loadingSide.B=false;
-    for(const s of ['A','B'])renderState($(`#hint-${s.toLowerCase()}`),{state:'error',title:'Error cargando par NASA',detail:error.message,actionLabel:'Reintentar',onAction:()=>$('#load-nasa').click()});
     toast(error.message,'error');
   }
 });

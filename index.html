@@ -69,10 +69,6 @@
             <button type="button" class="view-tab" data-view="coleccion" role="tab" aria-selected="false">
               <span>📑 Colección y Candidatos</span>
             </button>
-            <button type="button" class="view-tab" data-view="aladin" role="tab" aria-selected="false">
-              <span>🌐 HiPS All-Sky</span>
-              <span class="view-tag-new">Aladin v3</span>
-            </button>
           </div>
 
           <div class="explore-right">
@@ -210,10 +206,7 @@
           <div class="lab-step-box">
             <div class="lab-box-head">
               <h4>01. Ingesta de observaciones FITS</h4>
-              <div class="lab-load-actions">
-                <button type="button" id="lab-load-demo" class="btn btn-demo">✦ Simulación sintética (Demo)</button>
-                <button type="button" id="lab-load-nasa" class="btn btn-nasa">★ Par Real NASA SPHEREx (M101)</button>
-              </div>
+              <button type="button" id="lab-load-demo" class="btn btn-demo">✦ Cargar simulación SPHEREx (Épocas A y B)</button>
             </div>
             <p class="lab-help">Selecciona dos archivos FITS (recortes SPHEREx L2 de hasta 512×512 px) con extensiones IMAGE, FLAGS y VARIANCE.</p>
             <div class="lab-upload-grid">
@@ -336,47 +329,6 @@
 
           <div class="col-objects-grid" id="col-objects-grid">
             <!-- Renderizado dinámicamente desde data.js / OBJ -->
-          </div>
-        </div>
-      </div>
-
-      <!-- Subvista 4: Contexto HiPS All-Sky (Aladin Lite v3 / CDS Strasbourg) -->
-      <div id="view-aladin" class="subview-workspace" hidden>
-        <div class="col-card-pane">
-          <div class="col-pane-head">
-            <div>
-              <div class="mini-label">03 / CONTEXTO ALL-SKY (ADR-04)</div>
-              <h3>Mosaicos Progresivos HiPS (Aladin Lite v3)</h3>
-              <p class="aladin-desc">Contexto multirrango desacoplado del pipeline diferencial L2. Navegación en 2MASS (NIR), AllWISE (Mid-IR) y DSS2 (Óptico).</p>
-            </div>
-            <div class="aladin-target-badge">
-              <span class="mini-label">CAMPO OBJETIVO</span>
-              <strong>M101 · SPHEREx D2</strong>
-              <code>RA 210.8023° · Dec +54.3490°</code>
-            </div>
-          </div>
-
-          <div class="aladin-controls-row">
-            <div class="aladin-select-group">
-              <label for="aladin-survey">Mosaico HiPS:</label>
-              <select id="aladin-survey" class="aladin-survey-select">
-                <option value="CDS/P/2MASS/color">2MASS All-Sky (Infrarrojo Cercano J/H/K)</option>
-                <option value="CDS/P/allWISE/color">AllWISE W1-W4 (Infrarrojo Medio)</option>
-                <option value="CDS/P/DSS2/color">DSS2 Color (Óptico / Fotográfico)</option>
-              </select>
-            </div>
-            <div class="aladin-action-btns">
-              <button type="button" id="aladin-center-m101" class="btn btn-sm">Centrar en M101</button>
-            </div>
-          </div>
-
-          <div id="aladin-lite-mount" class="aladin-mount">
-            <canvas id="aladin-canvas" width="840" height="420" class="aladin-canvas"></canvas>
-            <div class="aladin-reticle-info" id="aladin-reticle-info">M101 · RA 210.8023° · Dec +54.3490° · FOV 0.50°</div>
-          </div>
-
-          <div class="aladin-footer-notice">
-            <small>Aladin Lite v3 © CDS Strasbourg (GNU GPL v3). Visualización progresiva HiPS (IVOA). Desacoplado de la calibración de flujo temporal L2.</small>
           </div>
         </div>
       </div>
