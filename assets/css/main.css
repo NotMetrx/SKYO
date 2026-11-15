@@ -1164,15 +1164,15 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
   bottom: 42px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  max-width: min(650px, calc(100vw - 115px));
-  background: var(--gl-strong);
+  gap: 5px;
+  max-width: min(636px, calc(100vw - 115px));
+  background: rgba(11, 16, 29, 0.72);
   backdrop-filter: var(--gl-filter);
   -webkit-backdrop-filter: var(--gl-filter);
-  border: 1px solid var(--ln);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   box-shadow: var(--gl-glass-shadow);
-  border-radius: 18px;
-  padding: 10px 13px;
+  border-radius: 16px;
+  padding: 9px 12px;
 }
 
 .stage-tabs {
@@ -1336,14 +1336,14 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
   position: fixed;
   left: 20px;
   bottom: 12px;
-  font-size: 11px;
-  color: var(--mut);
-  background: var(--gl);
+  font-size: 10.5px;
+  color: rgba(164, 178, 202, 0.72);
+  background: rgba(11, 16, 29, 0.56);
   backdrop-filter: var(--gl-filter);
   -webkit-backdrop-filter: var(--gl-filter);
-  padding: 4px 12px;
+  padding: 4px 11px;
   border-radius: 999px;
-  border: 1px solid var(--ln);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: var(--gl-inset);
 }
 
@@ -2298,9 +2298,10 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding-bottom: 6px;
-  margin-bottom: 4px;
-  border-bottom: 1px solid rgba(91, 184, 255, 0.14);
+  padding-bottom: 5px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid rgba(91, 184, 255, 0.1);
+  opacity: 0.74;
   pointer-events: none;
   user-select: none;
 }

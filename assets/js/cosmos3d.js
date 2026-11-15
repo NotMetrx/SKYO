@@ -122,6 +122,15 @@ let focalPlaneRig = null;
 let focalPlaneLoaded = false;
 const fpaDetectors = [];
 let fpaDetectorHitMeshes = [];
+let hoveredDetector = -1;
+const FPA_DETECTOR_SPECS = [
+  { id: 1, band: 0, label: 'D1', range: '0.75–1.11 µm', bandName: 'IR Corto', color: 0x3898ff, pos: [-20, 10] },
+  { id: 2, band: 0, label: 'D2', range: '1.11–1.64 µm', bandName: 'IR Corto', color: 0x22ccff, pos: [0, 10] },
+  { id: 3, band: 0, label: 'D3', range: '1.64–2.41 µm', bandName: 'IR Corto', color: 0x00e6d2, pos: [20, 10] },
+  { id: 4, band: 1, label: 'D4', range: '2.42–3.15 µm', bandName: 'IR Largo', color: 0xb57bff, pos: [-20, -10] },
+  { id: 5, band: 1, label: 'D5', range: '3.15–4.10 µm', bandName: 'IR Largo', color: 0xd96bff, pos: [0, -10] },
+  { id: 6, band: 1, label: 'D6', range: '4.10–5.01 µm', bandName: 'IR Largo', color: 0xff9e58, pos: [20, -10] }
+];
 let selectRing = null;
 let hoverRing = null;
 const objEntries = [];
@@ -138,7 +147,8 @@ const exploreState = {
   onSelect: null,
   onHover: null,
   onBlinkTick: null,
-  onBandSelect: null
+  onBandSelect: null,
+  onDetectorHover: null
 };
 let blinkAccumMs = 0;
 let lastLoopTs = 0;
@@ -1621,14 +1631,13 @@ function projectICRS(ra, dec, radius, centerZ = VAULT_CENTER_Z) {
 }
 
 function getExploreObjectPos3D(o, monthsElapsed) {
-  // Estrellas fijas como anclas astrométricas sobre el campo profundo;
-  // cometas y asteroides se desplazan en el plano frontal de paralaje IR.
+  // Estrellas fijas como anclas astrométricas y objetos en el volumen frontal sobre el FPA (z > -8)
   const angle = o[3] + monthsElapsed * o[8];
-  const ra = Math.cos(angle) * o[2] * 0.52;
-  const dec = Math.sin(angle) * o[2] * 0.34;
+  const ra = Math.cos(angle) * o[2] * 0.43;
+  const dec = Math.sin(angle) * o[2] * 0.28;
   const isFixedStar = o[1] === 'Estrella';
-  const radius = isFixedStar ? 116 : 94;
-  const centerZ = isFixedStar ? VAULT_CENTER_Z - 2 : VAULT_CENTER_Z - 14;
+  const radius = isFixedStar ? 112 : 92;
+  const centerZ = isFixedStar ? VAULT_CENTER_Z - 3 : VAULT_CENTER_Z - 15;
   return projectICRS(ra, dec, radius, centerZ);
 }
 
@@ -1709,22 +1718,67 @@ function makeLockedReticle(color, radius, withCrosshairs = false) {
   return group;
 }
 
+function makeDetectorLabelMesh(spec) {
+  const c = document.createElement('canvas');
+  c.width = 320;
+  c.height = 64;
+  const g = c.getContext('2d');
+  const hex = `#${spec.color.toString(16).padStart(6, '0')}`;
+
+  g.clearRect(0, 0, c.width, c.height);
+  g.fillStyle = 'rgba(3, 7, 15, 0.90)';
+  g.strokeStyle = hex;
+  g.lineWidth = 2.5;
+  g.beginPath();
+  if (typeof g.roundRect === 'function') {
+    g.roundRect(4, 4, c.width - 8, c.height - 8, 10);
+  } else {
+    g.rect(4, 4, c.width - 8, c.height - 8);
+  }
+  g.fill();
+  g.stroke();
+
+  g.fillStyle = hex;
+  g.font = '700 25px "Space Mono", monospace';
+  g.textBaseline = 'middle';
+  g.fillText(spec.label, 18, 33);
+
+  g.fillStyle = '#eef3ff';
+  g.font = '500 20px "Space Mono", monospace';
+  g.fillText(spec.range, 68, 33);
+
+  const tex = new T.CanvasTexture(c);
+  tex.minFilter = T.LinearFilter;
+  tex.magFilter = T.LinearFilter;
+  const mat = new T.MeshBasicMaterial({
+    map: tex,
+    transparent: true,
+    opacity: 0.96,
+    depthWrite: false
+  });
+  const mesh = new T.Mesh(new T.PlaneGeometry(1.32, 0.264), mat);
+  // Esquina superior izquierda dentro de cada bahía (en coordenadas locales de focalPlaneRig escala 1:10)
+  mesh.position.set(spec.pos[0] / 10 - 0.19, spec.pos[1] / 10 + 0.65, 0.16);
+  mesh.renderOrder = 3;
+  return { mesh, mat };
+}
+
 function buildExplorarScene() {
   explorarGroup = new T.Group();
   const R = rng(5);
 
-  // Iluminación PBR dedicada para el plano focal infrarrojo
-  const keyLight = new T.DirectionalLight(0x8fd2ff, 1.55);
+  // Iluminación PBR controlada para mantener el chasis oscuro frente a los filtros y estrellas
+  const keyLight = new T.DirectionalLight(0x8fd2ff, 0.92);
   keyLight.position.set(45, 38, 95);
-  const fillLight = new T.PointLight(0xb57bff, 1.15, 240);
+  const fillLight = new T.PointLight(0xb57bff, 0.72, 240);
   fillLight.position.set(-42, -28, 80);
-  const rimLight = new T.DirectionalLight(0xeef3ff, 0.85);
+  const rimLight = new T.DirectionalLight(0xeef3ff, 0.48);
   rimLight.position.set(0, -45, 120);
-  const specWarmLight = new T.PointLight(0xffcb78, 0.95, 180);
+  const specWarmLight = new T.PointLight(0xffcb78, 0.55, 180);
   specWarmLight.position.set(52, 18, 52);
   explorarGroup.add(keyLight, fillLight, rimLight, specWarmLight);
 
-  // 1. Campo profundo de 2.400 estrellas astrométricas ICRS con paralaje en Z
+  // 1. Campo profundo de 2.400 estrellas astrométricas ICRS detrás del FPA
   const count = 2400;
   const pos = new Float32Array(count * 3);
   const col = new Float32Array(count * 3);
@@ -1733,7 +1787,7 @@ function buildExplorarScene() {
   for (let i = 0; i < count; i++) {
     const ra = (R() - 0.5) * 1.95;
     const dec = (R() - 0.5) * 1.28;
-    const depth = 117 + R() * 18;
+    const depth = 124 + R() * 20;
     const pt = projectICRS(ra, dec, depth);
     pos.set([pt.x, pt.y, pt.z], i * 3);
 
@@ -1861,8 +1915,9 @@ function buildExplorarScene() {
   explorarGroup.add(cutoutFrame);
 
   // 3b. Modelo 3D PBR de Alta Calidad del Plano Focal SPHEREx (Blender -> GLB)
+  // Posicionado detrás del plano de estrellas y cometas cercanos para separar chasis y cielo
   focalPlaneRig = new T.Group();
-  focalPlaneRig.position.set(0, 0, -4.6);
+  focalPlaneRig.position.set(0, 0, -11.0);
   focalPlaneRig.scale.setScalar(10);
   explorarGroup.add(focalPlaneRig);
 
@@ -1883,28 +1938,42 @@ function buildExplorarScene() {
           triCount += Math.round(child.geometry.attributes.position.count / 3);
         }
 
-        const paneMatch = /^Detector_D([1-6])$/.exec(child.name);
-        const rimMatch = /^Detector_D([1-6])_Rim$/.exec(child.name);
+        const paneMatch = /^Detector_D([1-6])(?:_mesh)?$/.exec(child.name);
+        const rimMatch = /^Detector_D([1-6])_Rim(?:_mesh)?$/.exec(child.name);
         if (paneMatch && child.material) {
           const idx = Number(paneMatch[1]);
           child.material.transparent = true;
           child.material.depthWrite = false;
           child.material.opacity = 0.11;
+          child.material.roughness = 0.72;
+          child.material.metalness = 0.15;
           child.userData = { type: 'fpa-detector', detector: idx, band: idx <= 3 ? 0 : 1 };
           fpaDetectorHitMeshes.push(child);
           paneMap.set(idx, child.material);
         } else if (rimMatch && child.material) {
           const idx = Number(rimMatch[1]);
+          child.material.transparent = true;
           rimMap.set(idx, child.material);
+        } else if (child.material && /ColdPlate|Ceramic|Bezel/i.test(child.name)) {
+          // Oscurecer placa fría y portadores cerámicos para evitar fondo gris lechoso detrás del cielo
+          child.material.color.multiplyScalar(/Ceramic/i.test(child.name) ? 0.18 : 0.38);
+          if (typeof child.material.roughness === 'number') {
+            child.material.roughness = Math.max(child.material.roughness, 0.75);
+          }
         }
       });
 
       for (let idx = 1; idx <= 6; idx++) {
+        const spec = FPA_DETECTOR_SPECS[idx - 1];
+        const badge = makeDetectorLabelMesh(spec);
+        focalPlaneRig.add(badge.mesh);
         fpaDetectors.push({
           index: idx,
           bandGroup: idx <= 3 ? 0 : 1,
+          spec,
           paneMat: paneMap.get(idx) || null,
-          rimMat: rimMap.get(idx) || null
+          rimMat: rimMap.get(idx) || null,
+          labelMat: badge.mat
         });
       }
 
@@ -2170,16 +2239,35 @@ export function syncExplorarVisuals() {
     setBovedaObjectStyle(bovedaBezelGuides, secondaryAccent, isHighlighted ? 0.88 : 0.56);
   }
 
-  // Resaltado PBR de los 6 detectores físicos H2RG (D1–D3 IR Corto vs D4–D6 IR Largo)
+  // Resaltado PBR de alto contraste para los 6 detectores físicos H2RG (D1–D3 IR Corto vs D4–D6 IR Largo)
   for (let i = 0; i < fpaDetectors.length; i++) {
     const det = fpaDetectors[i];
     const active = det.bandGroup === exploreState.band;
+    const isDetHovered = det.index === hoveredDetector;
     if (det.paneMat) {
-      det.paneMat.opacity = active ? (isHighlighted ? 0.19 : 0.14) : 0.04;
-      det.paneMat.emissiveIntensity = active ? 0.42 : 0.08;
+      if (det.spec) {
+        det.paneMat.color.setHex(det.spec.color);
+        det.paneMat.emissive.setHex(det.spec.color);
+      }
+      det.paneMat.opacity = active
+        ? (isDetHovered ? 0.28 : isHighlighted ? 0.24 : 0.20)
+        : (isDetHovered ? 0.10 : 0.02);
+      det.paneMat.emissiveIntensity = active
+        ? (isDetHovered ? 0.92 : 0.65)
+        : (isDetHovered ? 0.26 : 0.02);
     }
     if (det.rimMat) {
-      det.rimMat.emissiveIntensity = active ? (isHighlighted ? 1.55 : 1.18) : 0.24;
+      if (det.spec) {
+        det.rimMat.color.setHex(det.spec.color);
+        det.rimMat.emissive.setHex(det.spec.color);
+      }
+      det.rimMat.opacity = active ? 1 : (isDetHovered ? 0.62 : 0.24);
+      det.rimMat.emissiveIntensity = active
+        ? (isDetHovered ? 2.4 : isHighlighted ? 2.15 : 1.85)
+        : (isDetHovered ? 0.55 : 0.06);
+    }
+    if (det.labelMat) {
+      det.labelMat.opacity = active ? 0.98 : (isDetHovered ? 0.72 : 0.24);
     }
   }
 
@@ -2448,9 +2536,14 @@ function pickTarget(clientX, clientY) {
   if (activeRoute === 'explorar') {
     const hits = exploreHitMeshes.length ? raycaster.intersectObjects(exploreHitMeshes, false) : [];
     const idx = hits.length ? hits[0].object.userData.index : -1;
+    let nextDet = -1;
+    if (idx < 0 && fpaDetectorHitMeshes.length) {
+      const detHits = raycaster.intersectObjects(fpaDetectorHitMeshes, false);
+      if (detHits.length) nextDet = detHits[0].object.userData.detector;
+    }
+
     if (idx !== exploreState.hovered) {
       exploreState.hovered = idx;
-      canvas.style.cursor = idx >= 0 ? 'pointer' : 'grab';
       if (hoverRing) {
         if (idx >= 0) {
           hoverRing.visible = true;
@@ -2464,9 +2557,29 @@ function pickTarget(clientX, clientY) {
         exploreState.onHover(idx);
       }
     }
-  } else if (activeRoute === 'fases') {
-    const hits = fasesHitMeshes.length ? raycaster.intersectObjects(fasesHitMeshes, false) : [];
-    canvas.style.cursor = hits.length ? 'pointer' : 'grab';
+
+    if (nextDet !== hoveredDetector) {
+      hoveredDetector = nextDet;
+      syncExplorarVisuals();
+      wakeLoop();
+      if (typeof exploreState.onDetectorHover === 'function') {
+        exploreState.onDetectorHover(hoveredDetector > 0 ? FPA_DETECTOR_SPECS[hoveredDetector - 1] : null);
+      }
+    }
+
+    canvas.style.cursor = (idx >= 0 || hoveredDetector > 0) ? 'pointer' : 'grab';
+  } else {
+    if (hoveredDetector !== -1) {
+      hoveredDetector = -1;
+      syncExplorarVisuals();
+      if (typeof exploreState.onDetectorHover === 'function') {
+        exploreState.onDetectorHover(null);
+      }
+    }
+    if (activeRoute === 'fases') {
+      const hits = fasesHitMeshes.length ? raycaster.intersectObjects(fasesHitMeshes, false) : [];
+      canvas.style.cursor = hits.length ? 'pointer' : 'grab';
+    }
   }
 }
 

@@ -2,7 +2,7 @@
  * SKYO Service Worker — PWA offline shell.
  * Caché estricto solo para assets locales de la aplicación y muestras FITS de demostración.
  */
-const VERSION = 'skyo-v2.3.5';
+const VERSION = 'skyo-v2.3.6';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -33,6 +33,7 @@ const ASSETS_TO_CACHE = [
   './assets/js/vendor/lottie.min.js',
   './assets/models/eclipse.glb',
   './assets/models/boveda.glb',
+  './assets/models/focal_plane.glb',
   './assets/models/kryo9.glb',
   './assets/js/science/lab.js',
   './assets/js/science/fits.js',

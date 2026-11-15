@@ -986,16 +986,29 @@ function buildExplorarUI() {
   }
 
   const hoverPill = document.getElementById('hover-pill');
+  let hoveredObjIdx = -1;
+  let hoveredDetSpec = null;
+  const syncHoverPill = () => {
+    if (!hoverPill) return;
+    if (hoveredObjIdx >= 0) {
+      hoverPill.textContent = `${OBJ[hoveredObjIdx][0]} · ${OBJ[hoveredObjIdx][1]}`;
+      hoverPill.classList.add('on');
+    } else if (hoveredDetSpec) {
+      hoverPill.textContent = `Detector ${hoveredDetSpec.label} · ${hoveredDetSpec.range} (${hoveredDetSpec.bandName})`;
+      hoverPill.classList.add('on');
+    } else {
+      hoverPill.classList.remove('on');
+    }
+  };
   updateExploreState({
     onSelect: idx => selectObject(idx),
     onHover: idx => {
-      if (!hoverPill) return;
-      if (idx >= 0) {
-        hoverPill.textContent = `${OBJ[idx][0]} · ${OBJ[idx][1]}`;
-        hoverPill.classList.add('on');
-      } else {
-        hoverPill.classList.remove('on');
-      }
+      hoveredObjIdx = idx;
+      syncHoverPill();
+    },
+    onDetectorHover: spec => {
+      hoveredDetSpec = spec;
+      syncHoverPill();
     },
     onBlinkTick: () => {
       if (!blinkMode) return;
@@ -1006,9 +1019,12 @@ function buildExplorarUI() {
       if (bandIdx !== currentBand) {
         currentBand = bandIdx;
         syncUI();
-        evaluateMission(false);
-        if (typeof onHeraSpeak === 'function') {
-          onHeraSpeak(`Detector D${detNum} seleccionado · ${BANDAS[currentBand].label} (${BANDAS[currentBand].range}).`);
+        if (!evaluateMissionTransition()) {
+          playUiCue(currentBand === 1 ? 'band_long' : 'band_short');
+          triggerKryoGesture('Scan_Sky', { duration: 1.4 });
+          if (typeof onHeraSpeak === 'function') {
+            onHeraSpeak(`Detector D${detNum} seleccionado · ${BANDAS[currentBand].label} (${BANDAS[currentBand].range}).`);
+          }
         }
       }
     }
