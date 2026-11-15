@@ -10,8 +10,12 @@ const snapshot=()=>makeSnapshot(versions,observations);
 const validSide=side=>side==='A'||side==='B';
 function requireCondition(value,message){if(!value)throw Error(message);}
 function summary(side,fit,quality){return {side,width:fit.width,height:fit.height,detector:fit.detector,
-  observation:observations[side],origin:fit.origin,observationTime:fit.observationTime,
-  flagsAvailable:quality.flagsAvailable,flagsCompressed:fit.flagsCompressed,maskedCount:quality.maskedCount};}
+  observation:observations[side],origin:fit.origin,
+  observationTime:fit.meta?.observation_utc||fit.observationTime||'No verificada',
+  flagsAvailable:quality.flagsAvailable,flagsCompressed:fit.flagsCompressed,maskedCount:quality.maskedCount,
+  wavelengthUm:fit.meta?.wavelength_um??fit.wavelengthUm??'Sin calibrar',
+  hasVariance:!!fit.variance,sourceUrl:fit.meta?.source_url||null,
+  note:fit.flagsCompressed&&!fit.flags?'FLAGS comprimidos: se requiere paquete curado para validar calidad':null};}
 self.onmessage=async({data})=>{
   const {event,side,jobId,version}=data??{};
   try {
@@ -50,7 +54,7 @@ self.onmessage=async({data})=>{
       const report=analysisReport({observations,snapshot:current,result,kernel,maskBits:{A:buildQualityMask(images.A).unsafeBits,B:buildQualityMask(images.B).unsafeBits}});
       comparison={result,packed,snapshot:current,report};
       const rgba=imageRgba(packed.subarray(0,result.a.length),result.width,result.height,result.valid,{kind:'difference'});
-      self.postMessage({event:'compared',jobId,snapshot:current,rgba,report,info:{width:result.width,height:result.height,kernel,offset:result.offset,validCount:result.validCount,report}},[rgba.buffer]);return;
+      self.postMessage({event:'compared',jobId,snapshot:current,rgba,report,info:{width:result.width,height:result.height,kernel,offset:result.offset,validCount:result.validCount,spectral:result.spectral,flagsReady:result.flagsReady,varianceReady:result.varianceReady,status:result.status,notes:result.notes,report}},[rgba.buffer]);return;
     }
     if(event==='render'){
       requireCondition(sameSnapshot(data.snapshot,snapshot()),'Render de una selección antigua');

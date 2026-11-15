@@ -30,3 +30,5 @@ science-core/target/
 data/fpa-originals/
 !public/datasets/immersive-sky/*.png
 !docs/evidence/migracion-stack-20261114/*.png
+# páginas guardadas localmente por el navegador
+SKYO*.html

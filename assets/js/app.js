@@ -349,8 +349,8 @@ function launchFromInicio(event) {
       document.body.classList.remove('warp-zoom');
       if (promptText) promptText.textContent = 'Explorar el cielo';
       isWarping = false;
-    }, 280);
-  }, 220);
+    }, 360);
+  }, 140);
 }
 
 window.addEventListener('keydown', e => {

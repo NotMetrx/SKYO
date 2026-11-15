@@ -2,6 +2,12 @@
 
 ## Cielo inmersivo SPHEREx vigente — 2026-11-15
 
+- Consulta al clic añadida: ficha flotante fija ICRS/píxel/flujo/λ/fecha/hash,
+  identifica mosaico/L2, copia coordenadas y exporta snapshot separado de retícula.
+  Clic/tacto/Enter, marcador y cierre; cancela timer previo y libera espera al error.
+  Build aislado y 13 Node focales/4 navegador pasan. Fusión externa aún con
+  conflictos bloquea build/npm global e integración completa en Explorar.
+  No sobrescribir esa fusión. Informe `docs/CONSULTA_CLIC_20261115.md`.
 - Transición L2 autorizada e implementada: zoom <1.25° busca recorte IBE de
   0.25°, fundido hasta 0.5°, zoom mínimo 0.05°. Rust procesa IMAGE; WCS TAN/SIP
   proyecta sin paralaje sobre radio1000, WCS-WAVE/FLAGS limita píxeles al canal.
@@ -122,12 +128,12 @@
   Python6/6, Rust2/2, Vite/build y validadores pasan. Resultados de navegador
   finales26/26, cero omitidos (6.3min), en docs/evidence/implementacion-20261114/browser-final.json.
   Desarrollo4173 real/Worker/export sin pageerror.
-- Informe: docs/VALIDACION_IMPLEMENTACION_20261114.md; evidencia durable por tarea.
-  .venv y CLI temporal /tmp/skyo-wasm-tools usados; pipeline explica recrearlos.
 - Integración 2026-11-15: traídos `sound.js` (audio Deep Liquid Glass), `focal_plane.glb`
   + `generate_focal_plane.py`, composición ArtCraft y hover/etiquetas del plano focal.
   Se conserva la política local de Three.js bajo demanda, enlace «Explorar el cielo»
-  y activación `data-enable-cosmos`; verificación pendiente.
+  y activación `data-enable-cosmos`.
+- Integrados cambios de origin/main (hasta commit dd0b317): estética ArtCraft global,
+  contraste FPA/KRYO-9, temporizador de warp-zoom y validación PV-01..08.
 
 ## Límites y siguiente paso
 

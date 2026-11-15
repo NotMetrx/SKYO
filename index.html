@@ -38,10 +38,14 @@
     </a>
 
     <nav id="nav" aria-label="Navegación principal">
-      <a href="#explorar" data-s="explorar"><span>Explorar</span></a>
-      <a href="#3d" data-s="3d"><span>3D</span></a>
-      <a href="#fases" data-s="fases"><span>Fases</span></a>
+      <a href="#explorar" data-s="explorar"><span class="nav-idx" aria-hidden="true">01</span><span>Explorar</span></a>
+      <a href="#3d" data-s="3d"><span class="nav-idx" aria-hidden="true">02</span><span>3D</span></a>
+      <a href="#fases" data-s="fases"><span class="nav-idx" aria-hidden="true">03</span><span>Fases</span></a>
     </nav>
+    <div class="top-status-chip" aria-hidden="true">
+      <span class="kicker-dot"></span>
+      <span>TAN-SIP · LOCAL</span>
+    </div>
   </header>
 
   <p id="cosmos-status" role="status"></p>
@@ -126,7 +130,7 @@
             </button>
             <button type="button" class="view-tab" data-view="lab" role="tab" aria-selected="false">
               <span>🔬 Laboratorio FITS</span>
-              <span class="view-tag-new">Motor local</span>
+              <span class="view-tag-new">LOCAL</span>
             </button>
             <button type="button" class="view-tab" data-view="coleccion" role="tab" aria-selected="false">
               <span>📑 Colección y Candidatos</span>
@@ -239,6 +243,7 @@
       </div>
 
       <aside id="bitacora-panel" class="bitacora-panel" aria-label="Bitácora de candidato (Modo Aula)" aria-hidden="true" inert>
+        <div class="hud-label panel-craft-tag" aria-hidden="true"><span class="hud-idx">// 03</span> CANDIDATE LOGBOOK · LOCAL</div>
         <div class="bit-head">
           <div>
             <b>Bitácora de Candidato</b>
@@ -258,7 +263,7 @@
         <div class="lab-card-pane">
           <div class="lab-pane-head">
             <div>
-              <div class="mini-label">01 / PROCESAMIENTO CIENTÍFICO LOCAL · SIN VPS</div>
+              <div class="hud-label subview-craft-label"><span class="hud-idx">// 01</span> PROCESAMIENTO CIENTÍFICO LOCAL · SIN VPS</div>
               <h3>Laboratorio FITS de Doble Época</h3>
               <p class="lab-desc">Inspecciona datos infrarrojos SPHEREx, aplica máscaras FLAGS, alinea por WCS TAN-SIP y examina diferencias exploratorias que requieren validación independiente.</p>
             </div>
@@ -275,7 +280,7 @@
 
           <div class="lab-step-box">
             <div class="lab-box-head">
-              <h4>01. Ingesta de observaciones FITS</h4>
+              <h4><span class="step-idx">01</span> Ingesta de observaciones FITS</h4>
               <button type="button" id="lab-load-demo" class="btn btn-demo">✦ Cargar simulación SPHEREx (Épocas A y B)</button>
             </div>
             <p class="lab-help">Selecciona dos archivos FITS (recortes SPHEREx L2 de hasta 512×512 px) con extensiones IMAGE, FLAGS y VARIANCE.</p>
@@ -313,7 +318,7 @@
 
           <div class="lab-step-box">
             <div class="lab-box-head">
-              <h4>02. Visor espectral de observaciones</h4>
+              <h4><span class="step-idx">02</span> Visor espectral de observaciones</h4>
             </div>
             <div class="lab-dual-viewer">
               <article class="lab-canvas-card">
@@ -343,7 +348,7 @@
 
           <div class="lab-step-box">
             <div class="lab-box-head">
-              <h4>03. Comparación exploratoria</h4>
+              <h4><span class="step-idx">03</span> Sustracción diferencial y detección de cambio</h4>
               <button type="button" id="lab-compare-btn" class="btn pr" disabled>
                 <span>Comparar épocas (WCS / Worker)</span>
                 <span>↗</span>
@@ -383,9 +388,9 @@
         <div class="col-card-pane">
           <div class="col-pane-head">
             <div>
-              <div class="mini-label">02 / COLECCIÓN EDUCATIVA</div>
-              <h3>Colección de referencias ilustrativas</h3>
-              <p class="col-desc">Ejemplos educativos de fuentes y candidatos simulados. Esta colección no representa consultas JPL/Gaia ejecutadas ni detecciones verificadas.</p>
+              <div class="hud-label subview-craft-label"><span class="hud-idx">// 02</span> CATÁLOGO CIENTÍFICO · ICRS / JPL</div>
+              <h3>Colección de Candidatos y Detecciones</h3>
+              <p class="col-desc">Cruce entre observaciones infrarrojas de SPHEREx y el oráculo astrométrico de JPL Small-Body Database.</p>
             </div>
             <div class="col-filter-bar" id="col-filter-bar">
               <button type="button" class="on" data-col-filter="all">Todos (14)</button>
@@ -466,9 +471,9 @@
 
   <!-- Asistente KRYO-9 / H.E.R.A 7 (oculta en #inicio; KRYO-9 en 3D por defecto con opción de avatar personalizado) -->
   <aside id="hera">
-    <div id="hb" role="status" aria-label="Guía SPHEREx de KRYO-9">
+    <div id="hb" role="dialog" aria-label="Guía SPHEREx de KRYO-9" aria-live="polite" aria-atomic="true">
       <b id="hb-title">KRYO-9 · Guía SPHEREx</b>
-      <p id="ht" aria-live="polite" aria-atomic="true"></p>
+      <p id="ht"></p>
       <div class="hera-chips" id="hera-chips" role="group" aria-label="Temas rápidos sobre SPHEREx">
         <button type="button" class="hera-chip" data-topic="que_es">¿Qué es SPHEREx?</button>
         <button type="button" class="hera-chip" data-topic="bandas">2 bandas IR</button>

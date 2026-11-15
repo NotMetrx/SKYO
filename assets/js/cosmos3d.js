@@ -1,7 +1,7 @@
 /**
- * SKYO — Motor Unificado Three.js en Vivo para Todos los Paneles (#07070a)
+ * SKYO — Motor Unificado Three.js en Vivo para Todos los Paneles (#000000)
  * Filosofía Ponytail:
- *  - Un único contexto WebGLRenderer en obsidiana (#07070a) para todas las vistas.
+ *  - Un único contexto WebGLRenderer en negro absoluto (#000000) para todas las vistas.
  *  - Carga local diferida/única de three.min.js (r128), cero dependencias externas.
  *  - Pausa automática con Page Visibility API, dirty-render en pausa 3D y respeto a reduced-motion.
  */
@@ -48,6 +48,7 @@ let isWarpingFromInicio = false;
 let eclipseRig = null;
 let eclipseModelPivot = null;
 let eclipseHalo = null;
+let eclipseDiamondSprite = null;
 let eclipseMixer = null;
 const eclipseMats = [];
 let eclipsePhase = 'idle'; // 'idle' | 'transition' | 'done'
@@ -117,6 +118,9 @@ let cutoutFrame = null;
 let bovedaModelLoaded = false;
 let bovedaAstrolabe = null;
 let bovedaBezelGuides = null;
+let bovedaEclipseGroup = null;
+let bovedaEclipseHalo = null;
+let bovedaEclipseDiamond = null;
 let bovedaPolycount = 0;
 let focalPlaneRig = null;
 let focalPlaneLoaded = false;
@@ -199,6 +203,110 @@ function makeGlowTexture(innerColor, midColor) {
   return tex;
 }
 
+function makeSolarCoronaTexture() {
+  const c = document.createElement('canvas');
+  c.width = c.height = 256;
+  const g = c.getContext('2d');
+  const cx = 128;
+  const cy = 128;
+
+  // Gradiente coronal con núcleo blanco/cian y halo exterior morado
+  const grad = g.createRadialGradient(cx, cy, 32, cx, cy, 126);
+  grad.addColorStop(0.0, 'rgba(255, 255, 255, 0.98)');
+  grad.addColorStop(0.09, 'rgba(91, 184, 255, 0.88)');
+  grad.addColorStop(0.26, 'rgba(125, 175, 255, 0.54)');
+  grad.addColorStop(0.56, 'rgba(181, 123, 255, 0.3)');
+  grad.addColorStop(0.84, 'rgba(181, 123, 255, 0.08)');
+  grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 256, 256);
+
+  // Filamentos y rayos de plasma solar radiales
+  g.save();
+  g.translate(cx, cy);
+  const rayCount = 48;
+  for (let i = 0; i < rayCount; i++) {
+    const angle = (i / rayCount) * Math.PI * 2;
+    const len = 68 + Math.sin(i * 3.7) * 26 + Math.cos(i * 7.1) * 16;
+    const alpha = 0.09 + Math.sin(i * 2.3) * 0.06;
+    g.strokeStyle = i % 2 === 0 ? `rgba(91, 184, 255, ${alpha})` : `rgba(181, 123, 255, ${alpha * 1.25})`;
+    g.lineWidth = 1.4;
+    g.beginPath();
+    g.moveTo(Math.cos(angle) * 34, Math.sin(angle) * 34);
+    g.lineTo(Math.cos(angle) * (34 + len), Math.sin(angle) * (34 + len));
+    g.stroke();
+  }
+  g.restore();
+
+  // Umbra lunar en el centro para silueteado de alto contraste
+  g.fillStyle = '#000000';
+  g.beginPath();
+  g.arc(cx, cy, 33, 0, Math.PI * 2);
+  g.fill();
+
+  const tex = new T.CanvasTexture(c);
+  if (renderer?.capabilities?.getMaxAnisotropy) {
+    tex.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+  }
+  return tex;
+}
+
+function makeDiamondStarburstTexture() {
+  const c = document.createElement('canvas');
+  c.width = c.height = 256;
+  const g = c.getContext('2d');
+  const cx = 128;
+  const cy = 128;
+
+  // Centro resplandeciente del diamante
+  const coreGrad = g.createRadialGradient(cx, cy, 0, cx, cy, 40);
+  coreGrad.addColorStop(0.0, 'rgba(255, 255, 255, 1)');
+  coreGrad.addColorStop(0.18, 'rgba(220, 245, 255, 0.96)');
+  coreGrad.addColorStop(0.44, 'rgba(91, 184, 255, 0.48)');
+  coreGrad.addColorStop(0.74, 'rgba(181, 123, 255, 0.16)');
+  coreGrad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
+  g.fillStyle = coreGrad;
+  g.fillRect(0, 0, 256, 256);
+
+  // Destello horizontal anamórfico
+  const flareH = g.createLinearGradient(0, cy, 256, cy);
+  flareH.addColorStop(0, 'rgba(91, 184, 255, 0)');
+  flareH.addColorStop(0.44, 'rgba(255, 255, 255, 0.75)');
+  flareH.addColorStop(0.5, 'rgba(255, 255, 255, 1)');
+  flareH.addColorStop(0.56, 'rgba(255, 255, 255, 0.75)');
+  flareH.addColorStop(1, 'rgba(181, 123, 255, 0)');
+  g.fillStyle = flareH;
+  g.fillRect(0, cy - 2.5, 256, 5);
+
+  // Destello vertical
+  const flareV = g.createLinearGradient(cx, 0, cx, 256);
+  flareV.addColorStop(0, 'rgba(91, 184, 255, 0)');
+  flareV.addColorStop(0.44, 'rgba(255, 255, 255, 0.75)');
+  flareV.addColorStop(0.5, 'rgba(255, 255, 255, 1)');
+  flareV.addColorStop(0.56, 'rgba(255, 255, 255, 0.75)');
+  flareV.addColorStop(1, 'rgba(181, 123, 255, 0)');
+  g.fillStyle = flareV;
+  g.fillRect(cx - 2.5, 0, 5, 256);
+
+  // Destello diagonal a 45 grados
+  g.save();
+  g.translate(cx, cy);
+  g.rotate(Math.PI / 4);
+  const flareDiag = g.createLinearGradient(-90, 0, 90, 0);
+  flareDiag.addColorStop(0, 'rgba(255, 255, 255, 0)');
+  flareDiag.addColorStop(0.5, 'rgba(255, 255, 255, 0.9)');
+  flareDiag.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  g.fillStyle = flareDiag;
+  g.fillRect(-90, -1.2, 180, 2.4);
+  g.restore();
+
+  const tex = new T.CanvasTexture(c);
+  if (renderer?.capabilities?.getMaxAnisotropy) {
+    tex.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+  }
+  return tex;
+}
+
 const _eclipseRay = { v: null, fwd: null, initialized: false };
 
 function updateEclipseSlotRect() {
@@ -219,7 +327,14 @@ function resetEclipseMaterials() {
       entry.mat.emissiveIntensity = entry.baseEmissive;
     }
   }
-  if (eclipseHalo) eclipseHalo.material.opacity = 0.62;
+  if (eclipseHalo) {
+    eclipseHalo.material.opacity = 0.92;
+    eclipseHalo.scale.set(4.6, 4.6, 1);
+  }
+  if (eclipseDiamondSprite) {
+    eclipseDiamondSprite.material.opacity = 0.98;
+    eclipseDiamondSprite.scale.set(2.2, 2.2, 1);
+  }
   if (eclipseModelPivot) eclipseModelPivot.rotation.set(0, 0, 0);
 }
 
@@ -228,25 +343,44 @@ function buildEclipsePortal() {
   eclipseRig.name = 'EclipsePortal';
   eclipseRig.visible = activeRoute === 'inicio';
 
+  // Halo bicapa incandescente de la corona solar
   const haloMat = new T.SpriteMaterial({
-    map: makeGlowTexture('rgba(225,29,72,0.44)', 'rgba(124,200,255,0.16)'),
+    map: makeSolarCoronaTexture(),
     transparent: true,
-    opacity: 0.62,
+    opacity: 0.92,
     blending: T.AdditiveBlending,
     depthWrite: false
   });
   eclipseHalo = new T.Sprite(haloMat);
-  eclipseHalo.position.set(0, 0, -0.35);
-  eclipseHalo.scale.set(4.1, 4.1, 1);
+  eclipseHalo.position.set(0, 0, -0.42);
+  eclipseHalo.scale.set(4.6, 4.6, 1);
   eclipseRig.add(eclipseHalo);
 
-  const rimLight = new T.DirectionalLight(0x8fd2ff, 2.25);
-  rimLight.position.set(2.2, 1.8, 3.6);
-  const crimsonFill = new T.PointLight(0xe11d48, 1.75, 16);
-  crimsonFill.position.set(-2.4, -1.6, 2.8);
-  const backRim = new T.DirectionalLight(0xffffff, 1.15);
-  backRim.position.set(-1.5, 2.6, -1.4);
-  eclipseRig.add(rimLight, crimsonFill, backRim);
+  // Destello de diamante en el limbo lunar (efecto anillo de diamante)
+  const diamondMat = new T.SpriteMaterial({
+    map: makeDiamondStarburstTexture(),
+    transparent: true,
+    opacity: 0.98,
+    blending: T.AdditiveBlending,
+    depthWrite: false
+  });
+  eclipseDiamondSprite = new T.Sprite(diamondMat);
+  eclipseDiamondSprite.position.set(0.68, 0.68, 0.08);
+  eclipseDiamondSprite.scale.set(2.2, 2.2, 1);
+  eclipseRig.add(eclipseDiamondSprite);
+
+  // Iluminación física estricta de eclipse total:
+  // Contraluz solar primario detrás de la luna (Z < 0)
+  const solarBacklight = new T.PointLight(0xffffff, 4.8, 25);
+  solarBacklight.position.set(0.7, 0.7, -1.8);
+  const diamondRim = new T.DirectionalLight(0x8fd2ff, 3.2);
+  diamondRim.position.set(1.8, 1.8, -1.2);
+  const coronaRim = new T.DirectionalLight(0xb57bff, 2.4);
+  coronaRim.position.set(-2.0, -1.5, -1.4);
+  // Sombra frontal con leve luz cenicienta (earthshine) para no lavar cráteres
+  const earthshine = new T.DirectionalLight(0x0a1426, 0.22);
+  earthshine.position.set(0, 0, 4.0);
+  eclipseRig.add(solarBacklight, diamondRim, coronaRim, earthshine);
 
   const slotEl = document.querySelector('#inicio .eclipse-o');
   if (slotEl) {
@@ -268,6 +402,27 @@ function buildEclipsePortal() {
         const m = obj.material;
         m.transparent = true;
         m.depthWrite = true;
+        const name = `${obj.name || ''} ${m.name || ''}`;
+
+        if (/Moon|Sphere/i.test(name)) {
+          // Silueta lunar profunda de umbra a contraluz
+          m.color.setHex(0x060913);
+          m.roughness = 0.88;
+          m.metalness = 0.08;
+          m.emissive.setHex(0x000000);
+          m.emissiveIntensity = 0;
+        } else if (/Diamond/i.test(name)) {
+          // Malla del destello de diamante
+          m.color.setHex(0xffffff);
+          m.emissive.setHex(0xd0f0ff);
+          m.emissiveIntensity = 3.8;
+          m.blending = T.AdditiveBlending;
+        } else if (/Corona|Violet|Arc|Torus/i.test(name)) {
+          // Plasma y arcos de la corona
+          m.emissiveIntensity = 2.6;
+          m.blending = T.AdditiveBlending;
+        }
+
         if (m.envMapIntensity !== undefined) m.envMapIntensity = 0.05;
         eclipseMats.push({
           mat: m,
@@ -281,7 +436,6 @@ function buildEclipsePortal() {
         for (const clip of clips) eclipseMixer.clipAction(clip).play();
       }
       eclipseRig.add(model);
-      document.querySelector('#inicio .eclipse-o')?.classList.add('eclipse-ready');
       updateEclipseSlotRect();
       eclipseRig.visible = activeRoute === 'inicio' || eclipsePhase === 'transition';
       if (eclipseRig.visible) wakeLoop();
@@ -358,7 +512,7 @@ function updateEclipsePortalFrame(dt) {
   const worldScreenH = 2 * depth * Math.tan((camera.fov * Math.PI) / 360);
   const baseScale = ((slotSize / h) * worldScreenH) * 0.44;
   const zoomScale = eclipsePhase === 'transition'
-    ? baseScale * (1 + 4.4 * Math.pow(progress, 1.45))
+    ? baseScale * (1 + 4.8 * Math.pow(progress, 1.45))
     : baseScale;
   eclipseRig.scale.setScalar(zoomScale);
 
@@ -380,20 +534,29 @@ function updateEclipsePortalFrame(dt) {
     }
   }
 
-  const fadeAlpha = eclipsePhase === 'transition' && progress > 0.66
-    ? Math.max(0, 1 - (progress - 0.66) / 0.34)
+  const fadeAlpha = eclipsePhase === 'transition' && progress > 0.72
+    ? Math.max(0, 1 - (progress - 0.72) / 0.28)
     : 1;
 
   for (const entry of eclipseMats) {
     entry.mat.opacity = entry.baseOpacity * fadeAlpha;
     if (entry.mat.emissiveIntensity !== undefined && eclipsePhase === 'transition') {
-      entry.mat.emissiveIntensity = entry.baseEmissive * (1 + progress * 1.1) * fadeAlpha;
+      entry.mat.emissiveIntensity = entry.baseEmissive * (1 + progress * 2.2) * fadeAlpha;
     }
   }
+
+  if (eclipseDiamondSprite) {
+    const pulse = 2.2 + 0.25 * Math.sin(simTime * 4.2);
+    const flareMultiplier = eclipsePhase === 'transition' ? (1 + progress * 4.4) : 1;
+    eclipseDiamondSprite.scale.set(pulse * flareMultiplier, pulse * flareMultiplier, 1);
+    eclipseDiamondSprite.material.opacity = Math.min(1, (0.88 + 0.12 * Math.sin(simTime * 3.8))) * fadeAlpha;
+  }
+
   if (eclipseHalo) {
-    const hPulse = 4.1 + 0.25 * Math.sin(simTime * 1.9);
-    eclipseHalo.scale.set(hPulse, hPulse, 1);
-    eclipseHalo.material.opacity = (0.58 + 0.08 * Math.sin(simTime * 1.9)) * fadeAlpha;
+    const hPulse = 4.6 + 0.32 * Math.sin(simTime * 1.8);
+    const haloExpand = eclipsePhase === 'transition' ? (1 + progress * 4.6) : 1;
+    eclipseHalo.scale.set(hPulse * haloExpand, hPulse * haloExpand, 1);
+    eclipseHalo.material.opacity = (0.84 + 0.12 * Math.sin(simTime * 1.8)) * fadeAlpha;
   }
 
   if (eclipsePhase === 'transition' && progress >= 1) {
@@ -907,14 +1070,19 @@ function loadKryoModel() {
 
   ensureGltfSupport()
     .then(() => {
-      if (!kryoRig || !T.GLTFLoader || !T.DRACOLoader) return;
-      const draco = new T.DRACOLoader();
-      draco.setDecoderPath('assets/js/vendor/draco/gltf/');
-      const loader = new T.GLTFLoader();
-      loader.setDRACOLoader(draco);
+      if (!kryoRig || !T.GLTFLoader || !T.DRACOLoader) {
+        console.warn('[SKYO] GLTFLoader/DRACOLoader no disponibles para kryo9.glb');
+        return;
+      }
+      const attemptLoad = (useJsFallback = false) => {
+        const draco = new T.DRACOLoader();
+        draco.setDecoderPath('assets/js/vendor/draco/gltf/');
+        if (useJsFallback) draco.setDecoderConfig({ type: 'js' });
+        const loader = new T.GLTFLoader();
+        loader.setDRACOLoader(draco);
 
-      loader.load(
-        './assets/models/kryo9.glb',
+        loader.load(
+          './assets/models/kryo9.glb',
         gltf => {
           draco.dispose();
           if (!kryoRig) return;
@@ -996,12 +1164,22 @@ function loadKryoModel() {
           wakeLoop();
         },
         undefined,
-        () => {
+        err => {
           draco.dispose();
+          if (!useJsFallback) {
+            console.warn('[SKYO] Reintentando kryo9.glb con decodificador JS:', err);
+            attemptLoad(true);
+            return;
+          }
+          console.warn('[SKYO] Error cargando kryo9.glb:', err);
         }
       );
+      };
+      attemptLoad(false);
     })
-    .catch(() => {});
+    .catch(err => {
+      console.warn('[SKYO] Error inicializando loaders de kryo9.glb:', err);
+    });
 }
 
 function buildKryoShowcase() {
@@ -1400,11 +1578,11 @@ function buildSharedStarfield() {
       Math.sin(b) * Math.sin(a) * radius
     ], i * 3);
 
-    // Estrellas plateadas con sutiles temperaturas azul cielo #7cc8ff y crimson #ff5c7a
+    // Estrellas blancas con sutiles temperaturas azul #5bb8ff y cálidas #ff9e58
     const tint = R();
-    if (tint < 0.22) col.set([0.49, 0.78, 1.0], i * 3);
-    else if (tint > 0.88) col.set([1.0, 0.55, 0.63], i * 3);
-    else col.set([0.90, 0.92, 0.97], i * 3);
+    if (tint < 0.22) col.set([0.45, 0.78, 1.0], i * 3);
+    else if (tint > 0.88) col.set([1.0, 0.72, 0.48], i * 3);
+    else col.set([0.94, 0.96, 1.0], i * 3);
   }
 
   const geom = new T.BufferGeometry();
@@ -1426,11 +1604,11 @@ function buildSharedStarfield() {
 function buildInicioScene() {
   inicioGroup = new T.Group();
   const R = rng(11);
-  const starTex = makeGlowTexture('#ffffff', 'rgba(124, 200, 255, 0.55)');
-  const coolNebTex = makeGlowTexture('rgba(124, 200, 255, 0.22)', 'rgba(30, 90, 140, 0.09)');
-  const warmNebTex = makeGlowTexture('rgba(225, 29, 72, 0.18)', 'rgba(140, 20, 45, 0.06)');
+  const starTex = makeGlowTexture('#ffffff', 'rgba(91, 184, 255, 0.55)');
+  const coolNebTex = makeGlowTexture('rgba(91, 184, 255, 0.22)', 'rgba(30, 82, 185, 0.09)');
+  const warmNebTex = makeGlowTexture('rgba(181, 123, 255, 0.18)', 'rgba(84, 40, 150, 0.06)');
 
-  // Capas de nebulosa infrarroja aditiva muy sutil sobre obsidiana
+  // Capas de nebulosa infrarroja aditiva muy sutil sobre negro absoluto
   inicioNebula = new T.Group();
   const nebSpecs = [
     { tex: coolNebTex, pos: [-38, 16, -24], scale: 128, opacity: 0.45 },
@@ -1456,9 +1634,9 @@ function buildInicioScene() {
     const L = rng(seed);
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
-    const cBlue = new T.Color(0x7cc8ff);
-    const cWhite = new T.Color(0xe6e8ec);
-    const cWarm = new T.Color(0xff5c7a);
+    const cBlue = new T.Color(0x5bb8ff);
+    const cWhite = new T.Color(0xeef3ff);
+    const cWarm = new T.Color(0xff9e58);
     for (let i = 0; i < count; i++) {
       const th = L() * Math.PI * 2;
       const ph = Math.acos(2 * L() - 1);
@@ -1511,7 +1689,7 @@ function buildInicioScene() {
 
       const sp = new T.Sprite(new T.SpriteMaterial({
         map: starTex,
-        color: i === 0 ? 0xe11d48 : 0x7cc8ff,
+        color: i === 0 ? 0xb57bff : 0x5bb8ff,
         blending: T.AdditiveBlending,
         transparent: true,
         depthWrite: false
@@ -1525,7 +1703,7 @@ function buildInicioScene() {
 
     const lineGeom = new T.BufferGeometry().setFromPoints(pts);
     inicioGroup.add(new T.Line(lineGeom, new T.LineBasicMaterial({
-      color: 0x7cc8ff,
+      color: 0x5bb8ff,
       transparent: true,
       opacity: 0.34
     })));
@@ -1545,11 +1723,11 @@ function buildInicioScene() {
   }
   inicioRing.add(new T.Line(
     new T.BufferGeometry().setFromPoints(ringPts),
-    new T.LineBasicMaterial({ color: 0x7cc8ff, transparent: true, opacity: 0.22 })
+    new T.LineBasicMaterial({ color: 0x5bb8ff, transparent: true, opacity: 0.22 })
   ));
   inicioRing.add(new T.Points(
     new T.BufferGeometry().setFromPoints(dotPts),
-    new T.PointsMaterial({ color: 0x7cc8ff, size: 1.5, transparent: true, opacity: 0.5, depthWrite: false })
+    new T.PointsMaterial({ color: 0x5bb8ff, size: 1.5, transparent: true, opacity: 0.5, depthWrite: false })
   ));
   inicioRing.rotation.set(0.32, 0.2, -0.18);
   inicioGroup.add(inicioRing);
@@ -1562,7 +1740,7 @@ function buildInicioScene() {
   }
   inicioOuterRing.add(new T.Line(
     new T.BufferGeometry().setFromPoints(outerPts),
-    new T.LineBasicMaterial({ color: 0xe11d48, transparent: true, opacity: 0.2 })
+    new T.LineBasicMaterial({ color: 0xb57bff, transparent: true, opacity: 0.2 })
   ));
   inicioOuterRing.rotation.set(-0.42, -0.35, 0.24);
   inicioGroup.add(inicioOuterRing);
@@ -1945,22 +2123,41 @@ function buildExplorarScene() {
           const idx = Number(paneMatch[1]);
           child.material.transparent = true;
           child.material.depthWrite = false;
-          child.material.opacity = 0.11;
-          child.material.roughness = 0.72;
-          child.material.metalness = 0.15;
+          child.material.opacity = 0.76;
+          child.material.roughness = 0.04;
+          child.material.metalness = 0.0;
+          child.material.side = T.DoubleSide;
           child.userData = { type: 'fpa-detector', detector: idx, band: idx <= 3 ? 0 : 1 };
           fpaDetectorHitMeshes.push(child);
           paneMap.set(idx, child.material);
         } else if (rimMatch && child.material) {
           const idx = Number(rimMatch[1]);
-          child.material.transparent = true;
+          child.material.transparent = false;
+          child.material.metalness = 1.0;
+          child.material.roughness = 0.18;
           rimMap.set(idx, child.material);
-        } else if (child.material && /ColdPlate|Ceramic|Bezel/i.test(child.name)) {
-          // Oscurecer placa fría y portadores cerámicos para evitar fondo gris lechoso detrás del cielo
-          child.material.color.multiplyScalar(/Ceramic/i.test(child.name) ? 0.18 : 0.38);
-          if (typeof child.material.roughness === 'number') {
-            child.material.roughness = Math.max(child.material.roughness, 0.75);
-          }
+        } else if (child.material && /Gold_WireBonds/i.test(child.name)) {
+          child.material.metalness = 1.0;
+          child.material.roughness = 0.09;
+          child.material.color.setHex(0xffcb5b);
+          child.material.emissive.setHex(0x553500);
+          child.material.emissiveIntensity = 0.38;
+        } else if (child.material && /Cryo_ThermalStraps/i.test(child.name)) {
+          child.material.metalness = 1.0;
+          child.material.roughness = 0.22;
+          child.material.color.setHex(0xf47c4c);
+        } else if (child.material && /Ceramic/i.test(child.name)) {
+          child.material.metalness = 0.0;
+          child.material.roughness = 0.24;
+          child.material.color.setHex(0xd6deeb);
+        } else if (child.material && /ColdPlate|Bezel/i.test(child.name)) {
+          child.material.metalness = 0.95;
+          child.material.roughness = 0.26;
+          child.material.color.setHex(0x0c121e);
+        } else if (child.material && /Vernier/i.test(child.name)) {
+          child.material.color.setHex(0x00e6d2);
+          child.material.emissive.setHex(0x00e6d2);
+          child.material.emissiveIntensity = 1.6;
         }
       });
 
@@ -2154,7 +2351,7 @@ function buildExplorarScene() {
 
     const vecGeom = new T.BufferGeometry().setFromPoints([new T.Vector3(), new T.Vector3()]);
     const vecLine = new T.Line(vecGeom, new T.LineBasicMaterial({
-      color: 0xe11d48,
+      color: 0xb57bff,
       transparent: true,
       opacity: 0.92
     }));
@@ -2194,6 +2391,51 @@ function buildExplorarScene() {
   selectRing = makeLockedReticle(0x5bb8ff, 5.8, true);
   hoverRing = makeLockedReticle(0xffffff, 4.9, false);
   explorarGroup.add(selectRing, hoverRing);
+
+  // 7. Eclipse Solar Cósmico reflejado en la Bóveda Celeste (continuidad visual con #inicio)
+  bovedaEclipseGroup = new T.Group();
+  bovedaEclipseGroup.name = 'BovedaEclipseAnchor';
+  bovedaEclipseGroup.position.set(48, 32, -95);
+  bovedaEclipseGroup.scale.setScalar(4.6);
+
+  const bovedaMoonGeom = new T.SphereGeometry(1.0, 32, 24);
+  const bovedaMoonMat = new T.MeshStandardMaterial({
+    color: 0x050814,
+    roughness: 0.92,
+    metalness: 0.05
+  });
+  const bovedaMoon = new T.Mesh(bovedaMoonGeom, bovedaMoonMat);
+  bovedaEclipseGroup.add(bovedaMoon);
+
+  const bovedaCoronaMat = new T.SpriteMaterial({
+    map: makeSolarCoronaTexture(),
+    transparent: true,
+    opacity: 0.92,
+    blending: T.AdditiveBlending,
+    depthWrite: false
+  });
+  bovedaEclipseHalo = new T.Sprite(bovedaCoronaMat);
+  bovedaEclipseHalo.position.set(0, 0, -0.12);
+  bovedaEclipseHalo.scale.set(4.2, 4.2, 1);
+  bovedaEclipseGroup.add(bovedaEclipseHalo);
+
+  const bovedaDiamondMat = new T.SpriteMaterial({
+    map: makeDiamondStarburstTexture(),
+    transparent: true,
+    opacity: 0.95,
+    blending: T.AdditiveBlending,
+    depthWrite: false
+  });
+  bovedaEclipseDiamond = new T.Sprite(bovedaDiamondMat);
+  bovedaEclipseDiamond.position.set(0.66, 0.66, 0.06);
+  bovedaEclipseDiamond.scale.set(1.8, 1.8, 1);
+  bovedaEclipseGroup.add(bovedaEclipseDiamond);
+
+  const bovedaEclipseLight = new T.PointLight(0xb57bff, 0.75, 90);
+  bovedaEclipseLight.position.set(0.8, 0.8, 1.2);
+  bovedaEclipseGroup.add(bovedaEclipseLight);
+
+  explorarGroup.add(bovedaEclipseGroup);
 
   bovedaPolycount = 640 + objEntries.length * 42;
   bovedaModelLoaded = true;
@@ -2251,21 +2493,21 @@ export function syncExplorarVisuals() {
         det.paneMat.emissive.setHex(det.spec.color);
       }
       det.paneMat.opacity = active
-        ? (isDetHovered ? 0.28 : isHighlighted ? 0.24 : 0.20)
-        : (isDetHovered ? 0.10 : 0.02);
+        ? (isDetHovered ? 0.92 : isHighlighted ? 0.85 : 0.76)
+        : (isDetHovered ? 0.40 : 0.20);
       det.paneMat.emissiveIntensity = active
-        ? (isDetHovered ? 0.92 : 0.65)
-        : (isDetHovered ? 0.26 : 0.02);
+        ? (isDetHovered ? 1.35 : 0.75)
+        : (isDetHovered ? 0.25 : 0.04);
     }
     if (det.rimMat) {
       if (det.spec) {
         det.rimMat.color.setHex(det.spec.color);
         det.rimMat.emissive.setHex(det.spec.color);
       }
-      det.rimMat.opacity = active ? 1 : (isDetHovered ? 0.62 : 0.24);
+      det.rimMat.opacity = active ? 1 : (isDetHovered ? 0.82 : 0.45);
       det.rimMat.emissiveIntensity = active
-        ? (isDetHovered ? 2.4 : isHighlighted ? 2.15 : 1.85)
-        : (isDetHovered ? 0.55 : 0.06);
+        ? (isDetHovered ? 2.5 : isHighlighted ? 2.2 : 1.7)
+        : (isDetHovered ? 0.65 : 0.15);
     }
     if (det.labelMat) {
       det.labelMat.opacity = active ? 0.98 : (isDetHovered ? 0.72 : 0.24);
@@ -2326,29 +2568,41 @@ export function syncExplorarVisuals() {
 function buildSistemaScene() {
   sistemaGroup = new T.Group();
 
-  const sunTex = makeGlowTexture('#ffe3e8', 'rgba(225, 29, 72, 0.52)');
+  const sunTex = makeGlowTexture('#fff7d6', 'rgba(255, 138, 42, 0.56)');
+  const ionTex = makeGlowTexture('#ffffff', 'rgba(91, 184, 255, 0.52)');
+  const sunLight = new T.PointLight(0xffe1b0, 3.2, 520, 0.35);
+  const rimSkyLight = new T.DirectionalLight(0x5bb8ff, 0.9);
+  rimSkyLight.position.set(-120, 90, -140);
+  sistemaGroup.add(sunLight, rimSkyLight);
+
   const sunMesh = new T.Mesh(
     new T.SphereGeometry(5, 32, 32),
-    new T.MeshBasicMaterial({ color: 0xff5c7a })
+    new T.MeshBasicMaterial({ color: 0xffc15e })
   );
   const sunSprite = new T.Sprite(new T.SpriteMaterial({
     map: sunTex,
     blending: T.AdditiveBlending,
     depthWrite: false
   }));
-  sunSprite.scale.set(42, 42, 1);
+  sunSprite.scale.set(48, 48, 1);
   sistemaGroup.add(sunMesh, sunSprite);
 
   PLANETAS.forEach((p, idx) => {
     const [name, color, dist, speed, size] = p;
     const mesh = new T.Mesh(
       new T.SphereGeometry(size * 0.9, 24, 24),
-      new T.MeshStandardMaterial({ color, roughness: 0.72 })
+      new T.MeshStandardMaterial({
+        color,
+        emissive: color,
+        emissiveIntensity: 0.22,
+        roughness: 0.54,
+        metalness: 0.14
+      })
     );
     if (name === 'Saturno') {
       const ring = new T.Mesh(
         new T.RingGeometry(3.4, 5.6, 48),
-        new T.MeshBasicMaterial({ color: 0xe3d3a3, side: T.DoubleSide, transparent: true, opacity: 0.65 })
+        new T.MeshBasicMaterial({ color: 0xeedfa8, side: T.DoubleSide, transparent: true, opacity: 0.72 })
       );
       ring.rotation.x = 1.2;
       mesh.add(ring);
@@ -2363,7 +2617,7 @@ function buildSistemaScene() {
     }
     sistemaGroup.add(new T.Line(
       new T.BufferGeometry().setFromPoints(orbitPts),
-      new T.LineBasicMaterial({ color: 0x3c4a5c, transparent: true, opacity: 0.55 })
+      new T.LineBasicMaterial({ color: 0x4b6ba8, transparent: true, opacity: 0.58 })
     ));
   });
 
@@ -2377,7 +2631,7 @@ function buildSistemaScene() {
   }
   const beltGeom = new T.BufferGeometry();
   beltGeom.setAttribute('position', new T.BufferAttribute(beltPos, 3));
-  beltPoints = new T.Points(beltGeom, new T.PointsMaterial({ size: 1.05, color: 0xc2b097 }));
+  beltPoints = new T.Points(beltGeom, new T.PointsMaterial({ size: 1.2, color: 0xd8c8b0, transparent: true, opacity: 0.85 }));
   sistemaGroup.add(beltPoints);
 
   // Órbita Kepleriana y cometa
@@ -2392,21 +2646,28 @@ function buildSistemaScene() {
   }
   cometGrp.add(new T.Line(
     new T.BufferGeometry().setFromPoints(cometPath),
-    new T.LineBasicMaterial({ color: 0x7cc8ff, transparent: true, opacity: 0.42 })
+    new T.LineBasicMaterial({ color: 0x5bb8ff, transparent: true, opacity: 0.54 })
   ));
 
-  cometHead = new T.Mesh(new T.SphereGeometry(1.3, 16, 16), new T.MeshBasicMaterial({ color: 0xe6e8ec }));
+  cometHead = new T.Mesh(new T.SphereGeometry(1.35, 16, 16), new T.MeshBasicMaterial({ color: 0xe6f7ff }));
   cometGrp.add(cometHead);
 
   const tailPos = new Float32Array(150);
   const tailCol = new Float32Array(150);
   for (let i = 0; i < 50; i++) {
     const f = 1 - i / 50;
-    tailCol.set([0.36 * f, 0.72 * f, 1.0 * f], i * 3);
+    tailCol.set([0.38 * f, 0.78 * f, 1.0 * f], i * 3);
   }
   cometTail = new T.Points(
     new T.BufferGeometry(),
-    new T.PointsMaterial({ size: 2.3, vertexColors: true, transparent: true, blending: T.AdditiveBlending, depthWrite: false })
+    new T.PointsMaterial({
+      size: 4.2,
+      map: ionTex,
+      vertexColors: true,
+      transparent: true,
+      blending: T.AdditiveBlending,
+      depthWrite: false
+    })
   );
   cometTail.geometry.setAttribute('position', new T.BufferAttribute(tailPos, 3));
   cometTail.geometry.setAttribute('color', new T.BufferAttribute(tailCol, 3));
@@ -2421,22 +2682,30 @@ function buildSistemaScene() {
    ========================================================================== */
 function buildFasesScene() {
   fasesGroup = new T.Group();
-  const glowTex = makeGlowTexture('#ffffff', 'rgba(124, 200, 255, 0.65)');
+  const glowTex = makeGlowTexture('#ffffff', 'rgba(91, 184, 255, 0.65)');
 
   // Núcleo central: Esfera celeste HEALPix + Tierra/Observatorio oscuro
+  const fasesCoreLight = new T.PointLight(0x5bb8ff, 1.65, 220);
+  fasesGroup.add(fasesCoreLight);
+
   const earthCore = new T.Mesh(
     new T.SphereGeometry(14, 28, 28),
-    new T.MeshStandardMaterial({ color: 0x0d0e12, emissive: 0x0a1a26, roughness: 0.55 })
+    new T.MeshStandardMaterial({ color: 0x0e1d35, emissive: 0x0b2444, emissiveIntensity: 0.72, roughness: 0.45 })
   );
   fasesGroup.add(earthCore);
 
   fasesCore = new T.Mesh(
     new T.IcosahedronGeometry(23, 2),
-    new T.MeshBasicMaterial({ color: 0x7cc8ff, wireframe: true, transparent: true, opacity: 0.25 })
+    new T.MeshBasicMaterial({ color: 0x5bb8ff, wireframe: true, transparent: true, opacity: 0.42 })
   );
-  fasesGroup.add(fasesCore);
+  const eqRing = new T.Mesh(
+    new T.RingGeometry(25.2, 25.55, 96),
+    new T.MeshBasicMaterial({ color: 0x5bb8ff, side: T.DoubleSide, transparent: true, opacity: 0.36 })
+  );
+  eqRing.rotation.x = Math.PI * 0.5;
+  fasesGroup.add(fasesCore, eqRing);
 
-  // Doble cono de barrido infrarrojo SPHEREx (IR Corto azul cielo + IR Largo crimson)
+  // Doble cono de barrido infrarrojo SPHEREx (IR Corto azul + IR Largo naranja)
   fasesCones = new T.Group();
   const mkCone = (color, rotZ) => {
     const geom = new T.ConeGeometry(22, 68, 24, 1, true);
@@ -2450,7 +2719,7 @@ function buildFasesScene() {
     mesh.rotation.z = rotZ;
     return mesh;
   };
-  fasesCones.add(mkCone(0x7cc8ff, Math.PI / 2.2), mkCone(0xe11d48, -Math.PI / 2.2));
+  fasesCones.add(mkCone(0x5bb8ff, Math.PI / 2.2), mkCone(0xb57bff, -Math.PI / 2.2));
   fasesGroup.add(fasesCones);
 
   // 7 Nodos de Fase (0..6) a lo largo de una hélice orbital interactiva
@@ -2462,7 +2731,7 @@ function buildFasesScene() {
     const pos = new T.Vector3(Math.cos(a) * rad, y, Math.sin(a) * rad);
     curvePts.push(pos);
 
-    const toneColor = phase.tone === 'ac2' ? 0xe11d48 : 0x7cc8ff;
+    const toneColor = phase.tone === 'ac2' ? 0xb57bff : (phase.tone === 'ok' ? 0x4ade80 : 0x5bb8ff);
 
     const mesh = new T.Mesh(
       new T.SphereGeometry(3.1, 20, 20),
@@ -2493,7 +2762,7 @@ function buildFasesScene() {
   phaseCurve = new T.CatmullRomCurve3(curvePts, true);
   const tubeGeom = new T.BufferGeometry().setFromPoints(phaseCurve.getPoints(140));
   fasesGroup.add(new T.Line(tubeGeom, new T.LineBasicMaterial({
-    color: 0x7cc8ff,
+    color: 0x5bb8ff,
     transparent: true,
     opacity: 0.55
   })));
@@ -2501,7 +2770,7 @@ function buildFasesScene() {
   // Pulso viajero a lo largo del pipeline
   phaseSignal = new T.Sprite(new T.SpriteMaterial({
     map: glowTex,
-    color: 0xe11d48,
+    color: 0xb57bff,
     blending: T.AdditiveBlending,
     transparent: true,
     depthWrite: false
@@ -2518,8 +2787,11 @@ export function syncFasesVisuals() {
   if (!isInitialized) return;
   phaseNodes.forEach((n, idx) => {
     const active = idx === fasesState.activeIdx;
-    n.mesh.scale.setScalar(active ? 1.55 : 0.95);
-    n.halo.scale.set(active ? 22 : 12, active ? 22 : 12, 1);
+    n.mesh.scale.setScalar(active ? 1.65 : 0.96);
+    if (n.mesh.material) {
+      n.mesh.material.emissiveIntensity = active ? 1.35 : 0.55;
+    }
+    n.halo.scale.set(active ? 26 : 14, active ? 26 : 14, 1);
   });
 }
 
@@ -2719,7 +2991,8 @@ export function getEclipsePortalState() {
     visible: Boolean(eclipseRig && eclipseRig.visible),
     hasModel: Boolean(eclipseModelPivot),
     clipsCount: eclipseModelPivot?.userData?.clips?.length || 0,
-    mixerTime: eclipseMixer ? Number(eclipseMixer.time.toFixed(3)) : 0
+    mixerTime: eclipseMixer ? Number(eclipseMixer.time.toFixed(3)) : 0,
+    hasBovedaEclipse: Boolean(bovedaEclipseGroup)
   };
 }
 
@@ -3149,6 +3422,14 @@ function renderLoop(now = performance.now()) {
       if (bovedaAstrolabe) {
         bovedaAstrolabe.rotation.z += 0.0018 * frameScale;
       }
+      if (bovedaEclipseDiamond) {
+        const dPulse = 1.8 + 0.16 * Math.sin(simTime * 3.4);
+        bovedaEclipseDiamond.scale.set(dPulse, dPulse, 1);
+      }
+      if (bovedaEclipseHalo) {
+        const hPulse = 4.2 + 0.22 * Math.sin(simTime * 1.5);
+        bovedaEclipseHalo.scale.set(hPulse, hPulse, 1);
+      }
       for (let i = 0; i < objEntries.length; i++) {
         const entry = objEntries[i];
         if (entry.model3D && entry.data[1] === 'Asteroide' && entry.holder.visible) {
@@ -3334,12 +3615,12 @@ export async function initCosmos3D(initialRoute = 'inicio') {
       title: 'No se pudo iniciar el lienzo 3D',
       detail: 'WebGL no está activo o falló la carga del motor local. Puedes reintentar o usar el Laboratorio FITS.',
       actionLabel: 'Reintentar 3D',
-      onAction: async () => {
+      onAction: () => {
         clearState(stateHost);
-        try { await initCosmos3D(activeRoute); } catch { /* El intento fallido ya muestra su estado recuperable. */ }
+        initCosmos3D(activeRoute);
       }
     });
-    throw new Error('No se pudo cargar la vista 3D', { cause: err });
+    return;
   }
 
   clearState(stateHost);
