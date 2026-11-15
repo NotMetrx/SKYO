@@ -40,6 +40,11 @@ export const GUIA_SPHEREX = {
     label: '¿Por qué SPX-26?',
     clip: 'Found_PlanetX',
     text: 'Si un objeto se desplaza entre épocas pero no aparece en JPL Small-Body DB, lo marcamos como «Candidato». Un hipotético Planeta X se movería muy lento; antes de afirmar un hallazgo hay que validar PSF, residuos WCS y más épocas.'
+  },
+  neois: {
+    label: 'Equipo Neois',
+    clip: 'Wave_Hello',
+    text: 'El Grupo Neois (Edwin Lizana, Valentín García, Aron Ayala y Jhoao Lopez) creó SKYO para NASA Space Apps 2026, abriendo la exploración de datos de SPHEREx al público.'
   }
 };
 
@@ -352,4 +357,71 @@ export const rng = seed => () => {
   let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
   t = t + Math.imul(t ^ (t >>> 7), 61 | t) ^ t;
   return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
+
+export const EQUIPO_NEOIS = [
+  {
+    name: 'Edwin Lizana',
+    role: 'Estudiante · Neois',
+    initials: 'EL',
+    bio: 'Investigación astronómica y desarrollo computacional en SKYO.',
+    contact: 'Grupo Neois · NASA Space Apps 2026'
+  },
+  {
+    name: 'Valentín García',
+    role: 'Estudiante · Neois',
+    initials: 'VG',
+    bio: 'Modelado y simulación de sistemas celestes y análisis espectral.',
+    contact: 'Grupo Neois · NASA Space Apps 2026'
+  },
+  {
+    name: 'Aron Ayala',
+    role: 'Estudiante · Neois',
+    initials: 'AA',
+    bio: 'Arquitectura de software interactivo y procesamiento de datos astronómicos.',
+    contact: 'aronemilioayalalopez11@gmail.com',
+    github: 'https://github.com/aronemilio'
+  },
+  {
+    name: 'Jhoao Lopez',
+    role: 'Estudiante · Neois',
+    initials: 'JL',
+    bio: 'Diseño de experiencia interactiva y divulgación científica del cosmos.',
+    contact: 'Grupo Neois · NASA Space Apps 2026'
+  }
+];
+
+export const RESUMEN_TRABAJO = [
+  {
+    badge: '3D · VISUAL',
+    title: 'Bóveda Celeste 3D',
+    desc: 'Domo HEALPix con astrolabio, rotación de asteroides SPX-26 y cometas con física orbital en Three.js.'
+  },
+  {
+    badge: 'PBR · BLENDER',
+    title: 'Plano Focal Infrarrojo (FPA)',
+    desc: 'Calibración física PBR con 19 materiales espaciales y 6 detectores LVF D1–D6 (0.75 a 5.01 µm).'
+  },
+  {
+    badge: 'CIENCIA · FITS',
+    title: 'Laboratorio FITS Local-First',
+    desc: 'Pipeline en navegador con WCS TAN-SIP, máscaras FLAGS, reproyección y detección de candidatos.'
+  },
+  {
+    badge: 'CINEMÁTICA · WEBGL',
+    title: 'Eclipse Solar y Transición Warp',
+    desc: 'Corona solar pulsante procedural, destello diamante en el limbo y salto orbital hacia la Bóveda.'
+  },
+  {
+    badge: 'IA · ASISTENTE',
+    title: 'Copiloto KRYO-9',
+    desc: 'Asistente orbital con síntesis de voz, personalización de avatar y guía científica contextual.'
+  }
+];
+
+export const MISION_SPHEREX = {
+  tag: '✦ GRUPO NEOIS · NASA SPACE APPS 2026',
+  title: 'Llevar la exploración espacial a todas las personas',
+  summary: 'Con SKYO queremos que el universo deje de ser un lugar lejano: una plataforma interactiva que muestra el cosmos en luz infrarroja mediante datos del telescopio espacial SPHEREx para que cualquier persona o estudiante pueda explorar galaxias, asteroides y estrellas sin barreras.',
+  spherexInfo: 'SPHEREx (Spectro-Photometer for the History of the Universe, Epoch of Reionization and Ices Explorer) es un telescopio espacial de la NASA diseñado para cartografiar todo el cielo en 102 bandas infrarrojas (0.75 a 5.01 µm), revelando el origen del universo y la presencia de agua y hielos interestelares.'
 };

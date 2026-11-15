@@ -3,7 +3,7 @@
  * Filosofía Ponytail: Cero polling, C-states con Page Visibility API y código conciso.
  */
 
-import { MSG, GUIA_SPHEREX } from './data.js';
+import { MSG, GUIA_SPHEREX, EQUIPO_NEOIS } from './data.js';
 import { initCosmos3D, setCosmosRoute, setCosmosVisible, triggerWarpZoom, setKryoDockHandler } from './cosmos3d.js';
 import { startExplorar, pauseExplorarBlink } from './explorar.js';
 import { startSistema3D } from './sistema3d.js';
@@ -193,6 +193,19 @@ function navigate() {
   document.body.dataset.dir = dir;
   document.body.dataset.route = hash;
   currentRoute = hash;
+  const ROUTE_TITLES = {
+    inicio: 'SKYO · Explora el cosmos con SPHEREx',
+    explorar: 'SKYO · Explorar · SPHEREx',
+    '3d': 'SKYO · Sistema Solar 3D',
+    fases: 'SKYO · Fases & Misión Neois'
+  };
+  if (ROUTE_TITLES[currentRoute]) {
+    document.title = ROUTE_TITLES[currentRoute];
+  }
+  const inicioEl = document.getElementById('inicio');
+  if (currentRoute === 'inicio' && inicioEl) {
+    inicioEl.scrollTop = 0;
+  }
   clearTimeout(leaveTimer);
 
   document.querySelectorAll('.sec').forEach(section => {
@@ -284,6 +297,10 @@ setKryoDockHandler(() => {
 function launchFromInicio() {
   if (currentRoute !== 'inicio' || isWarping) return;
   unlockAudio();
+  const inicioEl = document.getElementById('inicio');
+  if (inicioEl && inicioEl.scrollTop > 0) {
+    inicioEl.scrollTop = 0;
+  }
   const promptText = document.getElementById('hero-prompt-text');
   if (window.__skyReducedMotion) {
     triggerWarpZoom();
@@ -334,11 +351,111 @@ document.addEventListener('visibilitychange', () => {
   setCosmosVisible(!document.hidden);
 });
 
+function initInicioShowcase() {
+  const inicioEl = document.getElementById('inicio');
+  if (!inicioEl) return;
+
+  const neoisGrid = document.getElementById('inicio-neois-grid');
+  if (neoisGrid && !neoisGrid.children.length) {
+    const frag = document.createDocumentFragment();
+    EQUIPO_NEOIS.forEach(member => {
+      const card = document.createElement('article');
+      card.className = 'inicio-card neois-card rv';
+
+      const head = document.createElement('div');
+      head.className = 'neois-card-head';
+
+      const av = document.createElement('div');
+      av.className = 'neois-av';
+      av.textContent = member.initials;
+
+      const meta = document.createElement('div');
+      const nameEl = document.createElement('h3');
+      nameEl.textContent = member.name;
+      const roleEl = document.createElement('span');
+      roleEl.className = 'neois-role';
+      roleEl.textContent = member.role;
+      meta.append(nameEl, roleEl);
+
+      head.append(av, meta);
+
+      const bioEl = document.createElement('p');
+      bioEl.textContent = member.bio;
+
+      card.append(head, bioEl);
+      frag.appendChild(card);
+    });
+    neoisGrid.appendChild(frag);
+  }
+
+  const revealEls = [...inicioEl.querySelectorAll('.rv')];
+  if (window.__skyReducedMotion || !('IntersectionObserver' in window)) {
+    revealEls.forEach(el => el.classList.add('rv-on'));
+  } else {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('rv-on');
+        io.unobserve(entry.target);
+      });
+    }, { root: inicioEl, threshold: 0.02, rootMargin: '0px 0px -24px 0px' });
+    revealEls.forEach(el => io.observe(el));
+
+    // Garante de revelado ante saltos programáticos o instantáneos de scroll
+    const syncVisibleReveals = () => {
+      const vh = inicioEl.clientHeight || window.innerHeight;
+      let pending = 0;
+      for (const el of revealEls) {
+        if (el.classList.contains('rv-on')) continue;
+        const rect = el.getBoundingClientRect();
+        if (rect.top < vh && rect.bottom > 0) {
+          el.classList.add('rv-on');
+          io.unobserve(el);
+        } else {
+          pending += 1;
+        }
+      }
+      if (pending === 0) inicioEl.removeEventListener('scroll', syncVisibleReveals);
+    };
+    inicioEl.addEventListener('scroll', syncVisibleReveals, { passive: true });
+    requestAnimationFrame(syncVisibleReveals);
+  }
+
+  const scrollBehavior = window.__skyReducedMotion ? 'auto' : 'smooth';
+  document.getElementById('hero-scroll-cue')?.addEventListener('click', () => {
+    document.getElementById('sec-spherex')?.scrollIntoView({ behavior: scrollBehavior, block: 'start' });
+  });
+
+  inicioEl.querySelectorAll('.inicio-card[data-goto]').forEach(card => {
+    card.addEventListener('click', () => {
+      const target = card.dataset.goto;
+      if (!target) return;
+      if (target === 'inicio-top') {
+        inicioEl.scrollTo({ top: 0, behavior: scrollBehavior });
+        return;
+      }
+      if (target === 'explorar') {
+        launchFromInicio();
+        return;
+      }
+      unlockAudio();
+      inicioEl.scrollTop = 0;
+      window.location.hash = `#${target}`;
+    });
+  });
+
+  document.getElementById('mission-launch-cta')?.addEventListener('click', launchFromInicio);
+  document.getElementById('footer-lab-link')?.addEventListener('click', () => {
+    window.location.href = './lab.html';
+  });
+}
+
 // 6. Inicialización inmediata
 function initApp() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
   }
+  initInicioShowcase();
   navigate();
   initCosmos3D(currentRoute);
 

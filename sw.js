@@ -2,7 +2,7 @@
  * SKYO Service Worker — PWA offline shell.
  * Caché estricto solo para assets locales de la aplicación y muestras FITS de demostración.
  */
-const VERSION = 'skyo-v2.3.7';
+const VERSION = 'skyo-v2.3.9';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -46,6 +46,10 @@ const ASSETS_TO_CACHE = [
   './assets/img/hera.webp',
   './assets/img/logo.jpg',
   './assets/img/icon.svg',
+  './assets/img/favicon.svg',
+  './assets/img/favicon-32x32.png',
+  './assets/img/favicon-192x192.png',
+  './assets/img/apple-touch-icon.png',
   './assets/fonts/SpaceGrotesk-Light.otf',
   './assets/fonts/SpaceGrotesk-Regular.otf',
   './assets/fonts/SpaceGrotesk-Medium.otf',

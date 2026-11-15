@@ -1,6 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
- <rect width="128" height="128" rx="26" fill="#080d1b"/>
- <circle cx="64" cy="64" r="35" stroke="#8de8fa" stroke-width="9" fill="#13263b"/>
- <circle cx="76" cy="59" r="29" fill="#080d1b"/>
- <circle cx="34" cy="38" r="3" fill="#f4bc74"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="skyoCoronaGrad" x1="15%" y1="85%" x2="85%" y2="15%">
+      <stop offset="0%" stop-color="#b57bff" stop-opacity="0.45"/>
+      <stop offset="50%" stop-color="#5bb8ff" stop-opacity="0.9"/>
+      <stop offset="88%" stop-color="#eaf2ff" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="1"/>
+    </linearGradient>
+    <radialGradient id="skyoFlare" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="35%" stop-color="#5bb8ff" stop-opacity="0.75"/>
+      <stop offset="70%" stop-color="#b57bff" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="32" cy="32" r="30" fill="#000000" stroke="#101a2e" stroke-width="1.2"/>
+  <circle cx="32" cy="32" r="20.5" fill="none" stroke="url(#skyoCoronaGrad)" stroke-width="5.5" opacity="0.4"/>
+  <circle cx="32" cy="32" r="20" fill="none" stroke="url(#skyoCoronaGrad)" stroke-width="2.8"/>
+  <circle cx="32" cy="32" r="17.5" fill="#000000"/>
+  <circle cx="46.5" cy="17.5" r="8" fill="url(#skyoFlare)"/>
+  <path d="M46.5 10 L47.7 16.3 L54 17.5 L47.7 18.7 L46.5 25 L45.3 18.7 L39 17.5 L45.3 16.3 Z" fill="#ffffff"/>
+  <circle cx="46.5" cy="17.5" r="1.5" fill="#ffffff"/>
 </svg>
