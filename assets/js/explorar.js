@@ -456,23 +456,24 @@ function renderCandidateCollection(filter = collectionFilter) {
 
   filtered.forEach(o => {
     const originalIdx = OBJ.indexOf(o);
-    const card = document.createElement('article');
-    card.className = 'col-card';
     const isCand = o[7] === 'Candidato';
+    const card = document.createElement('article');
+    card.className = isCand ? 'col-card is-cand' : 'col-card';
+    const numTag = String(originalIdx + 1).padStart(2, '0');
 
     card.innerHTML = `
       <div class="col-card-head">
         <div>
+          <span class="col-tag">// ${numTag} · ${o[1]}</span>
           <h4>${o[0]}</h4>
-          <span class="col-type-tag">${o[1]}</span>
         </div>
         <span class="tg ${isCand ? 'cand' : 'st'}">${o[7]}</span>
       </div>
       <p class="col-desc-text">${o[5]}</p>
       <div class="col-meta-row">
-        <span><b>Desplazamiento:</b> ${o[8] > 0 ? (o[8] * 120).toFixed(1) + '" / época' : 'Deriva nula (ICRS fijo)'}</span>
-        <span><b>Dato:</b> ${o[6]}</span>
-        <span><b>Procedencia:</b> ${getObjectProvenance(o).label}</span>
+        <span><b>DERIVA</b> ${o[8] > 0 ? (o[8] * 120).toFixed(1) + '" / época' : 'Nula (ICRS fijo)'}</span>
+        <span><b>DATO</b> ${o[6]}</span>
+        <span><b>ORIGEN</b> ${getObjectProvenance(o).label}</span>
       </div>
       <div class="col-actions-row">
         <button type="button" class="btn subtle-sm btn-focus-boveda" data-idx="${originalIdx}">◎ Ver en Plano Focal</button>

@@ -32,6 +32,20 @@ const server = http.createServer(async (req, res) => {
   try {
     const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     let pathname = decodeURIComponent(parsedUrl.pathname);
+
+    // Redirección amigable SPA si el usuario entra sin almohadilla '#'
+    const spaRoutes = {
+      '/inicio': '/#inicio',
+      '/explorar': '/#explorar',
+      '/3d': '/#3d',
+      '/fases': '/#fases',
+      '/lab': '/lab.html'
+    };
+    if (spaRoutes[pathname]) {
+      res.writeHead(302, { Location: spaRoutes[pathname] }).end();
+      return;
+    }
+
     if (pathname === '/' || pathname === '') pathname = '/index.html';
 
     const fullPath = path.resolve(root, '.' + pathname);

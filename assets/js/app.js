@@ -304,12 +304,12 @@ function launchFromInicio() {
   triggerWarpZoom();
   setTimeout(() => {
     window.location.hash = '#explorar';
-  }, 180);
+  }, 140);
   setTimeout(() => {
     document.body.classList.remove('warp-zoom');
     if (promptText) promptText.textContent = 'Iniciar secuencia de despegue';
     isWarping = false;
-  }, 440);
+  }, 360);
 }
 
 window.addEventListener('keydown', e => {

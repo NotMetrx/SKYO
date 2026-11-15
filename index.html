@@ -124,7 +124,7 @@
             </button>
             <button type="button" class="view-tab" data-view="lab" role="tab" aria-selected="false">
               <span>🔬 Laboratorio FITS</span>
-              <span class="view-tag-new">WASM 2.0</span>
+              <span class="view-tag-new">LOCAL</span>
             </button>
             <button type="button" class="view-tab" data-view="coleccion" role="tab" aria-selected="false">
               <span>📑 Colección y Candidatos</span>
@@ -234,6 +234,7 @@
       </div>
 
       <aside id="bitacora-panel" class="bitacora-panel" aria-label="Bitácora de candidato (Modo Aula)" aria-hidden="true" inert>
+        <div class="hud-label panel-craft-tag" aria-hidden="true"><span class="hud-idx">// 03</span> CANDIDATE LOGBOOK · LOCAL</div>
         <div class="bit-head">
           <div>
             <b>Bitácora de Candidato</b>
@@ -253,7 +254,7 @@
         <div class="lab-card-pane">
           <div class="lab-pane-head">
             <div>
-              <div class="mini-label">01 / PROCESAMIENTO CIENTÍFICO LOCAL · SIN VPS</div>
+              <div class="hud-label subview-craft-label"><span class="hud-idx">// 01</span> PROCESAMIENTO CIENTÍFICO LOCAL · SIN VPS</div>
               <h3>Laboratorio FITS de Doble Época</h3>
               <p class="lab-desc">Inspecciona datos infrarrojos SPHEREx, aplica máscaras FLAGS, alinea por WCS TAN-SIP y encuentra fuentes que cambiaron de posición o brillo.</p>
             </div>
@@ -270,7 +271,7 @@
 
           <div class="lab-step-box">
             <div class="lab-box-head">
-              <h4>01. Ingesta de observaciones FITS</h4>
+              <h4><span class="step-idx">01</span> Ingesta de observaciones FITS</h4>
               <button type="button" id="lab-load-demo" class="btn btn-demo">✦ Cargar simulación SPHEREx (Épocas A y B)</button>
             </div>
             <p class="lab-help">Selecciona dos archivos FITS (recortes SPHEREx L2 de hasta 512×512 px) con extensiones IMAGE, FLAGS y VARIANCE.</p>
@@ -298,7 +299,7 @@
 
           <div class="lab-step-box">
             <div class="lab-box-head">
-              <h4>02. Visor espectral de observaciones</h4>
+              <h4><span class="step-idx">02</span> Visor espectral de observaciones</h4>
             </div>
             <div class="lab-dual-viewer">
               <article class="lab-canvas-card">
@@ -328,7 +329,7 @@
 
           <div class="lab-step-box">
             <div class="lab-box-head">
-              <h4>03. Sustracción diferencial y detección de cambio</h4>
+              <h4><span class="step-idx">03</span> Sustracción diferencial y detección de cambio</h4>
               <button type="button" id="lab-compare-btn" class="btn pr" disabled>
                 <span>Comparar épocas (WCS / Worker)</span>
                 <span>↗</span>
@@ -362,7 +363,7 @@
         <div class="col-card-pane">
           <div class="col-pane-head">
             <div>
-              <div class="mini-label">02 / CATÁLOGO CIENTÍFICO DE OBJETOS</div>
+              <div class="hud-label subview-craft-label"><span class="hud-idx">// 02</span> CATÁLOGO CIENTÍFICO · ICRS / JPL</div>
               <h3>Colección de Candidatos y Detecciones</h3>
               <p class="col-desc">Cruce entre observaciones infrarrojas de SPHEREx y el oráculo astrométrico de JPL Small-Body Database.</p>
             </div>

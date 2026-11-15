@@ -329,13 +329,11 @@ body.anim-ready .sec.on {
 
 /* Transición Zoom (Enter / Espacio desde #inicio hacia #explorar) */
 body.warp-zoom #inicio .eclipse-wordmark .letters {
-  transform: scale(2.8) translate3d(-18%, 0, 0);
+  transform: scale(2.4) translate3d(-16%, 0, 0);
   opacity: 0;
-  filter: blur(8px);
   transition:
-    transform 0.44s cubic-bezier(0.32, 0, 0.2, 1),
-    opacity 0.3s ease-out,
-    filter 0.3s ease-out;
+    transform 0.36s cubic-bezier(0.32, 0, 0.2, 1),
+    opacity 0.28s ease-out;
 }
 
 body.warp-zoom #inicio .hero-meta-top,
@@ -783,6 +781,24 @@ body.warp-zoom #inicio .agent-badge-dot {
   vertical-align: middle;
 }
 
+.eclipse-o::before {
+  content: '';
+  position: absolute;
+  inset: -14%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 66% 34%, rgba(255, 255, 255, 0.42), rgba(91, 184, 255, 0.28) 32%, rgba(181, 123, 255, 0.18) 54%, transparent 72%);
+  filter: blur(10px);
+  pointer-events: none;
+  opacity: 0.9;
+  animation: coronaBreath 7.5s ease-in-out infinite;
+}
+
+body.warp-zoom #inicio .eclipse-wordmark .eclipse-o::before {
+  transform: scale(2.6);
+  opacity: 0;
+  transition: transform 0.44s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.36s ease-out;
+}
+
 .diamond-eclipse {
   width: 100%;
   height: 100%;
@@ -1155,7 +1171,7 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
 
 .tbar::before,
 .info-panel::before {
-  background: linear-gradient(90deg, rgba(91, 184, 255, 0.72), rgba(181, 123, 255, 0.58), transparent);
+  background: linear-gradient(90deg, rgba(91, 184, 255, 0.72), rgba(91, 184, 255, 0.16), transparent);
 }
 
 .tbar {
@@ -2829,8 +2845,8 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
 }
 
 .view-tab {
-  background: none;
-  border: none;
+  background: transparent;
+  border: 1px solid transparent;
   color: var(--mut);
   font: inherit;
   font-size: 12px;
@@ -2842,7 +2858,7 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  transition: all 0.2s var(--ease-panel);
+  transition: color 0.2s var(--ease-panel), background-color 0.2s var(--ease-panel), border-color 0.2s var(--ease-panel);
 }
 
 .view-tab:hover {
@@ -2851,18 +2867,20 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
 }
 
 .view-tab.on {
-  background: var(--ac);
-  color: #000000;
-  box-shadow: 0 2px 10px rgba(91, 184, 255, 0.35);
+  background: rgba(11, 24, 46, 0.94);
+  color: #eef3ff;
+  border-color: rgba(91, 184, 255, 0.72);
+  box-shadow: inset 0 1px 0 rgba(91, 184, 255, 0.28), 0 4px 14px rgba(0, 0, 0, 0.45);
 }
 
 .view-tag-new {
+  font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.5px;
-  background: rgba(181, 123, 255, 0.22);
-  color: #c9a2ff;
-  border: 1px solid rgba(181, 123, 255, 0.55);
+  background: rgba(91, 184, 255, 0.14);
+  color: #8fd2ff;
+  border: 1px solid rgba(91, 184, 255, 0.42);
   border-radius: 4px;
   padding: 1px 5px;
   line-height: 1.2;
@@ -2892,6 +2910,7 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
   pointer-events: auto;
   z-index: 8;
   padding-right: 6px;
+  padding-bottom: 155px;
   contain: layout style;
 }
 
@@ -2914,13 +2933,37 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
   position: relative;
   max-width: 1140px;
   margin: 0 auto 30px;
-  background: var(--gl-strong);
-  border: 1px solid var(--ln);
-  border-radius: 22px;
+  background: linear-gradient(155deg, rgba(10, 17, 34, 0.91) 0%, rgba(5, 9, 18, 0.95) 100%);
+  border: 1px solid rgba(91, 184, 255, 0.22);
+  border-radius: 20px;
   padding: 24px;
-  box-shadow: var(--gl-glass-shadow);
-  backdrop-filter: var(--gl-filter);
-  -webkit-backdrop-filter: var(--gl-filter);
+  box-shadow: var(--gl-inset), 0 24px 68px rgba(0, 0, 0, 0.74);
+  backdrop-filter: blur(26px) saturate(165%);
+  -webkit-backdrop-filter: blur(26px) saturate(165%);
+}
+
+.subview-craft-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.step-idx {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 20px;
+  padding: 0 6px;
+  margin-right: 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(91, 184, 255, 0.28);
+  background: rgba(91, 184, 255, 0.1);
+  color: var(--ac);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
 }
 
 .lab-pane-head, .col-pane-head {
@@ -3371,6 +3414,23 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
   gap: 10px;
 }
 
+.col-card.is-cand {
+  border-color: rgba(181, 123, 255, 0.42);
+}
+
+.col-card .col-tag {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ac);
+  margin-bottom: 4px;
+}
+
+.col-card.is-cand .col-tag {
+  color: var(--ac2);
+}
+
 .col-card-head h4 {
   margin: 0;
   font-size: 16px;
@@ -3394,16 +3454,21 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
 .col-meta-row {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   font-size: 11px;
   color: var(--mut);
-  background: rgba(0, 0, 0, 0.25);
-  border-radius: 8px;
-  padding: 8px 10px;
+  background: rgba(3, 7, 15, 0.56);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 9px 11px;
 }
 
 .col-meta-row b {
-  color: #d8e5f8;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  color: rgba(164, 178, 202, 0.85);
+  margin-right: 6px;
 }
 
 .col-actions-row {

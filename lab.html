@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#080d1b">
+  <meta name="theme-color" content="#000000">
   <meta name="description" content="Laboratorio local de imágenes FITS de SKYO, preparado para SPHEREx.">
   <link rel="stylesheet" href="./assets/css/lab.css">
   <link rel="stylesheet" href="./assets/css/states.css">
@@ -11,47 +11,134 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="index.html" aria-label="SKYO LAB — Volver al inicio">SKY<span class="eclipse">O</span><span class="brand-tag">LAB</span></a>
+    <a class="brand" href="index.html" aria-label="SKYO LAB — Volver al inicio">
+      <span>SKY</span><span class="eclipse" aria-hidden="true"></span><span class="brand-tag">LAB</span>
+    </a>
     <span class="topbar-right">
-      <a href="index.html" class="button subtle topbar-back">← Portal SKYO</a>
-      <span class="tiny-dot"></span> CÓMPUTO LOCAL · SIN VPS
+      <a href="index.html" class="button subtle topbar-back"><span class="nav-idx" aria-hidden="true">00</span> Portal SKYO</a>
+      <span class="status-chip"><span class="tiny-dot"></span><span>TAN-SIP · LOCAL-FIRST</span></span>
     </span>
   </header>
+
   <main id="inicio">
     <section class="hero" aria-label="Presentación">
-      <div class="eyebrow">EXPERIMENTAL SCIENCE WORKSPACE <span class="orbit-tick"></span> NASA SPACE APPS 2026</div>
+      <div class="hud-label" aria-hidden="true">
+        <span class="hud-idx">// 01</span>
+        <span>SPHEREx FITS COMPARATOR</span>
+        <span class="hud-sep">·</span>
+        <span>LOCAL WORKSPACE</span>
+      </div>
+      <div class="eyebrow"><span class="kicker-dot"></span> NASA SPACE APPS 2026 · PLANET X &amp; SPHEREx</div>
       <h1>Una nueva manera de <em>leer el universo.</em></h1>
-      <p>Importa observaciones FITS, examina datos infrarrojos y compara dos épocas: el procesamiento ocurre en tu propio navegador.</p>
-      <div class="hero-tags"><span>FITS</span><span>TAN–SIP WCS</span><span>Rust / WASM</span><span>Privacidad local</span></div>
+      <p>Importa observaciones FITS, examina datos infrarrojos y compara dos épocas: todo el procesamiento astrométrico ocurre en tu propio navegador sin subir archivos a la nube.</p>
+      <div class="hero-craft-grid" aria-hidden="true">
+        <div class="craft-card">
+          <span class="craft-idx">01</span>
+          <div class="craft-body">
+            <span class="craft-label">FORMATO</span>
+            <span class="craft-val">MEF FITS · IMAGE / FLAGS</span>
+          </div>
+        </div>
+        <div class="craft-card">
+          <span class="craft-idx">02</span>
+          <div class="craft-body">
+            <span class="craft-label">ASTROMETRÍA</span>
+            <span class="craft-val">WCS TAN-SIP · Subpíxel</span>
+          </div>
+        </div>
+        <div class="craft-card">
+          <span class="craft-idx">03</span>
+          <div class="craft-body">
+            <span class="craft-label">CÓMPUTO</span>
+            <span class="craft-val">Local-First · OPFS / Worker</span>
+          </div>
+        </div>
+        <div class="craft-card">
+          <span class="craft-idx">04</span>
+          <div class="craft-body">
+            <span class="craft-label">PRIVACIDAD</span>
+            <span class="craft-val">Zero-Cloud · Navegador</span>
+          </div>
+        </div>
+      </div>
     </section>
-    <div class="warning" role="note"><span class="warning-icon">◎</span><span><strong>Prototipo científico exploratorio.</strong> No utiliza imágenes reales de NASA precargadas. La demo genera datos sintéticos señalados como tales. Para conclusiones científicas faltan validaciones espectrales por píxel y de PSF.</span></div>
+
+    <div class="warning" role="note">
+      <span class="warning-icon">◎</span>
+      <span><strong>Prototipo científico exploratorio.</strong> No utiliza imágenes reales de NASA precargadas. La demo genera datos sintéticos señalados como tales. Para conclusiones científicas faltan validaciones espectrales por píxel, ePSF y cruce con JPL Small-Body Database.</span>
+    </div>
+
     <section class="workspace" id="explorar">
       <div class="section-head">
-        <div><div class="mini-label">01 / DATOS</div><h2>Observaciones</h2></div>
-        <button id="load-demo" class="button subtle" type="button">✦ Cargar simulación</button>
+        <div>
+          <div class="hud-label"><span class="hud-idx">// 01</span> INGESTA DE DATOS FITS</div>
+          <h2>Observaciones</h2>
+        </div>
+        <button id="load-demo" class="button demo-btn" type="button">✦ Cargar simulación</button>
       </div>
       <p class="help">Selecciona dos archivos FITS con extensiones IMAGE y, de ser posible, VARIANCE y FLAGS. Para archivos reales de SPHEREx, utiliza recortes pequeños (máximo 512 × 512 para comparar).</p>
       <div class="upload-grid">
-        <label class="upload" for="file-a"><span class="slot-label">ÉPOCA A</span><span class="upload-icon">↥</span><strong>Primera observación</strong><small id="name-a">Seleccionar .fits</small><input id="file-a" type="file" accept=".fits,.fit,.fts"/></label>
-        <label class="upload" for="file-b"><span class="slot-label">ÉPOCA B</span><span class="upload-icon">↥</span><strong>Segunda observación</strong><small id="name-b">Seleccionar .fits</small><input id="file-b" type="file" accept=".fits,.fit,.fts"/></label>
+        <label class="upload" for="file-a"><span class="slot-label">ÉPOCA A (T1)</span><span class="upload-icon">↥</span><strong>Primera observación</strong><small id="name-a">Seleccionar .fits</small><input id="file-a" type="file" accept=".fits,.fit,.fts"/></label>
+        <label class="upload" for="file-b"><span class="slot-label">ÉPOCA B (T2)</span><span class="upload-icon">↥</span><strong>Segunda observación</strong><small id="name-b">Seleccionar .fits</small><input id="file-b" type="file" accept=".fits,.fit,.fts"/></label>
       </div>
-      <div class="local-buttons"><button type="button" class="button subtle" id="save-local" disabled>Guardar ambas en este dispositivo</button><button type="button" class="button subtle" id="load-local">Recuperar desde OPFS</button></div>
-      <div class="meta-input"><label for="manifest">Metadatos científicos opcionales (.json, generados con el curador de IRSA)</label><input id="manifest" type="file" accept=".json,application/json"/><span id="manifest-state">Ningún manifiesto cargado</span></div>
+      <div class="local-buttons">
+        <button type="button" class="button subtle" id="save-local" disabled>Guardar ambas en este dispositivo</button>
+        <button type="button" class="button subtle" id="load-local">Recuperar desde OPFS</button>
+      </div>
+      <div class="meta-input">
+        <label for="manifest">Metadatos científicos opcionales (.json, generados con el curador de IRSA)</label>
+        <input id="manifest" type="file" accept=".json,application/json"/>
+        <span id="manifest-state">Ningún manifiesto cargado</span>
+      </div>
     </section>
+
     <section class="workspace" id="visor">
-      <div class="section-head"><div><div class="mini-label">02 / VISOR</div><h2>Un mismo cielo, dos instantes.</h2></div><span class="status" id="kernel-status">Inicializando motor</span></div>
+      <div class="section-head">
+        <div>
+          <div class="hud-label"><span class="hud-idx">// 02</span> VISOR ESPECTRAL</div>
+          <h2>Un mismo cielo, dos instantes.</h2>
+        </div>
+        <span class="status" id="kernel-status">Inicializando motor</span>
+      </div>
       <div class="image-grid">
-        <article class="image-card"><div class="image-title"><span>OBSERVACIÓN A</span><span class="indicator">RAW / VISUALIZACIÓN</span></div><div class="canvas-wrapper"><canvas id="canvas-a" aria-label="Imagen FITS de la observación A" width="320" height="240"></canvas><div class="canvas-hint is-state" id="hint-a"></div></div><div class="image-meta" id="meta-a">Sin archivo cargado</div></article>
-        <article class="image-card"><div class="image-title"><span>OBSERVACIÓN B</span><span class="indicator">RAW / VISUALIZACIÓN</span></div><div class="canvas-wrapper"><canvas id="canvas-b" aria-label="Imagen FITS de la observación B" width="320" height="240"></canvas><div class="canvas-hint is-state" id="hint-b"></div></div><div class="image-meta" id="meta-b">Sin archivo cargado</div></article>
+        <article class="image-card">
+          <div class="image-title"><span>OBSERVACIÓN A</span><span class="indicator">RAW / FITS</span></div>
+          <div class="canvas-wrapper"><canvas id="canvas-a" aria-label="Imagen FITS de la observación A" width="320" height="240"></canvas><div class="canvas-hint is-state" id="hint-a"></div></div>
+          <div class="image-meta" id="meta-a">Sin archivo cargado</div>
+        </article>
+        <article class="image-card">
+          <div class="image-title"><span>OBSERVACIÓN B</span><span class="indicator">RAW / FITS</span></div>
+          <div class="canvas-wrapper"><canvas id="canvas-b" aria-label="Imagen FITS de la observación B" width="320" height="240"></canvas><div class="canvas-hint is-state" id="hint-b"></div></div>
+          <div class="image-meta" id="meta-b">Sin archivo cargado</div>
+        </article>
       </div>
     </section>
+
     <section class="workspace bottom" id="analisis">
-      <div class="section-head"><div><div class="mini-label">03 / ANÁLISIS</div><h2>Encontrar lo que cambia.</h2></div><button id="compare" class="button main-button" type="button" disabled>Comparar épocas <span>↗</span></button></div>
-      <div class="analysis-grid"><div class="difference-preview"><canvas id="canvas-difference" aria-label="Diferencia reproyectada" width="320" height="240"></canvas><div class="difference-overlay diff-placeholder is-state" id="difference-placeholder"></div></div><div class="results"><div class="results-title">INFORME DEL MOTOR</div><dl id="result-table"><div><dt>Estado</dt><dd>Sin análisis</dd></div><div><dt>Calidad</dt><dd>No evaluada</dd></div><div><dt>Comparación espectral</dt><dd>No evaluada</dd></div></dl><button id="save-report" class="button report-button" type="button" disabled>Descargar informe JSON ↓</button></div></div>
+      <div class="section-head">
+        <div>
+          <div class="hud-label"><span class="hud-idx">// 03</span> SUSTRACCIÓN WCS TAN-SIP</div>
+          <h2>Encontrar lo que cambia.</h2>
+        </div>
+        <button id="compare" class="button main-button" type="button" disabled>Comparar épocas <span>↗</span></button>
+      </div>
+      <div class="analysis-grid">
+        <div class="difference-preview"><canvas id="canvas-difference" aria-label="Diferencia reproyectada" width="320" height="240"></canvas><div class="difference-overlay diff-placeholder is-state" id="difference-placeholder"></div></div>
+        <div class="results">
+          <div class="results-title">// INFORME DEL MOTOR CIENTÍFICO</div>
+          <dl id="result-table">
+            <div><dt>Estado</dt><dd>Sin análisis</dd></div>
+            <div><dt>Calidad</dt><dd>No evaluada</dd></div>
+            <div><dt>Comparación espectral</dt><dd>No evaluada</dd></div>
+          </dl>
+          <button id="save-report" class="button report-button" type="button" disabled>Descargar informe JSON ↓</button>
+        </div>
+      </div>
       <div class="footnote">Las máscaras no eliminan información del FITS original. La diferencia emplea un fondo estimado; las posibles fuentes móviles requieren confirmación independiente. <a href="https://irsa.ipac.caltech.edu/Missions/spherex.html" target="_blank" rel="noopener noreferrer">Documentación NASA/IPAC ↗</a></div>
     </section>
   </main>
-  <footer>SKYO LAB · PROTOTIPO DE INTEGRACIÓN · NO ES UNA HERRAMIENTA OFICIAL DE NASA/IPAC</footer>
+
+  <footer>SKYO LAB · PROTOTIPO EXPLORATORIO LOCAL-FIRST · NO ES UNA HERRAMIENTA OFICIAL DE NASA/IPAC</footer>
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
   <script type="module" src="./assets/js/science/lab.js"></script>
 </body>

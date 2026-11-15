@@ -21,3 +21,6 @@ __pycache__/
 *.jpg
 !assets/img/**
 !docs/demo_procesamiento_sintetico.png
+
+# páginas guardadas localmente por el navegador
+SKYO*.html
