@@ -2,7 +2,7 @@
  * SKYO Service Worker — PWA offline shell.
  * Caché estricto solo para assets locales de la aplicación y muestras FITS de demostración.
  */
-const VERSION = 'skyo-v2.3.3';
+const VERSION = 'skyo-v2.3.5';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -13,6 +13,7 @@ const ASSETS_TO_CACHE = [
   './assets/css/lab.css',
   './assets/css/states.css',
   './assets/js/app.js',
+  './assets/js/sound.js',
   './assets/js/ui-states.js',
   './assets/js/cosmos3d.js',
   './assets/js/glb-lite.js',
@@ -80,7 +81,11 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
-  if (event.request.method !== 'GET' || url.origin !== self.location.origin) return;
+  if (
+    event.request.method !== 'GET' ||
+    url.origin !== self.location.origin ||
+    url.pathname.includes('/wasm/pkg/')
+  ) return;
 
   event.respondWith(
     caches.match(event.request, { ignoreVary: true }).then(cached => {

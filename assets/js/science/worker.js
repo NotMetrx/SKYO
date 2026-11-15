@@ -4,6 +4,7 @@ import {imageRgba} from './render.js';
 import {initKernel,processDifference} from './wasm-bridge.js';
 
 const images={A:null,B:null};
+const latestLoadJob={A:0,B:0};
 let kernel='Cargando...';
 initKernel().then(k=>{kernel=k;self.postMessage({event:'kernel',kernel});});
 
@@ -20,15 +21,16 @@ function summary(side,fit,quality) {
 }
 
 self.onmessage=async({data})=>{
-  const {event,side}=data;
+  const {event,side,jobId}=data;
   try{
     if(event==='load'){
+      if(side&&jobId!==undefined)latestLoadJob[side]=jobId;
       const fit=parseFits(data.buffer);
       fit.meta=data.meta || {};
       images[side]=fit;
       const quality=buildQualityMask(fit);
       const rgba=imageRgba(fit.image,fit.width,fit.height,quality.mask);
-      self.postMessage({event:'loaded',summary:summary(side,fit,quality),rgba},[rgba.buffer]);
+      self.postMessage({event:'loaded',jobId,summary:summary(side,fit,quality),rgba},[rgba.buffer]);
     }
     if(event==='compare'){
       if(!images.A||!images.B)throw new Error('Carga ambos recortes antes de comparar');
@@ -36,15 +38,16 @@ self.onmessage=async({data})=>{
       const packed=processDifference(result.a,result.b,result.va,result.vb,result.valid,result.offset);
       const diff=packed.subarray(0,result.a.length);
       const rgba=imageRgba(diff,result.width,result.height,result.valid,{kind:'difference'});
-      self.postMessage({event:'compared',rgba,info:{
+      self.postMessage({event:'compared',jobId,rgba,info:{
         width:result.width,height:result.height,kernel,
         offset:result.offset,validCount:result.validCount,
         spectral:result.spectral,
         flagsReady:result.flagsReady,
         varianceReady:result.varianceReady,
         status:result.status,
-        notes:result.notes
+        notes:result.notes,
+        snapshot:{jobA:latestLoadJob.A,jobB:latestLoadJob.B}
       }},[rgba.buffer]);
     }
-  }catch(err){self.postMessage({event:'error',message:String(err.message||err)});}
+  }catch(err){self.postMessage({event:'error',eventType:event,side,jobId,message:String(err.message||err)});}
 };

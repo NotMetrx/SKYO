@@ -3,12 +3,13 @@
  * Filosofía Ponytail: Cero polling, C-states con Page Visibility API y código conciso.
  */
 
-import { MSG } from './data.js';
-import { initCosmos3D, setCosmosRoute, setCosmosVisible, triggerWarpZoom } from './cosmos3d.js';
+import { MSG, GUIA_SPHEREX } from './data.js';
+import { initCosmos3D, setCosmosRoute, setCosmosVisible, triggerWarpZoom, setKryoDockHandler } from './cosmos3d.js';
 import { startExplorar, pauseExplorarBlink } from './explorar.js';
 import { startSistema3D } from './sistema3d.js';
 import { startFases } from './fases.js';
-import { initHera3d } from './hera3d.js';
+import { initHera3d, triggerKryoGesture } from './hera3d.js';
+import { unlockAudio, isSoundMuted, setSoundMuted, playUiCue } from './sound.js';
 
 // 1. Detección reactiva de preferencia de movimiento reducido
 const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -18,12 +19,19 @@ motionQuery.addEventListener('change', e => {
   window.__skyReducedMotion = e.matches;
 });
 
-// 2. Asistente de IA H.E.R.A 7 (solo fuera de #inicio y sin botones de acceso rápido)
+// 2. Estado de ruta y asistente KRYO-9 / H.E.R.A 7 (oculta en #inicio)
+const ROUTES = ['inicio', 'explorar', '3d', 'fases'];
+let currentRoute = '';
+let leaveTimer = 0;
+
 const topHeader = document.querySelector('.top');
 const heraAside = document.getElementById('hera');
 const heraBubble = document.getElementById('hb');
+const heraTitle = document.getElementById('hb-title');
 const heraText = document.getElementById('ht');
 const heraAvatarBtn = document.getElementById('ha');
+const heraChipsEl = document.getElementById('hera-chips');
+const soundToggleBtn = document.getElementById('sound-toggle-btn');
 
 let heraTimer = 0;
 
@@ -41,13 +49,55 @@ export const hera = {
   },
   toggle() {
     if (currentRoute === 'inicio' || !heraBubble) return;
+    unlockAudio();
     if (heraBubble.classList.contains('show')) {
       heraBubble.classList.remove('show');
     } else {
-      this.say(MSG[currentRoute] || MSG.explorar, true);
+      playUiCue('guide');
+      triggerKryoGesture('Wave_Hello', { duration: 1.4, timeScale: 1.15 });
+      if (heraText && heraText.textContent.trim()) {
+        heraBubble.classList.add('show');
+        clearTimeout(heraTimer);
+      } else {
+        this.say(MSG[currentRoute] || MSG.explorar, true);
+      }
     }
   }
 };
+
+function syncSoundToggleUI() {
+  if (!soundToggleBtn) return;
+  const muted = isSoundMuted();
+  soundToggleBtn.textContent = muted ? '🔇' : '🔊';
+  soundToggleBtn.setAttribute('aria-pressed', String(muted));
+  soundToggleBtn.setAttribute('aria-label', muted ? 'Activar sonido espacial' : 'Silenciar sonido espacial');
+}
+
+syncSoundToggleUI();
+if (soundToggleBtn) {
+  soundToggleBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    const nextMuted = !isSoundMuted();
+    setSoundMuted(nextMuted);
+    syncSoundToggleUI();
+    if (!nextMuted) playUiCue('guide');
+  });
+}
+
+if (heraChipsEl) {
+  heraChipsEl.addEventListener('click', e => {
+    const btn = e.target.closest('button[data-topic]');
+    if (!btn) return;
+    const topicKey = btn.dataset.topic;
+    const topic = GUIA_SPHEREX[topicKey];
+    if (!topic) return;
+    unlockAudio();
+    heraChipsEl.querySelectorAll('.hera-chip').forEach(b => b.classList.toggle('on', b === btn));
+    playUiCue(topicKey === 'planeta_x' ? 'candidate' : 'guide');
+    triggerKryoGesture(topic.clip, { duration: 1.55, timeScale: 1.1 });
+    hera.say(topic.text, true);
+  });
+}
 
 const heraImg = document.getElementById('hera-img');
 const heraPlaceholder = document.getElementById('hera-placeholder');
@@ -55,18 +105,23 @@ const avatarInput = document.getElementById('avatar-input');
 const avatarResetBtn = document.getElementById('avatar-reset-btn');
 
 function setCustomAvatar(dataUrl) {
+  const canMountNow = currentRoute
+    ? currentRoute !== 'inicio'
+    : ['explorar', '3d', 'fases'].includes(window.location.hash.slice(1));
   if (dataUrl && heraImg) {
     heraImg.src = dataUrl;
     heraImg.hidden = false;
     if (heraPlaceholder) heraPlaceholder.hidden = true;
     if (avatarResetBtn) avatarResetBtn.hidden = false;
+    if (heraTitle) heraTitle.textContent = 'Asistente H.E.R.A 7';
     initHera3d(heraAvatarBtn);
   } else if (heraImg) {
     heraImg.src = '';
     heraImg.hidden = true;
     if (heraPlaceholder) heraPlaceholder.hidden = false;
     if (avatarResetBtn) avatarResetBtn.hidden = true;
-    initHera3d(heraAvatarBtn);
+    if (heraTitle) heraTitle.textContent = 'KRYO-9 · Guía SPHEREx';
+    if (canMountNow) initHera3d(heraAvatarBtn);
   }
 }
 
@@ -108,7 +163,7 @@ if (avatarResetBtn) {
     e.stopPropagation();
     localStorage.removeItem('skyo_custom_avatar');
     setCustomAvatar(null);
-    hera.say('Avatar restablecido. Pulsa «Subir avatar» para asignar tu imagen preferida.');
+    hera.say('KRYO-9 3D activado nuevamente como tu guía SPHEREx.');
   });
 }
 
@@ -117,10 +172,6 @@ if (heraAvatarBtn) {
 }
 
 // 3. Router Reactivo por Hash con Transiciones GPU + Vuelo de Cámara 3D
-const ROUTES = ['inicio', 'explorar', '3d', 'fases'];
-let currentRoute = '';
-let leaveTimer = 0;
-
 function clearLeavingSections(exceptId) {
   document.querySelectorAll('.sec.leaving').forEach(el => {
     if (el.id !== exceptId) el.classList.remove('leaving');
@@ -185,7 +236,9 @@ function navigate() {
     heraAside.setAttribute('aria-hidden', String(isInicio));
   }
 
-  // En móvil (<= 780px) o en #inicio ocultamos el globo de H.E.R.A 7
+  heraChipsEl?.querySelectorAll('.hera-chip').forEach(b => b.classList.remove('on'));
+
+  // En móvil (<= 780px) o en #inicio ocultamos el globo de H.E.R.A 7 / KRYO-9
   if (isInicio) {
     clearTimeout(heraTimer);
     if (heraBubble) heraBubble.classList.remove('show');
@@ -193,11 +246,15 @@ function navigate() {
     hera.say(MSG[currentRoute]);
   } else if (heraBubble && window.innerWidth <= 780) {
     heraBubble.classList.remove('show');
+    if (heraText) heraText.textContent = MSG[currentRoute] || '';
   }
 
   // Cambiar escena dentro del motor unificado Three.js
   if (prevRoute === 'explorar' && currentRoute !== 'explorar') {
     pauseExplorarBlink();
+  }
+  if (prevRoute === 'inicio' && !isInicio) {
+    initHera3d(heraAvatarBtn);
   }
   setCosmosRoute(currentRoute);
 
@@ -205,24 +262,44 @@ function navigate() {
     startExplorar(hera.say.bind(hera));
   } else if (currentRoute === '3d') {
     startSistema3D();
+    triggerKryoGesture('Scan_Sky', { duration: 1.35 });
   } else if (currentRoute === 'fases') {
     startFases(hera.say.bind(hera));
+    triggerKryoGesture('Scan_Sky', { duration: 1.35 });
   }
 }
 
 window.addEventListener('hashchange', navigate);
 
-// Despegue de KRYO-9 y transición hiperespacial desde #inicio hacia #explorar
+// Despegue de KRYO-9 con audio espacial y acoplamiento dentro del módulo guía en #explorar
 let isWarping = false;
+let dockRevealFallback = 0;
+
+setKryoDockHandler(() => {
+  clearTimeout(dockRevealFallback);
+  if (heraAvatarBtn) heraAvatarBtn.classList.remove('is-kryo-incoming');
+  triggerKryoGesture('Wave_Hello', { duration: 1.5, timeScale: 1.15 });
+});
+
 function launchFromInicio() {
   if (currentRoute !== 'inicio' || isWarping) return;
+  unlockAudio();
   const promptText = document.getElementById('hero-prompt-text');
   if (window.__skyReducedMotion) {
+    triggerWarpZoom();
     window.location.hash = '#explorar';
     return;
   }
   isWarping = true;
   if (promptText) promptText.textContent = 'Secuencia de despegue en curso…';
+  if (heraAvatarBtn && !localStorage.getItem('skyo_custom_avatar')) {
+    heraAvatarBtn.classList.add('is-kryo-incoming');
+    initHera3d(heraAvatarBtn);
+    clearTimeout(dockRevealFallback);
+    dockRevealFallback = setTimeout(() => {
+      heraAvatarBtn?.classList.remove('is-kryo-incoming');
+    }, 1750);
+  }
   document.body.classList.add('warp-zoom');
   triggerWarpZoom();
   setTimeout(() => {

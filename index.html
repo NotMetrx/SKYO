@@ -391,14 +391,21 @@
     </section>
   </main>
 
-  <!-- Asistente de IA (oculta en #inicio, avatar libre y personalizable) -->
+  <!-- Asistente KRYO-9 / H.E.R.A 7 (oculta en #inicio; KRYO-9 en 3D por defecto con opción de avatar personalizado) -->
   <aside id="hera">
-    <div id="hb" role="dialog" aria-label="Mensaje de asistente" aria-live="polite" aria-atomic="true">
-      <b id="hb-title">Asistente</b>
+    <div id="hb" role="dialog" aria-label="Guía SPHEREx de KRYO-9" aria-live="polite" aria-atomic="true">
+      <b id="hb-title">KRYO-9 · Guía SPHEREx</b>
       <p id="ht"></p>
+      <div class="hera-chips" id="hera-chips" role="group" aria-label="Temas rápidos sobre SPHEREx">
+        <button type="button" class="hera-chip" data-topic="que_es">¿Qué es SPHEREx?</button>
+        <button type="button" class="hera-chip" data-topic="bandas">2 bandas IR</button>
+        <button type="button" class="hera-chip" data-topic="blink">Blink (6 meses)</button>
+        <button type="button" class="hera-chip" data-topic="planeta_x">¿Por qué SPX-26?</button>
+      </div>
     </div>
     <div class="hera-avatar-wrap">
-      <button type="button" id="ha" aria-label="Abrir asistente de IA">
+      <button type="button" id="sound-toggle-btn" class="hera-sound-btn" title="Silenciar o activar audio espacial" aria-label="Silenciar sonido espacial" aria-pressed="false">🔊</button>
+      <button type="button" id="ha" aria-label="Abrir guía KRYO-9 de SPHEREx">
         <img id="hera-img" alt="Avatar del asistente" hidden width="96" height="96">
         <span id="hera-placeholder" class="hera-placeholder" aria-hidden="true">
           <svg viewBox="0 0 48 48" width="38" height="38" fill="none">
@@ -408,14 +415,14 @@
             <circle cx="35" cy="13" r="5" fill="#b57bff"/>
             <path d="M35 10.5 V15.5 M32.5 13 H37.5" stroke="#000000" stroke-width="1.6" stroke-linecap="round"/>
           </svg>
-          <span class="slot-text">Subir avatar</span>
+          <span class="slot-text">KRYO-9</span>
         </span>
       </button>
-      <label class="hera-upload-badge" for="avatar-input" title="Subir o cambiar avatar">
+      <label class="hera-upload-badge" for="avatar-input" title="Subir o cambiar avatar personalizado">
         <span class="badge-icon">↥</span>
         <input type="file" id="avatar-input" accept="image/*" aria-label="Subir avatar personalizado">
       </label>
-      <button type="button" id="avatar-reset-btn" class="hera-reset-btn" title="Quitar avatar personalizado" hidden aria-label="Quitar avatar personalizado">✕</button>
+      <button type="button" id="avatar-reset-btn" class="hera-reset-btn" title="Volver a KRYO-9 3D" hidden aria-label="Volver a KRYO-9 3D">✕</button>
     </div>
   </aside>
 

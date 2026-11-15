@@ -6,6 +6,8 @@
 
 import { saveLocal, loadLocal } from './science/opfs.js';
 import { renderState, clearState, showToast } from './ui-states.js';
+import { playUiCue } from './sound.js';
+import { triggerKryoGesture } from './hera3d.js';
 
 let worker = null;
 const loaded = { A: false, B: false };
@@ -309,7 +311,10 @@ export function initScienceLab(callbacks = {}) {
           const cmpBtn = document.getElementById('lab-compare-btn');
           if (cmpBtn) cmpBtn.disabled = false;
 
+          playUiCue('mission');
+          triggerKryoGesture('Found_PlanetX', { duration: 1.65 });
           notify('¡Sustracción diferencial completada! Revisa el informe y el mapa de cambio.', 'ok');
+          onHeraNotify?.('Sustracción diferencial TAN-SIP completada localmente: los residuos positivos muestran posibles cambios entre épocas, sujetos a verificación de PSF y JPL.');
         }
       });
     } catch (e) {

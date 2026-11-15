@@ -14,10 +14,33 @@ export const SUBS = [
 ];
 
 export const MSG = {
-  inicio: 'Soy H.E.R.A 7, tu guía. Arrastra el cielo 3D o toca «Comenzar a explorar» para despegar.',
-  explorar: 'Exploras el Plano Focal Infrarrojo SPHEREx (proyección TAN-SIP). Prueba «Parpadear épocas» o inicia una misión de aula.',
-  '3d': 'Arrastra para girar el sistema solar. Usa la rueda o ＋ y － para acercarte al cometa o al cinturón.',
-  fases: 'Gira la constelación 3D o elige una fase (0–6) para ver cómo SPHEREx, JPL y la caché HEALPix detectan cambios.'
+  inicio: 'Soy KRYO-9, tu copiloto en SKYO. Pulsa Enter o tócame para despegar hacia la Bóveda SPHEREx.',
+  explorar: '¡En órbita ICRS! Estás viendo el Plano Focal de SPHEREx: toca una píldora abajo para que te explique sus bandas infrarrojas o cómo detectar candidatos.',
+  '3d': 'Arrastra para girar el sistema solar. Usa la rueda o ＋ y － para comparar dónde orbitan el Cinturón, los cometas y las regiones lejanas.',
+  fases: 'Recorre la constelación 3D o elige una fase (0–6) para ver cómo SPHEREx, WCS TAN-SIP y el cruce con JPL separan candidatos reales.'
+};
+
+export const GUIA_SPHEREX = {
+  que_es: {
+    label: '¿Qué es SPHEREx?',
+    clip: 'Wave_Hello',
+    text: 'SPHEREx es un telescopio espacial de la NASA que fotografía todo el cielo cada 6 meses en 102 longitudes de onda infrarrojas (0.75–5.01 µm). Aquí exploras una ventana de 0.05°×0.05° en coordenadas fijas ICRS.'
+  },
+  bandas: {
+    label: '2 bandas IR',
+    clip: 'Scan_Sky',
+    text: 'Sus filtros variables lineales (LVF) separan dos regímenes: IR Corto (D1–D3, 0.75–2.41 µm) resalta estrellas frías; IR Largo (D4–D6, 2.42–5.01 µm) revela hielos, polvo térmico y colas cometarias.'
+  },
+  blink: {
+    label: 'Blink (6 meses)',
+    clip: 'Scan_Sky',
+    text: 'Al comparar Época 1 frente a Época 4 («Parpadear épocas»), las estrellas lejanas quedan inmóviles como ancla WCS, mientras asteroides y cometas cercanos saltan dibujando su vector de desplazamiento Δθ.'
+  },
+  planeta_x: {
+    label: '¿Por qué SPX-26?',
+    clip: 'Found_PlanetX',
+    text: 'Si un objeto se desplaza entre épocas pero no aparece en JPL Small-Body DB, lo marcamos como «Candidato». Un hipotético Planeta X se movería muy lento; antes de afirmar un hallazgo hay que validar PSF, residuos WCS y más épocas.'
+  }
 };
 
 export const DATOS = [

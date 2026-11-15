@@ -1837,10 +1837,58 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
   box-shadow: var(--gl-inset), 0 0 20px rgba(91, 184, 255, 0.35);
 }
 
+#ha.is-kryo {
+  padding: 0;
+  border-color: rgba(91, 184, 255, 0.58);
+  background: radial-gradient(circle at 50% 35%, rgba(28, 52, 92, 0.45), rgba(6, 10, 20, 0.88));
+  box-shadow: var(--gl-inset), 0 0 26px rgba(91, 184, 255, 0.28), 0 10px 28px rgba(0, 0, 0, 0.55);
+}
+
+#ha.is-kryo .kryo-dock-3d {
+  transition: opacity 0.22s ease-out;
+}
+
+#ha.is-kryo-incoming .kryo-dock-3d {
+  opacity: 0;
+}
+
+.hera-sound-btn {
+  position: absolute;
+  left: -10px;
+  bottom: 2px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--gl-strong);
+  border: 1px solid rgba(91, 184, 255, 0.42);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 3;
+  padding: 0;
+  transition: transform 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.hera-sound-btn:hover {
+  transform: scale(1.1);
+  border-color: var(--ac);
+}
+
+.hera-sound-btn[aria-pressed="true"] {
+  opacity: 0.7;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
 .hera-3d {
   width: 100% !important;
   height: 100% !important;
   display: block;
+  flex: 1 1 auto;
 }
 
 #ha img {
@@ -1852,7 +1900,10 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
   filter: drop-shadow(0 6px 18px rgba(91, 184, 255, 0.35));
 }
 
-#ha img[hidden] {
+#ha img[hidden],
+.hera-placeholder[hidden],
+#ha.is-kryo .hera-placeholder,
+.hera-reset-btn[hidden] {
   display: none !important;
 }
 
@@ -1916,8 +1967,8 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
   position: absolute;
   right: -2px;
   top: 0px;
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: rgba(18, 10, 24, 0.85);
   border: 1px solid var(--err-ln, rgba(255, 138, 168, 0.5));
@@ -1945,14 +1996,15 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
 
 #hb {
   position: relative;
-  max-width: 280px;
-  background: var(--gl-strong);
-  backdrop-filter: var(--gl-filter);
-  -webkit-backdrop-filter: var(--gl-filter);
-  border: 1px solid var(--ln-ac);
-  box-shadow: var(--gl-glass-shadow);
+  z-index: 48;
+  max-width: 312px;
+  background: rgba(6, 11, 22, 0.90);
+  backdrop-filter: blur(22px) saturate(165%);
+  -webkit-backdrop-filter: blur(22px) saturate(165%);
+  border: 1px solid rgba(91, 184, 255, 0.42);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 18px 42px rgba(0, 0, 0, 0.78);
   border-radius: 18px 18px 4px 18px;
-  padding: 12px 14px;
+  padding: 13px 15px;
   font-size: 12.5px;
   line-height: 1.5;
   opacity: 0;
@@ -1989,6 +2041,41 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
   margin: 0;
 }
 
+.hera-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hera-chip {
+  min-height: 26px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(91, 184, 255, 0.32);
+  background: rgba(91, 184, 255, 0.1);
+  color: #dbeeff;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+}
+
+.hera-chip:hover {
+  background: rgba(91, 184, 255, 0.22);
+  border-color: var(--ac);
+}
+
+.hera-chip.on {
+  background: var(--ac);
+  border-color: var(--ac);
+  color: #000000;
+  font-weight: 600;
+}
+
 /* ==========================================================================
    Móvil Primero (<= 780px, alineado a INTERFAZ-Y-UX.md)
    ========================================================================== */
@@ -2021,6 +2108,32 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
   #ha {
     width: 46px;
     height: 46px;
+  }
+
+  .hera-sound-btn {
+    left: -34px;
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+  }
+
+  .hera-sound-btn:hover {
+    transform: translateY(-50%) scale(1.08);
+  }
+
+  .hera-placeholder .slot-text {
+    display: none;
+  }
+
+  .hera-upload-badge {
+    width: 24px;
+    height: 24px;
+    right: -4px;
+    bottom: -2px;
+    font-size: 11px;
   }
 
   #hb {

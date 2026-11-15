@@ -9,6 +9,7 @@
 import { OBJ, PLANETAS, BANDAS, FASES_PROYECTO, FI, rng } from './data.js';
 import { loadGlbGroup } from './glb-lite.js';
 import { renderState, clearState } from './ui-states.js';
+import { startFlightAudio, updateFlightAudio, stopFlightAudio } from './sound.js';
 
 let T = null;
 let canvas = null;
@@ -24,7 +25,6 @@ let emaFrameMs = 16.7;
 let lastPerfAdjustTs = 0;
 
 let isInitialized = false;
-let isLoading = false;
 let isVisible = true;
 let rafId = 0;
 let activeRoute = 'inicio';
@@ -84,6 +84,8 @@ const kryoMats = [];
 let kryoPhase = 'idle'; // 'idle' | 'takeoff' | 'done'
 let kryoWarpT = 0;
 let kryoDidLandingWave = false;
+let kryoDidDock = false;
+let kryoDockHandler = null;
 let kryoOrbitCurve = null;
 let kryoOrbitTrail = null;
 let kryoOrbitTrailPts = [];
@@ -161,26 +163,8 @@ const fasesState = {
 
 function ensureThreeLoaded() {
   if (window.THREE) return Promise.resolve(window.THREE);
-  if (isLoading) {
-    return new Promise(resolve => {
-      const wait = () => (window.THREE ? resolve(window.THREE) : setTimeout(wait, 40));
-      wait();
-    });
-  }
-  isLoading = true;
-  return new Promise((resolve, reject) => {
-    const s = document.createElement('script');
-    s.src = 'assets/js/vendor/three.min.js';
-    s.onload = () => {
-      isLoading = false;
-      resolve(window.THREE);
-    };
-    s.onerror = err => {
-      isLoading = false;
-      reject(err);
-    };
-    document.head.appendChild(s);
-  });
+  return loadClassicScript('assets/js/vendor/three.min.js', () => Boolean(window.THREE))
+    .then(() => window.THREE);
 }
 
 function makeGlowTexture(innerColor, midColor) {
@@ -406,16 +390,28 @@ function updateEclipsePortalFrame(dt) {
 /* ==========================================================================
    0b. Agente 3D KRYO-9 (Studio IBL + Seguimiento + Propulsión + Despegue)
    ========================================================================== */
-function loadClassicScript(src) {
+function loadClassicScript(src, isReady) {
+  if (isReady?.()) return Promise.resolve();
   return new Promise((resolve, reject) => {
-    const existing = [...document.scripts].find(sc => sc.getAttribute('src') === src);
+    const existing = [...document.scripts].find(sc => sc.getAttribute('src') === src || sc.src?.endsWith(src));
     if (existing) {
-      resolve();
+      if (existing.dataset.loaded === '1' || isReady?.()) {
+        resolve();
+        return;
+      }
+      existing.addEventListener('load', () => {
+        existing.dataset.loaded = '1';
+        resolve();
+      }, { once: true });
+      existing.addEventListener('error', reject, { once: true });
       return;
     }
     const s = document.createElement('script');
     s.src = src;
-    s.onload = () => resolve();
+    s.onload = () => {
+      s.dataset.loaded = '1';
+      resolve();
+    };
     s.onerror = err => reject(err);
     document.head.appendChild(s);
   });
@@ -425,9 +421,9 @@ function ensureGltfSupport() {
   if (gltfSupportPromise) return gltfSupportPromise;
   gltfSupportPromise = (async () => {
     await ensureThreeLoaded();
-    if (!T.DRACOLoader) await loadClassicScript('assets/js/vendor/DRACOLoader.js');
-    if (!T.GLTFLoader) await loadClassicScript('assets/js/vendor/GLTFLoader.js');
-    if (!T.RoomEnvironment) await loadClassicScript('assets/js/vendor/RoomEnvironment.js');
+    await loadClassicScript('assets/js/vendor/DRACOLoader.js', () => Boolean(T.DRACOLoader));
+    await loadClassicScript('assets/js/vendor/GLTFLoader.js', () => Boolean(T.GLTFLoader));
+    await loadClassicScript('assets/js/vendor/RoomEnvironment.js', () => Boolean(T.RoomEnvironment));
     if (!inicioEnv && renderer && T.PMREMGenerator && T.RoomEnvironment) {
       try {
         const pmrem = new T.PMREMGenerator(renderer);
@@ -758,18 +754,49 @@ function pushKryoOrbitTrail(worldPos, alphaScale = 1) {
   kryoOrbitTrail.visible = alphaScale > 0.02;
 }
 
-function buildOrbitalCurve(slotNdcX, slotNdcY) {
+function getHeraDockTarget() {
+  const w = window.innerWidth || 1280;
+  const h = window.innerHeight || 720;
+  const haEl = document.getElementById('ha');
+  if (haEl) {
+    const r = haEl.getBoundingClientRect();
+    if (r.width > 12 && r.height > 12) {
+      const cx = r.left + r.width * 0.5;
+      const cy = r.top + r.height * 0.5;
+      return {
+        cx,
+        cy,
+        size: r.width,
+        ndcX: (cx / w) * 2 - 1,
+        ndcY: -((cy / h) * 2 - 1)
+      };
+    }
+  }
+  const isNarrow = w <= 780;
+  const size = isNarrow ? 46 : 96;
+  const cx = w - (isNarrow ? 12 : 20) - size * 0.5;
+  const cy = isNarrow ? 6 + size * 0.5 : h - 20 - size * 0.5;
+  return {
+    cx,
+    cy,
+    size,
+    ndcX: (cx / w) * 2 - 1,
+    ndcY: -((cy / h) * 2 - 1)
+  };
+}
+
+function buildOrbitalCurve(slotNdcX, slotNdcY, dock = getHeraDockTarget()) {
   const isNarrow = (window.innerWidth || 1280) < 780;
   const rightSwing = Math.min(0.74, Math.max(0.28, slotNdcX + (isNarrow ? 0.30 : 0.22)));
   const leftSwing = isNarrow ? -0.40 : -0.44;
   return new T.CatmullRomCurve3([
     new T.Vector3(slotNdcX, slotNdcY, 21.0),
     new T.Vector3(rightSwing, slotNdcY - 0.14, 13.8),
-    new T.Vector3(isNarrow ? 0.12 : 0.16, 0.14, 11.4),
-    new T.Vector3(leftSwing, -0.02, 16.0),
-    new T.Vector3(leftSwing * 0.42, -0.14, 22.8),
-    new T.Vector3(0.03, -0.02, 20.5),
-    new T.Vector3(0.0, 0.0, 19.5)
+    new T.Vector3(isNarrow ? 0.12 : 0.16, 0.14, 11.2),
+    new T.Vector3(leftSwing, -0.02, 15.8),
+    new T.Vector3(leftSwing * 0.42, isNarrow ? 0.18 : -0.18, 22.4),
+    new T.Vector3(dock.ndcX * 0.62, dock.ndcY * 0.62 + (isNarrow ? 0.06 : -0.04), 20.6),
+    new T.Vector3(dock.ndcX, dock.ndcY, 19.6)
   ], false, 'centripetal', 0.45);
 }
 
@@ -1129,11 +1156,23 @@ function updateKryoFrame(dt) {
 
   const worldScreenH = 2 * depth * Math.tan((camera.fov * Math.PI) / 360);
   const fitPx = Math.min(stageH * 0.86, stageW * 0.95);
-  kryoBaseScale = ((fitPx / h) * worldScreenH) * 0.44;
-  const arrivalShrink = kryoPhase === 'takeoff' && progress > 0.86
-    ? 1 - 0.32 * ((progress - 0.86) / 0.14)
-    : 1;
-  kryoRig.scale.setScalar(kryoBaseScale * arrivalShrink);
+  let targetPx = fitPx;
+  if (kryoPhase === 'takeoff') {
+    updateFlightAudio(progress, cruiseSpeed, ndcX);
+    if (progress > 0.70) {
+      const dock = getHeraDockTarget();
+      const kShrink = Math.min(1, (progress - 0.70) / 0.28);
+      const smoothShrink = kShrink * kShrink * (3 - 2 * kShrink);
+      const dockPx = Math.max(40, dock.size * 0.94);
+      targetPx = fitPx + (dockPx - fitPx) * smoothShrink;
+    }
+    if (!kryoDidDock && progress >= 0.85) {
+      kryoDidDock = true;
+      kryoDockHandler?.();
+    }
+  }
+  kryoBaseScale = ((targetPx / h) * worldScreenH) * 0.44;
+  kryoRig.scale.setScalar(kryoBaseScale);
 
   // Micro-gestos reactivos y mezcla de animaciones NLA
   if (!reduced && kryoMixer) {
@@ -1310,6 +1349,11 @@ function updateKryoFrame(dt) {
 
   if (kryoPhase === 'takeoff' && progress >= 1) {
     kryoPhase = 'done';
+    if (!kryoDidDock) {
+      kryoDidDock = true;
+      kryoDockHandler?.();
+    }
+    stopFlightAudio();
     kryoRig.visible = false;
     if (kryoJetL) kryoJetL.visible = false;
     if (kryoJetR) kryoJetR.visible = false;
@@ -2573,6 +2617,10 @@ function stopKryoVisuals() {
   kryoOrbitTrailPts.length = 0;
   clearKryoExhaust();
 }
+export function setKryoDockHandler(fn) {
+  kryoDockHandler = typeof fn === 'function' ? fn : null;
+}
+
 export function triggerWarpZoom() {
   if (!isInitialized) return;
   if (window.__skyReducedMotion) {
@@ -2580,8 +2628,11 @@ export function triggerWarpZoom() {
     kryoPhase = 'done';
     if (eclipseRig) eclipseRig.visible = false;
     stopKryoVisuals();
+    startFlightAudio();
+    kryoDockHandler?.();
     return;
   }
+  startFlightAudio();
   updateEclipseSlotRect();
   updateKryoSlotRect();
   eclipsePhase = 'transition';
@@ -2596,9 +2647,10 @@ export function triggerWarpZoom() {
   kryoPhase = 'takeoff';
   kryoWarpT = 0;
   kryoDidLandingWave = false;
+  kryoDidDock = false;
   kryoOrbitTrailPts.length = 0;
   if (kryoOrbitTrail) kryoOrbitTrail.visible = false;
-  kryoOrbitCurve = buildOrbitalCurve(slotNdcX, slotNdcY);
+  kryoOrbitCurve = buildOrbitalCurve(slotNdcX, slotNdcY, getHeraDockTarget());
   setKryoStatusLabel('KRYO-9 · VUELO ORBITAL A LA BÓVEDA');
   if (kryoRig && kryoModelPivot) {
     kryoRig.visible = true;
@@ -2647,7 +2699,9 @@ export function setCosmosRoute(route) {
     kryoWarpT = 0;
     kryoIdleTimer = 0;
     kryoDidLandingWave = false;
+    kryoDidDock = false;
     kryoOrbitCurve = null;
+    stopFlightAudio();
     Object.assign(kryoFlightRot, { yaw: -0.22, pitch: 0.04, roll: 0 });
     resetKryoMaterials();
     stopKryoVisuals();
@@ -2672,6 +2726,7 @@ export function setCosmosRoute(route) {
     if (prev !== 'inicio' || !isWarpingFromInicio) {
       eclipsePhase = 'done';
       kryoPhase = 'done';
+      stopFlightAudio();
       if (eclipseRig) eclipseRig.visible = false;
       stopKryoVisuals();
       if (scene) scene.environment = null;
@@ -2680,6 +2735,14 @@ export function setCosmosRoute(route) {
     if (prev === 'inicio' && isWarpingFromInicio) {
       camCurr.r = fitR + 18; // entra haciendo zoom hacia la bóveda desde el hiperespacio
       warpBoost = Math.min(warpBoost, 0.2);
+      requestAnimationFrame(() => {
+        if (kryoOrbitCurve && kryoPhase === 'takeoff') {
+          const dock = getHeraDockTarget();
+          const isNarrow = (window.innerWidth || 1280) < 780;
+          kryoOrbitCurve.points[5].set(dock.ndcX * 0.62, dock.ndcY * 0.62 + (isNarrow ? 0.06 : -0.04), 20.6);
+          kryoOrbitCurve.points[6].set(dock.ndcX, dock.ndcY, 19.6);
+        }
+      });
     }
     isWarpingFromInicio = false;
     Object.assign(camGoal, { t: Math.PI / 2, p: 1.54, r: fitR, tx: 0, ty: camGoal.ty, tz: 0 });
@@ -2688,6 +2751,7 @@ export function setCosmosRoute(route) {
     canvas.style.cursor = 'grab';
     eclipsePhase = 'done';
     kryoPhase = 'done';
+    stopFlightAudio();
     if (eclipseRig) eclipseRig.visible = false;
     stopKryoVisuals();
     if (scene) scene.environment = null;
@@ -2696,6 +2760,7 @@ export function setCosmosRoute(route) {
     canvas.style.cursor = 'grab';
     eclipsePhase = 'done';
     kryoPhase = 'done';
+    stopFlightAudio();
     if (eclipseRig) eclipseRig.visible = false;
     stopKryoVisuals();
     if (scene) scene.environment = null;

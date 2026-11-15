@@ -17,6 +17,8 @@ import {
 import { updateExploreState } from './cosmos3d.js';
 import { initScienceLab } from './science-lab-ui.js';
 import { renderState, clearState } from './ui-states.js';
+import { playUiCue } from './sound.js';
+import { triggerKryoGesture } from './hera3d.js';
 
 const STORAGE_KEY = 'skyo_bitacora_v1';
 
@@ -261,10 +263,19 @@ function evaluateMission(loggedNow = false) {
   if (passed) {
     completedMissions.add(m.id);
     renderMissionBar();
+    playUiCue('mission');
+    triggerKryoGesture('Found_PlanetX', { duration: 1.75 });
     if (typeof onHeraSpeak === 'function') {
       onHeraSpeak(m.closure, true);
     }
   }
+}
+
+function evaluateMissionTransition() {
+  const missionId = MISIONES_HERA[missionIndex]?.id;
+  const prevDone = completedMissions.has(missionId);
+  evaluateMission(false);
+  return !prevDone && completedMissions.has(missionId);
 }
 
 function renderBitacora() {
@@ -597,11 +608,19 @@ export function selectObject(index) {
   updateExploreState({ selected: selectedIndex });
   renderQuickObjectRail();
 
-  const prevDone = completedMissions.has(MISIONES_HERA[missionIndex]?.id);
-  evaluateMission(false);
-  const completedNow = !prevDone && completedMissions.has(MISIONES_HERA[missionIndex]?.id);
-  if (!completedNow && typeof onHeraSpeak === 'function') {
-    onHeraSpeak(`${o[0]} (${o[7]}): ${o[5]}`);
+  const completedNow = evaluateMissionTransition();
+  if (!completedNow) {
+    const isCandidate = o[7] === 'Candidato';
+    playUiCue(isCandidate ? 'candidate' : 'select');
+    triggerKryoGesture(isCandidate ? 'Found_PlanetX' : 'Scan_Sky', {
+      duration: isCandidate ? 1.65 : 1.25
+    });
+    if (typeof onHeraSpeak === 'function') {
+      const note = isCandidate
+        ? `${o[0]} (Candidato sin cruce JPL): se desplaza entre pasadas de SPHEREx, pero requiere PSF y validación astrométrica antes de afirmar su naturaleza.`
+        : `${o[0]} (${o[7]}): ${o[5]}`;
+      onHeraSpeak(note);
+    }
   }
 }
 
@@ -772,7 +791,10 @@ function buildExplorarUI() {
       blinkMode = false;
       currentEpoch = Number(b.dataset.ep);
       syncUI();
-      evaluateMission(false);
+      if (!evaluateMissionTransition()) {
+        playUiCue('epoch');
+        triggerKryoGesture('Scan_Sky', { duration: 1.05 });
+      }
     };
   }
 
@@ -789,7 +811,14 @@ function buildExplorarUI() {
       if (!b) return;
       currentBand = Number(b.dataset.ba);
       syncUI();
-      evaluateMission(false);
+      if (!evaluateMissionTransition()) {
+        const bd = BANDAS[currentBand];
+        playUiCue(currentBand === 1 ? 'band_long' : 'band_short');
+        triggerKryoGesture('Scan_Sky', { duration: 1.4 });
+        if (window.innerWidth > 780 && typeof onHeraSpeak === 'function') {
+          onHeraSpeak(`Filtro SPHEREx en ${bd.label} (${bd.range}): ${bd.desc}`);
+        }
+      }
     };
   }
 
@@ -808,7 +837,13 @@ function buildExplorarUI() {
         }
       }
       syncUI();
-      evaluateMission(false);
+      if (!evaluateMissionTransition()) {
+        playUiCue('blink');
+        triggerKryoGesture('Scan_Sky', { duration: 1.4 });
+        if (blinkMode && window.innerWidth > 780 && typeof onHeraSpeak === 'function') {
+          onHeraSpeak('Parpadeo activo (Época 1 ⇄ 4): las estrellas lejanas permanecen quietas como ancla ICRS mientras los cuerpos cercanos saltan.');
+        }
+      }
     };
   }
 
@@ -818,7 +853,10 @@ function buildExplorarUI() {
       currentStage = 2;
       cmpBtn.setAttribute('aria-pressed', String(compareMode));
       syncUI();
-      evaluateMission(false);
+      if (!evaluateMissionTransition()) {
+        playUiCue('epoch');
+        triggerKryoGesture('Scan_Sky', { duration: 1.2 });
+      }
     };
   }
 
