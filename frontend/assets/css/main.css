@@ -4219,3 +4219,272 @@ body[data-explore-view="espectral"] .bitacora-panel {z-index:43;}
   body[data-explore-view="espectral"] .view-tab {flex:0 0 auto;white-space:nowrap;}
   body[data-explore-view="espectral"] .explore-right {position:fixed;top:12px;left:112px;right:90px;justify-content:center;}
 }
+
+/* Panel #nosotros alineado a la paleta oscura universal de SKYO (Obsidian · Chrome · Sky Blue · Violet) */
+@media (min-width: 781px) {
+  body[data-route="nosotros"] #hera {
+    right: 16px;
+    bottom: 12px;
+  }
+
+  body[data-route="nosotros"] #ha {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+#nosotros {
+  --nx-bg: var(--obsidian-2);
+  --nx-card: linear-gradient(160deg, rgba(14, 22, 40, 0.88), rgba(7, 11, 22, 0.94));
+  --nx-line: rgba(154, 176, 207, 0.20);
+  --nx-ac: var(--ac);
+  --nx-ac2: var(--ac2);
+  --nx-fg: var(--fg);
+  --nx-mut: var(--mut);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  pointer-events: auto;
+  color: var(--nx-fg);
+  background:
+    radial-gradient(60% 50% at 86% 10%, rgba(91, 184, 255, 0.12), transparent 65%),
+    radial-gradient(45% 40% at 12% 85%, rgba(181, 123, 255, 0.08), transparent 60%),
+    linear-gradient(180deg, rgba(3, 6, 14, 0.56) 0%, rgba(6, 9, 19, 0.88) 58%, rgba(0, 0, 0, 0.96) 100%);
+}
+
+.nx {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(72px, 8.5vh, 92px) clamp(20px, 4.5vw, 64px) 22px;
+}
+
+.nx-kicker {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--nx-ac);
+}
+
+.nx-title {
+  margin: 10px 0 0;
+  max-width: 19ch;
+  font-size: clamp(36px, 5.3vw, 80px);
+  line-height: 0.97;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  color: var(--nx-fg);
+}
+
+.nx-lead {
+  margin: 14px 0 0;
+  max-width: 64ch;
+  font-size: clamp(14.5px, 1.15vw, 17px);
+  line-height: 1.54;
+  color: var(--nx-mut);
+}
+
+.nx-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.nx-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(154, 176, 207, 0.34);
+  color: var(--nx-fg);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  background: rgba(16, 28, 48, 0.42);
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+}
+
+.nx-btn:hover,
+.nx-btn:focus-visible {
+  background: rgba(91, 184, 255, 0.16);
+  border-color: var(--nx-ac);
+}
+
+.nx-btn:focus-visible,
+.nx-foot a:focus-visible {
+  outline: 2px solid var(--nx-ac);
+  outline-offset: 2px;
+}
+
+.nx-btn.pr {
+  background: var(--nx-ac);
+  border-color: var(--nx-ac);
+  color: #030916;
+}
+
+.nx-btn.pr:hover,
+.nx-btn.pr:focus-visible {
+  background: #8fd0ff;
+  border-color: #8fd0ff;
+}
+
+.nx-btn.gh {
+  background: rgba(238, 243, 255, 0.08);
+  border-color: rgba(154, 176, 207, 0.36);
+  color: var(--nx-fg);
+}
+
+.nx-btn.gh:hover,
+.nx-btn.gh:focus-visible {
+  background: rgba(181, 123, 255, 0.22);
+  border-color: var(--nx-ac2);
+}
+
+/* Perfiles empujados al fondo, casi sobre el pie */
+.nx-people { margin-top: auto; padding-top: 28px; }
+
+.nx-people-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 12px;
+  font-size: 13.5px;
+  color: var(--nx-mut);
+}
+
+.nx-people-head strong { color: var(--nx-fg); font-size: 17px; }
+
+.nx-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.nx-card {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-bottom: 14px;
+  background: var(--nx-card);
+  border: 1px solid rgba(91, 184, 255, 0.22);
+  border-radius: 12px;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.nx-cover {
+  align-self: stretch;
+  height: 52px;
+  background:
+    radial-gradient(120% 100% at 88% 0%, rgba(181, 123, 255, 0.30), transparent 58%),
+    linear-gradient(120deg, #0b162c, #143668 58%, rgba(91, 184, 255, 0.38));
+}
+
+.nx-av {
+  display: grid;
+  place-items: center;
+  width: 70px;
+  height: 70px;
+  margin-top: -35px;
+  border-radius: 50%;
+  border: 3px solid #0b1322;
+  background: linear-gradient(145deg, #1b4d9e, #5bb8ff);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.48);
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.nx-card h3 { margin: 8px 0 2px; font-size: 16.5px; color: var(--nx-fg); }
+.nx-role { font-size: 12.5px; font-weight: 600; color: var(--nx-ac); }
+
+.nx-bio {
+  margin: 6px 14px 8px;
+  font-size: 12.5px;
+  line-height: 1.44;
+  color: var(--nx-mut);
+}
+
+.nx-handle {
+  margin: 0 14px 12px;
+  font-size: 11.5px;
+  color: rgba(201, 206, 214, 0.72);
+  word-break: break-word;
+}
+
+.nx-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: auto;
+  padding: 10px 12px 0;
+  border-top: 1px solid rgba(91, 184, 255, 0.14);
+}
+
+.nx-actions .nx-btn { min-height: 33px; padding: 0 16px; font-size: 12.5px; }
+
+.nx-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px 18px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--nx-line);
+  font-size: 12px;
+  color: var(--nx-mut);
+}
+
+.nx-foot a { color: var(--nx-ac); font-weight: 500; text-decoration: none; }
+.nx-foot a:hover { text-decoration: underline; }
+
+@media (min-width: 781px) {
+  .nx-foot {
+    padding-right: 136px;
+    padding-bottom: 18px;
+    min-height: 52px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .nx-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 560px) {
+  .nx { padding: 72px 16px 96px; }
+  .nx-grid { grid-template-columns: 1fr; }
+  .nx-people-head span { display: none; }
+}
+
+@media (max-width: 780px) {
+  #nav {
+    gap: 4px;
+    padding: 4px;
+  }
+
+  #nav a {
+    padding: 7px 4px;
+    font-size: 11px;
+    min-height: 32px;
+  }
+}
+
+@media (max-width: 420px) {
+  #nav .nav-idx {
+    display: none;
+  }
+
+  #nav a {
+    font-size: 11px;
+    padding: 7px 3px;
+  }
+}

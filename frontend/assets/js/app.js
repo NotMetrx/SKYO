@@ -8,6 +8,7 @@ import { initCosmos3D, setCosmosRoute, setCosmosVisible, triggerWarpZoom, setKry
 import { startExplorar, pauseExplorarBlink } from './explorar.js';
 import { startSistema3D } from './sistema3d.js';
 import { startFases } from './fases.js';
+import { startNosotros } from './nosotros.js';
 import { initHera3d, triggerKryoGesture } from './hera3d.js';
 import { unlockAudio, isSoundMuted, setSoundMuted, playUiCue } from './sound.js';
 
@@ -20,7 +21,7 @@ motionQuery.addEventListener('change', e => {
 });
 
 // 2. Estado de ruta y asistente KRYO-9 / H.E.R.A 7 (oculta en #inicio)
-const ROUTES = ['inicio', 'explorar', '3d', 'fases'];
+const ROUTES = ['inicio', 'explorar', '3d', 'fases', 'nosotros'];
 let currentRoute = '';
 let leaveTimer = 0;
 
@@ -183,7 +184,7 @@ function syncCosmosVisibility() {
   const spectralFrame=document.getElementById('spectral-frame');
   const spectralSrc=!document.hidden && currentRoute==='explorar' && view==='espectral' ? 'inmersivo.html' : 'about:blank';
   if(spectralFrame && spectralFrame.getAttribute('src')!==spectralSrc)spectralFrame.src=spectralSrc;
-  setCosmosVisible(!document.hidden && (currentRoute === 'inicio' || currentRoute === '3d' || currentRoute === 'fases' || (currentRoute === 'explorar' && view === 'boveda')));
+  setCosmosVisible(!document.hidden && (currentRoute === 'inicio' || currentRoute === '3d' || currentRoute === 'fases' || currentRoute === 'nosotros' || (currentRoute === 'explorar' && view === 'boveda')));
 }
 async function enableCosmos() {
   try {
@@ -230,7 +231,8 @@ function navigate() {
     inicio: 'SKYO · Explora el cosmos con SPHEREx',
     explorar: 'SKYO · Explorar · SPHEREx',
     '3d': 'SKYO · Sistema Solar 3D',
-    fases: 'SKYO · Fases & Misión Neois'
+    fases: 'SKYO · Fases & Misión Neois',
+    nosotros: 'SKYO · Acerca de nosotros · Grupo Neois'
   };
   if (ROUTE_TITLES[currentRoute]) {
     document.title = ROUTE_TITLES[currentRoute];
@@ -288,9 +290,10 @@ function navigate() {
   heraChipsEl?.querySelectorAll('.hera-chip').forEach(b => b.classList.remove('on'));
 
   // En móvil (<= 780px) o en #inicio ocultamos el globo de H.E.R.A 7 / KRYO-9
-  if (isInicio) {
+  if (isInicio || currentRoute === 'nosotros') {
     clearTimeout(heraTimer);
     if (heraBubble) heraBubble.classList.remove('show');
+    if (currentRoute === 'nosotros' && heraText && MSG.nosotros) heraText.textContent = MSG.nosotros;
   } else if (MSG[currentRoute] && window.innerWidth > 780) {
     hera.say(MSG[currentRoute]);
   } else if (heraBubble && window.innerWidth <= 780) {
@@ -317,6 +320,9 @@ function navigate() {
   } else if (currentRoute === 'fases') {
     startFases(hera.say.bind(hera));
     triggerKryoGesture('Scan_Sky', { duration: 1.35 });
+  } else if (currentRoute === 'nosotros') {
+    startNosotros(hera.say.bind(hera));
+    triggerKryoGesture('Wave_Hello', { duration: 1.4 });
   }
 }
 

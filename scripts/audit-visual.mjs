@@ -28,7 +28,7 @@ const value = (name, fallback) => {
   return i >= 0 && args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : fallback;
 };
 
-const ROUTES = ['inicio', 'explorar', '3d', 'fases'];
+const ROUTES = ['inicio', 'explorar', '3d', 'fases', 'nosotros'];
 const VIEWPORTS = [
   { name: 'desktop', width: 1440, height: 900, dpr: 1 },
   { name: 'laptop', width: 1280, height: 720, dpr: 1 },
@@ -191,7 +191,7 @@ async function audit({ name, width, height, dpr }, reduced = false) {
       }
     }
     if (route === 'inicio') {
-      if (s.nav.length !== 3) fail(run, 'E_NAV', `enlaces de #nav=${s.nav.length}`);
+      if (s.nav.length !== 4) fail(run, 'E_NAV', `enlaces de #nav=${s.nav.length}`);
       if (s.top?.visible) fail(run, 'E_TOP', 'la barra superior es visible en #inicio');
       if (s.hera?.visible) fail(run, 'E_HERA', 'H.E.R.A visible en #inicio');
       if (s.interactives !== 0) fail(run, 'E_MINIMAL', `#inicio conserva ${s.interactives} control(es)`);
@@ -199,7 +199,7 @@ async function audit({ name, width, height, dpr }, reduced = false) {
       if (s.hera && !s.hera.visible) fail(run, 'E_HERA', `${route}: H.E.R.A oculta`);
       const current = s.nav.find(n => n.current);
       if (!s.nav.length) fail(run, 'E_NAV', `${route}: sin enlaces de navegación`);
-      if (s.nav.length === 3 && current && !current.text.toLowerCase().includes(route)) fail(run, 'E_CURRENT', `${route}: aria-current=${current.text}`);
+      if (s.nav.length >= 3 && current && !current.text.toLowerCase().includes(route)) fail(run, 'E_CURRENT', `${route}: aria-current=${current.text}`);
     }
     console.log(`- ${route}: visible=${s.visibleSection} overflow=${s.overflow} clip=${s.clipped.length} target=${s.smallTargets.length} webgl=${s.webgl} hera=${s.hera?.visible} interactivos=${s.interactives}`);
   }
