@@ -118,6 +118,10 @@ let bovedaModelLoaded = false;
 let bovedaAstrolabe = null;
 let bovedaBezelGuides = null;
 let bovedaPolycount = 0;
+let focalPlaneRig = null;
+let focalPlaneLoaded = false;
+const fpaDetectors = [];
+let fpaDetectorHitMeshes = [];
 let selectRing = null;
 let hoverRing = null;
 const objEntries = [];
@@ -133,7 +137,8 @@ const exploreState = {
   hovered: -1,
   onSelect: null,
   onHover: null,
-  onBlinkTick: null
+  onBlinkTick: null,
+  onBandSelect: null
 };
 let blinkAccumMs = 0;
 let lastLoopTs = 0;
@@ -1709,13 +1714,15 @@ function buildExplorarScene() {
   const R = rng(5);
 
   // Iluminación PBR dedicada para el plano focal infrarrojo
-  const keyLight = new T.DirectionalLight(0x8fd2ff, 1.05);
+  const keyLight = new T.DirectionalLight(0x8fd2ff, 1.55);
   keyLight.position.set(45, 38, 95);
-  const fillLight = new T.PointLight(0xb57bff, 0.95, 220);
+  const fillLight = new T.PointLight(0xb57bff, 1.15, 240);
   fillLight.position.set(-42, -28, 80);
-  const rimLight = new T.DirectionalLight(0xeef3ff, 0.55);
+  const rimLight = new T.DirectionalLight(0xeef3ff, 0.85);
   rimLight.position.set(0, -45, 120);
-  explorarGroup.add(keyLight, fillLight, rimLight);
+  const specWarmLight = new T.PointLight(0xffcb78, 0.95, 180);
+  specWarmLight.position.set(52, 18, 52);
+  explorarGroup.add(keyLight, fillLight, rimLight, specWarmLight);
 
   // 1. Campo profundo de 2.400 estrellas astrométricas ICRS con paralaje en Z
   const count = 2400;
@@ -1852,6 +1859,64 @@ function buildExplorarScene() {
   cutoutFrame.matrixAutoUpdate = false;
   cutoutFrame.updateMatrix();
   explorarGroup.add(cutoutFrame);
+
+  // 3b. Modelo 3D PBR de Alta Calidad del Plano Focal SPHEREx (Blender -> GLB)
+  focalPlaneRig = new T.Group();
+  focalPlaneRig.position.set(0, 0, -4.6);
+  focalPlaneRig.scale.setScalar(10);
+  explorarGroup.add(focalPlaneRig);
+
+  loadGlbGroup(T, './assets/models/focal_plane.glb')
+    .then(fpaModel => {
+      if (!focalPlaneRig) return;
+      fpaDetectors.length = 0;
+      fpaDetectorHitMeshes.length = 0;
+      const rimMap = new Map();
+      const paneMap = new Map();
+      let triCount = 0;
+
+      fpaModel.traverse(child => {
+        if (!child.isMesh) return;
+        if (child.geometry?.index) {
+          triCount += Math.round(child.geometry.index.count / 3);
+        } else if (child.geometry?.attributes?.position) {
+          triCount += Math.round(child.geometry.attributes.position.count / 3);
+        }
+
+        const paneMatch = /^Detector_D([1-6])$/.exec(child.name);
+        const rimMatch = /^Detector_D([1-6])_Rim$/.exec(child.name);
+        if (paneMatch && child.material) {
+          const idx = Number(paneMatch[1]);
+          child.material.transparent = true;
+          child.material.depthWrite = false;
+          child.material.opacity = 0.11;
+          child.userData = { type: 'fpa-detector', detector: idx, band: idx <= 3 ? 0 : 1 };
+          fpaDetectorHitMeshes.push(child);
+          paneMap.set(idx, child.material);
+        } else if (rimMatch && child.material) {
+          const idx = Number(rimMatch[1]);
+          rimMap.set(idx, child.material);
+        }
+      });
+
+      for (let idx = 1; idx <= 6; idx++) {
+        fpaDetectors.push({
+          index: idx,
+          bandGroup: idx <= 3 ? 0 : 1,
+          paneMat: paneMap.get(idx) || null,
+          rimMat: rimMap.get(idx) || null
+        });
+      }
+
+      focalPlaneRig.add(fpaModel);
+      focalPlaneLoaded = true;
+      bovedaPolycount += triCount;
+      syncExplorarVisuals();
+      wakeLoop();
+    })
+    .catch(() => {
+      focalPlaneLoaded = false;
+    });
 
   // 4. Anillo Dicróico de Calibración Óptica (Vernier micrométrico rotatorio)
   bovedaAstrolabe = new T.Group();
@@ -2103,6 +2168,19 @@ export function syncExplorarVisuals() {
   }
   if (bovedaBezelGuides) {
     setBovedaObjectStyle(bovedaBezelGuides, secondaryAccent, isHighlighted ? 0.88 : 0.56);
+  }
+
+  // Resaltado PBR de los 6 detectores físicos H2RG (D1–D3 IR Corto vs D4–D6 IR Largo)
+  for (let i = 0; i < fpaDetectors.length; i++) {
+    const det = fpaDetectors[i];
+    const active = det.bandGroup === exploreState.band;
+    if (det.paneMat) {
+      det.paneMat.opacity = active ? (isHighlighted ? 0.19 : 0.14) : 0.04;
+      det.paneMat.emissiveIntensity = active ? 0.42 : 0.08;
+    }
+    if (det.rimMat) {
+      det.rimMat.emissiveIntensity = active ? (isHighlighted ? 1.55 : 1.18) : 0.24;
+    }
   }
 
   // Posiciones ICRS, vector Δθ y traza discreta de épocas E1–E4 + lista cacheada de hitTest
@@ -2405,6 +2483,11 @@ function handleClick(clientX, clientY) {
     if (hits.length) {
       const idx = hits[0].object.userData.index;
       if (typeof exploreState.onSelect === 'function') exploreState.onSelect(idx);
+    } else if (fpaDetectorHitMeshes.length) {
+      const detHits = raycaster.intersectObjects(fpaDetectorHitMeshes, false);
+      if (detHits.length && typeof exploreState.onBandSelect === 'function') {
+        exploreState.onBandSelect(detHits[0].object.userData.band, detHits[0].object.userData.detector);
+      }
     }
   } else if (activeRoute === 'fases') {
     const hits = fasesHitMeshes.length ? raycaster.intersectObjects(fasesHitMeshes, false) : [];
@@ -2598,6 +2681,7 @@ export function getAdaptiveViewportState() {
 export function getBovedaModelState() {
   return {
     loaded: bovedaModelLoaded,
+    hasFocalPlane: focalPlaneLoaded,
     hasAstrolabe: Boolean(bovedaAstrolabe),
     hasDome: Boolean(healpixDome),
     hasBezel: Boolean(cutoutFrame),

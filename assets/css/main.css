@@ -73,6 +73,12 @@
   --ok: #4ade80;
   --font-ui: 'Space Grotesk', system-ui, -apple-system, sans-serif;
   --font-mono: 'Space Mono', ui-monospace, monospace;
+  --mono: var(--font-mono);
+  --craft-bg: rgba(8, 14, 24, 0.72);
+  --craft-border: rgba(91, 184, 255, 0.2);
+  --craft-border-strong: rgba(0, 230, 210, 0.55);
+  --craft-cyan: #00e6d2;
+  --ease-craft: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-panel: cubic-bezier(0.22, 1, 0.36, 1);
   --hud-pad-x: clamp(14px, 1.8vw, 28px);
   --hud-pad-y: clamp(10px, 1.6vh, 22px);
@@ -227,8 +233,36 @@ body[data-route="inicio"] .top > * {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--ac);
-  box-shadow: 0 0 8px var(--ac);
+  background: var(--craft-cyan);
+  box-shadow: 0 0 8px var(--craft-cyan);
+}
+
+.nav-idx {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--craft-cyan);
+  opacity: 0.78;
+}
+
+.top-status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--craft-bg);
+  border: 1px solid var(--craft-border);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: rgba(183, 215, 249, 0.8);
+  pointer-events: none;
+  user-select: none;
 }
 
 /* ==========================================================================
@@ -2257,9 +2291,120 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
 }
 
 /* ==========================================================================
+   Sistema Visual Global ArtCraft (Micro-HUDs, Bordes Técnicos 1px y Retículas CAD)
+   ========================================================================== */
+.tbar-craft-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgba(91, 184, 255, 0.14);
+  pointer-events: none;
+  user-select: none;
+}
+
+.tbar-craft-head .hud-label,
+.panel-craft-tag,
+.fases-craft-tag {
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+}
+
+.hud-sep-tag {
+  color: rgba(164, 178, 202, 0.65);
+}
+
+.panel-craft-tag {
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(91, 184, 255, 0.14);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fases-craft-tag {
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Refinamiento ArtCraft en docks, tarjetas modulares e inspectores globales */
+.tbar,
+.ctl,
+.info-panel,
+.bitacora-panel,
+.phase-panel,
+.explore-view-tabs,
+.fpa-telemetry,
+.mission-bar,
+.lab-step-box,
+.lab-canvas-card,
+.lab-results-card,
+.col-card,
+.metric-card,
+.stage-card {
+  border-color: var(--craft-border);
+  transition:
+    border-color 0.24s var(--ease-craft),
+    box-shadow 0.24s var(--ease-craft),
+    transform 0.24s var(--ease-craft),
+    background-color 0.24s var(--ease-craft);
+}
+
+.stage-card:hover,
+.col-card:hover,
+.metric-card:hover,
+.lab-canvas-card:hover {
+  border-color: var(--craft-border-strong);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.48), 0 0 0 1px rgba(0, 230, 210, 0.16);
+}
+
+.stage-card .stage-idx,
+.col-card .col-tag,
+.fpa-telemetry .fpa-k {
+  font-family: var(--font-mono);
+}
+
+/* Visores FITS del Laboratorio con sutil marco reticular CAD */
+.canvas-wrap,
+.lab-diff-preview {
+  position: relative;
+  border: 1px solid var(--craft-border);
+}
+
+.canvas-wrap::after,
+.lab-diff-preview::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  pointer-events: none;
+  background:
+    linear-gradient(to right, rgba(0, 230, 210, 0.55) 10px, transparent 10px) 0 0 / 100% 1.5px no-repeat,
+    linear-gradient(to bottom, rgba(0, 230, 210, 0.55) 10px, transparent 10px) 0 0 / 1.5px 100% no-repeat,
+    linear-gradient(to left, rgba(0, 230, 210, 0.55) 10px, transparent 10px) 100% 100% / 100% 1.5px no-repeat,
+    linear-gradient(to top, rgba(0, 230, 210, 0.55) 10px, transparent 10px) 100% 100% / 1.5px 100% no-repeat;
+  opacity: 0.72;
+}
+
+@media (max-width: 900px) {
+  .top-status-chip {
+    display: none;
+  }
+}
+
+/* ==========================================================================
    Móvil Primero (<= 780px, alineado a INTERFAZ-Y-UX.md)
    ========================================================================== */
 @media (max-width: 780px) {
+  .top-status-chip,
+  .tbar-craft-head {
+    display: none;
+  }
+
   .top {
     padding: calc(8px + env(safe-area-inset-top, 0px)) 14px;
   }
@@ -3379,7 +3524,12 @@ body[data-route]:not([data-route="inicio"]) .eclipse-flare {
   .hero-prompt,
   .info-panel,
   #hb,
-  .phase-panel {
+  .phase-panel,
+  .stage-card,
+  .col-card,
+  .metric-card,
+  .lab-canvas-card,
+  .craft-card {
     transition-duration: 0.01ms !important;
     transform: none !important;
   }

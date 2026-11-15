@@ -37,10 +37,14 @@
     </a>
 
     <nav id="nav" aria-label="Navegación principal">
-      <a href="#explorar" data-s="explorar"><span>Explorar</span></a>
-      <a href="#3d" data-s="3d"><span>3D</span></a>
-      <a href="#fases" data-s="fases"><span>Fases</span></a>
+      <a href="#explorar" data-s="explorar"><span class="nav-idx" aria-hidden="true">01</span><span>Explorar</span></a>
+      <a href="#3d" data-s="3d"><span class="nav-idx" aria-hidden="true">02</span><span>3D</span></a>
+      <a href="#fases" data-s="fases"><span class="nav-idx" aria-hidden="true">03</span><span>Fases</span></a>
     </nav>
+    <div class="top-status-chip" aria-hidden="true">
+      <span class="kicker-dot"></span>
+      <span>TAN-SIP · LOCAL</span>
+    </div>
   </header>
 
   <main id="viewport">
@@ -167,6 +171,10 @@
       </div>
 
       <div class="tbar" id="tbar" aria-label="Controles temporales y espectrales">
+        <div class="tbar-craft-head" aria-hidden="true">
+          <span class="hud-label"><span class="hud-idx">// 01</span> FPA CONTROL DOCK · SPHEREx LVF</span>
+          <span class="hud-label hud-sep-tag">2×3 H2RG · ICRS</span>
+        </div>
         <div class="obj-quick-rail" id="obj-quick-rail" role="group" aria-label="Seleccionar fuente celeste en el plano focal"></div>
         <div class="trow" id="epocas" role="group" aria-label="Épocas SPHEREx"></div>
         <div class="trow tmeta">
@@ -182,6 +190,7 @@
       <div class="hint">Arrastra para reencuadrar el plano focal · Rueda para zoom · Clic en una fuente para telemetría astrométrica</div>
 
       <div id="info" class="info-panel" aria-live="polite" aria-hidden="true" inert>
+        <div class="hud-label panel-craft-tag" aria-hidden="true"><span class="hud-idx">// 02</span> ASTROMETRIC TARGET TELEMETRY</div>
         <canvas id="ith"></canvas>
         <div class="badges">
           <span class="tg" id="it"></span>
@@ -393,6 +402,10 @@
     <!-- Vista 3: Sistema Solar 3D -->
     <section class="sec" id="3d" aria-hidden="true" inert>
       <div class="ctl">
+        <div class="tbar-craft-head" aria-hidden="true">
+          <span class="hud-label"><span class="hud-idx">// 02</span> ORBITAL KINEMATICS · JPL HORIZONS</span>
+          <span class="hud-label hud-sep-tag">KEPLER 3D</span>
+        </div>
         <div class="r" id="fc" role="toolbar" aria-label="Controles del sistema 3D">
           <button type="button" class="on" data-f="Sistema">Sistema</button>
           <button type="button" data-f="Cometa">Cometa</button>
@@ -413,6 +426,7 @@
     <section class="sec" id="fases" aria-hidden="true" inert>
       <div class="fases-top">
         <div class="fases-title-wrap">
+          <div class="hud-label fases-craft-tag" aria-hidden="true"><span class="hud-idx">// 03</span> ENGINEERING ARCHITECTURE · ROADMAP</div>
           <span class="fases-kicker">Arquitectura viva 3D · Planeta X y SPHEREx</span>
           <h2>Fases y etapas de la solución</h2>
         </div>

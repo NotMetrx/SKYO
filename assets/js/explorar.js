@@ -1001,6 +1001,16 @@ function buildExplorarUI() {
       if (!blinkMode) return;
       currentEpoch = currentEpoch === 0 ? 3 : 0;
       syncUI();
+    },
+    onBandSelect: (bandIdx, detNum) => {
+      if (bandIdx !== currentBand) {
+        currentBand = bandIdx;
+        syncUI();
+        evaluateMission(false);
+        if (typeof onHeraSpeak === 'function') {
+          onHeraSpeak(`Detector D${detNum} seleccionado · ${BANDAS[currentBand].label} (${BANDAS[currentBand].range}).`);
+        }
+      }
     }
   });
 
