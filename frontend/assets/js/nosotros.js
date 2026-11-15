@@ -35,7 +35,7 @@ function renderNosotros() {
   host.innerHTML = `
     <header class="nx-hero">
       <span class="nx-kicker">Acerca de nosotros · Grupo Neois</span>
-      <h2 class="nx-title">Llevamos el universo infrarrojo a todas las personas.</h2>
+      <h2 class="nx-title">Todos podemos aprender,<br>experimenta y conoce más del cielo.</h2>
       <p class="nx-lead">${MISION_SPHEREX.summary}</p>
       <div class="nx-cta">
         <a class="nx-btn pr" href="#explorar">Explorar Bóveda IR</a>
