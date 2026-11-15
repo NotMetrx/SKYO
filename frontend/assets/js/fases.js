@@ -90,14 +90,14 @@ function renderPanelContent() {
               </div>
               <p class="stage-detail">${m.bio}</p>
               <div class="team-contacts">
-                ${m.github ? `<a href="${m.github}" target="_blank" rel="noopener" class="team-contact-btn" title="GitHub de ${m.name}"><span>🐙</span> GitHub</a>` : ''}
-                ${m.contact && m.contact.includes('@') ? `<a href="mailto:${m.contact}" class="team-contact-btn" title="Enviar correo a ${m.name}"><span>✉</span> ${m.contact}</a>` : `<span class="team-contact-badge"><span>✦</span> ${m.contact}</span>`}
+                ${m.github ? `<a href="${m.github}" target="_blank" rel="noopener noreferrer" class="team-contact-btn" title="GitHub de ${m.name}">GitHub ↗</a>` : ''}
+                ${m.contact && m.contact.includes('@') ? `<a href="mailto:${m.contact}" class="team-contact-btn" title="Enviar correo a ${m.name}">${m.contact}</a>` : `<span class="team-contact-badge">${m.contact}</span>`}
               </div>
             </article>
           `).join('')}
         </div>
 
-        <div class="sub-sec-head" style="margin-top: 24px;">
+        <div class="sub-sec-head" style="margin-top: 18px;">
           <span class="hud-idx">// 02</span>
           <h4>Resumen de lo que hemos trabajado · Arquitectura e Hitos</h4>
         </div>
@@ -115,7 +115,7 @@ function renderPanelContent() {
 
         <div class="phase-foot">
           <a class="btn pr" href="#explorar">Explorar Bóveda 3D</a>
-          <button type="button" class="btn" id="phase-hera">Consultar al copiloto KRYO-9</button>
+          <button type="button" class="btn" id="phase-hera">Consultar a Heras7</button>
         </div>
       `;
 
@@ -178,6 +178,8 @@ function selectPhase(index) {
   document.querySelectorAll('#fases-view-toggle button').forEach(b => {
     b.classList.toggle('on', b.dataset.view === 'roadmap');
   });
+  const railEl = document.getElementById('phase-rail');
+  if (railEl) railEl.classList.remove('dimmed');
 
   document.querySelectorAll('#phase-rail button').forEach((btn, idx) => {
     const selected = idx === activeIndex;

@@ -44,18 +44,47 @@ let cursorParallax = { x: 0, y: 0 };
 let warpBoost = 0;
 let isWarpingFromInicio = false;
 
-// Eclipse 3D (Blender GLB) como la "O" de SKYO y protagonista de la transición
+// Eclipse 3D procedural de alta resolución (corona GLSL + creciente + luna + anillo de diamante)
 let eclipseRig = null;
 let eclipseModelPivot = null;
-let eclipseHalo = null;
-let eclipseDiamondSprite = null;
-let eclipseMixer = null;
-const eclipseMats = [];
+let eclipseCoronaPlane = null;
+let eclipseCrescentPlane = null;
+let eclipseMoonMesh = null;
+let eclipseWarpRing = null;
+let eclipseReticlePlane = null;
+let eclipseDiamondStar = null;
+let eclipseDiamondRay = null;
 let eclipsePhase = 'idle'; // 'idle' | 'transition' | 'done'
 let eclipseWarpT = 0;
-const eclipseSlot = { cx: 0, cy: 0, size: 0 };
+let eclipseHoverMix = 0;
+let eclipseChoreoMix = 0;
+let kryoScanChoreoTime = -10;
+let eclipseWordmarkEl = null;
+let heroPromptEl = null;
+let lastSkyCssKey = '';
+let eclipseFallbackHtml = '';
+let is2DFallbackMode = false;
+let fallback2DRaf = 0;
+let fallback2DWake = null;
+let fallback2DCleanup = null;
+let fallback2DWarpT = 1;
 
-// Agente 3D KRYO-9 (Blender GLB + Draco + PBR/IBL) en #inicio y secuencia de despegue
+// Túnel de estelas estelares 3D y onda de choque cian/violeta para transiciones continuas
+let warpEffectsGroup = null;
+let warpTunnelLines = null;
+let warpTunnelData = null;
+let warpShockwaveOuter = null;
+let warpShockwaveInner = null;
+let warpEffectActive = false;
+let warpEffectT = 0;
+let warpEffectDuration = 0.86;
+let warpEffectIntensity = 1;
+let routeTransitionT = 1;
+let routeTransitionFromPortal = false;
+const eclipseSlot = { cx: 0, cy: 0, size: 0 };
+const eclipseWordmarkRect = { left: 0, top: 0, right: 0, bottom: 0 };
+
+// Agente 3D KRYO-9 / Heras7 (Blender GLB + Draco + PBR/IBL) en #inicio y secuencia de despegue
 let kryoRig = null;
 let kryoModelPivot = null;
 let kryoMixer = null;
@@ -66,6 +95,7 @@ let kryoHeadNode = null;
 let kryoTorsoNode = null;
 let kryoFootL = null;
 let kryoFootR = null;
+let kryoRimCyan = null;
 let kryoRimCoral = null;
 let kryoThrusterGlowL = null;
 let kryoThrusterGlowR = null;
@@ -93,22 +123,38 @@ let kryoOrbitTrailPts = [];
 const kryoFlightRot = { yaw: -0.22, pitch: 0.04, roll: 0 };
 const KRYO_ORBIT_DURATION = 1.65;
 let kryoLoadStarted = false;
+let kryoStageEl = null;
+let kryoStatusEl = null;
+let lastKryoStatusLabel = '';
+let kryoHoverMix = 0;
 const kryoSlot = { cx: 0, cy: 0, w: 0, h: 0 };
 const kryoHeadAim = { yaw: 0, pitch: 0 };
-const pointerClient = { x: 0, y: 0, moved: false, overKryo: false };
+const pointerClient = { x: 0, y: 0, moved: false, overKryo: false, overEclipse: false };
 let inicioEnv = null;
 let gltfSupportPromise = null;
 
 // Grupos por panel
 let starField = null;
 let inicioGroup = null;
+let inicioMilkyWay = null;
 let inicioRing = null;
 let inicioOuterRing = null;
 let inicioNearLayer = null;
 let inicioMidLayer = null;
+let inicioConstellationsGroup = null;
 let inicioNebula = null;
 let inicioNodes = [];
 let inicioMeteors = [];
+let inicioTelemetryEl = null;
+let inicioTelemetryTextEl = null;
+let lastTelemetryIdx = -1;
+let telemetrySwapTimer = 0;
+const INICIO_TELEMETRY_COORDS = [
+  "RA 17h 45m · DEC -29° 00' · NÚCLEO GALÁCTICO",
+  "RA 05h 35m · DEC -05° 23' · M42 ORIÓN",
+  "RA 12h 39m · DEC -11° 37' · M104 SOMBRERO",
+  "RA 18h 42m · DEC -24° 12' · BÓVEDA ICRS 0.05°"
+];
 
 let explorarGroup = null;
 let vaultPoints = null;
@@ -307,35 +353,469 @@ function makeDiamondStarburstTexture() {
   return tex;
 }
 
+function makePinpointStarTexture() {
+  const c = document.createElement('canvas');
+  c.width = c.height = 64;
+  const g = c.getContext('2d');
+  const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  grad.addColorStop(0, 'rgba(255,255,255,1)');
+  grad.addColorStop(0.14, 'rgba(255,255,255,0.92)');
+  grad.addColorStop(0.32, 'rgba(180,224,255,0.34)');
+  grad.addColorStop(0.62, 'rgba(91,184,255,0.06)');
+  grad.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 64, 64);
+  const tex = new T.CanvasTexture(c);
+  if (renderer?.capabilities?.getMaxAnisotropy) {
+    tex.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+  }
+  return tex;
+}
+
+function makeDiamondStarTexture() {
+  const c = document.createElement('canvas');
+  c.width = c.height = 256;
+  const g = c.getContext('2d');
+  const cx = 128;
+  const cy = 128;
+
+  const core = g.createRadialGradient(cx, cy, 0, cx, cy, 118);
+  core.addColorStop(0, 'rgba(255,255,255,1)');
+  core.addColorStop(0.08, 'rgba(240,250,255,0.98)');
+  core.addColorStop(0.22, 'rgba(120,210,255,0.52)');
+  core.addColorStop(0.46, 'rgba(91,184,255,0.18)');
+  core.addColorStop(0.72, 'rgba(181,123,255,0.05)');
+  core.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = core;
+  g.fillRect(0, 0, 256, 256);
+
+  const drawSpike = (angle, length, halfWidth, fill) => {
+    g.save();
+    g.translate(cx, cy);
+    g.rotate(angle);
+    g.beginPath();
+    g.moveTo(-length, 0);
+    g.quadraticCurveTo(-halfWidth * 0.36, -halfWidth * 0.36, 0, -halfWidth);
+    g.quadraticCurveTo(halfWidth * 0.36, -halfWidth * 0.36, length, 0);
+    g.quadraticCurveTo(halfWidth * 0.36, halfWidth * 0.36, 0, halfWidth);
+    g.quadraticCurveTo(-halfWidth * 0.36, halfWidth * 0.36, -length, 0);
+    g.closePath();
+    g.fillStyle = fill;
+    g.fill();
+    g.restore();
+  };
+
+  drawSpike(0, 124, 6.2, 'rgba(110,204,255,0.48)');
+  drawSpike(Math.PI / 2, 124, 6.2, 'rgba(110,204,255,0.48)');
+  drawSpike(0, 118, 3.0, 'rgba(255,255,255,0.98)');
+  drawSpike(Math.PI / 2, 118, 3.0, 'rgba(255,255,255,0.98)');
+  drawSpike(Math.PI / 4, 46, 2.0, 'rgba(220,242,255,0.42)');
+  drawSpike(-Math.PI / 4, 46, 2.0, 'rgba(220,242,255,0.42)');
+
+  const tex = new T.CanvasTexture(c);
+  if (renderer?.capabilities?.getMaxAnisotropy) {
+    tex.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+  }
+  return tex;
+}
+
+function makeAnamorphicRayTexture() {
+  const c = document.createElement('canvas');
+  c.width = 512;
+  c.height = 128;
+  const g = c.getContext('2d');
+
+  // Haz fino anamórfico centrado en y=64
+  const vGrad = g.createLinearGradient(0, 32, 0, 96);
+  vGrad.addColorStop(0, 'rgba(91,184,255,0)');
+  vGrad.addColorStop(0.38, 'rgba(91,184,255,0.28)');
+  vGrad.addColorStop(0.47, 'rgba(232,247,255,0.92)');
+  vGrad.addColorStop(0.5, 'rgba(255,255,255,1)');
+  vGrad.addColorStop(0.53, 'rgba(232,247,255,0.92)');
+  vGrad.addColorStop(0.62, 'rgba(91,184,255,0.28)');
+  vGrad.addColorStop(1, 'rgba(91,184,255,0)');
+  g.fillStyle = vGrad;
+  g.fillRect(0, 0, 512, 128);
+
+  // Recorte asimétrico: cola sutil cruzando el disco lunar e irradiación larga hacia arriba-derecha
+  g.globalCompositeOperation = 'destination-in';
+  const hMask = g.createLinearGradient(0, 0, 512, 0);
+  hMask.addColorStop(0, 'rgba(0,0,0,0)');
+  hMask.addColorStop(0.14, 'rgba(0,0,0,0)');
+  hMask.addColorStop(0.32, 'rgba(0,0,0,0.48)');
+  hMask.addColorStop(0.48, 'rgba(0,0,0,1)');
+  hMask.addColorStop(0.66, 'rgba(0,0,0,0.74)');
+  hMask.addColorStop(0.88, 'rgba(0,0,0,0.18)');
+  hMask.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = hMask;
+  g.fillRect(0, 0, 512, 128);
+  g.globalCompositeOperation = 'source-over';
+
+  const tex = new T.CanvasTexture(c);
+  if (renderer?.capabilities?.getMaxAnisotropy) {
+    tex.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+  }
+  return tex;
+}
+
 const _eclipseRay = { v: null, fwd: null, initialized: false };
+
+function syncWordmarkCss(px = 0, py = 0, glow = 0.42, ignited = false, choreo = 0) {
+  eclipseWordmarkEl ||= document.querySelector('#inicio .eclipse-wordmark');
+  if (!eclipseWordmarkEl) return;
+  const qx = (Number.isFinite(px) ? px : 0).toFixed(3);
+  const qy = (Number.isFinite(py) ? py : 0).toFixed(3);
+  const qg = Math.max(0, Math.min(1.5, Number.isFinite(glow) ? glow : 0.42)).toFixed(3);
+  const qc = Math.max(0, Math.min(1, Number.isFinite(choreo) ? choreo : 0)).toFixed(3);
+  const ig = ignited ? '1' : '0';
+  const ch = choreo > 0.12 ? '1' : '0';
+  const key = `${qx}|${qy}|${qg}|${qc}|${ig}|${ch}`;
+  if (key === lastSkyCssKey) return;
+  lastSkyCssKey = key;
+  eclipseWordmarkEl.style.setProperty('--sky-px', qx);
+  eclipseWordmarkEl.style.setProperty('--sky-py', qy);
+  eclipseWordmarkEl.style.setProperty('--sky-glow', qg);
+  eclipseWordmarkEl.style.setProperty('--sky-choreo', qc);
+  eclipseWordmarkEl.classList.toggle('is-ignited', Boolean(ignited));
+  eclipseWordmarkEl.classList.toggle('is-choreo', choreo > 0.12);
+}
+
+function resetWordmarkCss() {
+  lastSkyCssKey = '';
+  if (!eclipseWordmarkEl) return;
+  eclipseWordmarkEl.classList.remove('is-ignited', 'is-choreo');
+  eclipseWordmarkEl.style.setProperty('--sky-px', '0');
+  eclipseWordmarkEl.style.setProperty('--sky-py', '0');
+  eclipseWordmarkEl.style.setProperty('--sky-glow', '0.42');
+  eclipseWordmarkEl.style.setProperty('--sky-choreo', '0');
+}
 
 function updateEclipseSlotRect() {
   const el = document.querySelector('#inicio .eclipse-o');
-  if (!el) return;
-  const r = el.getBoundingClientRect();
-  if (r.width > 4 && r.height > 4) {
-    eclipseSlot.cx = r.left + r.width * 0.5;
-    eclipseSlot.cy = r.top + r.height * 0.5;
-    eclipseSlot.size = Math.min(r.width, r.height);
+  if (el) {
+    const r = el.getBoundingClientRect();
+    if (r.width > 4 && r.height > 4) {
+      eclipseSlot.cx = r.left + r.width * 0.495;
+      eclipseSlot.cy = r.top + r.height * 0.502;
+      eclipseSlot.size = Math.min(r.width, r.height);
+    }
+  }
+  eclipseWordmarkEl ||= document.querySelector('#inicio .eclipse-wordmark');
+  heroPromptEl ||= document.querySelector('#inicio .hero-prompt');
+  if (eclipseWordmarkEl) {
+    const wr = eclipseWordmarkEl.getBoundingClientRect();
+    if (wr.width > 8 && wr.height > 8) {
+      Object.assign(eclipseWordmarkRect, {
+        left: wr.left,
+        top: wr.top,
+        right: wr.right,
+        bottom: wr.bottom
+      });
+    }
   }
 }
 
+function createEclipseCoronaMaterial() {
+  return new T.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    blending: T.AdditiveBlending,
+    uniforms: {
+      uTime: { value: 0 },
+      uFade: { value: 1 },
+      uHover: { value: 0 },
+      uIgnition: { value: 0 },
+      uChoreo: { value: 0 }
+    },
+    vertexShader: `
+      varying vec2 vPos;
+      void main() {
+        vPos = position.xy;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform float uTime;
+      uniform float uFade;
+      uniform float uHover;
+      uniform float uIgnition;
+      uniform float uChoreo;
+      varying vec2 vPos;
+      void main() {
+        vec2 dDir = normalize(vec2(0.83, 0.56));
+        float r = length(vPos);
+        vec2 dir = r > 0.0001 ? vPos / r : vec2(1.0, 0.0);
+        float ang = r > 0.0001 ? atan(vPos.y, vPos.x) : 0.0;
+
+        float diaBias = smoothstep(-0.22, 1.0, dot(dir, dDir));
+        float streamer1 = 0.82 + 0.18 * sin(ang * 7.0 - uTime * 0.42);
+        float streamer2 = 0.84 + 0.16 * cos(ang * 13.0 + uTime * 0.58);
+        float rays = streamer1 * streamer2;
+        float promDist = (abs(dot(dir, normalize(vec2(-0.78, -0.62))) - 0.85)) * 3.8;
+        float promArc = exp(-(promDist * promDist))
+                      * exp(-max(0.0, r - 0.94) * 3.8)
+                      * (0.72 + 0.28 * sin(uTime * 1.35 + ang * 4.0));
+        float choreoWave = 0.5 + 0.5 * sin(ang * 2.0 - uTime * 2.4);
+
+        // Corona solar animada alrededor del limbo lunar
+        float innerGlow = exp(-max(0.0, r - 0.92) * 3.15) * (0.10 + 0.88 * diaBias);
+        float outerMist = exp(-max(0.0, r - 0.9) * 1.42) * (0.08 + 0.46 * diaBias) * rays;
+        float diamondBloom = exp(-length(vPos - dDir * 1.03) * 2.25) * (0.68 + 0.52 * uHover + 0.95 * uIgnition);
+
+        float mask = smoothstep(0.86, 1.01, r) * (1.0 - smoothstep(2.02, 2.98, r));
+        vec3 colBlue = vec3(0.38, 0.74, 1.0) * (innerGlow * 0.84 + outerMist * 0.92);
+        vec3 colViolet = vec3(0.72, 0.48, 1.0) * (outerMist * (0.28 + 0.26 * (1.0 - diaBias) + uChoreo * choreoWave * 0.72) + promArc * (0.48 + uChoreo * 0.55));
+        vec3 colHot = vec3(0.95, 0.98, 1.0) * (diamondBloom * 0.78 + innerGlow * (0.36 * diaBias + uChoreo * 0.14 * choreoWave));
+
+        vec3 total = (colBlue + colViolet + colHot) * mask * (1.0 + uHover * 0.38 + uChoreo * 0.28 + uIgnition * 0.95);
+        gl_FragColor = vec4(total * uFade, 1.0);
+      }
+    `
+  });
+}
+
+function createEclipseCrescentMaterial() {
+  return new T.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    blending: T.AdditiveBlending,
+    uniforms: {
+      uFade: { value: 1 },
+      uHover: { value: 0 },
+      uPulse: { value: 0.5 },
+      uIgnition: { value: 0 },
+      uChoreo: { value: 0 }
+    },
+    vertexShader: `
+      varying vec2 vPos;
+      void main() {
+        vPos = position.xy;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform float uFade;
+      uniform float uHover;
+      uniform float uPulse;
+      uniform float uIgnition;
+      uniform float uChoreo;
+      varying vec2 vPos;
+      void main() {
+        vec2 dDir = normalize(vec2(0.83, 0.56));
+        float rMoon = length(vPos);
+        vec2 dir = rMoon > 0.0001 ? vPos / rMoon : vec2(1.0, 0.0);
+        float diaAlign = clamp(dot(dir, dDir), -1.0, 1.0);
+        float diaFactor = smoothstep(-0.28, 1.0, diaAlign);
+
+        // Creciente solar caligráfico: ancho luminoso en el borde superior derecho, afilado en los cuernos
+        vec2 sunCenter = dDir * (0.052 + 0.014 * uHover + 0.032 * uIgnition);
+        float rSun = length(vPos - sunCenter);
+        float outerLimit = 1.038 + 0.024 * diaFactor;
+
+        float inSun = 1.0 - smoothstep(outerLimit - 0.011, outerLimit + 0.010, rSun);
+        float outMoon = smoothstep(0.985, 1.003, rMoon);
+        float crescent = inSun * outMoon * smoothstep(-0.42, 0.12, diaAlign);
+
+        // Halo atmosférico inmediato sobre el creciente
+        float limbHaze = exp(-abs(rSun - outerLimit) * 16.0) * outMoon * (0.12 + 0.88 * diaFactor);
+
+        // Micro-ribete tenue hacia el lado oscuro para sostener la silueta circular sin competir con el creciente
+        float dFullRim = (rMoon - 1.002) / 0.012;
+        float fullRim = exp(-(dFullRim * dFullRim)) * (0.09 + 0.26 * smoothstep(-0.65, 0.35, diaAlign) + 0.18 * uHover + 0.22 * uChoreo);
+
+        vec3 crescentCol = mix(vec3(0.38, 0.76, 1.0), vec3(1.0, 1.0, 1.0), smoothstep(0.08, 0.82, diaFactor));
+        vec3 rimCol = mix(vec3(0.45, 0.32, 0.78), vec3(0.38, 0.76, 1.0), smoothstep(-0.7, 0.45, diaAlign) * (1.0 - uChoreo * 0.45));
+
+        vec3 col = crescentCol * crescent * (1.28 + 0.16 * uPulse + 0.35 * uHover + 0.22 * uChoreo + 0.9 * uIgnition)
+                 + vec3(0.55, 0.85, 1.0) * limbHaze * (0.85 + 0.45 * uHover)
+                 + rimCol * fullRim;
+
+        float edgeFade = 1.0 - smoothstep(1.26, 1.44, rMoon);
+        gl_FragColor = vec4(col * edgeFade * uFade, 1.0);
+      }
+    `
+  });
+}
+
+function createEclipseMoonMaterial() {
+  return new T.ShaderMaterial({
+    transparent: true,
+    depthWrite: true,
+    uniforms: {
+      uTime: { value: 0 },
+      uFade: { value: 1 },
+      uHover: { value: 0 },
+      uPulse: { value: 0.5 }
+    },
+    vertexShader: `
+      varying vec3 vNormalV;
+      varying vec3 vViewPos;
+      varying vec3 vObjPos;
+      void main() {
+        vObjPos = position;
+        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        vViewPos = -mv.xyz;
+        vNormalV = normalize(normalMatrix * normal);
+        gl_Position = projectionMatrix * mv;
+      }
+    `,
+    fragmentShader: `
+      uniform float uTime;
+      uniform float uFade;
+      uniform float uHover;
+      uniform float uPulse;
+      varying vec3 vNormalV;
+      varying vec3 vViewPos;
+      varying vec3 vObjPos;
+      void main() {
+        vec3 n = normalize(vNormalV);
+        vec3 v = normalize(vViewPos);
+        float ndv = clamp(dot(n, v), 0.0, 1.0);
+        float rim = pow(1.0 - ndv, 4.2);
+
+        // Sutil reflejo cósmico tenue sobre la cara oscura lunar (estética logo.jpg)
+        float wisp = sin(vObjPos.x * 3.1 + vObjPos.y * 2.4 + uTime * 0.12)
+                   * cos(vObjPos.y * 2.8 - vObjPos.z * 2.1);
+        float mist = smoothstep(0.1, 0.9, 0.5 + 0.5 * wisp) * smoothstep(0.08, 0.72, 1.0 - ndv) * 0.42;
+
+        float dia = smoothstep(-0.1, 0.9, dot(n, normalize(vec3(0.83, 0.56, 0.2))));
+        float arc = smoothstep(-0.2, 0.85, dot(n, normalize(vec3(-0.72, -0.58, 0.14))));
+
+        vec3 core = vec3(0.002, 0.004, 0.009) + vec3(0.032, 0.068, 0.14) * mist;
+        vec3 blueLimb = vec3(0.55, 0.86, 1.0) * rim * (0.45 + 0.85 * dia + 0.38 * uHover + 0.16 * uPulse);
+        vec3 violetLimb = vec3(0.56, 0.36, 0.92) * rim * (0.18 + 0.34 * arc + 0.18 * uHover);
+        gl_FragColor = vec4(core + blueLimb + violetLimb, uFade);
+      }
+    `
+  });
+}
+
+function createEclipseWarpRingMaterial() {
+  return new T.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    blending: T.AdditiveBlending,
+    uniforms: {
+      uProgress: { value: 0 },
+      uOpacity: { value: 0 }
+    },
+    vertexShader: `
+      varying vec2 vPos;
+      void main() {
+        vPos = position.xy;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform float uProgress;
+      uniform float uOpacity;
+      varying vec2 vPos;
+      void main() {
+        float r = length(vPos);
+        float ringR = 1.02 + uProgress * 0.75;
+        float dRing = (r - ringR) / (0.045 + uProgress * 0.05);
+        float ring = exp(-(dRing * dRing));
+        vec3 col = mix(vec3(0.36, 0.72, 1.0), vec3(1.0, 1.0, 1.0), ring) * ring * uOpacity;
+        gl_FragColor = vec4(col, 1.0);
+      }
+    `
+  });
+}
+
+function createEclipseReticleMaterial() {
+  return new T.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    blending: T.AdditiveBlending,
+    uniforms: {
+      uTime: { value: 0 },
+      uFade: { value: 1 },
+      uHover: { value: 0 },
+      uIgnition: { value: 0 }
+    },
+    vertexShader: `
+      varying vec2 vPos;
+      void main() {
+        vPos = position.xy;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform float uTime;
+      uniform float uFade;
+      uniform float uHover;
+      uniform float uIgnition;
+      varying vec2 vPos;
+      void main() {
+        float vis = clamp(uHover * 0.9 + uIgnition * 1.1, 0.0, 1.0) * uFade;
+        if (vis < 0.005) discard;
+        float r = length(vPos);
+        float ang = r > 0.0001 ? atan(vPos.y, vPos.x) : 0.0;
+
+        // Anillo coronográfico interior ultrafino con segmentos rotatorios
+        float dR1 = (r - (1.13 + uIgnition * 0.08)) / 0.0075;
+        float ring1 = exp(-(dR1 * dR1));
+        float dash1 = smoothstep(0.15, 0.55, sin(ang * 16.0 - uTime * 0.72));
+
+        // Anillo exterior de graduación fina con rotación inversa
+        float dR2 = (r - (1.24 + uIgnition * 0.14)) / 0.006;
+        float ring2 = exp(-(dR2 * dR2));
+        float dash2 = smoothstep(0.32, 0.72, cos(ang * 24.0 + uTime * 0.45));
+
+        // Marcas cardinales + subdivisiones astrométricas alrededor del limbo
+        float cardTicks = pow(max(0.0, abs(cos(ang * 2.0))), 64.0) * smoothstep(1.06, 1.09, r) * (1.0 - smoothstep(1.27, 1.32, r));
+        float minorTicks = pow(max(0.0, abs(cos(ang * 6.0))), 38.0) * smoothstep(1.16, 1.18, r) * (1.0 - smoothstep(1.25, 1.28, r));
+
+        float lineMask = ring1 * dash1 * 0.85 + ring2 * dash2 * 0.62 + cardTicks * 1.15 + minorTicks * 0.65;
+        vec3 col = mix(vec3(0.36, 0.76, 1.0), vec3(0.76, 0.54, 1.0), 0.5 + 0.5 * sin(ang * 2.0 + uTime * 0.6));
+        col = mix(col, vec3(0.96, 0.99, 1.0), clamp(cardTicks * 0.7 + uIgnition * 0.75, 0.0, 1.0));
+
+        gl_FragColor = vec4(col * lineMask * vis * 0.78, 1.0);
+      }
+    `
+  });
+}
+
 function resetEclipseMaterials() {
-  for (const entry of eclipseMats) {
-    entry.mat.opacity = entry.baseOpacity;
-    if (entry.mat.emissiveIntensity !== undefined) {
-      entry.mat.emissiveIntensity = entry.baseEmissive;
-    }
+  eclipseHoverMix = 0;
+  eclipseChoreoMix = 0;
+  if (eclipseCoronaPlane?.material.uniforms) {
+    eclipseCoronaPlane.material.uniforms.uFade.value = 1;
+    eclipseCoronaPlane.material.uniforms.uHover.value = 0;
+    eclipseCoronaPlane.material.uniforms.uIgnition.value = 0;
+    eclipseCoronaPlane.material.uniforms.uChoreo.value = 0;
   }
-  if (eclipseHalo) {
-    eclipseHalo.material.opacity = 0.92;
-    eclipseHalo.scale.set(4.6, 4.6, 1);
+  if (eclipseCrescentPlane?.material.uniforms) {
+    eclipseCrescentPlane.material.uniforms.uFade.value = 1;
+    eclipseCrescentPlane.material.uniforms.uHover.value = 0;
+    eclipseCrescentPlane.material.uniforms.uPulse.value = 0.5;
+    eclipseCrescentPlane.material.uniforms.uIgnition.value = 0;
+    eclipseCrescentPlane.material.uniforms.uChoreo.value = 0;
   }
-  if (eclipseDiamondSprite) {
-    eclipseDiamondSprite.material.opacity = 0.98;
-    eclipseDiamondSprite.scale.set(2.2, 2.2, 1);
+  if (eclipseReticlePlane?.material.uniforms) {
+    eclipseReticlePlane.material.uniforms.uFade.value = 1;
+    eclipseReticlePlane.material.uniforms.uHover.value = 0;
+    eclipseReticlePlane.material.uniforms.uIgnition.value = 0;
   }
-  if (eclipseModelPivot) eclipseModelPivot.rotation.set(0, 0, 0);
+  if (eclipseMoonMesh?.material.uniforms) {
+    eclipseMoonMesh.material.uniforms.uFade.value = 1;
+    eclipseMoonMesh.material.uniforms.uHover.value = 0;
+    eclipseMoonMesh.material.uniforms.uPulse.value = 0.5;
+  }
+  if (eclipseWarpRing?.material.uniforms) {
+    eclipseWarpRing.material.uniforms.uProgress.value = 0;
+    eclipseWarpRing.material.uniforms.uOpacity.value = 0;
+    eclipseWarpRing.visible = false;
+  }
+  if (eclipseDiamondStar) {
+    eclipseDiamondStar.material.opacity = 0.96;
+    eclipseDiamondStar.scale.setScalar(1.38);
+  }
+  if (eclipseDiamondRay) {
+    eclipseDiamondRay.material.opacity = 0.88;
+    eclipseDiamondRay.scale.set(3.25, 0.56, 1);
+  }
+  if (eclipseModelPivot) eclipseModelPivot.rotation.set(0.06, -0.08, 0);
 }
 
 function buildEclipsePortal() {
@@ -343,118 +823,83 @@ function buildEclipsePortal() {
   eclipseRig.name = 'EclipsePortal';
   eclipseRig.visible = activeRoute === 'inicio';
 
-  // Halo bicapa incandescente de la corona solar
-  const haloMat = new T.SpriteMaterial({
-    map: makeSolarCoronaTexture(),
-    transparent: true,
-    opacity: 0.92,
-    blending: T.AdditiveBlending,
-    depthWrite: false
-  });
-  eclipseHalo = new T.Sprite(haloMat);
-  eclipseHalo.position.set(0, 0, -0.42);
-  eclipseHalo.scale.set(4.6, 4.6, 1);
-  eclipseRig.add(eclipseHalo);
+  eclipseModelPivot = new T.Group();
+  eclipseModelPivot.name = 'DiamondEclipse3D';
+  eclipseModelPivot.rotation.set(0.06, -0.08, 0);
 
-  // Destello de diamante en el limbo lunar (efecto anillo de diamante)
-  const diamondMat = new T.SpriteMaterial({
-    map: makeDiamondStarburstTexture(),
-    transparent: true,
-    opacity: 0.98,
-    blending: T.AdditiveBlending,
-    depthWrite: false
-  });
-  eclipseDiamondSprite = new T.Sprite(diamondMat);
-  eclipseDiamondSprite.position.set(0.68, 0.68, 0.08);
-  eclipseDiamondSprite.scale.set(2.2, 2.2, 1);
-  eclipseRig.add(eclipseDiamondSprite);
+  eclipseCoronaPlane = new T.Mesh(
+    new T.PlaneGeometry(5.8, 5.8),
+    createEclipseCoronaMaterial()
+  );
+  eclipseCoronaPlane.position.set(0, 0, -0.35);
+  eclipseModelPivot.add(eclipseCoronaPlane);
 
-  // Iluminación física estricta de eclipse total:
-  // Contraluz solar primario detrás de la luna (Z < 0)
-  const solarBacklight = new T.PointLight(0xffffff, 4.8, 25);
-  solarBacklight.position.set(0.7, 0.7, -1.8);
-  const diamondRim = new T.DirectionalLight(0x8fd2ff, 3.2);
-  diamondRim.position.set(1.8, 1.8, -1.2);
-  const coronaRim = new T.DirectionalLight(0xb57bff, 2.4);
-  coronaRim.position.set(-2.0, -1.5, -1.4);
-  // Sombra frontal con leve luz cenicienta (earthshine) para no lavar cráteres
-  const earthshine = new T.DirectionalLight(0x0a1426, 0.22);
-  earthshine.position.set(0, 0, 4.0);
-  eclipseRig.add(solarBacklight, diamondRim, coronaRim, earthshine);
+  eclipseCrescentPlane = new T.Mesh(
+    new T.PlaneGeometry(3.0, 3.0),
+    createEclipseCrescentMaterial()
+  );
+  eclipseCrescentPlane.position.set(0, 0, -0.03);
+  eclipseModelPivot.add(eclipseCrescentPlane);
+
+  eclipseMoonMesh = new T.Mesh(
+    new T.SphereGeometry(1.0, 64, 64),
+    createEclipseMoonMaterial()
+  );
+  eclipseModelPivot.add(eclipseMoonMesh);
+
+  eclipseWarpRing = new T.Mesh(
+    new T.PlaneGeometry(4.2, 4.2),
+    createEclipseWarpRingMaterial()
+  );
+  eclipseWarpRing.position.set(0, 0, 0.04);
+  eclipseWarpRing.visible = false;
+  eclipseModelPivot.add(eclipseWarpRing);
+
+  eclipseReticlePlane = new T.Mesh(
+    new T.PlaneGeometry(3.4, 3.4),
+    createEclipseReticleMaterial()
+  );
+  eclipseReticlePlane.position.set(0, 0, 0.06);
+  eclipseModelPivot.add(eclipseReticlePlane);
+
+  // Destello de anillo de diamante posicionado sobre la cúspide superior derecha (~34°)
+  const diaX = 0.83 * 1.032;
+  const diaY = 0.56 * 1.032;
+
+  eclipseDiamondStar = new T.Sprite(new T.SpriteMaterial({
+    map: makeDiamondStarTexture(),
+    transparent: true,
+    opacity: 0.96,
+    blending: T.AdditiveBlending,
+    depthWrite: false,
+    depthTest: false
+  }));
+  eclipseDiamondStar.position.set(diaX, diaY, 1.05);
+  eclipseDiamondStar.scale.setScalar(1.18);
+
+  eclipseDiamondRay = new T.Sprite(new T.SpriteMaterial({
+    map: makeAnamorphicRayTexture(),
+    transparent: true,
+    opacity: 0.84,
+    rotation: 0.36,
+    blending: T.AdditiveBlending,
+    depthWrite: false,
+    depthTest: false
+  }));
+  eclipseDiamondRay.position.set(diaX + 0.14, diaY + 0.05, 1.04);
+  eclipseDiamondRay.scale.set(2.65, 0.44, 1);
+
+  eclipseModelPivot.add(eclipseDiamondStar, eclipseDiamondRay);
+  eclipseRig.add(eclipseModelPivot);
 
   const slotEl = document.querySelector('#inicio .eclipse-o');
-  if (slotEl) {
-    renderState(slotEl, { state: 'loading', variant: 'slot' });
-  }
+  captureEclipseFallbackMarkup(slotEl);
+  if (slotEl) slotEl.replaceChildren();
+  clearState(document.getElementById('cosmos-state'));
 
   scene.add(eclipseRig);
   updateEclipseSlotRect();
-
-  loadGlbGroup(T, './assets/models/eclipse.glb')
-    .then(model => {
-      if (slotEl) slotEl.replaceChildren();
-      clearState(document.getElementById('cosmos-state'));
-      if (!eclipseRig) return;
-      eclipseModelPivot = model;
-      eclipseMats.length = 0;
-      model.traverse(obj => {
-        if (!obj.isMesh || !obj.material) return;
-        const m = obj.material;
-        m.transparent = true;
-        m.depthWrite = true;
-        const name = `${obj.name || ''} ${m.name || ''}`;
-
-        if (/Moon|Sphere/i.test(name)) {
-          // Silueta lunar profunda de umbra a contraluz
-          m.color.setHex(0x060913);
-          m.roughness = 0.88;
-          m.metalness = 0.08;
-          m.emissive.setHex(0x000000);
-          m.emissiveIntensity = 0;
-        } else if (/Diamond/i.test(name)) {
-          // Malla del destello de diamante
-          m.color.setHex(0xffffff);
-          m.emissive.setHex(0xd0f0ff);
-          m.emissiveIntensity = 3.8;
-          m.blending = T.AdditiveBlending;
-        } else if (/Corona|Violet|Arc|Torus/i.test(name)) {
-          // Plasma y arcos de la corona
-          m.emissiveIntensity = 2.6;
-          m.blending = T.AdditiveBlending;
-        }
-
-        if (m.envMapIntensity !== undefined) m.envMapIntensity = 0.05;
-        eclipseMats.push({
-          mat: m,
-          baseOpacity: typeof m.opacity === 'number' ? m.opacity : 1,
-          baseEmissive: typeof m.emissiveIntensity === 'number' ? m.emissiveIntensity : 1
-        });
-      });
-      const clips = model.userData.clips || [];
-      if (clips.length) {
-        eclipseMixer = new T.AnimationMixer(model);
-        for (const clip of clips) eclipseMixer.clipAction(clip).play();
-      }
-      eclipseRig.add(model);
-      document.querySelector('#inicio .eclipse-o')?.classList.add('eclipse-ready');
-      updateEclipseSlotRect();
-      eclipseRig.visible = activeRoute === 'inicio' || eclipsePhase === 'transition';
-      if (eclipseRig.visible) wakeLoop();
-    })
-    .catch(() => {
-      if (slotEl) slotEl.replaceChildren();
-      if (eclipseRig) eclipseRig.visible = false;
-      if (activeRoute === 'inicio') {
-        renderState(document.getElementById('cosmos-state'), {
-          state: 'error',
-          variant: 'compact',
-          title: 'Modelo 3D del eclipse no disponible',
-          detail: 'Comprueba assets/models/eclipse.glb o continúa hacia la bóveda.',
-          actionLabel: 'Reintentar',
-          onAction: () => buildEclipsePortal()
-        });
-      }
-    });
+  syncWordmarkCss(0, 0, 0.45, false);
 }
 
 function updateEclipsePortalFrame(dt) {
@@ -469,17 +914,15 @@ function updateEclipsePortalFrame(dt) {
     return;
   }
 
-  if (eclipseSlot.size <= 0) updateEclipseSlotRect();
+  const reduced = Boolean(window.__skyReducedMotion);
+  if (eclipseSlot.size <= 0 || (activeRoute === 'inicio' && eclipsePhase === 'idle' && !reduced)) {
+    updateEclipseSlotRect();
+  }
   const w = window.innerWidth || 1280;
   const h = window.innerHeight || 720;
   const cx = eclipseSlot.size > 0 ? eclipseSlot.cx : w * 0.62;
   const cy = eclipseSlot.size > 0 ? eclipseSlot.cy : h * 0.5;
   const slotSize = eclipseSlot.size > 0 ? eclipseSlot.size : Math.min(w, h) * 0.16;
-  if (eclipsePhase === 'idle' && (cy < -slotSize * 0.6 || cy > h + slotSize)) {
-    eclipseRig.visible = false;
-    return;
-  }
-  eclipseRig.visible = true;
 
   if (!_eclipseRay.initialized) {
     _eclipseRay.v = new T.Vector3();
@@ -489,7 +932,7 @@ function updateEclipsePortalFrame(dt) {
 
   let progress = 0;
   if (eclipsePhase === 'transition') {
-    eclipseWarpT = Math.min(1, eclipseWarpT + dt / 0.88);
+    eclipseWarpT = Math.min(1, eclipseWarpT + dt / 0.80);
     progress = eclipseWarpT;
   }
 
@@ -503,7 +946,7 @@ function updateEclipsePortalFrame(dt) {
   const ndcY = slotNdcY * (1 - ease);
 
   const depth = eclipsePhase === 'transition'
-    ? 26 * (1 - Math.pow(progress, 1.55)) + 0.8 * (1 - progress)
+    ? 26 * (1 - Math.pow(progress, 1.42)) + 0.65 * (1 - progress)
     : 26;
 
   _eclipseRay.fwd.set(0, 0, -1).applyQuaternion(camera.quaternion).normalize();
@@ -516,59 +959,320 @@ function updateEclipsePortalFrame(dt) {
   eclipseRig.quaternion.copy(camera.quaternion);
 
   const worldScreenH = 2 * depth * Math.tan((camera.fov * Math.PI) / 360);
-  const baseScale = ((slotSize / h) * worldScreenH) * 0.44;
+  const baseScale = ((slotSize / h) * worldScreenH) * 0.368;
   const zoomScale = eclipsePhase === 'transition'
-    ? baseScale * (1 + 4.8 * Math.pow(progress, 1.45))
+    ? baseScale * (1 + 8.8 * Math.pow(progress, 1.48))
     : baseScale;
   eclipseRig.scale.setScalar(zoomScale);
 
-  if (eclipseMixer && !window.__skyReducedMotion) {
-    eclipseMixer.update(dt * (eclipsePhase === 'transition' ? 2.4 : 1.0));
-  }
+  const isHoverTarget = !reduced && activeRoute === 'inicio' && eclipsePhase === 'idle'
+    && (pointerClient.overEclipse || Boolean(heroPromptEl && heroPromptEl.matches(':hover')));
+  const hoverGoal = isHoverTarget ? 1 : (!reduced && activeRoute === 'inicio' && pointerClient.overKryo ? 0.55 : 0);
+  eclipseHoverMix += (hoverGoal - eclipseHoverMix) * Math.min(1, dt * 8);
 
   if (eclipseModelPivot) {
-    if (eclipsePhase === 'idle') {
-      const targetRx = 0.14 - cursorParallax.y * 0.22 + Math.sin(simTime * 0.65) * 0.04;
-      const targetRy = -0.18 + cursorParallax.x * 0.28 + Math.cos(simTime * 0.45) * 0.06;
+    if (reduced) {
+      eclipseModelPivot.rotation.set(0.06, -0.08, 0);
+    } else if (eclipsePhase === 'idle') {
+      const targetRx = 0.06 - cursorParallax.y * 0.22 + Math.sin(simTime * 0.65) * 0.03;
+      const targetRy = -0.08 + cursorParallax.x * 0.26 + Math.cos(simTime * 0.45) * 0.04;
       eclipseModelPivot.rotation.x += (targetRx - eclipseModelPivot.rotation.x) * 0.08;
       eclipseModelPivot.rotation.y += (targetRy - eclipseModelPivot.rotation.y) * 0.08;
-      eclipseModelPivot.rotation.z *= 0.92;
+      eclipseModelPivot.rotation.z += ((eclipseHoverMix * 0.035) - eclipseModelPivot.rotation.z) * 0.08;
     } else {
-      eclipseModelPivot.rotation.z += dt * 1.15;
+      eclipseModelPivot.rotation.z += dt * 0.92;
       eclipseModelPivot.rotation.y *= 0.9;
       eclipseModelPivot.rotation.x *= 0.9;
     }
   }
 
-  const fadeAlpha = eclipsePhase === 'transition' && progress > 0.72
-    ? Math.max(0, 1 - (progress - 0.72) / 0.28)
+  const fadeAlpha = eclipsePhase === 'transition' && progress > 0.42
+    ? Math.max(0, 1 - (progress - 0.42) / 0.55)
     : 1;
+  const moonFadeAlpha = eclipsePhase === 'transition' && progress > 0.26
+    ? Math.max(0, 1 - (progress - 0.26) / 0.42)
+    : 1;
+  const pulse = reduced
+    ? 0.5
+    : (0.5 + 0.44 * Math.sin(simTime * 1.8) + 0.06 * Math.sin(simTime * 5.2));
+  const ignitionFlash = eclipsePhase === 'transition' && progress < 0.32
+    ? Math.sin((progress / 0.32) * Math.PI)
+    : 0;
 
-  for (const entry of eclipseMats) {
-    entry.mat.opacity = entry.baseOpacity * fadeAlpha;
-    if (entry.mat.emissiveIntensity !== undefined && eclipsePhase === 'transition') {
-      entry.mat.emissiveIntensity = entry.baseEmissive * (1 + progress * 2.2) * fadeAlpha;
+  const choreoElapsed = simTime - kryoScanChoreoTime;
+  const choreoTarget = (!reduced && activeRoute === 'inicio' && eclipsePhase === 'idle' && choreoElapsed >= 0 && choreoElapsed < 2.6)
+    ? Math.sin((choreoElapsed / 2.6) * Math.PI)
+    : 0;
+  eclipseChoreoMix += (choreoTarget - eclipseChoreoMix) * Math.min(1, dt * 6);
+
+  if (eclipseCoronaPlane?.material.uniforms) {
+    const u = eclipseCoronaPlane.material.uniforms;
+    u.uTime.value = reduced ? 0 : simTime;
+    u.uFade.value = fadeAlpha;
+    u.uHover.value = eclipseHoverMix;
+    u.uIgnition.value = ignitionFlash;
+    u.uChoreo.value = eclipseChoreoMix;
+  }
+
+  if (eclipseCrescentPlane?.material.uniforms) {
+    const u = eclipseCrescentPlane.material.uniforms;
+    u.uFade.value = fadeAlpha;
+    u.uHover.value = eclipseHoverMix;
+    u.uPulse.value = pulse;
+    u.uIgnition.value = ignitionFlash;
+    u.uChoreo.value = eclipseChoreoMix;
+  }
+
+  if (eclipseMoonMesh?.material.uniforms) {
+    const u = eclipseMoonMesh.material.uniforms;
+    u.uTime.value = reduced ? 0 : simTime;
+    u.uFade.value = moonFadeAlpha;
+    u.uHover.value = eclipseHoverMix;
+    u.uPulse.value = pulse;
+  }
+
+  if (eclipseReticlePlane?.material.uniforms) {
+    const u = eclipseReticlePlane.material.uniforms;
+    u.uTime.value = reduced ? 0 : simTime;
+    u.uFade.value = moonFadeAlpha;
+    u.uHover.value = eclipseHoverMix;
+    u.uIgnition.value = ignitionFlash;
+  }
+
+  if (eclipseWarpRing?.material.uniforms) {
+    if (eclipsePhase === 'transition' && !reduced) {
+      eclipseWarpRing.visible = true;
+      eclipseWarpRing.material.uniforms.uProgress.value = progress;
+      eclipseWarpRing.material.uniforms.uOpacity.value = Math.sin(Math.min(1, progress) * Math.PI) * 0.85 * fadeAlpha;
+    } else {
+      eclipseWarpRing.visible = false;
     }
   }
 
-  if (eclipseDiamondSprite) {
-    const pulse = 2.2 + 0.25 * Math.sin(simTime * 4.2);
-    const flareMultiplier = eclipsePhase === 'transition' ? (1 + progress * 4.4) : 1;
-    eclipseDiamondSprite.scale.set(pulse * flareMultiplier, pulse * flareMultiplier, 1);
-    eclipseDiamondSprite.material.opacity = Math.min(1, (0.88 + 0.12 * Math.sin(simTime * 3.8))) * fadeAlpha;
+  const diaBaseX = 0.83 * 1.032;
+  const diaBaseY = 0.56 * 1.032;
+
+  if (eclipseDiamondStar) {
+    const starScale = reduced
+      ? 1.38
+      : (1.36 + 0.16 * pulse + eclipseHoverMix * 0.38 + eclipseChoreoMix * 0.22 + ignitionFlash * 0.88);
+    eclipseDiamondStar.position.set(
+      diaBaseX + (reduced ? 0 : cursorParallax.x * 0.032),
+      diaBaseY + (reduced ? 0 : -cursorParallax.y * 0.024),
+      1.05
+    );
+    eclipseDiamondStar.scale.setScalar(starScale);
+    eclipseDiamondStar.material.rotation = reduced ? 0 : (Math.sin(simTime * 0.72) * 0.075 + cursorParallax.x * 0.16);
+    eclipseDiamondStar.material.opacity = Math.min(1, 0.9 + 0.1 * pulse + eclipseHoverMix * 0.1 + eclipseChoreoMix * 0.08 + ignitionFlash * 0.15) * fadeAlpha;
   }
 
-  if (eclipseHalo) {
-    const hPulse = 4.6 + 0.32 * Math.sin(simTime * 1.8);
-    const haloExpand = eclipsePhase === 'transition' ? (1 + progress * 4.6) : 1;
-    eclipseHalo.scale.set(hPulse * haloExpand, hPulse * haloExpand, 1);
-    eclipseHalo.material.opacity = (0.84 + 0.12 * Math.sin(simTime * 1.8)) * fadeAlpha;
+  if (eclipseDiamondRay) {
+    const rayW = reduced
+      ? 3.25
+      : (3.25 + 0.44 * pulse + eclipseHoverMix * 1.05 + eclipseChoreoMix * 0.48 + ignitionFlash * 1.65);
+    const rayH = reduced
+      ? 0.56
+      : (0.56 + 0.08 * pulse + eclipseHoverMix * 0.18 + eclipseChoreoMix * 0.08 + ignitionFlash * 0.3);
+    eclipseDiamondRay.position.set(
+      diaBaseX + 0.14 + (reduced ? 0 : cursorParallax.x * 0.042),
+      diaBaseY + 0.05 + (reduced ? 0 : -cursorParallax.y * 0.03),
+      1.04
+    );
+    eclipseDiamondRay.scale.set(rayW, rayH, 1);
+    eclipseDiamondRay.material.rotation = 0.36 + (reduced ? 0 : Math.sin(simTime * 0.9) * 0.018 + cursorParallax.x * 0.24 - cursorParallax.y * 0.14);
+    eclipseDiamondRay.material.opacity = Math.min(1, 0.84 + 0.14 * pulse + eclipseHoverMix * 0.18 + eclipseChoreoMix * 0.12 + ignitionFlash * 0.25) * fadeAlpha;
+  }
+
+  if (activeRoute === 'inicio') {
+    if (reduced) {
+      syncWordmarkCss(0, 0, 0.45, false, 0);
+    } else if (eclipsePhase === 'transition') {
+      syncWordmarkCss(cursorParallax.x, cursorParallax.y, 0.88 + ignitionFlash * 0.45, true, 0);
+    } else {
+      const glow = 0.28 + 0.42 * pulse + eclipseHoverMix * 0.36 + eclipseChoreoMix * 0.24;
+      syncWordmarkCss(cursorParallax.x, cursorParallax.y, glow, isHoverTarget, eclipseChoreoMix);
+    }
   }
 
   if (eclipsePhase === 'transition' && progress >= 1) {
     eclipsePhase = 'done';
+    isWarpingFromInicio = false;
     eclipseRig.visible = false;
     resetEclipseMaterials();
+    resetWordmarkCss();
+    if (activeRoute !== 'inicio' && inicioGroup) {
+      inicioGroup.visible = false;
+      inicioGroup.scale.set(1, 1, 1);
+      if (inicioMilkyWay?.material?.uniforms?.uWarp) {
+        inicioMilkyWay.material.uniforms.uWarp.value = 0;
+      }
+    }
+  }
+}
+
+/* ==========================================================================
+   0a-bis. Túnel de Estelas Estelares (WarpTunnel) y Onda de Choque Cian/Violeta
+   ========================================================================== */
+function buildWarpEffects() {
+  if (!scene || !T || warpEffectsGroup) return;
+  warpEffectsGroup = new T.Group();
+  warpEffectsGroup.visible = false;
+  warpEffectsGroup.renderOrder = 16;
+
+  const count = 112;
+  const positions = new Float32Array(count * 6);
+  const colors = new Float32Array(count * 6);
+  warpTunnelData = [];
+
+  for (let i = 0; i < count; i++) {
+    const theta = i * 2.3999632 + (i % 5) * 0.14;
+    const radius = 1.65 + (((i * 19) % 100) / 100) * 10.2;
+    const baseZ = -35 + (((i * 37) % 100) / 100) * 28;
+    const speed = 28 + (((i * 53) % 100) / 100) * 24;
+    const len = 3.2 + (((i * 29) % 100) / 100) * 6.2;
+    warpTunnelData.push({ theta, radius, baseZ, speed, len });
+
+    const base = i * 6;
+    const isViolet = i % 3 === 0;
+    // Punta luminosa cian/blanca
+    colors[base] = isViolet ? 0.86 : 0.72;
+    colors[base + 1] = isViolet ? 0.82 : 0.94;
+    colors[base + 2] = 1.0;
+    // Estela cian/violeta
+    colors[base + 3] = isViolet ? 0.71 : 0.36;
+    colors[base + 4] = isViolet ? 0.48 : 0.72;
+    colors[base + 5] = 1.0;
+  }
+
+  const lineGeo = new T.BufferGeometry();
+  lineGeo.setAttribute('position', new T.BufferAttribute(positions, 3));
+  lineGeo.setAttribute('color', new T.BufferAttribute(colors, 3));
+
+  const lineMat = new T.LineBasicMaterial({
+    vertexColors: true,
+    transparent: true,
+    opacity: 0,
+    blending: T.AdditiveBlending,
+    depthTest: false,
+    depthWrite: false
+  });
+  warpTunnelLines = new T.LineSegments(lineGeo, lineMat);
+  warpTunnelLines.frustumCulled = false;
+  warpTunnelLines.renderOrder = 16;
+  warpEffectsGroup.add(warpTunnelLines);
+
+  const shockGeo = new T.PlaneGeometry(2.4, 2.4);
+  const shockMat = new T.ShaderMaterial({
+    transparent: true,
+    depthTest: false,
+    depthWrite: false,
+    blending: T.AdditiveBlending,
+    uniforms: {
+      uProgress: { value: 0 },
+      uOpacity: { value: 0 }
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv * 2.0 - 1.0;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      precision highp float;
+      varying vec2 vUv;
+      uniform float uProgress;
+      uniform float uOpacity;
+      void main() {
+        float r = length(vUv);
+        if (r > 1.0) discard;
+        float ring1R = mix(0.18, 0.88, pow(uProgress, 0.78));
+        float ring2R = mix(0.10, 0.68, pow(uProgress, 0.92));
+        float d1 = (r - ring1R) / 0.085;
+        float d2 = (r - ring2R) / 0.065;
+        float w1 = exp(-d1 * d1);
+        float w2 = exp(-d2 * d2);
+        float edgeFade = smoothstep(1.0, 0.78, r);
+        vec3 cyan = vec3(0.45, 0.84, 1.0);
+        vec3 violet = vec3(0.71, 0.48, 1.0);
+        vec3 col = cyan * w1 * 0.85 + violet * w2 * 0.65;
+        float alpha = (w1 * 0.52 + w2 * 0.38) * edgeFade * uOpacity;
+        gl_FragColor = vec4(col * alpha, alpha);
+      }
+    `
+  });
+  warpShockwaveOuter = new T.Mesh(shockGeo, shockMat);
+  warpShockwaveOuter.position.set(0, 0, -14.5);
+  warpShockwaveOuter.renderOrder = 17;
+  warpEffectsGroup.add(warpShockwaveOuter);
+  warpShockwaveInner = null;
+
+  scene.add(warpEffectsGroup);
+}
+
+function startWarpEffects(intensity = 1, duration = 0.86) {
+  if (!warpEffectsGroup || window.__skyReducedMotion) {
+    warpEffectActive = false;
+    if (warpEffectsGroup) warpEffectsGroup.visible = false;
+    return;
+  }
+  warpEffectActive = true;
+  warpEffectT = 0;
+  warpEffectDuration = Math.max(0.2, duration);
+  warpEffectIntensity = intensity;
+  warpEffectsGroup.visible = true;
+}
+
+function updateWarpEffectsFrame(dt) {
+  if (!warpEffectsGroup || !camera) return;
+  if (!warpEffectActive || window.__skyReducedMotion) {
+    warpEffectsGroup.visible = false;
+    return;
+  }
+
+  warpEffectT = Math.min(1, warpEffectT + dt / warpEffectDuration);
+  const p = warpEffectT;
+  const envelope = Math.sin(p * Math.PI);
+  const fastBell = Math.sin(Math.min(1, p / 0.76) * Math.PI);
+
+  warpEffectsGroup.position.copy(camera.position);
+  warpEffectsGroup.quaternion.copy(camera.quaternion);
+
+  if (warpTunnelLines && warpTunnelData) {
+    warpTunnelLines.material.opacity = Math.min(0.82, envelope * 0.76 * warpEffectIntensity);
+    const posAttr = warpTunnelLines.geometry.attributes.position;
+    const arr = posAttr.array;
+    const radialBoost = 1 + p * 0.38 * warpEffectIntensity;
+    for (let i = 0; i < warpTunnelData.length; i++) {
+      const d = warpTunnelData[i];
+      const zHead = -35 + ((d.baseZ + 35 + p * d.speed) % 32);
+      const streakLen = d.len * (0.22 + 1.35 * envelope * warpEffectIntensity);
+      const zTail = zHead - streakLen;
+      const rNow = (d.radius + 1.8) * radialBoost;
+      const x = Math.cos(d.theta) * rNow;
+      const y = Math.sin(d.theta) * rNow;
+      const base = i * 6;
+      arr[base] = x;
+      arr[base + 1] = y;
+      arr[base + 2] = zHead;
+      arr[base + 3] = x * 0.92;
+      arr[base + 4] = y * 0.92;
+      arr[base + 5] = zTail;
+    }
+    posAttr.needsUpdate = true;
+  }
+
+  if (warpShockwaveOuter?.material?.uniforms) {
+    const easeOut = 1 - Math.pow(1 - p, 2.2);
+    const outerScale = 4.2 + easeOut * 14.5 * warpEffectIntensity;
+    warpShockwaveOuter.scale.setScalar(outerScale);
+    warpShockwaveOuter.material.uniforms.uProgress.value = p;
+    warpShockwaveOuter.material.uniforms.uOpacity.value = Math.max(0, fastBell * (1 - p * 0.45) * 0.55 * warpEffectIntensity);
+  }
+
+  if (p >= 1) {
+    warpEffectActive = false;
+    warpEffectsGroup.visible = false;
   }
 }
 
@@ -641,8 +1345,10 @@ function updateKryoSlotRect() {
 }
 
 function setKryoStatusLabel(label) {
-  const el = document.getElementById('kryo9-status-text');
-  if (el) el.textContent = label;
+  if (label === lastKryoStatusLabel) return;
+  lastKryoStatusLabel = label;
+  kryoStatusEl ||= document.getElementById('kryo9-status-text');
+  if (kryoStatusEl) kryoStatusEl.textContent = label;
 }
 
 function resetKryoMaterials() {
@@ -1193,14 +1899,14 @@ function buildKryoShowcase() {
   kryoRig.name = 'Kryo9Showcase';
   kryoRig.visible = false;
 
-  const keyLight = new T.DirectionalLight(0xfff4e6, 2.35);
+  const keyLight = new T.DirectionalLight(0xfff4e6, 1.85);
   keyLight.position.set(3.2, 4.4, 4.8);
-  const rimCyan = new T.DirectionalLight(0x38bdf8, 2.05);
-  rimCyan.position.set(-3.8, 2.6, -2.5);
-  kryoRimCoral = new T.PointLight(0xff6b42, 1.05, 11);
+  kryoRimCyan = new T.DirectionalLight(0x58c8ff, 2.65);
+  kryoRimCyan.position.set(-4.2, 3.2, -1.8);
+  kryoRimCoral = new T.PointLight(0xff6b42, 0.95, 11);
   kryoRimCoral.position.set(0.15, -1.35, 1.25);
-  const fillHemi = new T.HemisphereLight(0xdbeafe, 0x0b1224, 0.8);
-  kryoRig.add(keyLight, rimCyan, kryoRimCoral, fillHemi);
+  const fillHemi = new T.HemisphereLight(0xdbeafe, 0x0b1224, 0.58);
+  kryoRig.add(keyLight, kryoRimCyan, kryoRimCoral, fillHemi);
 
   const thrusterTex = makeGlowTexture('rgba(255,220,180,0.95)', 'rgba(255,90,48,0.42)');
   const makeThrusterSprite = () => new T.Sprite(new T.SpriteMaterial({
@@ -1274,12 +1980,6 @@ function updateKryoFrame(dt) {
   const cy = kryoSlot.h > 0 ? kryoSlot.cy : fallbackCy;
   const stageH = kryoSlot.h > 0 ? kryoSlot.h : Math.min(w, h) * 0.45;
   const stageW = kryoSlot.w > 0 ? kryoSlot.w : Math.min(w, h) * 0.45;
-  if (kryoPhase === 'idle' && (cy < -stageH * 0.45 || cy > h + stageH * 0.6)) {
-    kryoRig.visible = false;
-    if (kryoExhaust) kryoExhaust.visible = false;
-    return;
-  }
-  kryoRig.visible = true;
 
   ensureKryoTmp();
 
@@ -1295,11 +1995,21 @@ function updateKryoFrame(dt) {
   let ndcX = slotNdcX;
   let ndcY = slotNdcY;
   let depth = 22;
-  let ignition = 0;
+  const isIdleReady = !reduced && kryoPhase === 'idle' && activeRoute === 'inicio'
+    && (pointerClient.overKryo || pointerClient.overEclipse || Boolean(heroPromptEl && heroPromptEl.matches(':hover')));
+  kryoHoverMix += ((isIdleReady ? 1 : 0) - kryoHoverMix) * Math.min(1, dt * 8);
+  let ignition = kryoPhase === 'idle' ? kryoHoverMix * 0.36 : 0;
   let cruiseSpeed = 0;
-  let targetYaw = -0.22;
+  const idleBaseYaw = w > 960 ? -0.34 : -0.14;
+  let targetYaw = idleBaseYaw;
   let targetPitch = 0.04;
   let targetRoll = 0;
+
+  if (kryoPhase === 'idle' && activeRoute === 'inicio') {
+    kryoStageEl ||= document.getElementById('kryo9-stage');
+    if (kryoStageEl) kryoStageEl.classList.toggle('is-ready', isIdleReady);
+    setKryoStatusLabel(isIdleReady ? 'Listo para despegar' : 'Copiloto orbital');
+  }
 
   if (kryoPhase === 'takeoff') {
     if (!kryoOrbitCurve) kryoOrbitCurve = buildOrbitalCurve(slotNdcX, slotNdcY);
@@ -1345,7 +2055,7 @@ function updateKryoFrame(dt) {
 
       if (!kryoDidLandingWave && progress >= 0.75 && kryoActions.Wave_Hello) {
         kryoDidLandingWave = true;
-        setKryoStatusLabel('KRYO-9 · ENTRANDO EN ÓRBITA ICRS');
+        setKryoStatusLabel('Entrando en bóveda');
         playKryoAction('Wave_Hello', { fade: 0.24, loopOnce: true, timeScale: 1.35 });
       }
     }
@@ -1380,15 +2090,18 @@ function updateKryoFrame(dt) {
   kryoBaseScale = ((targetPx / h) * worldScreenH) * 0.44;
   kryoRig.scale.setScalar(kryoBaseScale);
 
-  // Micro-gestos reactivos y mezcla de animaciones NLA
+  // Micro-gestos reactivos y coreografía orbital sincronizada con el Eclipse
+  const choreoPulse = (!reduced && kryoPhase === 'idle') ? eclipseChoreoMix : 0;
   if (!reduced && kryoMixer) {
     if (kryoPhase === 'idle') {
       kryoIdleTimer += dt;
-      if (kryoIdleTimer >= 6.8 && kryoCurrentAction === kryoActions.Idle_Float) {
+      if (kryoIdleTimer >= 8.8 && kryoCurrentAction === kryoActions.Idle_Float) {
         kryoIdleTimer = 0;
-        const nextClip = (Math.floor(simTime / 6) % 2 === 0 && kryoActions.Scan_Sky)
-          ? 'Scan_Sky'
-          : 'Wave_Hello';
+        const doScan = Math.floor(simTime / 8.8) % 2 === 0;
+        const nextClip = (doScan && kryoActions.Scan_Sky) ? 'Scan_Sky' : 'Wave_Hello';
+        if (nextClip === 'Scan_Sky') {
+          kryoScanChoreoTime = simTime;
+        }
         if (kryoActions[nextClip]) playKryoAction(nextClip, { fade: 0.38, loopOnce: true });
       }
       if (pointerClient.overKryo && (simTime - kryoLastWaveSim > 8.5) && kryoActions.Wave_Hello && kryoCurrentAction === kryoActions.Idle_Float) {
@@ -1402,8 +2115,8 @@ function updateKryoFrame(dt) {
 
   // Orientación suave del cuerpo y seguimiento de visor al cursor
   if (kryoPhase === 'idle') {
-    const hoverYaw = -0.22 + (pointerClient.moved ? cursorParallax.x * 0.42 : 0) + (reduced ? 0 : Math.sin(simTime * 0.55) * 0.05);
-    const hoverPitch = 0.04 - (pointerClient.moved ? cursorParallax.y * 0.18 : 0);
+    const hoverYaw = idleBaseYaw - choreoPulse * 0.16 + (pointerClient.moved ? cursorParallax.x * 0.42 : 0) + (reduced ? 0 : Math.sin(simTime * 0.55) * 0.05);
+    const hoverPitch = 0.04 - choreoPulse * 0.09 - (pointerClient.moved ? cursorParallax.y * 0.18 : 0);
     kryoFlightRot.yaw += (hoverYaw - kryoFlightRot.yaw) * 0.09;
     kryoFlightRot.pitch += (hoverPitch - kryoFlightRot.pitch) * 0.09;
     kryoFlightRot.roll *= 0.9;
@@ -1500,6 +2213,11 @@ function updateKryoFrame(dt) {
     }
   }
 
+  if (kryoRimCyan) {
+    kryoRimCyan.color.setRGB(0.35 + choreoPulse * 0.32, 0.78 - choreoPulse * 0.22, 1.0);
+    kryoRimCyan.intensity = (2.65 + choreoPulse * 1.55) * fadeAlpha;
+  }
+
   if (kryoRimCoral) {
     kryoRimCoral.intensity = (1.05 + ignition * 3.4) * fadeAlpha;
   }
@@ -1516,8 +2234,8 @@ function updateKryoFrame(dt) {
     if (m.emissiveIntensity !== undefined) {
       if (entry.name === 'Mat_InfraredThruster') {
         m.emissiveIntensity = entry.baseEmissive * (0.9 + glowPulse * (kryoPhase === 'takeoff' ? 1.65 : 0.25)) * fadeAlpha;
-      } else if (entry.name === 'Mat_CyanGlow' || entry.name === 'Mat_CyanRing') {
-        m.emissiveIntensity = entry.baseEmissive * (1 + ignition * 0.55) * fadeAlpha;
+      } else if (entry.name === 'Mat_CyanGlow' || entry.name === 'Mat_CyanRing' || entry.name === 'Mat_PlanetRing') {
+        m.emissiveIntensity = entry.baseEmissive * (1 + ignition * 0.55 + choreoPulse * 0.75) * fadeAlpha;
       } else {
         m.emissiveIntensity = entry.baseEmissive * fadeAlpha;
       }
@@ -1567,7 +2285,7 @@ function updateKryoFrame(dt) {
     kryoOrbitTrailPts.length = 0;
     updateKryoSpeedLines(dt, 0);
     resetKryoMaterials();
-    setKryoStatusLabel('KRYO-9 · EN BÓVEDA ICRS');
+    setKryoStatusLabel('En bóveda ICRS');
   }
 }
 
@@ -1601,31 +2319,220 @@ function buildSharedStarfield() {
   geom.setAttribute('position', new T.BufferAttribute(pos, 3));
   geom.setAttribute('color', new T.BufferAttribute(col, 3));
   starField = new T.Points(geom, new T.PointsMaterial({
-    size: 2.0,
+    size: 3.1,
+    map: makePinpointStarTexture(),
     vertexColors: true,
     sizeAttenuation: false,
     transparent: true,
-    opacity: 0.9
+    opacity: 0.92,
+    blending: T.AdditiveBlending,
+    depthWrite: false
   }));
   scene.add(starField);
 }
 
 /* ==========================================================================
-   2. Escena Panel 1: Inicio (Constelaciones 3D + Anillo Corona Profundo)
+   2. Escena Panel 1: Inicio (Vía Láctea Procedural + Constelaciones 3D)
    ========================================================================== */
+function createMilkyWayBackdropMaterial() {
+  return new T.ShaderMaterial({
+    transparent: false,
+    depthWrite: false,
+    depthTest: false,
+    uniforms: {
+      uTime: { value: 0 },
+      uResolution: { value: new T.Vector2(1440, 900) },
+      uParallax: { value: new T.Vector2(0, 0) },
+      uWarp: { value: 0 },
+      uReduced: { value: 0 }
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = position.xy * 0.5 + 0.5;
+        gl_Position = vec4(position.xy, 0.9999, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform float uTime;
+      uniform vec2 uResolution;
+      uniform vec2 uParallax;
+      uniform float uWarp;
+      uniform float uReduced;
+      varying vec2 vUv;
+
+      float hash21(vec2 p) {
+        p = fract(p * vec2(123.34, 456.21));
+        p += dot(p, p + 45.32);
+        return fract(p.x * p.y);
+      }
+
+      float noise(vec2 p) {
+        vec2 i = floor(p);
+        vec2 f = fract(p);
+        vec2 u = f * f * (3.0 - 2.0 * f);
+        float a = hash21(i);
+        float b = hash21(i + vec2(1.0, 0.0));
+        float c = hash21(i + vec2(0.0, 1.0));
+        float d = hash21(i + vec2(1.0, 1.0));
+        return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+      }
+
+      float fbm4(vec2 p) {
+        float v = 0.0;
+        float a = 0.5;
+        mat2 rot = mat2(0.80, 0.60, -0.60, 0.80);
+        for (int i = 0; i < 4; i++) {
+          v += a * noise(p);
+          p = rot * p * 2.04 + vec2(17.3, 9.2);
+          a *= 0.5;
+        }
+        return v;
+      }
+
+      float fbm5(vec2 p) {
+        float v = 0.0;
+        float a = 0.5;
+        mat2 rot = mat2(0.80, -0.60, 0.60, 0.80);
+        for (int i = 0; i < 5; i++) {
+          v += a * noise(p);
+          p = rot * p * 2.07 + vec2(11.7, 23.1);
+          a *= 0.5;
+        }
+        return v;
+      }
+
+      float ridgedDust(vec2 p) {
+        float n = fbm5(p);
+        float r = 1.0 - abs(n * 2.0 - 1.0);
+        return pow(clamp(r, 0.0, 1.0), 1.65);
+      }
+
+      float starLayer(vec2 uv, float scale, float threshold, float t) {
+        vec2 gv = fract(uv * scale) - 0.5;
+        vec2 id = floor(uv * scale);
+        float rnd = hash21(id);
+        if (rnd < threshold) return 0.0;
+        vec2 off = vec2(fract(rnd * 37.1) - 0.5, fract(rnd * 91.7) - 0.5) * 0.56;
+        float d = length(gv - off);
+        float twinkle = 0.72 + 0.28 * sin(t * (1.2 + fract(rnd * 13.7) * 2.4) + rnd * 62.8);
+        float core = exp(-d * d * 56.0);
+        float halo = exp(-d * 10.5) * 0.24;
+        float mag = smoothstep(threshold, 1.0, rnd);
+        return (core + halo) * twinkle * (0.28 + 0.72 * mag);
+      }
+
+      void main() {
+        float aspect = uResolution.x / max(1.0, uResolution.y);
+        float motion = 1.0 - uReduced;
+        float t = uTime * motion;
+
+        vec2 p = (vUv - 0.5) * vec2(aspect, 1.0);
+        p -= uParallax * 0.042 * motion;
+        p *= 1.0 - uWarp * 0.14;
+
+        // Plano galáctico diagonal inclinado con curvatura natural del arco
+        float ang = -0.58;
+        float ca = cos(ang);
+        float sa = sin(ang);
+        vec2 origin = p - vec2(0.10 * min(aspect, 1.45), -0.02);
+        vec2 g = mat2(ca, -sa, sa, ca) * origin;
+        g.y += 0.105 * (g.x * g.x) - 0.032 * sin(g.x * 1.45 + 0.4);
+
+        // Domain warping orgánico para nubes moleculares y brazos espirales
+        float drift = t * 0.011;
+        vec2 q = vec2(
+          fbm4(g * 2.25 + vec2(drift, -drift * 0.4)),
+          fbm4(g * 2.35 + vec2(4.2 - drift * 0.5, 1.9))
+        );
+        float warpClouds = fbm4(g * 3.4 + q * 1.35 + vec2(-drift * 0.35, drift * 0.25));
+        float fineFilaments = fbm5(g * 6.8 + q * 1.85);
+
+        // Envolturas de densidad galáctica
+        float gx = (g.x - 0.10) * 0.85;
+        float radialX = exp(-(gx * gx));
+        float bandEnv = exp(-abs(g.y + (q.x - 0.5) * 0.11) * 3.15);
+        float broadHalo = exp(-abs(g.y) * 2.15);
+        float bulge = exp(-length((g - vec2(0.12, -0.01)) * vec2(1.22, 2.35)) * 1.46);
+
+        // Paleta atmosférica sin desaturación gris: cielo abismal -> zafiro/violeta SKYO -> núcleo dorado-ámbar
+        vec3 bgSky = vec3(0.0, 0.002, 0.007);
+        vec3 deepTeal = vec3(0.008, 0.036, 0.076);
+        vec3 outerBlue = vec3(0.10, 0.42, 0.92);
+        vec3 innerCyan = vec3(0.28, 0.70, 1.00);
+        vec3 outerViolet = vec3(0.58, 0.30, 0.96);
+        vec3 warmCore = vec3(1.00, 0.68, 0.30);
+        vec3 copperEdge = vec3(0.82, 0.34, 0.14);
+
+        float cloudStrength = smoothstep(0.26, 0.84, warpClouds * 0.66 + fineFilaments * 0.34);
+        vec3 skyWash = mix(bgSky, deepTeal, broadHalo * (0.16 + 0.30 * q.y));
+
+        vec3 armNebula = mix(outerBlue, outerViolet, smoothstep(0.30, 0.78, q.y + 0.18 * sin(g.x * 2.2)));
+        armNebula = mix(armNebula, innerCyan, smoothstep(0.52, 0.90, fineFilaments) * 0.46);
+
+        vec3 coreGlow = mix(copperEdge, warmCore, smoothstep(0.14, 0.82, bulge + cloudStrength * 0.32));
+        float bulgeMix = clamp(bulge * 1.15, 0.0, 0.88);
+
+        vec3 mwLight = armNebula * bandEnv * (0.20 + 0.44 * cloudStrength) * (0.55 + 0.45 * radialX) * (1.0 - bulgeMix * 0.72);
+        mwLight += coreGlow * bulge * (0.34 + 0.46 * cloudStrength);
+        mwLight += innerCyan * bandEnv * fineFilaments * 0.12 * (1.0 - bulgeMix * 0.65);
+
+        // Gran Grieta oscura (dust lanes volumétricas cortando el núcleo galáctico)
+        float ry = (g.y - 0.008 + (q.y - 0.5) * 0.065) * 9.5;
+        float riftBand = exp(-(ry * ry));
+        float riftNoise = ridgedDust(g * vec2(4.2, 8.8) + q * 1.45 - vec2(drift * 0.2, 0.0));
+        float darkLanes = clamp(riftBand * smoothstep(0.28, 0.86, riftNoise), 0.0, 0.92);
+        mwLight *= 1.0 - darkLanes * 0.86;
+        vec3 dustTint = vec3(0.003, 0.005, 0.012) * darkLanes * bandEnv;
+
+        // Nube de microestrellas incrustadas en el plano galáctico + campo limpio exterior
+        float mwStarMask = clamp(bandEnv * (1.0 - darkLanes * 0.66) * (0.45 + 0.55 * cloudStrength), 0.0, 1.0);
+        float s1 = starLayer(g + uParallax * 0.014 * motion, 34.0, 0.892, t);
+        float s2 = starLayer(g * 1.37 + vec2(3.1, 7.4) + uParallax * 0.022 * motion, 58.0, 0.930, t * 0.8);
+        vec3 mwStars = mix(vec3(0.76, 0.89, 1.0), vec3(1.0, 0.84, 0.62), bulge * 0.78) * (s1 * 0.42 + s2 * 0.52) * (0.12 + 0.88 * mwStarMask);
+
+        // Pulso de ignición crepuscular dorado-cian durante transición warp desde Inicio
+        float warpPulse = sin(clamp(uWarp, 0.0, 1.0) * 3.14159265);
+        float rCenter = length(p - vec2(0.08, 0.0));
+        vec3 warpHalo = mix(vec3(0.36, 0.72, 1.0), vec3(1.0, 0.68, 0.34), exp(-rCenter * 2.2)) * exp(-rCenter * 1.35) * warpPulse * (0.35 + 0.45 * cloudStrength);
+
+        vec3 col = skyWash + mwLight + dustTint + mwStars + warpHalo;
+
+        // Atenuación óptica sutil centrada tras "SKYO" para nitidez tipográfica
+        float centerContrastZone = exp(-length((vUv - vec2(0.50, 0.45)) * vec2(aspect * 0.92, 1.48)) * 2.25);
+        col *= 1.0 - 0.34 * centerContrastZone;
+
+        // Viñeta cósmica OLED hacia bordes #000000
+        vec2 edge = (vUv - 0.5) * vec2(1.12, 1.18);
+        float vig = smoothstep(0.92, 0.20, dot(edge, edge));
+        col *= mix(0.08, 1.0, vig);
+
+        gl_FragColor = vec4(clamp(col, 0.0, 0.86), 1.0);
+      }
+    `
+  });
+}
+
 function buildInicioScene() {
   inicioGroup = new T.Group();
   const R = rng(11);
-  const starTex = makeGlowTexture('#ffffff', 'rgba(91, 184, 255, 0.55)');
-  const coolNebTex = makeGlowTexture('rgba(91, 184, 255, 0.22)', 'rgba(30, 82, 185, 0.09)');
-  const warmNebTex = makeGlowTexture('rgba(181, 123, 255, 0.18)', 'rgba(84, 40, 150, 0.06)');
+  const pinpointTex = makePinpointStarTexture();
+  const coolNebTex = makeGlowTexture('rgba(91, 184, 255, 0.16)', 'rgba(30, 82, 185, 0.05)');
+  const warmNebTex = makeGlowTexture('rgba(181, 123, 255, 0.13)', 'rgba(84, 40, 150, 0.04)');
 
-  // Capas de nebulosa infrarroja aditiva muy sutil sobre negro absoluto
+  // Fondo galáctico procedural inspirado en cine.mp4 dentro de la estética SKYO
+  inicioMilkyWay = new T.Mesh(new T.PlaneGeometry(2, 2), createMilkyWayBackdropMaterial());
+  inicioMilkyWay.name = 'InicioMilkyWayBackdrop';
+  inicioMilkyWay.frustumCulled = false;
+  inicioMilkyWay.renderOrder = -100;
+  inicioGroup.add(inicioMilkyWay);
+
+  // Capas suaves de nebulosa atmosférica en primer plano para profundidad parallax
   inicioNebula = new T.Group();
   const nebSpecs = [
-    { tex: coolNebTex, pos: [-38, 16, -24], scale: 128, opacity: 0.45 },
-    { tex: coolNebTex, pos: [44, -14, 18], scale: 112, opacity: 0.38 },
-    { tex: warmNebTex, pos: [12, 26, -42], scale: 105, opacity: 0.34 }
+    { tex: coolNebTex, pos: [-38, 16, -24], scale: 124, opacity: 0.18 },
+    { tex: coolNebTex, pos: [44, -14, 18], scale: 108, opacity: 0.15 },
+    { tex: warmNebTex, pos: [12, 26, -42], scale: 102, opacity: 0.14 }
   ];
   for (const nb of nebSpecs) {
     const sp = new T.Sprite(new T.SpriteMaterial({
@@ -1641,14 +2548,16 @@ function buildInicioScene() {
   }
   inicioGroup.add(inicioNebula);
 
-  // Dos planos estelares en distinta profundidad para parallax reactivo real
+  // Dos planos estelares puntuales en distinta profundidad para parallax reactivo real
   const makeDepthLayer = (count, rMin, rMax, size, opacity, seed) => {
     const L = rng(seed);
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
+    const cIce = new T.Color(0x9cd4ff);
     const cBlue = new T.Color(0x5bb8ff);
     const cWhite = new T.Color(0xeef3ff);
-    const cWarm = new T.Color(0xff9e58);
+    const cViolet = new T.Color(0xc59eff);
+    const cWarm = new T.Color(0xffc98e);
     for (let i = 0; i < count; i++) {
       const th = L() * Math.PI * 2;
       const ph = Math.acos(2 * L() - 1);
@@ -1657,7 +2566,7 @@ function buildInicioScene() {
       pos[i * 3 + 1] = rad * Math.cos(ph) * 0.78;
       pos[i * 3 + 2] = rad * Math.sin(ph) * Math.sin(th);
       const t = L();
-      const pick = t < 0.42 ? cBlue : (t < 0.84 ? cWhite : cWarm);
+      const pick = t < 0.34 ? cWhite : (t < 0.62 ? cIce : (t < 0.80 ? cBlue : (t < 0.90 ? cViolet : cWarm)));
       col[i * 3] = pick.r;
       col[i * 3 + 1] = pick.g;
       col[i * 3 + 2] = pick.b;
@@ -1667,7 +2576,7 @@ function buildInicioScene() {
     geom.setAttribute('color', new T.BufferAttribute(col, 3));
     return new T.Points(geom, new T.PointsMaterial({
       size,
-      map: starTex,
+      map: pinpointTex,
       vertexColors: true,
       transparent: true,
       opacity,
@@ -1676,12 +2585,16 @@ function buildInicioScene() {
     }));
   };
 
-  inicioNearLayer = makeDepthLayer(260, 46, 108, 2.35, 0.82, 41);
-  inicioMidLayer = makeDepthLayer(420, 110, 215, 1.55, 0.58, 73);
+  inicioNearLayer = makeDepthLayer(360, 46, 112, 1.85, 0.9, 41);
+  inicioMidLayer = makeDepthLayer(560, 112, 220, 1.25, 0.7, 73);
   inicioGroup.add(inicioNearLayer);
   inicioGroup.add(inicioMidLayer);
 
-  // 8 constelaciones distribuidas en el espacio 3D
+  // 8 constelaciones distribuidas en el espacio 3D con capa de paralaje intermedia
+  inicioConstellationsGroup = new T.Group();
+  inicioConstellationsGroup.name = 'InicioConstellations';
+  inicioGroup.add(inicioConstellationsGroup);
+
   for (let c = 0; c < 8; c++) {
     const baseTheta = (c / 8) * Math.PI * 2 + R() * 0.4;
     const basePhi = 0.7 + R() * 1.4;
@@ -1700,74 +2613,42 @@ function buildInicioScene() {
       pts.push(v);
 
       const sp = new T.Sprite(new T.SpriteMaterial({
-        map: starTex,
+        map: pinpointTex,
         color: i === 0 ? 0xb57bff : 0x5bb8ff,
         blending: T.AdditiveBlending,
         transparent: true,
         depthWrite: false
       }));
       sp.position.copy(v);
-      const baseScale = i === 0 ? 5.6 : 3.8 + R() * 2.2;
+      const baseScale = i === 0 ? 3.5 : 2.2 + R() * 1.4;
       sp.scale.set(baseScale, baseScale, 1);
-      inicioGroup.add(sp);
+      inicioConstellationsGroup.add(sp);
       inicioNodes.push({ sprite: sp, phase: R() * 6.28, baseScale });
     }
 
     const lineGeom = new T.BufferGeometry().setFromPoints(pts);
-    inicioGroup.add(new T.Line(lineGeom, new T.LineBasicMaterial({
-      color: 0x5bb8ff,
+    inicioConstellationsGroup.add(new T.Line(lineGeom, new T.LineBasicMaterial({
+      color: 0x6abfff,
       transparent: true,
-      opacity: 0.34
+      opacity: 0.085
     })));
   }
 
-  // Doble anillo astrolabio Nothing-design contrarrotante en profundidad
-  inicioRing = new T.Group();
-  const ringPts = [];
-  const dotPts = [];
-  for (let k = 0; k <= 128; k++) {
-    const a = (k / 128) * 6.283;
-    ringPts.push(new T.Vector3(Math.cos(a) * 62, Math.sin(a) * 14, Math.sin(a) * 62));
-    if (k < 72 && k % 2 === 0) {
-      const da = (k / 72) * 6.283;
-      dotPts.push(new T.Vector3(Math.cos(da) * 66, Math.sin(da) * 15, Math.sin(da) * 66));
-    }
-  }
-  inicioRing.add(new T.Line(
-    new T.BufferGeometry().setFromPoints(ringPts),
-    new T.LineBasicMaterial({ color: 0x5bb8ff, transparent: true, opacity: 0.22 })
-  ));
-  inicioRing.add(new T.Points(
-    new T.BufferGeometry().setFromPoints(dotPts),
-    new T.PointsMaterial({ color: 0x5bb8ff, size: 1.5, transparent: true, opacity: 0.5, depthWrite: false })
-  ));
-  inicioRing.rotation.set(0.32, 0.2, -0.18);
-  inicioGroup.add(inicioRing);
+  // Cielo profundo despejado detrás de SKYO y Heras7 (sin aros wireframe cruzando el lienzo)
+  inicioRing = null;
+  inicioOuterRing = null;
 
-  inicioOuterRing = new T.Group();
-  const outerPts = [];
-  for (let k = 0; k <= 96; k++) {
-    const a = (k / 96) * 4.4; // arco abierto
-    outerPts.push(new T.Vector3(Math.cos(a) * 90, Math.sin(a) * 22, Math.sin(a) * 90));
-  }
-  inicioOuterRing.add(new T.Line(
-    new T.BufferGeometry().setFromPoints(outerPts),
-    new T.LineBasicMaterial({ color: 0xb57bff, transparent: true, opacity: 0.2 })
-  ));
-  inicioOuterRing.rotation.set(-0.42, -0.35, 0.24);
-  inicioGroup.add(inicioOuterRing);
-
-  // 2 trazos meteóricos parabólicos suaves (animados en el RAF unificado)
+  // 2 trazos meteóricos parabólicos nítidos (animados en el RAF unificado)
   inicioMeteors = [];
   for (let m = 0; m < 2; m++) {
-    const segs = 12;
+    const segs = 14;
     const pos = new Float32Array(segs * 3);
     const col = new Float32Array(segs * 3);
     for (let s = 0; s < segs; s++) {
       const f = 1 - s / (segs - 1);
-      col[s * 3] = (0.36 + 0.64 * f) * f;
-      col[s * 3 + 1] = (0.72 + 0.28 * f) * f;
-      col[s * 3 + 2] = 1.0 * f;
+      col[s * 3] = (0.48 + 0.52 * f) * f;
+      col[s * 3 + 1] = (0.76 + 0.24 * f) * f;
+      col[s * 3 + 2] = (0.92 + 0.08 * f) * f;
     }
     const geom = new T.BufferGeometry();
     geom.setAttribute('position', new T.BufferAttribute(pos, 3));
@@ -1775,7 +2656,7 @@ function buildInicioScene() {
     const mat = new T.LineBasicMaterial({
       vertexColors: true,
       transparent: true,
-      opacity: 0.72,
+      opacity: 0.85,
       blending: T.AdditiveBlending
     });
     const line = new T.Line(geom, mat);
@@ -1784,24 +2665,15 @@ function buildInicioScene() {
       line,
       segs,
       offset: m * 3.7,
-      period: 7.4 + m * 2.1,
-      baseY: m === 0 ? 28 : -16,
-      tiltZ: m === 0 ? -0.38 : 0.26
+      period: 6.8 + m * 2.1,
+      baseY: m === 0 ? 30 : -14,
+      tiltZ: m === 0 ? -0.38 : 0.28
     });
   }
 
-  // Rejilla de perspectiva wireframe técnica estilo ArtCraft Studio
-  const perspectiveGrid = new T.GridHelper(180, 24, 0x00e6d2, 0x5bb8ff);
-  perspectiveGrid.position.set(0, -36, 0);
-  if (perspectiveGrid.material) {
-    perspectiveGrid.material.transparent = true;
-    perspectiveGrid.material.opacity = 0.11;
-    perspectiveGrid.material.depthWrite = false;
-  }
-  inicioGroup.add(perspectiveGrid);
-
   scene.add(inicioGroup);
 }
+
 
 /* ==========================================================================
    3. Escena Panel 2: Explorar (Plano Focal IR SPHEREx + Telemetría ICRS)
@@ -2906,8 +3778,8 @@ function bindPointerEvents() {
   window.addEventListener('pointermove', e => {
     const w = adaptiveViewport.width || window.innerWidth || 1;
     const h = adaptiveViewport.height || window.innerHeight || 1;
-    cursorParallax.x = (e.clientX / w - 0.5) * 0.28;
-    cursorParallax.y = (e.clientY / h - 0.5) * 0.18;
+    cursorParallax.x = (e.clientX / w - 0.5) * 0.34;
+    cursorParallax.y = (e.clientY / h - 0.5) * 0.22;
     pointerClient.x = e.clientX;
     pointerClient.y = e.clientY;
     pointerClient.moved = true;
@@ -2920,6 +3792,17 @@ function bindPointerEvents() {
       );
     } else {
       pointerClient.overKryo = false;
+    }
+    if (activeRoute === 'inicio' && eclipseWordmarkRect.right > eclipseWordmarkRect.left) {
+      const pad = 18;
+      pointerClient.overEclipse = (
+        e.clientX >= eclipseWordmarkRect.left - pad &&
+        e.clientX <= eclipseWordmarkRect.right + pad &&
+        e.clientY >= eclipseWordmarkRect.top - pad &&
+        e.clientY <= eclipseWordmarkRect.bottom + pad
+      );
+    } else {
+      pointerClient.overEclipse = false;
     }
     if (activeRoute === 'inicio' || (activeRoute === 'explorar' && e.target === canvas)) {
       wakeLoop();
@@ -3003,8 +3886,8 @@ export function getEclipsePortalState() {
     warpT: Number(eclipseWarpT.toFixed(3)),
     visible: Boolean(eclipseRig && eclipseRig.visible),
     hasModel: Boolean(eclipseModelPivot),
-    clipsCount: eclipseModelPivot?.userData?.clips?.length || 0,
-    mixerTime: eclipseMixer ? Number(eclipseMixer.time.toFixed(3)) : 0,
+    clipsCount: 0,
+    mixerTime: Number(simTime.toFixed(3)),
     hasBovedaEclipse: Boolean(bovedaEclipseGroup)
   };
 }
@@ -3116,11 +3999,21 @@ export function setKryoDockHandler(fn) {
 }
 
 export function triggerWarpZoom() {
+  if (is2DFallbackMode) {
+    fallback2DWarpT = window.__skyReducedMotion ? 1 : 0;
+    fallback2DWake?.();
+    setKryoStatusLabel('En impulso orbital');
+    setTimeout(() => {
+      if (is2DFallbackMode) kryoDockHandler?.();
+    }, window.__skyReducedMotion ? 0 : 280);
+    return;
+  }
   if (!isInitialized) return;
   if (window.__skyReducedMotion) {
     eclipsePhase = 'done';
     kryoPhase = 'done';
     if (eclipseRig) eclipseRig.visible = false;
+    resetWordmarkCss();
     stopKryoVisuals();
     startFlightAudio();
     kryoDockHandler?.();
@@ -3132,6 +4025,7 @@ export function triggerWarpZoom() {
   eclipsePhase = 'transition';
   eclipseWarpT = 0;
   if (eclipseRig) eclipseRig.visible = true;
+  startWarpEffects(1.0, 0.88);
 
   const w = window.innerWidth || 1280;
   const h = window.innerHeight || 720;
@@ -3145,7 +4039,7 @@ export function triggerWarpZoom() {
   kryoOrbitTrailPts.length = 0;
   if (kryoOrbitTrail) kryoOrbitTrail.visible = false;
   kryoOrbitCurve = buildOrbitalCurve(slotNdcX, slotNdcY, getHeraDockTarget());
-  setKryoStatusLabel('KRYO-9 · VUELO ORBITAL A LA BÓVEDA');
+  setKryoStatusLabel('En impulso orbital');
   if (kryoRig && kryoModelPivot) {
     kryoRig.visible = true;
     if (kryoActions.Takeoff_Launch) {
@@ -3165,29 +4059,66 @@ export function triggerWarpZoom() {
 
   isWarpingFromInicio = true;
   warpBoost = 1;
-  camGoal.r = 22;
+  camGoal.t = 0.92;
+  camGoal.p = 1.51;
+  camGoal.r = 72;
   wakeLoop();
 }
 
 export function setCosmosRoute(route) {
   const prev = activeRoute;
   activeRoute = route;
+  if (is2DFallbackMode) {
+    if (prev && prev !== route && !window.__skyReducedMotion && fallback2DWarpT >= 1) {
+      fallback2DWarpT = 0.25;
+    }
+    sync2DRouteState(route);
+    return;
+  }
   if (!isInitialized) return;
 
-  if (inicioGroup) inicioGroup.visible = route === 'inicio';
-  if (explorarGroup) explorarGroup.visible = route === 'explorar';
-  if (sistemaGroup) sistemaGroup.visible = route === '3d';
-  if (fasesGroup) fasesGroup.visible = route === 'fases';
+  const isPortalCrossfade = prev === 'inicio' && route === 'explorar' && isWarpingFromInicio && !window.__skyReducedMotion;
+  if (hasRoutedOnce && prev && prev !== route && !window.__skyReducedMotion) {
+    routeTransitionT = 0;
+    routeTransitionFromPortal = isPortalCrossfade;
+    if (!isPortalCrossfade) {
+      startWarpEffects(0.46, 0.45);
+      warpBoost = Math.max(warpBoost, 0.26);
+    }
+  } else {
+    routeTransitionT = 1;
+    routeTransitionFromPortal = false;
+  }
+
+  if (inicioGroup) inicioGroup.visible = route === 'inicio' || eclipsePhase === 'transition';
+  if (explorarGroup) {
+    explorarGroup.visible = route === 'explorar';
+    if (route !== 'explorar') explorarGroup.scale.set(1, 1, 1);
+  }
+  if (sistemaGroup) {
+    sistemaGroup.visible = route === '3d';
+    if (route !== '3d') sistemaGroup.scale.set(1, 1, 1);
+  }
+  if (fasesGroup) {
+    fasesGroup.visible = route === 'fases';
+    if (route !== 'fases') fasesGroup.scale.set(1, 1, 1);
+  }
 
   if (route === 'inicio') {
     canvas.style.cursor = 'default';
     isWarpingFromInicio = false;
-    warpBoost = 0;
+    warpBoost = hasRoutedOnce && prev !== 'inicio' && !window.__skyReducedMotion ? 0.24 : 0;
     eclipsePhase = 'idle';
     eclipseWarpT = 0;
     resetEclipseMaterials();
     updateEclipseSlotRect();
     if (eclipseRig) eclipseRig.visible = true;
+    setTimeout(() => {
+      if (activeRoute === 'inicio') {
+        updateEclipseSlotRect();
+        wakeLoop();
+      }
+    }, 460);
 
     kryoPhase = 'idle';
     kryoWarpT = 0;
@@ -3199,7 +4130,7 @@ export function setCosmosRoute(route) {
     Object.assign(kryoFlightRot, { yaw: -0.22, pitch: 0.04, roll: 0 });
     resetKryoMaterials();
     stopKryoVisuals();
-    setKryoStatusLabel('KRYO-9 · EN ÓRBITA DE ESPERA');
+    setKryoStatusLabel('Copiloto orbital');
     updateKryoSlotRect();
     loadKryoModel();
     if (kryoActions.Idle_Float) {
@@ -3209,13 +4140,18 @@ export function setCosmosRoute(route) {
     if (scene && inicioEnv) scene.environment = inicioEnv;
 
     if (inicioGroup) inicioGroup.scale.set(1, 1, 1);
-    if (camera && camera.fov !== 50) {
+    if (inicioMilkyWay?.material?.uniforms?.uWarp) {
+      inicioMilkyWay.material.uniforms.uWarp.value = 0;
+    }
+    if (camera && camera.fov !== 50 && warpBoost <= 0.004) {
       camera.fov = 50;
       camera.updateProjectionMatrix();
     }
     Object.assign(camGoal, { t: 0.4, p: 1.48, r: getRouteFitRadius('inicio'), tx: 0, ty: 0, tz: 0 });
     adaptiveViewport.fitRadius = camGoal.r;
   } else if (route === 'explorar') {
+    pointerClient.overEclipse = false;
+    resetWordmarkCss();
     canvas.style.cursor = 'grab';
     if (prev !== 'inicio' || !isWarpingFromInicio) {
       eclipsePhase = 'done';
@@ -3224,11 +4160,15 @@ export function setCosmosRoute(route) {
       if (eclipseRig) eclipseRig.visible = false;
       stopKryoVisuals();
       if (scene) scene.environment = null;
+      if (inicioGroup) {
+        inicioGroup.visible = false;
+        inicioGroup.scale.set(1, 1, 1);
+      }
     }
     const fitR = applyAdaptiveCameraForRoute('explorar');
     if (prev === 'inicio' && isWarpingFromInicio) {
-      camCurr.r = fitR + 18; // entra haciendo zoom hacia la bóveda desde el hiperespacio
-      warpBoost = Math.min(warpBoost, 0.2);
+      // Curva C1 continua: sin salto discreto en camCurr.r para preservar la trayectoria suave del portal y Heras7
+      warpBoost = Math.max(warpBoost, 0.55);
       requestAnimationFrame(() => {
         if (kryoOrbitCurve && kryoPhase === 'takeoff') {
           const dock = getHeraDockTarget();
@@ -3237,27 +4177,42 @@ export function setCosmosRoute(route) {
           kryoOrbitCurve.points[6].set(dock.ndcX, dock.ndcY, 19.6);
         }
       });
+    } else {
+      isWarpingFromInicio = false;
     }
-    isWarpingFromInicio = false;
     Object.assign(camGoal, { t: Math.PI / 2, p: 1.54, r: fitR, tx: 0, ty: camGoal.ty, tz: 0 });
     syncExplorarVisuals();
   } else if (route === '3d') {
+    pointerClient.overEclipse = false;
+    resetWordmarkCss();
     canvas.style.cursor = 'grab';
+    isWarpingFromInicio = false;
     eclipsePhase = 'done';
     kryoPhase = 'done';
     stopFlightAudio();
     if (eclipseRig) eclipseRig.visible = false;
     stopKryoVisuals();
     if (scene) scene.environment = null;
+    if (inicioGroup) {
+      inicioGroup.visible = false;
+      inicioGroup.scale.set(1, 1, 1);
+    }
     set3DFocus(focus3D);
   } else if (route === 'fases') {
+    pointerClient.overEclipse = false;
+    resetWordmarkCss();
     canvas.style.cursor = 'grab';
+    isWarpingFromInicio = false;
     eclipsePhase = 'done';
     kryoPhase = 'done';
     stopFlightAudio();
     if (eclipseRig) eclipseRig.visible = false;
     stopKryoVisuals();
     if (scene) scene.environment = null;
+    if (inicioGroup) {
+      inicioGroup.visible = false;
+      inicioGroup.scale.set(1, 1, 1);
+    }
     focusPhaseNode(fasesState.activeIdx);
   }
 
@@ -3331,6 +4286,26 @@ function wakeLoop() {
   }
 }
 
+function updateInicioTelemetry(reduced) {
+  inicioTelemetryEl ||= document.getElementById('inicio-telemetry');
+  inicioTelemetryTextEl ||= document.getElementById('inicio-telemetry-text');
+  if (!inicioTelemetryEl || !inicioTelemetryTextEl) return;
+  const idx = reduced ? 0 : (Math.floor(simTime / 7.5) % INICIO_TELEMETRY_COORDS.length);
+  if (lastTelemetryIdx === -1) {
+    lastTelemetryIdx = idx;
+    inicioTelemetryTextEl.textContent = INICIO_TELEMETRY_COORDS[idx];
+    return;
+  }
+  if (idx === lastTelemetryIdx) return;
+  lastTelemetryIdx = idx;
+  clearTimeout(telemetrySwapTimer);
+  inicioTelemetryEl.classList.add('is-swapping');
+  telemetrySwapTimer = setTimeout(() => {
+    if (inicioTelemetryTextEl) inicioTelemetryTextEl.textContent = INICIO_TELEMETRY_COORDS[idx];
+    inicioTelemetryEl?.classList.remove('is-swapping');
+  }, 260);
+}
+
 function renderLoop(now = performance.now()) {
   if (!isInitialized || !isVisible || !camera) {
     rafId = 0;
@@ -3369,11 +4344,20 @@ function renderLoop(now = performance.now()) {
     simTime += activeRoute === '3d' ? (isPlaying3D ? 0.016 * frameScale * cachedSpeed3D : 0) : 0.016 * frameScale;
   }
 
-  // Animación por escena activa
-  if (activeRoute === 'inicio' && inicioGroup) {
+  // Animación por escena activa (con crossfade continuo de #inicio durante el salto del portal)
+  if ((activeRoute === 'inicio' || eclipsePhase === 'transition') && inicioGroup) {
+    if (activeRoute === 'inicio') updateInicioTelemetry(reduced);
+    if (inicioMilkyWay?.material?.uniforms) {
+      const mwU = inicioMilkyWay.material.uniforms;
+      mwU.uTime.value = reduced ? 0 : simTime;
+      mwU.uResolution.value.set(Math.max(1, adaptiveViewport.width), Math.max(1, adaptiveViewport.height));
+      mwU.uParallax.value.set(reduced ? 0 : cursorParallax.x, reduced ? 0 : cursorParallax.y);
+      mwU.uWarp.value = reduced ? 0 : Math.min(1.38, eclipseWarpT * 1.38);
+      mwU.uReduced.value = reduced ? 1 : 0;
+    }
     if (!reduced) {
-      if (isWarpingFromInicio) {
-        const s = 1 + (1 - Math.min(1, camCurr.r / 165)) * 0.65;
+      if (isWarpingFromInicio || eclipsePhase === 'transition') {
+        const s = 1 + Math.pow(eclipseWarpT, 1.2) * 0.85;
         inicioGroup.scale.set(s, s, s);
       }
       inicioGroup.rotation.y += (0.00055 + (isWarpingFromInicio ? 0.006 : 0)) * frameScale;
@@ -3381,8 +4365,12 @@ function renderLoop(now = performance.now()) {
       if (inicioOuterRing) inicioOuterRing.rotation.y -= 0.00085 * frameScale;
       if (inicioNearLayer) {
         inicioNearLayer.rotation.y += 0.00045 * frameScale;
-        inicioNearLayer.position.x = -cursorParallax.x * 26;
-        inicioNearLayer.position.y = cursorParallax.y * 18;
+        inicioNearLayer.position.x = -cursorParallax.x * 32;
+        inicioNearLayer.position.y = cursorParallax.y * 22;
+      }
+      if (inicioConstellationsGroup) {
+        inicioConstellationsGroup.position.x = -cursorParallax.x * 20;
+        inicioConstellationsGroup.position.y = cursorParallax.y * 14;
       }
       if (inicioMidLayer) {
         inicioMidLayer.position.x = -cursorParallax.x * 11;
@@ -3417,9 +4405,29 @@ function renderLoop(now = performance.now()) {
         }
       }
     }
-    camGoal.t = 0.4 + cursorParallax.x * 1.15;
-    camGoal.p = 1.48 + cursorParallax.y * 1.15;
-  } else if (activeRoute === 'explorar' && explorarGroup) {
+    if (activeRoute === 'inicio' && !isWarpingFromInicio) {
+      camGoal.t = 0.4 + cursorParallax.x * 1.15;
+      camGoal.p = 1.48 + cursorParallax.y * 1.15;
+    }
+  }
+
+  if (routeTransitionT < 1) {
+    const transDur = routeTransitionFromPortal ? 0.76 : 0.44;
+    routeTransitionT = Math.min(1, routeTransitionT + (dt * 0.001) / transDur);
+    const easeOut = 1 - Math.pow(1 - routeTransitionT, 3);
+    const startScale = routeTransitionFromPortal ? 0.28 : 0.86;
+    const currentScale = reduced ? 1 : (startScale + (1 - startScale) * easeOut);
+    if (activeRoute === 'explorar' && explorarGroup) explorarGroup.scale.setScalar(currentScale);
+    else if (activeRoute === '3d' && sistemaGroup) sistemaGroup.scale.setScalar(currentScale);
+    else if (activeRoute === 'fases' && fasesGroup) fasesGroup.scale.setScalar(currentScale);
+    if (routeTransitionT >= 1) {
+      if (explorarGroup) explorarGroup.scale.set(1, 1, 1);
+      if (sistemaGroup) sistemaGroup.scale.set(1, 1, 1);
+      if (fasesGroup) fasesGroup.scale.set(1, 1, 1);
+    }
+  }
+
+  if (activeRoute === 'explorar' && explorarGroup) {
     if (!reduced) {
       // Parallax suave sobre el grupo del plano focal independiente de la tasa de refresco
       const parallaxK = 1 - Math.pow(0.88, frameScale);
@@ -3563,6 +4571,7 @@ function renderLoop(now = performance.now()) {
   camera.updateMatrixWorld(true);
   updateEclipsePortalFrame(dt * 0.001);
   updateKryoFrame(dt * 0.001);
+  updateWarpEffectsFrame(dt * 0.001);
   if (kryoPhase === 'done' && activeRoute !== 'inicio' && scene && scene.environment) {
     scene.environment = null;
   }
@@ -3580,6 +4589,8 @@ function renderLoop(now = performance.now()) {
   );
   const settled =
     eclipsePhase !== 'transition' &&
+    !warpEffectActive &&
+    routeTransitionT >= 1 &&
     warpBoost <= 0.004 &&
     kryoPhase !== 'takeoff' &&
     !(kryoExhaust && kryoExhaust.visible) &&
@@ -3600,10 +4611,352 @@ function renderLoop(now = performance.now()) {
   rafId = requestAnimationFrame(renderLoop);
 }
 
+function captureEclipseFallbackMarkup(slotEl) {
+  if (eclipseFallbackHtml || !slotEl) return;
+  const svg = slotEl.querySelector('.diamond-eclipse');
+  if (svg) eclipseFallbackHtml = svg.outerHTML;
+}
+
+function restoreEclipseFallbackSlot(slotEl) {
+  if (!slotEl || !eclipseFallbackHtml) return;
+  if (!slotEl.querySelector('.diamond-eclipse')) {
+    slotEl.innerHTML = eclipseFallbackHtml;
+  }
+}
+
+function ensure2DKryoEmblem() {
+  const stage = document.getElementById('kryo9-stage');
+  if (!stage) return;
+  if (!stage.querySelector('.agent-2d-emblem')) {
+    const badge = document.createElement('div');
+    badge.className = 'agent-2d-emblem';
+    badge.setAttribute('aria-hidden', 'true');
+    badge.innerHTML = `
+      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="hera2dGlow" cx="50%" cy="46%" r="50%">
+            <stop offset="0%" stop-color="#8de2ff" stop-opacity="0.95"/>
+            <stop offset="48%" stop-color="#5bb8ff" stop-opacity="0.34"/>
+            <stop offset="100%" stop-color="#b57bff" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <circle cx="60" cy="56" r="44" fill="url(#hera2dGlow)"/>
+        <ellipse cx="60" cy="58" rx="40" ry="14" transform="rotate(-18 60 58)" stroke="#7fd0ff" stroke-opacity="0.72" stroke-width="1.4"/>
+        <ellipse cx="60" cy="58" rx="34" ry="11" transform="rotate(24 60 58)" stroke="#b57bff" stroke-opacity="0.56" stroke-width="1.1" stroke-dasharray="4 4"/>
+        <rect x="43" y="40" width="34" height="30" rx="11" fill="#0d1b34" stroke="#8fd4ff" stroke-width="1.6"/>
+        <rect x="48" y="46" width="24" height="14" rx="6" fill="#071224" stroke="#5bb8ff" stroke-opacity="0.65" stroke-width="1"/>
+        <circle cx="55" cy="53" r="2.6" fill="#7cf7ff"/>
+        <circle cx="65" cy="53" r="2.6" fill="#7cf7ff"/>
+        <path d="M60 28V39" stroke="#8fd4ff" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="60" cy="25" r="3" fill="#ffffff"/>
+        <circle cx="96" cy="46" r="2.4" fill="#d8f2ff"/>
+      </svg>`;
+    const telemetry = stage.querySelector('.agent-telemetry');
+    if (telemetry) stage.insertBefore(badge, telemetry);
+    else stage.appendChild(badge);
+  }
+  stage.classList.add('is-ready');
+  setKryoStatusLabel('Copiloto orbital · 2D');
+}
+
+function createSafeWebGLRenderer(ThreeLib, targetCanvas, preferredPower = 'default') {
+  if (!ThreeLib || !targetCanvas || typeof targetCanvas.getContext !== 'function') return null;
+  const contextNames = ['webgl2', 'webgl', 'experimental-webgl'];
+  const configs = [
+    { alpha: false, antialias: true, powerPreference: preferredPower, failIfMajorPerformanceCaveat: false },
+    { alpha: false, antialias: false, powerPreference: 'default', failIfMajorPerformanceCaveat: false },
+    { alpha: false, antialias: false }
+  ];
+  for (const cfg of configs) {
+    for (const kind of contextNames) {
+      let ctx = null;
+      try {
+        ctx = targetCanvas.getContext(kind, cfg);
+      } catch {
+        ctx = null;
+      }
+      if (!ctx) continue;
+      try {
+        return new ThreeLib.WebGLRenderer({
+          canvas: targetCanvas,
+          context: ctx,
+          antialias: cfg.antialias,
+          powerPreference: cfg.powerPreference || 'default',
+          alpha: false
+        });
+      } catch {
+        // Probar siguiente configuración disponible
+      }
+    }
+  }
+  return null;
+}
+
+function deactivateCanvas2DFallback() {
+  if (fallback2DRaf) {
+    cancelAnimationFrame(fallback2DRaf);
+    fallback2DRaf = 0;
+  }
+  fallback2DWake = null;
+  if (typeof fallback2DCleanup === 'function') {
+    fallback2DCleanup();
+    fallback2DCleanup = null;
+  }
+  is2DFallbackMode = false;
+  document.body?.classList.remove('no-webgl');
+  document.getElementById('cosmos-2d-fallback')?.remove();
+  document.querySelector('#kryo9-stage .agent-2d-emblem')?.remove();
+  if (canvas) canvas.style.opacity = '';
+}
+
+function sync2DRouteState(route) {
+  const stateHost = document.getElementById('cosmos-state');
+  const slotEl = document.querySelector('#inicio .eclipse-o');
+  restoreEclipseFallbackSlot(slotEl);
+  document.body?.classList.add('no-webgl');
+  ensure2DKryoEmblem();
+
+  if (route === '3d' || route === 'fases') {
+    renderState(stateHost, {
+      state: 'empty',
+      variant: 'compact',
+      title: 'Modo 2D activo (WebGL no disponible)',
+      detail: 'Este visor embebido no expone aceleración WebGL. El comparador FITS sigue funcionando con normalidad.',
+      actionLabel: 'Reintentar 3D',
+      onAction: () => {
+        deactivateCanvas2DFallback();
+        clearState(stateHost);
+        initCosmos3D(activeRoute);
+      }
+    });
+  } else {
+    clearState(stateHost);
+  }
+  fallback2DWake?.();
+}
+
+function activateCanvas2DFallback(targetCanvas, stateHost, initialRoute = 'inicio') {
+  deactivateCanvas2DFallback();
+  is2DFallbackMode = true;
+  activeRoute = initialRoute;
+  const slotEl = document.querySelector('#inicio .eclipse-o');
+  captureEclipseFallbackMarkup(slotEl);
+  restoreEclipseFallbackSlot(slotEl);
+
+  let paintCanvas = targetCanvas;
+  let ctx = null;
+  try {
+    ctx = targetCanvas?.getContext?.('2d', { alpha: false }) || null;
+  } catch {
+    ctx = null;
+  }
+
+  // Si WebGL estuvo enlazado antes y falló después, crear lienzo 2D hermano
+  if (!ctx && targetCanvas?.parentNode) {
+    const mirror = document.createElement('canvas');
+    mirror.id = 'cosmos-2d-fallback';
+    mirror.className = 'cosmos-2d-layer';
+    mirror.setAttribute('aria-hidden', 'true');
+    targetCanvas.style.opacity = '0';
+    targetCanvas.parentNode.insertBefore(mirror, targetCanvas.nextSibling);
+    paintCanvas = mirror;
+    try {
+      ctx = mirror.getContext('2d', { alpha: false }) || mirror.getContext('2d');
+    } catch {
+      ctx = null;
+    }
+  }
+
+  let width = 1280;
+  let height = 720;
+  let px = 0;
+  let py = 0;
+  let lastDraw = 0;
+  let elapsedSec = 0;
+  let lastPaintTs = 0;
+  const starPalette = ['#ffffff', '#dceeff', '#9ed4ff', '#ffe2b6', '#cfb8ff'];
+  const stars = Array.from({ length: 190 }, (_, i) => {
+    const seedA = Math.sin((i + 1) * 12.9898) * 43758.5453;
+    const seedB = Math.sin((i + 1) * 78.233) * 29154.3127;
+    const seedC = Math.sin((i + 1) * 39.425) * 15892.1173;
+    const fx = seedA - Math.floor(seedA);
+    const fy = seedB - Math.floor(seedB);
+    const fz = seedC - Math.floor(seedC);
+    return {
+      x: fx,
+      y: fy,
+      depth: 0.25 + fz * 0.95,
+      r: 0.55 + (i % 7 === 0 ? 1.55 : fz * 1.05),
+      phase: fx * Math.PI * 2,
+      speed: 0.55 + fy * 1.4,
+      color: starPalette[i % starPalette.length]
+    };
+  });
+
+  const resize2D = () => {
+    width = window.innerWidth || 1280;
+    height = window.innerHeight || 720;
+    if (!paintCanvas) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    paintCanvas.width = Math.max(1, Math.round(width * dpr));
+    paintCanvas.height = Math.max(1, Math.round(height * dpr));
+    if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw2DFrame(0, true);
+  };
+
+  const onPointerMove = ev => {
+    if (activeRoute !== 'inicio' || width <= 0 || height <= 0) return;
+    const nx = (ev.clientX / width) * 2 - 1;
+    const ny = (ev.clientY / height) * 2 - 1;
+    px = Math.max(-1, Math.min(1, nx));
+    py = Math.max(-1, Math.min(1, ny));
+    const wordmark = document.querySelector('#inicio .eclipse-wordmark');
+    if (wordmark) {
+      wordmark.style.setProperty('--sky-px', px.toFixed(3));
+      wordmark.style.setProperty('--sky-py', py.toFixed(3));
+      wordmark.style.setProperty('--sky-glow', '0.58');
+    }
+  };
+
+  function draw2DFrame(now = performance.now(), force = false) {
+    fallback2DRaf = 0;
+    if (!is2DFallbackMode) return;
+    if (!ctx) return;
+
+    const reduced = Boolean(window.__skyReducedMotion);
+    if (!force && !reduced && now - lastDraw < 32) {
+      fallback2DRaf = requestAnimationFrame(draw2DFrame);
+      return;
+    }
+    const dt = lastPaintTs ? Math.min(0.08, Math.max(0, (now - lastPaintTs) / 1000)) : 0.016;
+    lastPaintTs = now;
+    lastDraw = now;
+    if (!reduced) {
+      elapsedSec += dt;
+      simTime += dt;
+    }
+    if (activeRoute === 'inicio') updateInicioTelemetry(reduced);
+
+    const routeAlpha = activeRoute === 'inicio' ? 1 : 0.56;
+    ctx.fillStyle = '#02050d';
+    ctx.fillRect(0, 0, width, height);
+
+    // Banda diagonal Vía Láctea + bruma galáctica suave
+    ctx.save();
+    ctx.translate(width * 0.52 + px * -18, height * 0.46 + py * -12);
+    ctx.rotate(-0.42);
+    const bandLen = Math.max(width, height) * 0.85;
+    const coreGrad = ctx.createRadialGradient(0, 0, 12, 0, 0, bandLen * 0.52);
+    coreGrad.addColorStop(0, `rgba(255, 214, 158, ${0.22 * routeAlpha})`);
+    coreGrad.addColorStop(0.28, `rgba(116, 178, 255, ${0.18 * routeAlpha})`);
+    coreGrad.addColorStop(0.62, `rgba(162, 114, 255, ${0.09 * routeAlpha})`);
+    coreGrad.addColorStop(1, 'rgba(2, 5, 13, 0)');
+    ctx.scale(1.65, 0.46);
+    ctx.fillStyle = coreGrad;
+    ctx.beginPath();
+    ctx.arc(0, 0, bandLen * 0.52, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    const nebulaRight = ctx.createRadialGradient(
+      width * 0.78 + px * -12,
+      height * 0.34 + py * -10,
+      10,
+      width * 0.78,
+      height * 0.34,
+      Math.max(width, height) * 0.48
+    );
+    nebulaRight.addColorStop(0, `rgba(91, 184, 255, ${0.14 * routeAlpha})`);
+    nebulaRight.addColorStop(0.55, `rgba(42, 78, 152, ${0.06 * routeAlpha})`);
+    nebulaRight.addColorStop(1, 'rgba(2, 5, 13, 0)');
+    ctx.fillStyle = nebulaRight;
+    ctx.fillRect(0, 0, width, height);
+
+    for (const star of stars) {
+      const driftX = reduced ? 0 : Math.sin(elapsedSec * 0.08 * star.depth + star.phase) * 4;
+      const sx = ((star.x * width + px * -14 * star.depth + driftX) % width + width) % width;
+      const sy = ((star.y * height + py * -10 * star.depth) % height + height) % height;
+      const twinkle = reduced ? 0.78 : 0.46 + 0.54 * Math.sin(elapsedSec * star.speed + star.phase);
+      ctx.globalAlpha = Math.max(0.14, Math.min(0.95, twinkle * (0.45 + star.depth * 0.45)));
+      ctx.fillStyle = star.color;
+      ctx.beginPath();
+      ctx.arc(sx, sy, star.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    if (!reduced && fallback2DWarpT < 1) {
+      fallback2DWarpT = Math.min(1, fallback2DWarpT + dt / 0.68);
+      const wp = fallback2DWarpT;
+      const wEnv = Math.sin(wp * Math.PI);
+      const cx = width * 0.5;
+      const cy = height * 0.5;
+      ctx.save();
+      ctx.strokeStyle = `rgba(127, 216, 255, ${(wEnv * 0.46).toFixed(3)})`;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.arc(cx, cy, Math.max(width, height) * (0.06 + wp * 0.55), 0, Math.PI * 2);
+      ctx.stroke();
+      for (let i = 0; i < 36; i++) {
+        const ang = i * 2.39996;
+        const r0 = 24 + ((i * 19) % 90) + wp * 140;
+        const r1 = r0 + (26 + (i % 5) * 12) * wEnv;
+        ctx.strokeStyle = i % 3 === 0
+          ? `rgba(181, 123, 255, ${(wEnv * 0.55).toFixed(3)})`
+          : `rgba(143, 212, 255, ${(wEnv * 0.62).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(ang) * r0, cy + Math.sin(ang) * r0);
+        ctx.lineTo(cx + Math.cos(ang) * r1, cy + Math.sin(ang) * r1);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    if (!reduced && isVisible && !document.hidden) {
+      fallback2DRaf = requestAnimationFrame(draw2DFrame);
+    }
+  }
+
+  fallback2DWake = () => {
+    if (!is2DFallbackMode) return;
+    draw2DFrame(performance.now(), true);
+  };
+
+  window.addEventListener('resize', resize2D, { passive: true });
+  window.addEventListener('pointermove', onPointerMove, { passive: true });
+  const onVis = () => {
+    if (!document.hidden && isVisible) fallback2DWake?.();
+    else if (fallback2DRaf) {
+      cancelAnimationFrame(fallback2DRaf);
+      fallback2DRaf = 0;
+    }
+  };
+  document.addEventListener('visibilitychange', onVis);
+
+  fallback2DCleanup = () => {
+    window.removeEventListener('resize', resize2D);
+    window.removeEventListener('pointermove', onPointerMove);
+    document.removeEventListener('visibilitychange', onVis);
+  };
+
+  resize2D();
+  sync2DRouteState(initialRoute);
+  ensureScrollOrStaticReady(stateHost, initialRoute);
+}
+
+function ensureScrollOrStaticReady(stateHost, route) {
+  if (route === 'inicio' || route === 'explorar') {
+    clearState(stateHost);
+  }
+}
+
 export async function initCosmos3D(initialRoute = 'inicio') {
   if (isInitialized) {
     setCosmosRoute(initialRoute);
     return;
+  }
+  if (is2DFallbackMode) {
+    deactivateCanvas2DFallback();
   }
 
   canvas = document.getElementById('cosmos');
@@ -3611,125 +4964,167 @@ export async function initCosmos3D(initialRoute = 'inicio') {
 
   const stateHost = document.getElementById('cosmos-state');
   const slotEl = document.querySelector('#inicio .eclipse-o');
-  if (slotEl && initialRoute === 'inicio') {
-    renderState(slotEl, { state: 'loading', variant: 'slot' });
-  }
+  captureEclipseFallbackMarkup(slotEl);
+  clearState(stateHost);
 
   try {
     T = await ensureThreeLoaded();
     const initW = window.innerWidth || 1280;
     const initH = window.innerHeight || 720;
     const powerPreference = Math.max(initW, initH) >= 900 ? 'high-performance' : 'default';
-    renderer = new T.WebGLRenderer({ canvas, antialias: true, powerPreference, alpha: false });
+    renderer = createSafeWebGLRenderer(T, canvas, powerPreference);
+    if (!renderer) {
+      activateCanvas2DFallback(canvas, stateHost, activeRoute || initialRoute);
+      return;
+    }
   } catch (err) {
-    if (slotEl) slotEl.replaceChildren();
-    renderState(stateHost, {
-      state: 'error',
-      title: 'No se pudo iniciar el lienzo 3D',
-      detail: 'WebGL no está activo o falló la carga del motor local. Puedes reintentar o usar el Laboratorio FITS.',
-      actionLabel: 'Reintentar 3D',
-      onAction: () => {
-        clearState(stateHost);
-        initCosmos3D(activeRoute);
-      }
-    });
+    activateCanvas2DFallback(canvas, stateHost, activeRoute || initialRoute);
     return;
   }
 
-  clearState(stateHost);
-  _tmpVecA = new T.Vector3();
-  _tmpVecB = new T.Vector3();
-  scene = new T.Scene();
-  camera = new T.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.5, 3200);
-  raycaster = new T.Raycaster();
-  raycaster.params.Points.threshold = 4;
-
-  const speedSlider = document.getElementById('sp');
-  if (speedSlider) {
-    const syncSpeed = () => {
-      const v = parseFloat(speedSlider.value);
-      cachedSpeed3D = Number.isFinite(v) ? v : 1;
-    };
-    syncSpeed();
-    speedSlider.addEventListener('input', syncSpeed, { passive: true });
-    speedSlider.addEventListener('change', syncSpeed, { passive: true });
+  let contextLostTimer = 0;
+  if (canvas._skyoContextLostHandler) {
+    canvas.removeEventListener('webglcontextlost', canvas._skyoContextLostHandler);
   }
-
-  renderer.setClearColor(0x000000, 1);
-  renderer.setPixelRatio(computeQualityProfile(window.innerWidth, window.innerHeight).effectivePixelRatio);
-  renderer.outputEncoding = T.sRGBEncoding;
-  renderer.toneMapping = T.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.06;
-
-  scene.add(new T.AmbientLight(0xffffff, 0.45), new T.PointLight(0xffffff, 1.8));
-
-  buildSharedStarfield();
-  buildInicioScene();
-  buildEclipsePortal();
-  buildKryoShowcase();
-  buildExplorarScene();
-  buildSistemaScene();
-  buildFasesScene();
-
-  let dprMediaQuery = null;
-  let dprMediaHandler = null;
-
-  const onResize = () => {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    if (!w || !h) return;
-    emaFrameMs = 16.7;
-    const profile = computeQualityProfile(w, h);
-    renderer.setPixelRatio(profile.effectivePixelRatio);
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    adaptiveViewport = {
-      width: w,
-      height: h,
-      aspect: Number((w / h).toFixed(3)),
-      dpr: profile.dpr,
-      effectivePixelRatio: profile.effectivePixelRatio,
-      qualityTier: profile.qualityTier,
-      fitRadius: applyAdaptiveCameraForRoute(activeRoute)
-    };
-    updateEclipseSlotRect();
-    updateKryoSlotRect();
-    wakeLoop();
-  };
-
-  const watchDprChange = () => {
-    if (dprMediaQuery && dprMediaHandler) {
-      dprMediaQuery.removeEventListener('change', dprMediaHandler);
+  if (canvas._skyoContextRestoredHandler) {
+    canvas.removeEventListener('webglcontextrestored', canvas._skyoContextRestoredHandler);
+  }
+  canvas._skyoContextLostHandler = ev => {
+    ev.preventDefault();
+    restoreEclipseFallbackSlot(document.querySelector('#inicio .eclipse-o'));
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = 0;
     }
-    if (typeof window.matchMedia !== 'function') return;
-    const currentDpr = window.devicePixelRatio || 1;
-    dprMediaQuery = window.matchMedia(`(resolution: ${currentDpr}dppx)`);
-    dprMediaHandler = () => {
-      watchDprChange();
-      onResize();
-    };
-    dprMediaQuery.addEventListener('change', dprMediaHandler, { once: true });
+    clearTimeout(contextLostTimer);
+    contextLostTimer = setTimeout(() => {
+      if (!is2DFallbackMode) {
+        isInitialized = false;
+        activateCanvas2DFallback(canvas, stateHost, activeRoute || initialRoute);
+      }
+    }, 450);
   };
-
-  window.addEventListener('resize', onResize, { passive: true });
-  window.visualViewport?.addEventListener('resize', onResize, { passive: true });
-  document.getElementById('inicio')?.addEventListener('scroll', () => {
-    if (activeRoute !== 'inicio') return;
+  canvas._skyoContextRestoredHandler = () => {
+    clearTimeout(contextLostTimer);
+    if (is2DFallbackMode) deactivateCanvas2DFallback();
+    const slotNow = document.querySelector('#inicio .eclipse-o');
+    captureEclipseFallbackMarkup(slotNow);
+    if (!isInitialized) {
+      initCosmos3D(activeRoute || initialRoute);
+      return;
+    }
+    if (slotNow) slotNow.replaceChildren();
     updateEclipseSlotRect();
-    updateKryoSlotRect();
     wakeLoop();
-  }, { passive: true });
-  watchDprChange();
-  onResize();
+  };
+  canvas.addEventListener('webglcontextlost', canvas._skyoContextLostHandler, false);
+  canvas.addEventListener('webglcontextrestored', canvas._skyoContextRestoredHandler, false);
 
-  bindPointerEvents();
-  isInitialized = true;
-  setCosmosRoute(initialRoute);
+  try {
+    clearState(stateHost);
+    _tmpVecA = new T.Vector3();
+    _tmpVecB = new T.Vector3();
+    scene = new T.Scene();
+    camera = new T.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.5, 3200);
+    raycaster = new T.Raycaster();
+    raycaster.params.Points.threshold = 4;
+
+    const speedSlider = document.getElementById('sp');
+    if (speedSlider) {
+      const syncSpeed = () => {
+        const v = parseFloat(speedSlider.value);
+        cachedSpeed3D = Number.isFinite(v) ? v : 1;
+      };
+      syncSpeed();
+      speedSlider.addEventListener('input', syncSpeed, { passive: true });
+      speedSlider.addEventListener('change', syncSpeed, { passive: true });
+    }
+
+    renderer.setClearColor(0x000000, 1);
+    renderer.setPixelRatio(computeQualityProfile(window.innerWidth, window.innerHeight).effectivePixelRatio);
+    renderer.outputEncoding = T.sRGBEncoding;
+    renderer.toneMapping = T.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.06;
+
+    scene.add(new T.AmbientLight(0xffffff, 0.45), new T.PointLight(0xffffff, 1.8));
+
+    buildSharedStarfield();
+    buildInicioScene();
+    buildEclipsePortal();
+    buildWarpEffects();
+    buildKryoShowcase();
+    buildExplorarScene();
+    buildSistemaScene();
+    buildFasesScene();
+
+    let dprMediaQuery = null;
+    let dprMediaHandler = null;
+
+    const onResize = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      if (!w || !h) return;
+      emaFrameMs = 16.7;
+      const profile = computeQualityProfile(w, h);
+      renderer.setPixelRatio(profile.effectivePixelRatio);
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      adaptiveViewport = {
+        width: w,
+        height: h,
+        aspect: Number((w / h).toFixed(3)),
+        dpr: profile.dpr,
+        effectivePixelRatio: profile.effectivePixelRatio,
+        qualityTier: profile.qualityTier,
+        fitRadius: applyAdaptiveCameraForRoute(activeRoute)
+      };
+      updateEclipseSlotRect();
+      updateKryoSlotRect();
+      wakeLoop();
+    };
+
+    const watchDprChange = () => {
+      if (dprMediaQuery && dprMediaHandler) {
+        dprMediaQuery.removeEventListener('change', dprMediaHandler);
+      }
+      if (typeof window.matchMedia !== 'function') return;
+      const currentDpr = window.devicePixelRatio || 1;
+      dprMediaQuery = window.matchMedia(`(resolution: ${currentDpr}dppx)`);
+      dprMediaHandler = () => {
+        watchDprChange();
+        onResize();
+      };
+      dprMediaQuery.addEventListener('change', dprMediaHandler, { once: true });
+    };
+
+    window.addEventListener('resize', onResize, { passive: true });
+    window.visualViewport?.addEventListener('resize', onResize, { passive: true });
+    watchDprChange();
+    onResize();
+
+    bindPointerEvents();
+    isInitialized = true;
+    setCosmosRoute(initialRoute);
+  } catch (err) {
+    try { renderer?.dispose?.(); } catch {}
+    renderer = null;
+    scene = null;
+    isInitialized = false;
+    activateCanvas2DFallback(canvas, stateHost, activeRoute || initialRoute);
+  }
 }
 
 export function setCosmosVisible(visible) {
   isVisible = visible;
+  if (is2DFallbackMode) {
+    if (visible) fallback2DWake?.();
+    else if (fallback2DRaf) {
+      cancelAnimationFrame(fallback2DRaf);
+      fallback2DRaf = 0;
+    }
+    return;
+  }
   if (visible) wakeLoop();
   else if (rafId) {
     cancelAnimationFrame(rafId);

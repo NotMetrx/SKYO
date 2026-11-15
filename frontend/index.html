@@ -35,7 +35,7 @@
 
   <!-- Barra de navegación principal -->
   <header class="top">
-    <a class="brand" href="#inicio" aria-label="SKYO Inicio">
+    <a class="brand" id="brand-home" href="#inicio" aria-label="SKYO Inicio">
       <span class="brand-sky">SKY</span>
       <span class="mini-eclipse" aria-hidden="true">
         <svg viewBox="0 0 36 36" width="22" height="22">
@@ -46,9 +46,10 @@
               <stop offset="100%" stop-color="#ffffff" stop-opacity="1"/>
             </linearGradient>
           </defs>
-          <circle cx="18" cy="18" r="12.5" fill="none" stroke="url(#miniRim)" stroke-width="2"/>
-          <circle cx="18" cy="18" r="10.2" fill="#000000"/>
-          <path d="M26.5 7.5 L27.3 9.7 L29.5 10.5 L27.3 11.3 L26.5 13.5 L25.7 11.3 L23.5 10.5 L25.7 9.7 Z" fill="#ffffff"/>
+          <circle cx="18" cy="18" r="12" fill="url(#miniRim)"/>
+          <circle cx="16.8" cy="19.1" r="10.9" fill="#000000"/>
+          <ellipse cx="25.8" cy="10.8" rx="9" ry="0.9" transform="rotate(-21 25.8 10.8)" fill="#ffffff" opacity="0.92"/>
+          <path d="M25.8 6.4 L26.5 10.1 L30.2 10.8 L26.5 11.5 L25.8 15.2 L25.1 11.5 L21.4 10.8 L25.1 10.1 Z" fill="#ffffff"/>
         </svg>
       </span>
     </a>
@@ -66,192 +67,77 @@
 
   <p id="cosmos-status" role="status"></p>
   <main id="viewport">
-    <!-- Vista 1: Inicio minimalista (SKYO + KRYO-9 en 3D sobre el cosmos vivo en #000000) -->
+    <!-- Vista 1: Inicio Póster Cinematográfico (SKYO XL + Eclipse GLSL + Heras7 Copiloto) -->
     <section class="sec" id="inicio" aria-hidden="true" inert>
       <div class="hero hero-split">
         <div class="hero-brand">
-          <div class="hud-label hero-meta-top" aria-hidden="true">
-            <span class="hud-idx">// 01</span>
-            <span class="hud-topic">SPHEREx LVF ARCHITECTURE</span>
-            <span class="hud-sep">·</span>
-            <span class="hud-status">ORBITAL SUITE</span>
-          </div>
-          <div class="hero-kicker" aria-hidden="true">
-            <span class="kicker-dot"></span>
-            <span>Grupo Neois · NASA Space Apps 2026 · SPHEREx</span>
-          </div>
           <h1 tabindex="-1" class="eclipse-wordmark" aria-label="SKYO">
-            <span class="letters">
-              <span class="wm-letter" style="--l-idx: 0;">S</span><span class="wm-letter" style="--l-idx: 1;">K</span><span class="wm-letter" style="--l-idx: 2;">Y</span>
+            <span class="letters">SKY</span>
+            <span class="eclipse-o" aria-hidden="true">
+              <svg class="diamond-eclipse" viewBox="0 0 240 240" width="240" height="240">
+                <defs>
+                  <radialGradient id="coronaGlow" cx="65%" cy="35%" r="62%">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.92"/>
+                    <stop offset="22%" stop-color="#7fd4ff" stop-opacity="0.58"/>
+                    <stop offset="54%" stop-color="#5bb8ff" stop-opacity="0.2"/>
+                    <stop offset="78%" stop-color="#b57bff" stop-opacity="0.08"/>
+                    <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+                  </radialGradient>
+
+                  <linearGradient id="crescentArcGrad" x1="14%" y1="88%" x2="86%" y2="14%">
+                    <stop offset="0%" stop-color="#b57bff" stop-opacity="0.38"/>
+                    <stop offset="32%" stop-color="#5bb8ff" stop-opacity="0.9"/>
+                    <stop offset="68%" stop-color="#ccecff" stop-opacity="0.98"/>
+                    <stop offset="100%" stop-color="#ffffff" stop-opacity="1"/>
+                  </linearGradient>
+
+                  <radialGradient id="lunarSphere" cx="68%" cy="32%" r="74%">
+                    <stop offset="0%" stop-color="#071226"/>
+                    <stop offset="38%" stop-color="#02050c"/>
+                    <stop offset="78%" stop-color="#000103"/>
+                    <stop offset="100%" stop-color="#000000"/>
+                  </radialGradient>
+
+                  <radialGradient id="diamondCore" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+                    <stop offset="22%" stop-color="#d2f0ff" stop-opacity="0.95"/>
+                    <stop offset="54%" stop-color="#5bb8ff" stop-opacity="0.35"/>
+                    <stop offset="100%" stop-color="#5bb8ff" stop-opacity="0"/>
+                  </radialGradient>
+                </defs>
+
+                <circle class="eclipse-corona" cx="124" cy="116" r="108" fill="url(#coronaGlow)"/>
+                <circle cx="122" cy="118" r="82" fill="url(#crescentArcGrad)"/>
+                <circle cx="116" cy="122" r="76" fill="url(#lunarSphere)"/>
+
+                <g class="eclipse-flare" transform="translate(184 68)">
+                  <circle cx="0" cy="0" r="42" fill="url(#diamondCore)"/>
+                  <ellipse cx="4" cy="-1.5" rx="76" ry="2.4" transform="rotate(-21)" fill="url(#diamondCore)" opacity="0.96"/>
+                  <ellipse cx="4" cy="-1.5" rx="48" ry="1.0" transform="rotate(-21)" fill="#ffffff" opacity="0.98"/>
+                  <path d="M 0 -36 L 2.2 -2.2 L 36 0 L 2.2 2.2 L 0 36 L -2.2 2.2 L -36 0 L -2.2 -2.2 Z" fill="#ffffff"/>
+                  <circle cx="0" cy="0" r="4.5" fill="#ffffff"/>
+                </g>
+              </svg>
             </span>
-            <span class="eclipse-o" aria-hidden="true"></span>
           </h1>
-          <p class="hero-sub">El universo visto con luz infrarroja, al alcance de todos. Exploración multibanda SPHEREx y astrometría local para candidatos transneptunianos.</p>
-          <div class="hero-craft-grid" aria-hidden="true">
-            <div class="craft-card">
-              <span class="craft-idx">01</span>
-              <div class="craft-body">
-                <span class="craft-label">ESPECTRAL</span>
-                <span class="craft-val">6 Bandas · 0.75–5.0 µm</span>
-              </div>
-            </div>
-            <div class="craft-card">
-              <span class="craft-idx">02</span>
-              <div class="craft-body">
-                <span class="craft-label">DETECTOR</span>
-                <span class="craft-val">FPA 2×3 TAN-SIP · D1–D6</span>
-              </div>
-            </div>
-            <div class="craft-card">
-              <span class="craft-idx">03</span>
-              <div class="craft-body">
-                <span class="craft-label">MOTOR WCS</span>
-                <span class="craft-val">Local-First · Zero-Cloud</span>
-              </div>
-            </div>
-          </div>
+          <p class="hero-subtitle">Explorador orbital infrarrojo y comparador astrométrico FITS local</p>
           <div class="hero-prompt" aria-hidden="true">
-            <kbd class="hero-key">ENTER</kbd>
+            <kbd class="hero-key"><span class="key-desktop">ENTER</span><span class="key-touch">TOCAR</span></kbd>
             <span class="hero-prompt-text" id="hero-prompt-text">Iniciar secuencia de despegue</span>
           </div>
         </div>
         <div class="hero-agent-stage" id="kryo9-stage" aria-hidden="true">
-          <div class="stage-corner-brackets" aria-hidden="true">
-            <span class="corner-bracket corner-tl"></span>
-            <span class="corner-bracket corner-tr"></span>
-            <span class="corner-bracket corner-bl"></span>
-            <span class="corner-bracket corner-br"></span>
-            <span class="stage-hud-meta">// 02 · KRYO-9 RECON SUITE</span>
-          </div>
-          <div class="agent-hud-ring"></div>
           <div class="agent-telemetry">
             <span class="agent-badge-dot"></span>
-            <span id="kryo9-status-text">KRYO-9 · EN ÓRBITA DE ESPERA</span>
+            <span class="agent-name">Heras7</span>
+            <span class="agent-sep" aria-hidden="true">·</span>
+            <span class="agent-state" id="kryo9-status-text">Copiloto orbital</span>
           </div>
         </div>
-        <div class="hero-scroll-cue" id="hero-scroll-cue" aria-hidden="true">
-          <span class="scroll-cue-arrow">↓</span>
-          <span>Desliza para conocer SPHEREx, la plataforma y Grupo Neois</span>
+        <div class="inicio-telemetry" id="inicio-telemetry" aria-hidden="true">
+          <span class="telemetry-reticle"></span>
+          <span class="telemetry-coords" id="inicio-telemetry-text">RA 17h 45m · DEC -29° 00' · NÚCLEO GALÁCTICO</span>
         </div>
-      </div>
-
-      <!-- Recorrido editorial bajo el Hero (inspirado en SKYO · Explora el cosmos con SPHEREx) -->
-      <div class="inicio-showcase">
-        <div class="inicio-sec" id="sec-spherex">
-          <div class="inicio-split">
-            <div class="rv">
-              <span class="hud-label inicio-tag"><span class="hud-idx">// 01</span> EL TELESCOPIO</span>
-              <h2 class="inicio-h2">¿Qué es SPHEREx?</h2>
-              <p class="inicio-lead">SPHEREx significa <em>Spectro-Photometer for the History of the Universe, Epoch of Reionization and Ices Explorer</em>. Es un telescopio espacial de la NASA lanzado en marzo de 2025 para cartografiar todo el cielo mediante luz infrarroja.</p>
-            </div>
-            <div class="ir-spectrum-card rv">
-              <div class="ir-spec-head">
-                <span class="ir-spec-title">Espectro infrarrojo continuo (D1–D6)</span>
-                <span class="ir-spec-range">0.75 – 5.01 µm · 102 bandas LVF</span>
-              </div>
-              <div class="ir-spec-bar" aria-hidden="true"></div>
-              <div class="ir-spec-ticks">
-                <span>0.75 µm · IR Corto (D1–D3)</span>
-                <span>2.41 µm</span>
-                <span>5.01 µm · IR Largo (D4–D6)</span>
-              </div>
-            </div>
-          </div>
-          <div class="inicio-grid inicio-grid-3">
-            <article class="inicio-card rv">
-              <span class="inicio-card-idx">01 · COBERTURA</span>
-              <h3>Casi todo el cielo</h3>
-              <p>Observa prácticamente toda la bóveda celeste en ciclos completos de 6 meses para detectar objetos móviles.</p>
-            </article>
-            <article class="inicio-card rv">
-              <span class="inicio-card-idx">02 · ESPECTRO</span>
-              <h3>Luz infrarroja</h3>
-              <p>Analiza radiación infrarroja invisible al ojo humano, clave para detectar cuerpos fríos y distantes.</p>
-            </article>
-            <article class="inicio-card rv">
-              <span class="inicio-card-idx">03 · LONGITUDES DE ONDA</span>
-              <h3>0.75 – 5.01 µm</h3>
-              <p>Diferencia respuesta espectral entre IR Corto (D1–D3) e IR Largo (D4–D6) sobre un plano focal 2×3.</p>
-            </article>
-            <article class="inicio-card rv">
-              <span class="inicio-card-idx">04 · COSMOS</span>
-              <h3>Galaxias y estrellas</h3>
-              <p>Estudia galaxias, estrellas, nebulosas y la historia del universo temprano desde órbita solar síncrona.</p>
-            </article>
-            <article class="inicio-card rv">
-              <span class="inicio-card-idx">05 · ASTROQUÍMICA</span>
-              <h3>Composición y hielos</h3>
-              <p>Permite investigar presencia de agua y hielos interestelares junto con astrometría de cuerpos menores.</p>
-            </article>
-          </div>
-        </div>
-
-        <div class="inicio-sec" id="sec-skyo">
-          <div class="rv">
-            <span class="hud-label inicio-tag"><span class="hud-idx">// 02</span> LA PLATAFORMA</span>
-            <h2 class="inicio-h2">SKYO: el espacio, simple de explorar</h2>
-            <p class="inicio-lead">Una herramienta pública, en español y local-first, diseñada para navegar el plano focal de SPHEREx, comparar épocas y validar candidatos sin depender de servidores externos.</p>
-          </div>
-          <div class="inicio-grid inicio-grid-3">
-            <article class="inicio-card rv" data-goto="inicio-top">
-              <span class="inicio-card-idx">MOD 01</span>
-              <h3>Inicio 3D</h3>
-              <p>Constelaciones vivas, eclipse orbital modelado en 3D y secuencia de despegue con KRYO-9.</p>
-            </article>
-            <article class="inicio-card is-action rv" data-goto="explorar">
-              <span class="inicio-card-idx">MOD 02 · ABRIR ↗</span>
-              <h3>Explorar &amp; Plano Focal IR</h3>
-              <p>Bóveda ICRS interactiva con retícula HEALPix, detector 2×3, Blink de épocas y Lab FITS TAN-SIP.</p>
-            </article>
-            <article class="inicio-card is-action rv" data-goto="3d">
-              <span class="inicio-card-idx">MOD 03 · ABRIR ↗</span>
-              <h3>Vista Sistema Solar 3D</h3>
-              <p>Visualización orbital tridimensional para situar cometas, cinturón de asteroides y escalas espaciales.</p>
-            </article>
-            <article class="inicio-card rv" data-goto="explorar">
-              <span class="inicio-card-idx">MOD 04</span>
-              <h3>KRYO-9 / H.E.R.A 7</h3>
-              <p>Asistente guía interactivo y audio espacial opcional presente en las secciones de análisis.</p>
-            </article>
-            <article class="inicio-card is-action rv" data-goto="fases">
-              <span class="inicio-card-idx">MOD 05 · VER ↗</span>
-              <h3>Para todos &amp; Móvil</h3>
-              <p>Interfaz adaptable móvil primero, PWA offline y arquitectura por fases de divulgación progresiva.</p>
-            </article>
-          </div>
-        </div>
-
-        <div class="inicio-sec" id="sec-neois">
-          <div class="rv">
-            <span class="hud-label inicio-tag"><span class="hud-idx">// 03</span> QUIÉNES SOMOS</span>
-            <h2 class="inicio-h2">Grupo Neois</h2>
-            <p class="inicio-lead">Somos cuatro jóvenes estudiantes académicos unidos por la curiosidad de mirar más allá del cielo y acercar la astronomía infrarroja a toda persona.</p>
-          </div>
-          <div class="inicio-grid neois-grid" id="inicio-neois-grid"></div>
-        </div>
-
-        <div class="inicio-sec" id="sec-mision">
-          <div class="mission-callout rv">
-            <span class="hud-label inicio-tag"><span class="hud-idx">// 04</span> NUESTRA MISIÓN</span>
-            <h2 class="inicio-h2">Llevar el conocimiento y la exploración espacial a todas las personas</h2>
-            <p class="inicio-lead">Con SKYO queremos que el universo deje de ser un lugar lejano: una experiencia abierta, rigurosa y dinámica para explorar el cosmos con los ojos infrarrojos de SPHEREx.</p>
-            <div class="mission-launch" id="mission-launch-cta" aria-hidden="true">
-              <kbd class="hero-key">ENTER</kbd>
-              <span>Explorar con SKYO · Ir al Plano Focal IR</span>
-            </div>
-          </div>
-        </div>
-
-        <footer class="inicio-footer">
-          <div class="footer-brand-line">© 2026 Grupo Neois · SKYO · Reto NASA Space Apps: Planet X &amp; SPHEREx</div>
-          <div class="footer-meta-line">
-            <span>Prototipo científico exploratorio local-first · No es una herramienta oficial de NASA/IPAC</span>
-            <span aria-hidden="true">·</span>
-            <span>Ref.: NASA/IPAC IRSA (SPHEREx) · JPL Small-Body Database</span>
-            <span aria-hidden="true">·</span>
-            <span class="footer-lab-trigger" id="footer-lab-link">Abrir Laboratorio FITS ↗</span>
-          </div>
-        </footer>
       </div>
     </section>
 
@@ -611,10 +497,10 @@
     </section>
   </main>
 
-  <!-- Asistente KRYO-9 / H.E.R.A 7 (oculta en #inicio; KRYO-9 en 3D por defecto con opción de avatar personalizado) -->
+  <!-- Asistente Heras7 / H.E.R.A 7 (oculta en #inicio; Heras7 en 3D por defecto con opción de avatar personalizado) -->
   <aside id="hera">
-    <div id="hb" role="dialog" aria-label="Guía SPHEREx de KRYO-9" aria-live="polite" aria-atomic="true">
-      <b id="hb-title">KRYO-9 · Guía SPHEREx</b>
+    <div id="hb" role="dialog" aria-label="Guía SPHEREx de Heras7" aria-live="polite" aria-atomic="true">
+      <b id="hb-title">Heras7 · Guía SPHEREx</b>
       <p id="ht"></p>
       <div class="hera-chips" id="hera-chips" role="group" aria-label="Temas rápidos sobre SPHEREx">
         <button type="button" class="hera-chip" data-topic="que_es">¿Qué es SPHEREx?</button>
@@ -626,24 +512,24 @@
     </div>
     <div class="hera-avatar-wrap">
       <button type="button" id="sound-toggle-btn" class="hera-sound-btn" title="Silenciar o activar audio espacial" aria-label="Silenciar sonido espacial" aria-pressed="false">🔊</button>
-      <button type="button" id="ha" aria-label="Abrir guía KRYO-9 de SPHEREx">
+      <button type="button" id="ha" aria-label="Abrir guía Heras7 de SPHEREx">
         <img id="hera-img" alt="Avatar del asistente" hidden width="96" height="96">
         <span id="hera-placeholder" class="hera-placeholder" aria-hidden="true">
           <svg viewBox="0 0 48 48" width="38" height="38" fill="none">
             <circle cx="24" cy="24" r="21" stroke="currentColor" stroke-dasharray="4 4" stroke-width="1.8" stroke-opacity="0.45"/>
             <circle cx="24" cy="18" r="7.5" stroke="currentColor" stroke-width="2"/>
             <path d="M12 36 C13 27, 35 27, 36 36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="35" cy="13" r="5" fill="#5bb8ff"/>
+            <circle cx="35" cy="13" r="5" fill="#b57bff"/>
             <path d="M35 10.5 V15.5 M32.5 13 H37.5" stroke="#000000" stroke-width="1.6" stroke-linecap="round"/>
           </svg>
-          <span class="slot-text">KRYO-9</span>
+          <span class="slot-text">Heras7</span>
         </span>
       </button>
       <label class="hera-upload-badge" for="avatar-input" title="Subir o cambiar avatar personalizado">
         <span class="badge-icon">↥</span>
         <input type="file" id="avatar-input" accept="image/*" aria-label="Subir avatar personalizado">
       </label>
-      <button type="button" id="avatar-reset-btn" class="hera-reset-btn" title="Volver a KRYO-9 3D" hidden aria-label="Volver a KRYO-9 3D">✕</button>
+      <button type="button" id="avatar-reset-btn" class="hera-reset-btn" title="Volver a Heras7 3D" hidden aria-label="Volver a Heras7 3D">✕</button>
     </div>
   </aside>
 

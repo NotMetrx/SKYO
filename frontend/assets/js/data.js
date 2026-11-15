@@ -14,7 +14,7 @@ export const SUBS = [
 ];
 
 export const MSG = {
-  inicio: 'Soy KRYO-9, tu copiloto en SKYO. Pulsa Enter o tócame para despegar hacia la Bóveda SPHEREx.',
+  inicio: 'Soy Heras7, tu copiloto en SKYO. Pulsa Enter o tócame para despegar hacia la Bóveda SPHEREx.',
   explorar: '¡En órbita ICRS! Estás viendo el Plano Focal de SPHEREx: toca una píldora abajo para que te explique sus bandas infrarrojas o cómo detectar candidatos.',
   '3d': 'Arrastra para girar el sistema solar. Usa la rueda o ＋ y － para comparar dónde orbitan el Cinturón, los cometas y las regiones lejanas.',
   fases: 'Recorre la constelación 3D o elige una fase (0–6) para ver cómo SPHEREx, WCS TAN-SIP y el cruce con JPL separan candidatos reales.'
@@ -414,7 +414,7 @@ export const RESUMEN_TRABAJO = [
   },
   {
     badge: 'IA · ASISTENTE',
-    title: 'Copiloto KRYO-9',
+    title: 'Copiloto orbital Heras7',
     desc: 'Asistente orbital con síntesis de voz, personalización de avatar y guía científica contextual.'
   }
 ];

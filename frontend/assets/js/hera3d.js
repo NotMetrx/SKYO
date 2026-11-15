@@ -65,6 +65,41 @@ function getBoxSize(button, minDefault = 96) {
   return side >= 24 ? side : minDefault;
 }
 
+function createSafeTransparentWebGLRenderer(ThreeLib) {
+  if (!ThreeLib) return null;
+  const contextNames = ['webgl2', 'webgl', 'experimental-webgl'];
+  const configs = [
+    { alpha: true, antialias: true, powerPreference: 'low-power', failIfMajorPerformanceCaveat: false },
+    { alpha: true, antialias: false, powerPreference: 'default', failIfMajorPerformanceCaveat: false },
+    { alpha: true, antialias: false }
+  ];
+  for (const cfg of configs) {
+    for (const kind of contextNames) {
+      const offscreen = document.createElement('canvas');
+      if (typeof offscreen.getContext !== 'function') return null;
+      let ctx = null;
+      try {
+        ctx = offscreen.getContext(kind, cfg);
+      } catch {
+        ctx = null;
+      }
+      if (!ctx) continue;
+      try {
+        return new ThreeLib.WebGLRenderer({
+          canvas: offscreen,
+          context: ctx,
+          antialias: cfg.antialias,
+          alpha: true,
+          powerPreference: cfg.powerPreference || 'default'
+        });
+      } catch {
+        // Probar siguiente perfil WebGL en un canvas limpio
+      }
+    }
+  }
+  return null;
+}
+
 export function isKryoDockActive() {
   return Boolean(dockController && dockController.active);
 }
@@ -121,9 +156,8 @@ export function initKryoDock(button, { initialGesture = 'Wave_Hello', onInteract
     .then(T => {
       if (disposed || !T || !T.GLTFLoader || !T.DRACOLoader) return;
 
-      try {
-        renderer = new T.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
-      } catch {
+      renderer = createSafeTransparentWebGLRenderer(T);
+      if (!renderer) {
         controller.active = false;
         if (placeholder) placeholder.hidden = false;
         return;
@@ -419,7 +453,8 @@ export function initHera3d(button, onLaugh) {
 
 function buildCustomAvatar(T, button, img, src, onLaugh) {
   let renderer;
-  try { renderer = new T.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' }); } catch { return; }
+  renderer = createSafeTransparentWebGLRenderer(T);
+  if (!renderer) return;
   const W = 2.6;
   const H = W * src.naturalHeight / src.naturalWidth;
   let lastSize = getBoxSize(button, 96);

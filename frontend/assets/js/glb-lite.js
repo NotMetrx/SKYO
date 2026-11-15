@@ -53,16 +53,19 @@ function buildMaterial(T, matDef) {
   const em = matDef.emissiveFactor || [0, 0, 0];
   const emStr = matDef.extensions?.KHR_materials_emissive_strength?.emissiveStrength ?? 1.0;
 
-  return new T.MeshStandardMaterial({
+  const mat = new T.MeshStandardMaterial({
     color: new T.Color(base[0], base[1], base[2]),
     metalness: pbr.metallicFactor ?? 0.1,
     roughness: pbr.roughnessFactor ?? 0.5,
     emissive: new T.Color(em[0], em[1], em[2]),
-    emissiveIntensity: Math.min(1.6, emStr * 0.72),
+    emissiveIntensity: emStr,
     side: matDef.doubleSided ? T.DoubleSide : T.FrontSide,
     transparent: base[3] < 1,
     opacity: base[3] ?? 1
   });
+  mat.name = matDef.name || '';
+  mat.userData.rawEmissiveStrength = emStr;
+  return mat;
 }
 
 const INTERP_MODES = {
