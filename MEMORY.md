@@ -249,14 +249,16 @@
 
 ## Integración y resolución de conflictos de origin/main — 2026-11-15
 
-- Fusión completada de `origin/main` (`dd0b317`) en la rama de trabajo `main` local:
-  - Commit de merge: `156961a` (*merge: integrar origin/main (dd0b317) con estetica ArtCraft y motor cientifico local*).
-  - Conflictos resueltos en: `.gitignore`, `memories.md`, `MEMORY.md`, `sw.js`, `assets/js/science/worker.js`, `assets/js/science-lab-ui.js`, `lab.html`, `assets/css/lab.css`, `assets/js/app.js`, `assets/js/explorar.js`, `assets/js/hera3d.js`, `assets/js/cosmos3d.js`, `index.html`, y `assets/css/main.css`.
-  - Corrección complementaria `4f51023`: ajuste de `.explore-hud-top` a `top: 56px` en viewport compacto (evitando colisión con `<header class="top">`) y reposición de la clase `.eclipse-ready` en `.eclipse-o` al cargar el rig 3D.
+- Fusión completada de `origin/main` (`dd0b317` y `e61b7d4`) en la rama de trabajo `main` local:
+  - Commit `156961a`: integración de estética ArtCraft y motor científico local.
+  - Commit `4f51023`: calibración de HUD y restauración de estado `eclipse-ready`.
+  - Commit `4785812`: integración de `e61b7d4` (*unificar portada #inicio SPHEREx + Neois, identidad de pestaña e iluminación 3D*).
+  - Portada `#inicio` ahora incluye la sección desplazable `.inicio-showcase` con las 4 secciones editoriales: `// 01 ¿Qué es SPHEREx?`, `// 02 La plataforma SKYO`, `// 03 Grupo Neois` e `// 04 Nuestra misión`.
+  - Favicons, manifest y metadatos OpenGraph sincronizados.
 - Verificación exhaustiva:
-  - `npm test`: 58/58 pruebas unitarias pasando (0 fallos).
-  - `npm run web:build`: compilación limpia en `dist/` (46 recursos precache, WASM presente).
+  - `npm test`: 62/62 pruebas unitarias pasando (0 fallos).
+  - `npm run web:build`: compilación limpia en `dist/` (56 recursos precache, WASM presente).
   - `npm run validate:build` y `npm run validate:docs`: exitosos.
-  - Playwright: suites críticas validadas (`fpa.spec.mjs`, `migration.spec.mjs`, `integration.spec.mjs`, `immersive.spec.mjs`), todas en verde.
-- No se han realizado pushes remotos; la rama local `main` contiene el estado consolidado y funcional.
+- Rama local `main` consolidada y activa en el servidor local.
+
 
