@@ -162,3 +162,13 @@ Revisar la evidencia técnica local T01–T07 y las aprobaciones administrativas
 pendientes. T08 solo tiene inspección de insumos: resolver asociación de versiones,
 PSF integrada a píxel, incertidumbres, observador/épocas/catálogos, controles y
 revisión independiente. Mantener el comparador exploratorio y scienceReady=false.
+
+## Publicación con CDN que optimiza imágenes
+
+Las 12 teselas base HiPS conservan su SHA-256 exacto y se publican como
+`datasets/immersive-sky/*.png.bin` mediante `postbuild.mjs`. El manifiesto de
+`dist` señala esos nombres y `validate:build` contrasta sus bytes con los
+originales. Evita que la optimización automática de PNG en dominios temporales
+de Hostinger deje el cielo negro al cambiar los bytes. Desplegar todo `dist`,
+incluidos manifiesto, binarios y Service Worker; no retirar las comprobaciones
+de integridad ni sustituir hashes por los de una imagen recomprimida.

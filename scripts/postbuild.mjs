@@ -16,6 +16,16 @@ await fs.mkdir(new URL('licenses/aladin-lite/', dist), {recursive:true});
 for (const file of ['LICENSE','COPYING','COPYING.LESSER','README.md']) {
   await fs.copyFile(new URL(`node_modules/aladin-lite/${file}`, root), new URL(`licenses/aladin-lite/${file}`, dist));
 }
+// Hostinger recompone los PNG; la extensión binaria conserva los bytes y su SHA-256.
+const hips=new URL('datasets/immersive-sky/',dist);
+const hipsManifest=JSON.parse(await fs.readFile(new URL('manifest.json',hips)));
+for(const item of hipsManifest.items){
+  const bytes=await fs.readFile(new URL(item.file,hips));
+  if(createHash('sha256').update(bytes).digest('hex')!==item.sha256)throw Error('Hash HiPS incorrecto antes de publicar');
+  await fs.rename(new URL(item.file,hips),new URL(item.file+'.bin',hips));
+  item.file+='.bin';
+}
+await fs.writeFile(new URL('manifest.json',hips),JSON.stringify(hipsManifest,null,2)+'\n');
 async function allFiles(dir, prefix='') {
   const files=[];
   for (const entry of await fs.readdir(dir, {withFileTypes:true})) {

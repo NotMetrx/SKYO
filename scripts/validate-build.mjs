@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
+import {createHash} from 'node:crypto';
 const root=new URL('../dist/',import.meta.url);
 const report=JSON.parse(await fs.readFile(new URL('skyo-build-report.json',root)));
 assert.ok(report.precache.length>0);
@@ -25,3 +26,18 @@ for(const file of ['index.html','lab.html','contexto.html','espectral.html','inm
 }
 assert.equal(report.wasmPresent,!!await fs.stat(new URL('assets/js/science/wasm/pkg/skyo_wasm.js',root)).catch(()=>null));
 console.log(`Build verificado: ${report.precache.length} recursos, manifiesto raíz/subruta y entradas válidas`);
+
+// La CDN de Hostinger recomprime PNG: los bytes verificados deben publicarse como binarios.
+const hipsPath='datasets/immersive-sky/';
+const sourceHips=JSON.parse(await fs.readFile(new URL('../frontend/public/'+hipsPath+'manifest.json',import.meta.url)));
+const publishedHips=JSON.parse(await fs.readFile(new URL(hipsPath+'manifest.json',root)));
+assert.equal(publishedHips.items.length,sourceHips.items.length);
+for(const item of publishedHips.items){
+  const original=sourceHips.items.find(source=>source.pixel===item.pixel);
+  assert.equal(item.file,original.file+'.bin','La tesela verificada debe evitar optimización de imágenes');
+  assert.equal(item.sha256,original.sha256);
+  const bytes=await fs.readFile(new URL(hipsPath+item.file,root));
+  assert.equal(createHash('sha256').update(bytes).digest('hex'),original.sha256);
+  assert.ok(report.runtime.includes(hipsPath+item.file),'La tesela debe conservar caché runtime offline');
+}
+console.log('Teselas HiPS: bytes originales y hashes preservados en publicación binaria');
