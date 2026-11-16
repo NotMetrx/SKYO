@@ -7,11 +7,32 @@ import path from 'node:path';
 
 const lock=await fs.readFile('backend/science-core/Cargo.lock','utf8');
 const expected=lock.match(/name = "wasm-bindgen"\nversion = "([^"]+)"/)[1];
-const generator=execFileSync('wasm-bindgen',['--version'],{encoding:'utf8'}).trim();
+let executable='wasm-bindgen';
+let generator;
+try {
+  generator=execFileSync(executable,['--version'],{encoding:'utf8',stdio:['ignore','pipe','ignore']}).trim();
+} catch(error) {
+  if(error.code!=='ENOENT')throw error;
+  const root=path.resolve('node_modules/.cache/skyo-wasm-bindgen');
+  executable=path.join(root,'bin',process.platform==='win32'?'wasm-bindgen.exe':'wasm-bindgen');
+  try {
+    generator=execFileSync(executable,['--version'],{encoding:'utf8',stdio:['ignore','pipe','ignore']}).trim();
+  } catch(cachedError) {
+    if(cachedError.code!=='ENOENT')throw cachedError;
+    console.log(`Instalando wasm-bindgen-cli ${expected} con Cargo…`);
+    try {
+      execFileSync('cargo',['install','wasm-bindgen-cli','--version',expected,'--locked','--root',root],{stdio:'inherit'});
+    } catch(installError) {
+      if(installError.code==='ENOENT')throw Error('Falta Cargo: instala el toolchain de Rust y el target wasm32-unknown-unknown antes de compilar WASM.');
+      throw installError;
+    }
+    generator=execFileSync(executable,['--version'],{encoding:'utf8'}).trim();
+  }
+}
 assert.equal(generator,`wasm-bindgen ${expected}`,'Instala wasm-bindgen-cli de la misma versión que Cargo.lock');
 execFileSync('cargo',['build','--locked','--manifest-path','backend/science-core/Cargo.toml','--target','wasm32-unknown-unknown','--release'],{stdio:'inherit'});
 const dir='frontend/assets/js/science/wasm/pkg';await fs.mkdir(dir,{recursive:true});
-execFileSync('wasm-bindgen',['backend/science-core/target/wasm32-unknown-unknown/release/skyo_wasm.wasm','--target','web','--out-dir',dir],{stdio:'inherit'});
+execFileSync(executable,['backend/science-core/target/wasm32-unknown-unknown/release/skyo_wasm.wasm','--target','web','--out-dir',dir],{stdio:'inherit'});
 const bytes=await fs.readFile(dir+'/skyo_wasm_bg.wasm');
 assert.ok(WebAssembly.validate(bytes));
 const info={crateVersion:'0.1.0',generator,wasmSha256:createHash('sha256').update(bytes).digest('hex'),cargoLockSha256:createHash('sha256').update(lock).digest('hex')};

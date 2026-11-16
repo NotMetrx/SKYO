@@ -41,12 +41,13 @@ cargo test --locked --manifest-path science-core/Cargo.toml
 rustup target add wasm32-unknown-unknown
 ```
 
-Solo para regenerar el kernel opcional, instalar la CLI de la versión de
-wasm-bindgen fijada en Cargo.lock; el script rechaza una versión distinta:
+Para regenerar el kernel opcional se requieren Cargo y el target
+`wasm32-unknown-unknown`. Si falta la CLI, el script instala en la caché local
+de `node_modules` la versión fijada en Cargo.lock; necesita acceso a crates.io.
+Si existe una versión distinta en PATH, informa el conflicto y se detiene:
 
 ```sh
-cargo install wasm-bindgen-cli --version 0.2.130 --locked --root /tmp/skyo-wasm-tools
-PATH="/tmp/skyo-wasm-tools/bin:$PATH" npm run wasm:build
+npm run wasm:build
 ```
 
 El paquete generado se conserva en assets/js/science/wasm/pkg/. No se necesita
