@@ -39,7 +39,7 @@ Los tokens viven en `frontend/assets/css/main.css` y se replican en `frontend/as
 ## ✨ Características principales
 
 1. **Inicio cinemático (`#inicio`)**
-   - Eclipse 3D de Blender (`assets/models/eclipse.glb`) como la «O» de SKYO, al pulsar «Animar eclipse 3D»; marca estática mientras no se activa.
+   - Modelo 3D de Heras7 (`assets/models/kryo9.glb`) y cosmos activos automáticamente en la portada, sin pulsar un botón. Si WebGL no está disponible, se conserva la alternativa 2D y la navegación.
    - Campo estelar y nebulosas reactivas al puntero, con pausa automática en reposo.
    - **Warp Zoom**: <kbd>Enter</kbd> o <kbd>Espacio</kbd> lanzan el eclipse hacia la cámara y abren la bóveda celeste.
 

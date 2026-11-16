@@ -2,11 +2,13 @@ import {test,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 for(const base of ['/','/skyo/']) {
   test(`${base} navegación, teclado y responsive`,async({page},info)=>{
+    test.setTimeout(180000);
     const errors=[];const requests=[];
     page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>requests.push(request.url()));
     await page.goto(base);
     await expect(page.getByRole('link',{name:'Explorar el cielo'})).toBeVisible();
-    expect(requests.some(url=>url.includes('three.min.js')||url.endsWith('.fits'))).toBe(false);
+    await expect.poll(()=>page.evaluate(()=>typeof window.THREE)).toBe('object');
+    expect(requests.some(url=>url.endsWith('.fits'))).toBe(false);
     await page.getByRole('link',{name:'Explorar el cielo'}).focus();await page.keyboard.press('Enter');
     await expect(page.locator('body')).toHaveAttribute('data-route','explorar');
     await page.getByRole('tab',{name:'Plano Focal IR'}).click();

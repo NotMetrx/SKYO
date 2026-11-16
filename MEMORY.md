@@ -373,3 +373,21 @@
   - Reintegrado sobre `origin/main` (`0af244d`): selector `[id="3d"].on .ctl`, `removeAttribute('src')` al limpiar avatar, guards de `immersive/main.js`, `hips.js` y `controls.js`, `@media (orientation: landscape) and (max-height: 500px)` y enlace accesible `<a class="hero-prompt" href="#explorar" aria-label="Explorar el cielo">` preservando `#inicio` 3D Opción 2 intacto.
   - Auditoría Firefox 160 headless BiDi (`verify_hera_pilot.mjs`, `test_no_webgl.mjs`) contra `http://127.0.0.1:8000`: `#ha` sin borde/fondo (`0px`, `148×148` desktop, `124×124` a `<=760px` altura, `58×58` móvil `<=780px`), arrastre completo hacia arriba-izquierda con volteo de globo (`right`/`bottom`) sin disparo espurio del diálogo ni overflow, reanclaje `#pilot-reset-btn`, reacción ante canal `51/102` en `inmersivo.html`, vuelo contextual junto a `#info` en `boveda`, foco junto a `#canvas-lab-difference` en `lab`, `#fases`, `#nosotros` sin solapar el titular/tarjetas, `0` errores propios de página/JS (`skyErrorsMain: []`, `labCheck.errors: []`; solo `502` CORS externo en `irsa.ipac.caltech.edu/TAP/sync`). Límite observado en Firefox headless sin Vite: el Worker módulo `worker.js` no ejecutó comparación automática de FITS por la importación JSON `with { type: 'json' }` de `datasets.js` en Worker nativo de Firefox (`labCheck`/`integratedLab` verificados a nivel de layout y disparo `skyo:hera-focus`); fallback 2D WebGL `blocked` y `no-msaa` verificados sin errores.
 - `scienceReady=false`; sin detección astronómica declarada.
+
+
+## Decisión de portada 3D — 2026-11-16
+
+- Usuario confirma mantener Heras7 y cosmos 3D en portada. Sobre main65ce3ab,
+  navigate() ya inicializa el motor al entrar en inicio; no se añade otro arranque.
+- Pruebas integration/migration actualizadas: Three.js inicial esperado, sin FITS
+  hasta Explorar; Three.js disponible antes de salir por teclado. La prueba gráfica con renderizado
+  software agotó90s; repetición pequeña interrumpida, no se declara GPU validada.
+  README, PV-01 y decisión de auditoría alineados; fallback2D conservado.
+- Preparación aislada en /tmp/skyo-cosmos-portada-codex para preservar cambios
+  locales HERA/Groq y otros worktrees. Node65/65, science-gaps4/4, build y ambos
+  validadores pasan. Prueba de portada raíz pasa; subruta agota90s al capturar
+  pantalla final y migración agota90s durante recorrido responsive. Plazos de
+  esas pruebas ampliados120/180s, pendientes de repetir; no declarar gráfica verde.
+- Falta URL/método de despliegue (pregunta pendiente); no se acredita producción.
+  Log central de bloqueo rechazado: requiere aprobación con política never.
+

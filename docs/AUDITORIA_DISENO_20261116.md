@@ -8,7 +8,7 @@ APIs y tamaños de dispositivos. Evidencia en `evidence/design-audit-20261116/`.
 | Hallazgo | Corrección y motivo |
 | --- | --- |
 | Entrada a Explorar oculta para lectores de pantalla y fuera del orden de tabulación | Enlace nativo «Explorar el cielo», accesible por teclado; conserva la transición existente. |
-| Motor 3D inicializado automáticamente en cualquier entrada | Carga bajo demanda en las vistas que lo requieren. Evita ocupar recursos de la portada, el archivo y el laboratorio. |
+| Motor 3D inicializado automáticamente en cualquier entrada | Decisión actualizada por el usuario: la portada sí requiere el cosmos y Heras7 3D desde la entrada. Archivo y laboratorio conservan carga independiente; se mantiene el fallback 2D sin WebGL. |
 | Regla CSS `#3d` inválida | Selector por atributo; se recupera la transición sin descartar el grupo de reglas. |
 | Controles fuera de pantalla y paneles superpuestos en horizontal 568×320 | Distribución separada, límites de altura y scroll interno; ficha seleccionada acotada al viewport. |
 | Cambio de canal antes de cargar el manifiesto produce una excepción | Validación del estado de inicialización antes de modificar canal o escena. |

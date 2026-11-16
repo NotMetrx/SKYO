@@ -1,7 +1,8 @@
 import {test,expect} from '@playwright/test';
 for(const base of ['/','/skyo/'])test(`Portada ${base}: acceso por teclado, cielo y regreso`,async({page},info)=>{
+ test.setTimeout(120000);
  const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(base);
- expect(await page.evaluate(()=>typeof window.THREE)).toBe('undefined');
+ await expect.poll(()=>page.evaluate(()=>typeof window.THREE)).toBe('object');
  const entry=page.getByRole('link',{name:'Explorar el cielo',exact:true});await entry.focus();await page.keyboard.press('Enter');
  await expect(page.locator('body')).toHaveAttribute('data-route','explorar');
  await expect(page.frameLocator('#spectral-frame').locator('#sky')).toHaveAttribute('data-ready','12',{timeout:45000});

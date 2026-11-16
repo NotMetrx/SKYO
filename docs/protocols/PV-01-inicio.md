@@ -1,6 +1,15 @@
 # PV-01 · `#inicio` minimalista
 
-**Alcance:** wordmark SKYO, fondo Three.js, salida con `Enter`/`Espacio`.
+**Alcance:** wordmark SKYO, cosmos y Heras7 3D automáticos, salida con `Enter`/`Espacio`.
+
+Decisión vigente (2026-11-16, usuario): conservar el modelo 3D en la portada.
+La entrada carga Three.js y `assets/models/kryo9.glb` sin interacción.
+La prueba `tests/browser/integration.spec.mjs` comprueba en raíz y `/skyo/`
+que Three.js se cargue automáticamente y que se pueda salir y regresar por teclado.
+La presencia y animación del modelo requieren además la comprobación WebGL de la tabla;
+una ejecución headless con fallback 2D no valida el renderizado del modelo.
+Con movimiento reducido se conserva el modelo sin exigir la animación de hover;
+si WebGL falla, la alternativa 2D permite seguir navegando.
 
 ## Precondiciones
 
