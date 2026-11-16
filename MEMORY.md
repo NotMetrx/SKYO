@@ -373,3 +373,17 @@
   - Reintegrado sobre `origin/main` (`0af244d`): selector `[id="3d"].on .ctl`, `removeAttribute('src')` al limpiar avatar, guards de `immersive/main.js`, `hips.js` y `controls.js`, `@media (orientation: landscape) and (max-height: 500px)` y enlace accesible `<a class="hero-prompt" href="#explorar" aria-label="Explorar el cielo">` preservando `#inicio` 3D Opción 2 intacto.
   - Auditoría Firefox 160 headless BiDi (`verify_hera_pilot.mjs`, `test_no_webgl.mjs`) contra `http://127.0.0.1:8000`: `#ha` sin borde/fondo (`0px`, `148×148` desktop, `124×124` a `<=760px` altura, `58×58` móvil `<=780px`), arrastre completo hacia arriba-izquierda con volteo de globo (`right`/`bottom`) sin disparo espurio del diálogo ni overflow, reanclaje `#pilot-reset-btn`, reacción ante canal `51/102` en `inmersivo.html`, vuelo contextual junto a `#info` en `boveda`, foco junto a `#canvas-lab-difference` en `lab`, `#fases`, `#nosotros` sin solapar el titular/tarjetas, `0` errores propios de página/JS (`skyErrorsMain: []`, `labCheck.errors: []`; solo `502` CORS externo en `irsa.ipac.caltech.edu/TAP/sync`). Límite observado en Firefox headless sin Vite: el Worker módulo `worker.js` no ejecutó comparación automática de FITS por la importación JSON `with { type: 'json' }` de `datasets.js` en Worker nativo de Firefox (`labCheck`/`integratedLab` verificados a nivel de layout y disparo `skyo:hera-focus`); fallback 2D WebGL `blocked` y `no-msaa` verificados sin errores.
 - `scienceReady=false`; sin detección astronómica declarada.
+
+## Portada con modelo 3D — 2026-11-16
+
+- Revisada la política de carga bajo demanda de `docs/AUDITORIA_DISENO_20261116.md`:
+  la portada conserva el modelo 3D (cielo, eclipse y Heras7). `navigate()` ya
+  inicializa el motor en `inicio`, `3d`, `fases` y `nosotros`; Explorar y el
+  laboratorio lo cargan bajo demanda cuando corresponde.
+- `tests/browser/integration.spec.mjs` (raíz y `/skyo/`) dejó de exigir
+  `window.THREE === 'undefined'`; ahora exige el lienzo `#cosmos` dimensionado
+  (> 320 px) y `window.THREE` disponible antes de navegar. La aserción anterior
+  ya fallaba en `main` desde `1e40433`.
+- Verificación: `npm test` 65/65, `web:build` + `validate:build` OK e integración
+  raíz/subruta 2/2. El resto de la auditoría (L2, laboratorio offline, export)
+  sigue sin cambios y `scienceReady=false`.

@@ -92,3 +92,14 @@ Se conserva la entrega en una rama de auditoría, sin sustituir main, para permi
 continuar el diagnóstico de esos recorridos antes del despliegue. La prueba de
 navegación que buscaba un control retirado se adaptó, pero debe repetirse con el
 archivo actualizado para validar su resultado final.
+
+## Actualización 2026-11-16: la portada conserva el modelo 3D
+
+La decisión de cargar Three.js bajo demanda queda revisada: la portada mantiene el
+modelo 3D (cielo, eclipse y Heras7) porque forma parte de la identidad del producto.
+`navigate()` inicializa el motor en `inicio`, `3d`, `fases` y `nosotros`; Explorar y
+el laboratorio siguen cargándolo bajo demanda cuando corresponde. La prueba de
+integración de portada ahora exige el lienzo `#cosmos` dimensionado y `window.THREE`
+disponible, en lugar de prohibir su carga. El resto de hallazgos de esta auditoría
+no cambia y las regresiones abiertas de L2, laboratorio offline y exportación
+siguen pendientes de diagnóstico.
