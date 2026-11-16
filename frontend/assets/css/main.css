@@ -474,7 +474,7 @@ body.warp-zoom #hera {
   animation: hudPortalArriveBottom 0.62s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
 }
 
-body.route-shifting #3d.on .ctl,
+body.route-shifting [id="3d"].on .ctl,
 body.route-shifting #fases.on .fases-top,
 body.route-shifting #fases.on .fases-dock {
   animation: hudPortalArriveBottom 0.44s cubic-bezier(0.16, 1, 0.3, 1) 0.04s both;

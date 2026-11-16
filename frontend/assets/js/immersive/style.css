@@ -23,3 +23,15 @@
   .embedded .updates {bottom:224px;}
   .embedded .hud nav a {display:block;}
 }
+
+@media(orientation:landscape) and (max-height:500px){
+.hud{top:58px;width:225px;max-height:calc(100dvh - 220px);}
+.actions{top:58px;bottom:auto;width:130px;max-height:calc(100dvh - 220px);overflow:auto;}
+.updates{top:58px;bottom:auto;left:calc(50% + 38px);right:auto;transform:translateX(-50%);width:140px;max-height:calc(100dvh - 220px);}
+.selection{top:58px;bottom:125px;max-height:none;}
+.embedded .hud,.embedded .actions{top:112px;max-height:max(44px,calc(100dvh - 277px));}
+.embedded .hud{width:225px;}
+.embedded .spectrum{bottom:65px;padding:6px 10px;}
+.embedded .updates{top:112px;bottom:auto;max-height:max(44px,calc(100dvh - 277px));}
+.embedded .selection{top:112px;bottom:65px;max-height:none;}
+}

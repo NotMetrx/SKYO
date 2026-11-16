@@ -1,0 +1,89 @@
+
+> skyo@2.1.0 pretest
+> npm run sync:curated
+
+
+> skyo@2.1.0 sync:curated
+> node scripts/sync-curated-manifest.mjs
+
+Manifiesto curado ya sincronizado
+
+> skyo@2.1.0 test
+> node --test tests/unit/pipeline.test.mjs tests/unit/integrity.test.mjs tests/unit/session.test.mjs tests/unit/fits-boundary.test.mjs tests/unit/comparison.test.mjs tests/unit/science-regressions.test.mjs tests/unit/curated-dataset.test.mjs tests/unit/opfs.test.mjs tests/unit/wasm-equivalence.test.mjs tests/unit/fpa.test.mjs tests/unit/immersive.test.mjs tests/unit/l2.test.mjs tests/unit/archive.test.mjs tests/unit/build-wasm.test.mjs tests/unit/controls.test.mjs
+
+✔ Inspector: HDU/IMAGE/FLAGS originales, máscara y contraste sin alterar FITS (848.122183ms)
+✔ Inspector: lee un solo plano de cubo, conserva NaN y rechaza límites/truncados (28.920728ms)
+✔ Cobertura: polígonos ICRS, costura RA y polos; ninguna huella inventada como fallback (48.097658ms)
+✔ Regla angular: costura, polos y extremos según geometría esférica (6.41928ms)
+✔ WASM precompilado funciona sin Cargo y rechaza artefactos corruptos (3732.323394ms)
+✔ Fondo excluye SOURCE de A y B, conserva fuentes para análisis y no altera originales (728.420707ms)
+✔ Unidades incompatibles se rechazan y A/A se identifica como control (166.695326ms)
+✔ Un pellizco no selecciona al levantar el último dedo; el clic sigue funcionando (718.508324ms)
+✔ El cielo recupera una tesela base que agota el tiempo de carga (1420.618783ms)
+✔ Par NASA real noroeste: cadena, cobertura espectral, comparación y control (962.996323ms)
+✔ Par NASA real sureste: cadena, cobertura espectral, comparación y control (337.110422ms)
+✔ La copia importable del manifiesto coincide con el paquete publicado (60.11771ms)
+✔ FLAGS conserva Uint32 y BZERO, con SOURCE separada del fondo (128.805098ms)
+✔ FITS rechaza dimensiones negativas, límites por eje, truncado y escalas inválidas (47.617856ms)
+✔ Parser admite imagen primaria y preserva inventario sin convertir BLANK a cero (9.427422ms)
+✔ WCS solo acepta ejes ecuatoriales TAN, grados e ICRS (22.174673ms)
+✔ Reproyección limita cada dimensión antes de reservar matrices (13.745439ms)
+✔ WCS NASA D2: centro/bordes frente a Astropy 8.0.2 (65.217537ms)
+ℹ Máximo 1.7653702741250185e-11 px en 9 puntos reales
+✔ WCS NASA D3: centro/bordes frente a Astropy 8.0.2 (42.698006ms)
+ℹ Máximo 1.5568041607024215e-11 px en 9 puntos reales
+✔ WCS NASA D6: centro/bordes frente a Astropy 8.0.2 (55.05379ms)
+ℹ Máximo 9.149382218393176e-11 px en 9 puntos reales
+✔ FPA: seis FITS reales íntegros, metadatos y decodificación Rust contrastada con JS (2938.79705ms)
+✔ Caché HiPS expulsa detalle fuera de pantalla durante una órbita completa (7492.617963ms)
+✔ Curación HiPS rechaza una edición nueva antes de reutilizar o relabelar los PNG (426.143381ms)
+✔ ICRS: cardinales, costura RA y polos conservan coordenadas (3.624742ms)
+✔ Range FITS rechaza HTTP200 y un rango truncado sin aceptar el cubo entero (17.071428ms)
+✔ WebXR r128: sesión, panel, mandos, vuelo y giro con antirrepetición (111.233075ms)
+✔ Rust/WASM: plano IMAGE real y flujo bajo retícula coinciden con binario NASA (168.200565ms)
+✔ Rust HEALPix: geometría y cobertura de toda la pantalla en polos, costura y vuelo (1454.009981ms)
+✔ HiPS: metadatos reales,102canales y URLs incluidas carpetas por Npix (15.782963ms)
+✔ FITS HPX: orientación de texela y píxel contra WCS Astropy real (20.933315ms)
+✔ HEALPix: cara y NEST contra 48 posiciones independientes Astropy (10.285798ms)
+✔ Worker rechaza load3→load1 y compara el par vigente (5770.962634ms)
+✔ Worker clear invalida entradas y resultado anterior (1261.724878ms)
+✔ Worker rechaza hash declarado incorrecto (574.654262ms)
+✔ Worker rechaza metadatos corruptos en la frontera (450.711326ms)
+✔ Subir un FITS con ORIGIN SKYO no lo convierte en demo (715.42352ms)
+✔ Metadatos NASA declarados se preservan sin autenticar el manifiesto del usuario (917.432679ms)
+✔ Reporte único conserva ambos archivos y rechaza campos incompletos o no finitos (1994.041413ms)
+✔ L2 original: WCS espacial y espectral contrastados con Astropy sin cambiar originales (460.158373ms)
+✔ L2 rechaza otro detector/canal, datos fuera de tabla y fuentes no permitidas (283.222866ms)
+✔ Capa L2 conserva la misma esfera celeste durante vuelo tangencial (551.049537ms)
+✔ OPFS: fallo de segundo archivo y commit preservan la pareja anterior (456.144779ms)
+✔ OPFS: cuota insuficiente y borrado explícito son recuperables (90.588023ms)
+✔ OPFS: hash corrupto rechaza la pareja completa y guarda sesiones concurrentes coherentes (120.667853ms)
+✔ OPFS: recupera el formato anterior con nombres originales (78.631482ms)
+✔ FITS MEF: IMAGE/FLAGS/VARIANCE/ZODI con datos originales (189.053733ms)
+✔ WCS TAN-SIP respeta transformacion ida/vuelta subpixel (113.49804ms)
+✔ mascaras decodifican banderas de mala calidad sin eliminar SOURCE (57.711651ms)
+✔ el motor reproyecta B usando WCS de A (814.980354ms)
+✔ calculo de diferencia con varianza y filtro de datos nulos (6.108516ms)
+✔ pipeline extremo a extremo sintético mantiene calificativo exploratorio (2472.707891ms)
+✔ sin longitud de onda calibrada se rechaza validar compatibilidad (157.002733ms)
+✔ bloquea comparaciones con filtros realmente incompatibles (1985.197303ms)
+✔ mascara FLAGS conserva bits altos y BZERO 2^31 sin Float32 (30.077686ms)
+✔ propagacion de varianza bilineal emplea pesos cuadrados (1338.840599ms)
+✔ plano robusto corrige fondo espacial sintético (317.012154ms)
+✔ comparacion explora resta de ZODI y declara modelo de fondo (2640.090828ms)
+✔ Selección A: lectura 3→1 y hash tardío no sustituyen el archivo vigente (191.0508ms)
+✔ Selección B: lectura 3→1 y hash tardío no sustituyen el archivo vigente (41.696141ms)
+✔ Resultados viejos, incluso con jobId actual, no llegan a la vista ni al export (78.452154ms)
+✔ Un fallo de entrada exporta diagnóstico con B null y nunca el análisis anterior (30.332345ms)
+✔ Demo ignora manifiesto manual previo y una pareja tardía se descarta (52.407769ms)
+✔ Worker terminado no modifica la sesión nueva y comparar maneja fallo de envío (63.355723ms)
+✔ Render de otro snapshot no modifica la vista ni su informe (83.544497ms)
+✔ WASM/JS: misma salida f32, máscaras, NaN, varianza y offset preciso (1498.50093ms)
+ℹ tests 65
+ℹ suites 0
+ℹ pass 65
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14673.355885

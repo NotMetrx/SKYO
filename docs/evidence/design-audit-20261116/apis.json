@@ -1,0 +1,11 @@
+[
+  {
+    "url": "https://irsa.ipac.caltech.edu/data/hips/SPHEREx/spherex_allsky_cube/properties",
+    "status": 200,
+    "bytes": 3504
+  },
+  {
+    "url": "https://irsa.ipac.caltech.edu/TAP/sync?REQUEST=doQuery&LANG=ADQL&FORMAT=csv&QUERY=SELECT%20TOP%201%20observationid%20FROM%20spherex.observation",
+    "error": "The operation was aborted due to timeout"
+  }
+]

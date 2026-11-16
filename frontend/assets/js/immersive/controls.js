@@ -9,7 +9,7 @@ export function createControls(T,canvas,camera,player,{onSelect,onChange,isXR}){
   function zoom(factor){if(isXR())return;camera.fov=Math.max(.05,Math.min(95,camera.fov*factor));camera.updateProjectionMatrix();onChange();}
   function reset(){player.position.set(0,0,0);player.rotation.set(0,0,0);camera.rotation.set(initial.dec*Math.PI/180,initial.ra*Math.PI/180,0,'YXZ');camera.fov=70;camera.updateProjectionMatrix();onChange();}
   listen(canvas,'contextmenu',e=>e.preventDefault());
-  listen(canvas,'pointerdown',e=>{canvas.focus();canvas.setPointerCapture(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY});lastPinch=0;});
+  listen(canvas,'pointerdown',e=>{canvas.focus();canvas.setPointerCapture(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,multi:false});if(pointers.size>1)for(const p of pointers.values())p.multi=true;lastPinch=0;});
   listen(canvas,'pointermove',e=>{
     if(document.pointerLockElement===canvas){look(e.movementX,e.movementY);return;}
     const old=pointers.get(e.pointerId);if(!old)return;
@@ -17,7 +17,7 @@ export function createControls(T,canvas,camera,player,{onSelect,onChange,isXR}){
     else look(e.clientX-old.x,e.clientY-old.y);
     Object.assign(old,{x:e.clientX,y:e.clientY});
   });
-  listen(canvas,'pointerup',e=>{const p=pointers.get(e.pointerId);if(p&&pointers.size===1&&Math.hypot(p.startX-e.clientX,p.startY-e.clientY)<6){
+  listen(canvas,'pointerup',e=>{const p=pointers.get(e.pointerId);if(p&&!p.multi&&pointers.size===1&&Math.hypot(p.startX-e.clientX,p.startY-e.clientY)<6){
     const r=canvas.getBoundingClientRect();
     onSelect(document.pointerLockElement===canvas?r.left+r.width/2:e.clientX,document.pointerLockElement===canvas?r.top+r.height/2:e.clientY);
   }pointers.delete(e.pointerId);lastPinch=0;});

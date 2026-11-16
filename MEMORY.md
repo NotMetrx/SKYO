@@ -324,3 +324,23 @@
 
 - La integración dejó el plano focal como subvista inicial, por lo que el iframe inmersivo permanecía en about:blank hasta pulsar su pestaña. Se restableció el cielo inmersivo como predeterminado, conservando la selección al volver y la descarga del iframe al salir.
 - Verificado en Chromium con 12 teselas base, selección y regreso al plano focal en raíz y /skyo/, sin errores de página; build y validate:build pasan, npm test 63/63. La batería Playwright completa no se ejecutó: la ejecución enfocada se interrumpió tras tardar en las escenas 3D.
+
+## Auditoría de diseño y carga — 2026-11-16
+
+- Trabajo aislado desde e93e106; se preserva la rama local de diseño. Informe:
+  docs/AUDITORIA_DISENO_20261116.md y evidencia design-audit-20261116.
+- Corregidos acceso principal oculto para lectores de pantalla, carga 3D automática
+  en portada, selector CSS inválido, avatar con src vacío, cambio prematuro de canal,
+  selección accidental tras pellizco y paneles fuera de pantalla en horizontal.
+- HiPS: separar timeout de red de decodificación, un reintento acotado de timeout
+  y panorama inicial progresivo; se conservan hashes, edición y límites.
+- Node 65/65 y build/validate:build/validate:docs pasan. Matriz visual24casos
+  320/390/768/1440 sin imágenes rotas ni overflow documental. Pruebas horizontales
+  568x320/844x390 y siete recorridos focales pasan. Batería general en cierre.
+- HiPS properties HTTP200; TAP vivo agota10s. No se modifican datos FITS ni ciencia.
+- URL de producción solicitada sin respuesta; no hay homepage/deployments/checks
+  registrados ni sitio conectado. Push a main no acredita despliegue verificado.
+- Cierre de auditoría: batería completa interrumpida tras34 aprobadas; bloque
+  restante20/25, con fallos en L2 integrado, navegación de prueba obsoleta y
+  exportación offline raíz/subruta. L2 repetido sigue agotando espera. No publicar
+  a producción con estos pendientes; conservar correcciones en rama audit/design-fixes.

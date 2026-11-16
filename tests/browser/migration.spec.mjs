@@ -14,7 +14,7 @@ for(const base of ['/','/skyo/']) {
       await page.setViewportSize({width,height:900});
       await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
       if(width<=780) await expect(page.locator('#hb')).not.toHaveClass(/show/);
-      await expect(page.locator('[data-enable-cosmos]')).toBeVisible();
+      await expect(page.getByRole('tab',{name:'Plano Focal IR'})).toHaveAttribute('aria-selected','true');
       await page.screenshot({path:info.outputPath(`explorar-${width}.png`)});
     }
     await page.getByRole('link',{name:'Fases',exact:true}).click();await expect(page.locator('#fases')).toHaveAttribute('aria-hidden','false');

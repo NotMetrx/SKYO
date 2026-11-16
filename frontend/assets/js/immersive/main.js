@@ -81,6 +81,7 @@ function loadCube(point=aim,manual=false){
   cubeWorker.postMessage({id,pixel:p.pixel,channel});
 }
 function setChannel(value){
+  if(!sky||!manifest)return;
   inspector?.clear();
   detail?.reset();
   channel=Math.max(0,Math.min(101,value));cubeId++;pendingCube=null;failedCubes.clear();clearTimeout(cubeTimer);cubeTimer=0;clearCube();

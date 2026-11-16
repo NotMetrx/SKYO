@@ -1,0 +1,219 @@
+[WebServer] (node:36628) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 25 tests using 1 worker
+
+(node:36644) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/browser/l2.spec.mjs:21:34 › Zoom L2 /: FITS real, λ/fecha/flujo propios, export y retorno (36.8s)
+  ✓   2 tests/browser/l2.spec.mjs:21:34 › Zoom L2 /skyo/: FITS real, λ/fecha/flujo propios, export y retorno (43.5s)
+  ✘   3 tests/browser/l2.spec.mjs:33:1 › Zoom L2 integrado en Explorar con controles flotantes (40.5s)
+(node:37506) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   4 tests/browser/l2.spec.mjs:39:1 › Zoom L2: respuesta tardía se descarta al cambiar canal y error conserva panorama (34.9s)
+  ✓   5 tests/browser/loading.spec.mjs:2:1 › Cambiar canal mientras carga el manifiesto no rompe el visor (3.7s)
+  ✓   6 tests/browser/loading.spec.mjs:10:1 › Controles inmersivos separados en móvil horizontal (6.2s)
+  ✘   7 tests/browser/migration.spec.mjs:4:3 › / navegación, teclado y responsive (57.2s)
+(node:38318) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   8 tests/browser/migration.spec.mjs:26:3 › / Worker, export y offline con Vary Origin (1.6m)
+(node:39006) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 tests/browser/migration.spec.mjs:43:3 › / manifiesto, iconos y aislamiento de caché (4.4s)
+  ✘  10 tests/browser/migration.spec.mjs:4:3 › /skyo/ navegación, teclado y responsive (1.2m)
+(node:39792) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  11 tests/browser/migration.spec.mjs:26:3 › /skyo/ Worker, export y offline con Vary Origin (1.6m)
+(node:40466) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  12 tests/browser/migration.spec.mjs:43:3 › /skyo/ manifiesto, iconos y aislamiento de caché (4.8s)
+  ✓  13 tests/browser/migration.spec.mjs:57:1 › contexto HiPS se carga bajo demanda y se descarga al salir (46.7s)
+  ✓  14 tests/browser/migration.spec.mjs:67:1 › actualización PWA espera al usuario y conserva cachés ajenas (8.8s)
+  ✓  15 tests/browser/storage.spec.mjs:4:38 › OPFS independiente: fallo de segundo archivo, recuperación y borrado (8.9s)
+  ✓  16 tests/browser/storage.spec.mjs:4:38 › OPFS integrado: fallo de segundo archivo, recuperación y borrado (47.9s)
+  ✓  17 tests/browser/storage.spec.mjs:26:1 › Bitácora conserva snapshot, no inventa movimiento y escapa nombres de archivo (47.7s)
+  ✓  18 tests/browser/t01.spec.mjs:9:39 › T01 independiente: cambiar demo invalida informe (4.9s)
+  ✓  19 tests/browser/t01.spec.mjs:9:39 › T01 integrado: cambiar demo invalida informe (43.8s)
+  ✓  20 tests/browser/t01.spec.mjs:18:38 › T01 independiente: A/A→demo A/B, export y diagnóstico (9.9s)
+  ✓  21 tests/browser/t01.spec.mjs:18:38 › T01 integrado: A/A→demo A/B, export y diagnóstico (59.0s)
+  ✓  22 tests/browser/wasm.spec.mjs:7:34 › WASM Worker /: carga real, identidad y fallback (9.0s)
+  ✓  23 tests/browser/wasm.spec.mjs:7:34 › WASM Worker /skyo/: carga real, identidad y fallback (9.4s)
+  ✓  24 tests/browser/wasm.spec.mjs:18:1 › WASM corrupto o que lanza excepción conserva fallback explícito (9.2s)
+  ✓  25 tests/browser/wasm.spec.mjs:29:1 › WASM y JavaScript: benchmark de kernel en Worker Chromium (8.6s)
+
+
+  1) tests/browser/l2.spec.mjs:33:1 › Zoom L2 integrado en Explorar con controles flotantes ────────
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('#spectral-frame').contentFrame().locator('#sky')
+    Expected: "12"
+    Received: "2"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('#spectral-frame').contentFrame().locator('#sky') with timeout 5000ms
+      - waiting for locator('#spectral-frame').contentFrame().locator('#sky')
+
+
+      12 | async function approach(page,base,embedded=false){
+      13 |   await page.goto(base+(embedded?'index.html#explorar':'inmersivo.html'));const ui=embedded?page.frameLocator('#spectral-frame'):page;
+    > 14 |   await expect(ui.locator('#sky')).toHaveAttribute('data-ready','12');
+         |                                    ^
+      15 |   await ui.locator('#channel').fill('20');await ui.locator('#channel').dispatchEvent('change');await expect(ui.locator('#sky')).toHaveAttribute('data-channel','20');
+      16 |   const dx=-(point.ra-60.8109955)*Math.PI/180/.003,dy=-(point.dec-51.3404038)*Math.PI/180/.003;
+      17 |   for(let i=0;i<2;i++){await page.mouse.move(1000,450);await page.mouse.down();await page.mouse.move(1000+dx/2,450+dy/2,{steps:3});await page.mouse.up();}
+        at approach (/tmp/skyo-audit/tests/browser/l2.spec.mjs:14:36)
+        at /tmp/skyo-audit/tests/browser/l2.spec.mjs:35:12
+
+    Error Context: ../skyo-audit-remaining/l2-Zoom-L2-integrado-en-Explorar-con-controles-flotantes/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../skyo-audit-remaining/l2-Zoom-L2-integrado-en-Explorar-con-controles-flotantes/trace.zip
+    Usage:
+
+        npx playwright show-trace ../skyo-audit-remaining/l2-Zoom-L2-integrado-en-Explorar-con-controles-flotantes/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/browser/migration.spec.mjs:4:3 › / navegación, teclado y responsive ─────────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('[data-enable-cosmos]')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('[data-enable-cosmos]') with timeout 5000ms
+      - waiting for locator('[data-enable-cosmos]')
+
+
+      15 |       await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+      16 |       if(width<=780) await expect(page.locator('#hb')).not.toHaveClass(/show/);
+    > 17 |       await expect(page.locator('[data-enable-cosmos]')).toBeVisible();
+         |                                                          ^
+      18 |       await page.screenshot({path:info.outputPath(`explorar-${width}.png`)});
+      19 |     }
+      20 |     await page.getByRole('link',{name:'Fases',exact:true}).click();await expect(page.locator('#fases')).toHaveAttribute('aria-hidden','false');
+        at /tmp/skyo-audit/tests/browser/migration.spec.mjs:17:58
+
+    Error Context: ../skyo-audit-remaining/migration--navegación-teclado-y-responsive/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../skyo-audit-remaining/migration--navegación-teclado-y-responsive/trace.zip
+    Usage:
+
+        npx playwright show-trace ../skyo-audit-remaining/migration--navegación-teclado-y-responsive/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests/browser/migration.spec.mjs:26:3 › / Worker, export y offline con Vary Origin ────────────
+
+    Test timeout of 90000ms exceeded.
+
+    Error: expect(locator).toBeEnabled() failed
+
+    Locator:  locator('#lab-save-report')
+    Expected: enabled
+    Received: disabled
+
+    Call log:
+      - Expect "toBeEnabled" locator('#lab-save-report') with timeout 5000ms
+      - waiting for locator('#lab-save-report')
+        6 × locator resolved to <button disabled class="btn" type="button" id="lab-save-report">Descargar informe JSON ↓</button>
+          - unexpected value "disabled"
+      - Test timeout of 90000ms exceeded.
+
+
+      37 |     await context.setOffline(true);await page.reload();
+      38 |     await page.getByRole('tab',{name:/Laboratorio FITS/}).click();await page.locator('#lab-load-demo').click();
+    > 39 |     await expect(page.locator('#lab-compare-btn')).toBeEnabled();await page.locator('#lab-compare-btn').click();await expect(page.locator('#lab-save-report')).toBeEnabled();
+         |                                                                                                                                                                ^
+      40 |     await page.goto(base+'lab.html');await page.locator('#load-demo').click();await expect(page.locator('#compare')).toBeEnabled();
+      41 |     await page.locator('#compare').click();await expect(page.locator('#save-report')).toBeEnabled();
+      42 |   });
+        at /tmp/skyo-audit/tests/browser/migration.spec.mjs:39:160
+
+    Error Context: ../skyo-audit-remaining/migration--Worker-export-y-offline-con-Vary-Origin/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../skyo-audit-remaining/migration--Worker-export-y-offline-con-Vary-Origin/trace.zip
+    Usage:
+
+        npx playwright show-trace ../skyo-audit-remaining/migration--Worker-export-y-offline-con-Vary-Origin/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) tests/browser/migration.spec.mjs:4:3 › /skyo/ navegación, teclado y responsive ────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('[data-enable-cosmos]')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('[data-enable-cosmos]') with timeout 5000ms
+      - waiting for locator('[data-enable-cosmos]')
+
+
+      15 |       await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+      16 |       if(width<=780) await expect(page.locator('#hb')).not.toHaveClass(/show/);
+    > 17 |       await expect(page.getByRole('tab',{name:'Plano Focal IR'})).toHaveAttribute('aria-selected','true');
+         |                                                          ^
+      18 |       await page.screenshot({path:info.outputPath(`explorar-${width}.png`)});
+      19 |     }
+      20 |     await page.getByRole('link',{name:'Fases',exact:true}).click();await expect(page.locator('#fases')).toHaveAttribute('aria-hidden','false');
+        at /tmp/skyo-audit/tests/browser/migration.spec.mjs:17:58
+
+    Error Context: ../skyo-audit-remaining/migration--skyo-navegación-teclado-y-responsive/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../skyo-audit-remaining/migration--skyo-navegación-teclado-y-responsive/trace.zip
+    Usage:
+
+        npx playwright show-trace ../skyo-audit-remaining/migration--skyo-navegación-teclado-y-responsive/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) tests/browser/migration.spec.mjs:26:3 › /skyo/ Worker, export y offline con Vary Origin ───────
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for locator('#lab-load-demo')
+        - locator resolved to <button type="button" id="lab-load-demo" class="btn btn-demo">✦ Cargar simulación SPHEREx (Épocas A y B)</button>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+
+
+      36 |     const download=page.waitForEvent('download');await page.locator('#lab-save-report').click();expect((await download).suggestedFilename()).toContain('.json');
+      37 |     await context.setOffline(true);await page.reload();
+    > 38 |     await page.getByRole('tab',{name:/Laboratorio FITS/}).click();await page.locator('#lab-load-demo').click();
+         |                                                                                                        ^
+      39 |     await expect(page.locator('#lab-compare-btn')).toBeEnabled();await page.locator('#lab-compare-btn').click();await expect(page.locator('#lab-save-report')).toBeEnabled();
+      40 |     await page.goto(base+'lab.html');await page.locator('#load-demo').click();await expect(page.locator('#compare')).toBeEnabled();
+      41 |     await page.locator('#compare').click();await expect(page.locator('#save-report')).toBeEnabled();
+        at /tmp/skyo-audit/tests/browser/migration.spec.mjs:38:104
+
+    Error Context: ../skyo-audit-remaining/migration--skyo-Worker-export-y-offline-con-Vary-Origin/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../skyo-audit-remaining/migration--skyo-Worker-export-y-offline-con-Vary-Origin/trace.zip
+    Usage:
+
+        npx playwright show-trace ../skyo-audit-remaining/migration--skyo-Worker-export-y-offline-con-Vary-Origin/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5 failed
+    tests/browser/l2.spec.mjs:33:1 › Zoom L2 integrado en Explorar con controles flotantes ─────────
+    tests/browser/migration.spec.mjs:4:3 › / navegación, teclado y responsive ──────────────────────
+    tests/browser/migration.spec.mjs:26:3 › / Worker, export y offline con Vary Origin ─────────────
+    tests/browser/migration.spec.mjs:4:3 › /skyo/ navegación, teclado y responsive ─────────────────
+    tests/browser/migration.spec.mjs:26:3 › /skyo/ Worker, export y offline con Vary Origin ────────
+  20 passed (14.3m)

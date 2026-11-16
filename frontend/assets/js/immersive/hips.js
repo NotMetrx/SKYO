@@ -52,6 +52,7 @@ export function createSky(T,scene,{manifest,onStatus}){
     tiles.delete(tile.key);
   }
   function show(){
+    if(displayChannel===null&&![50,51].includes(channel)&&baseReady(channel)>0)displayChannel=channel;
     if(![50,51].includes(channel)&&baseReady(channel)===12)displayChannel=channel;
     if([50,51].includes(channel))displayChannel=null;
     for(const tile of tiles.values())if(tile.mesh)tile.mesh.visible=tile.channel===displayChannel&&(tile.order===0||tile.channel!==channel||wanted.has(tile.key));
@@ -76,20 +77,26 @@ export function createSky(T,scene,{manifest,onStatus}){
     for(const d of [1,-1,2,-2]){const c=channel+d;if(c>=0&&c<=101&&![50,51].includes(c))for(let p=0;p<12;p++)request(c,0,p);}
   }
   async function load(tile){
+    tile.attempts=(tile.attempts??0)+1;
     const controller=new AbortController();tile.controller=controller;requests.add(tile);
     const timeout=setTimeout(()=>controller.abort(),20000);
     try{
       const response=await fetch(tile.url,{signal:controller.signal});if(!response.ok)throw Error(`HiPS HTTP ${response.status}`);
       if(Number(response.headers.get('Content-Length'))>1_000_000)throw Error('Tesela excesiva');
       const bytes=await response.arrayBuffer();if(bytes.byteLength>1_000_000)throw Error('Tesela excesiva');
+      clearTimeout(timeout); // El límite de red no debe cancelar una imagen ya descargada mientras se decodifica.
       if(tile.hash&&await sha256(bytes)!==tile.hash)throw Error('Hash HiPS incorrecto');
       const bitmap=await createImageBitmap(new Blob([bytes]),{imageOrientation:'flipY'});
-      if(disposed||controller.signal.aborted||tiles.get(tile.key)!==tile){bitmap.close();return;}
+      if(disposed||tiles.get(tile.key)!==tile){bitmap.close();return;}
+      if(controller.signal.aborted){bitmap.close();throw new DOMException('Tiempo de carga agotado','AbortError');}
       if(bitmap.width!==512||bitmap.height!==512){bitmap.close();throw Error('Dimensiones HiPS incompatibles');}
       const map=new T.Texture(bitmap);map.flipY=false;map.minFilter=T.LinearFilter;map.magFilter=T.LinearFilter;map.generateMipmaps=false;map.needsUpdate=true;
       tile.mesh=new T.Mesh(tileGeometry(T,tile.order,tile.pixel,1000),new T.MeshBasicMaterial({map,side:T.DoubleSide,transparent:true,depthWrite:false}));
       tile.mesh.renderOrder=tile.order;tile.loaded=true;group.add(tile.mesh);show();trim();
-    }catch(error){if(tiles.get(tile.key)===tile){if(controller.signal.aborted)tiles.delete(tile.key);else tile.error=error.message;}}
+    }catch(error){if(tiles.get(tile.key)===tile){
+      if(controller.signal.aborted&&tile.attempts<2&&tile.channel===channel&&(tile.order===0||wanted.has(tile.key)))queue.push(tile);
+      else tile.error=error.message;
+    }}
     finally{clearTimeout(timeout);requests.delete(tile);active--;report();pump();}
   }
   function pump(){

@@ -117,7 +117,7 @@ function setCustomAvatar(dataUrl) {
     if (heraTitle) heraTitle.textContent = 'Asistente H.E.R.A 7';
     if (canMountNow) initHera3d(heraAvatarBtn);
   } else if (heraImg) {
-    heraImg.src = '';
+    heraImg.removeAttribute('src');
     heraImg.hidden = true;
     if (heraPlaceholder) heraPlaceholder.hidden = false;
     if (avatarResetBtn) avatarResetBtn.hidden = true;
@@ -203,7 +203,10 @@ async function enableCosmos() {
 document.addEventListener('click', event => {
   if (event.target.closest('[data-enable-cosmos], #enable-eclipse')) enableCosmos();
 });
-document.addEventListener('skyo:subviewchange', syncCosmosVisibility);
+document.addEventListener('skyo:subviewchange', () => {
+  syncCosmosVisibility();
+  if(currentRoute==='explorar'&&document.body.dataset.exploreView==='boveda')enableCosmos();
+});
 
 function clearLeavingSections(exceptId) {
   document.querySelectorAll('.sec.leaving').forEach(el => {
@@ -315,6 +318,7 @@ function navigate() {
     startSistema3D();
     triggerKryoGesture('Scan_Sky', { duration: 1.35 });
   } else if (currentRoute === 'fases') {
+    enableCosmos();
     startFases(hera.say.bind(hera));
     triggerKryoGesture('Scan_Sky', { duration: 1.35 });
   }
@@ -390,7 +394,7 @@ function launchFromInicio(event) {
     flashBrandArrival();
   }, 210);
   setTimeout(() => {
-    if (promptText) promptText.textContent = 'Iniciar secuencia de despegue';
+    if (promptText) promptText.textContent = 'Explorar el cielo';
     isWarping = false;
   }, 560);
   setTimeout(() => {
@@ -424,7 +428,6 @@ document.addEventListener('visibilitychange', () => {
 // 6. Inicialización inmediata
 function initApp() {
   navigate();
-  enableCosmos();
   syncCosmosVisibility();
 
   requestAnimationFrame(() => {

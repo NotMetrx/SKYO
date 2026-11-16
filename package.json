@@ -12,7 +12,7 @@
     "predev": "npm run sync:curated",
     "dev": "vite --host 127.0.0.1 --port 4173",
     "pretest": "npm run sync:curated",
-    "test": "node --test tests/unit/pipeline.test.mjs tests/unit/integrity.test.mjs tests/unit/session.test.mjs tests/unit/fits-boundary.test.mjs tests/unit/comparison.test.mjs tests/unit/science-regressions.test.mjs tests/unit/curated-dataset.test.mjs tests/unit/opfs.test.mjs tests/unit/wasm-equivalence.test.mjs tests/unit/fpa.test.mjs tests/unit/immersive.test.mjs tests/unit/l2.test.mjs tests/unit/archive.test.mjs tests/unit/build-wasm.test.mjs",
+    "test": "node --test tests/unit/pipeline.test.mjs tests/unit/integrity.test.mjs tests/unit/session.test.mjs tests/unit/fits-boundary.test.mjs tests/unit/comparison.test.mjs tests/unit/science-regressions.test.mjs tests/unit/curated-dataset.test.mjs tests/unit/opfs.test.mjs tests/unit/wasm-equivalence.test.mjs tests/unit/fpa.test.mjs tests/unit/immersive.test.mjs tests/unit/l2.test.mjs tests/unit/archive.test.mjs tests/unit/build-wasm.test.mjs tests/unit/controls.test.mjs",
     "audit:visual": "node scripts/audit-visual.mjs",
     "demo:generate": "node scripts/generate_demo_fits.mjs",
     "demo:preview": "node scripts/export_demo_preview.mjs",

@@ -1,0 +1,185 @@
+{
+  "config": {
+    "argv": [
+      "/home/metrx/.nvm/versions/node/v24.21.0/bin/node",
+      "/tmp/skyo-audit/node_modules/.bin/playwright",
+      "test",
+      "tests/browser/l2.spec.mjs",
+      "--grep",
+      "integrado en Explorar"
+    ],
+    "configFile": "/tmp/skyo-audit/playwright.config.mjs",
+    "rootDir": "/tmp/skyo-audit/tests/browser",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/tmp/skyo-audit-l2-recheck",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/tmp/skyo-audit/tests/browser",
+        "testIgnore": [],
+        "testMatch": [
+          "*.spec.mjs"
+        ],
+        "timeout": 90000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/tmp/skyo-audit-l2-recheck",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/tmp/skyo-audit/tests/browser",
+        "snapshotDir": "/tmp/skyo-audit/tests/browser",
+        "testIgnore": [],
+        "testMatch": "*.spec.mjs",
+        "timeout": 90000,
+        "use": {
+          "baseURL": "http://127.0.0.1:4203",
+          "headless": true,
+          "reducedMotion": "reduce",
+          "trace": "retain-on-failure",
+          "launchOptions": {
+            "args": [
+              "--disable-gpu"
+            ]
+          }
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/tmp/skyo-audit-l2-recheck.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.65.1",
+    "workers": 1,
+    "webServer": {
+      "command": "node tests/browser/server.mjs",
+      "url": "http://127.0.0.1:4203",
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "l2.spec.mjs",
+      "file": "l2.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Zoom L2 integrado en Explorar con controles flotantes",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "timedOut",
+                  "duration": 97807,
+                  "error": {
+                    "message": "\u001b[31mTest timeout of 90000ms exceeded.\u001b[39m",
+                    "stack": "\u001b[31mTest timeout of 90000ms exceeded.\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "message": "\u001b[31mTest timeout of 90000ms exceeded.\u001b[39m"
+                    },
+                    {
+                      "location": {
+                        "file": "/tmp/skyo-audit/tests/browser/l2.spec.mjs",
+                        "column": 75,
+                        "line": 35
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveAttribute\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('#spectral-frame').contentFrame().locator('#sky')\nExpected: \u001b[32m\"ready\"\u001b[39m\nReceived: \u001b[31m\"loading\"\u001b[39m\n\nCall log:\n\u001b[2m  - Expect \"toHaveAttribute\" locator('#spectral-frame').contentFrame().locator('#sky') with timeout 30000ms\u001b[22m\n\u001b[2m  - waiting for locator('#spectral-frame').contentFrame().locator('#sky')\u001b[22m\n\u001b[2m    9 × locator resolved to <canvas id=\"sky\" tabindex=\"0\" data-lod=\"5\" width=\"1280\" height=\"720\" data-ready=\"12\" data-tiles=\"124\" data-fov=\"0.246\" data-channel=\"20\" data-travel=\"0.00\" data-ra=\"210.80058\" data-dec=\"54.34659\" data-detail-ready=\"26\" data-detail-wanted=\"30\" data-display-channel=\"20\" data-detail-layer=\"loading\" data-spatial-kernel=\"JavaScript (fallback)\" aria-label=\"Cielo SPHEREx en primera persona. Arrastra para mirar, W A S D para volar, Q E para subir o bajar, rueda para zoom e Inicio para volver.\"></canvas>\u001b[22m\n\u001b[2m      - unexpected value \"loading\"\u001b[22m\n\u001b[2m  - Test timeout of 90000ms exceeded.\u001b[22m\n\n\n  33 | test('Zoom L2 integrado en Explorar con controles flotantes',async({page})=>{\n  34 |   await setup(page);await page.route('**/ibe/data/spherex/dr1/level2/fixture.fits?**',route=>route.fulfill({body:bytes}));\n> 35 |   const ui=await approach(page,'/',true);await expect(ui.locator('#sky')).toHaveAttribute('data-detail-layer','ready',{timeout:30000});\n     |                                                                           ^\n  36 |   await expect(ui.locator('#flux')).toContainText('observación L2');await expect(page).toHaveURL(/index\\.html#explorar$/);\n  37 |   await page.getByRole('tab',{name:'Laboratorio FITS'}).click();await expect(page.locator('#spectral-frame')).toHaveAttribute('src','about:blank');\n  38 | });\n    at /tmp/skyo-audit/tests/browser/l2.spec.mjs:35:75"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-16T04:17:03.479Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/tmp/skyo-audit-l2-recheck/l2-Zoom-L2-integrado-en-Explorar-con-controles-flotantes/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/tmp/skyo-audit-l2-recheck/l2-Zoom-L2-integrado-en-Explorar-con-controles-flotantes/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "ecd79b7cafb660d42e47-a24e9d603f270d38c529",
+          "file": "l2.spec.mjs",
+          "line": 33,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-16T04:16:57.043Z",
+    "duration": 114244.619,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

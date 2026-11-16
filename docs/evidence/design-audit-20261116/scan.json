@@ -1,0 +1,202 @@
+[
+  {
+    "url": "index.html#inicio",
+    "width": 320,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "index.html#inicio",
+    "width": 390,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "index.html#inicio",
+    "width": 768,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "index.html#inicio",
+    "width": 1440,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "index.html#explorar",
+    "width": 320,
+    "overflow": false,
+    "broken": [],
+    "outside": [
+      "🔬 Laboratorio FITS\n              LOCAL",
+      "📑 Colección y Candidatos",
+      "🛰 Contexto HiPS"
+    ],
+    "errors": []
+  },
+  {
+    "url": "index.html#explorar",
+    "width": 390,
+    "overflow": false,
+    "broken": [],
+    "outside": [
+      "🔬 Laboratorio FITS\n              LOCAL",
+      "📑 Colección y Candidatos",
+      "🛰 Contexto HiPS"
+    ],
+    "errors": []
+  },
+  {
+    "url": "index.html#explorar",
+    "width": 768,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "index.html#explorar",
+    "width": 1440,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "lab.html",
+    "width": 320,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "lab.html",
+    "width": 390,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "lab.html",
+    "width": 768,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "lab.html",
+    "width": 1440,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "espectral.html",
+    "width": 320,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "espectral.html",
+    "width": 390,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "espectral.html",
+    "width": 768,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "espectral.html",
+    "width": 1440,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "inmersivo.html",
+    "width": 320,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "inmersivo.html",
+    "width": 390,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "inmersivo.html",
+    "width": 768,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "inmersivo.html",
+    "width": 1440,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "contexto.html",
+    "width": 320,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "contexto.html",
+    "width": 390,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "contexto.html",
+    "width": 768,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  },
+  {
+    "url": "contexto.html",
+    "width": 1440,
+    "overflow": false,
+    "broken": [],
+    "outside": [],
+    "errors": []
+  }
+]

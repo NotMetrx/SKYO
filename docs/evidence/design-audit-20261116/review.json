@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-16T04:25:21.364790+00:00",
+  "base": "e93e106",
+  "node": {
+    "passed": 65,
+    "failed": 0
+  },
+  "build": "passed",
+  "docs": "passed",
+  "visualCases": 24,
+  "horizontalOverflow": 0,
+  "brokenImages": 0,
+  "focusedBrowser": {
+    "startTime": "2026-11-16T03:49:46.621Z",
+    "duration": 249085.54,
+    "expected": 7,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "remainingBrowser": {
+    "startTime": "2026-11-16T04:10:40.846Z",
+    "duration": 857921.36,
+    "expected": 20,
+    "skipped": 0,
+    "unexpected": 5,
+    "flaky": 0
+  },
+  "fullBrowser": "Interrupted after34 passed; not green",
+  "open": [
+    "L2 integrated timeout also reproduced in focused repeat",
+    "Integrated offline export timeout root/subpath",
+    "Navigation test updated after execution; rerun pending"
+  ],
+  "publication": "Review branch only; main/production unchanged due unresolved regression gate. Production URL requested but not provided."
+}

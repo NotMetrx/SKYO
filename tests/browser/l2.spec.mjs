@@ -11,7 +11,7 @@ async function setup(page){
 }
 async function approach(page,base,embedded=false){
   await page.goto(base+(embedded?'index.html#explorar':'inmersivo.html'));const ui=embedded?page.frameLocator('#spectral-frame'):page;
-  await expect(ui.locator('#sky')).toHaveAttribute('data-ready','12');
+  await expect(ui.locator('#sky')).toHaveAttribute('data-ready','12',{timeout:45000});
   await ui.locator('#channel').fill('20');await ui.locator('#channel').dispatchEvent('change');await expect(ui.locator('#sky')).toHaveAttribute('data-channel','20');
   const dx=-(point.ra-60.8109955)*Math.PI/180/.003,dy=-(point.dec-51.3404038)*Math.PI/180/.003;
   for(let i=0;i<2;i++){await page.mouse.move(1000,450);await page.mouse.down();await page.mouse.move(1000+dx/2,450+dy/2,{steps:3});await page.mouse.up();}
