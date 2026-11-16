@@ -402,5 +402,9 @@
   validate:build falla antes y pasa después; build y validate:docs pasan.
 - Baseline y repetición npm65/65 pasan. Navegador del build binario3/3 pasa:
   escritorio/subruta, flujoNASA, canales, export y controles móviles. science-gaps4/4.
-  Falta desplegar dist y verificar respuesta binaria real en Hostinger.
   Detalle: docs/REVISION_HOSTINGER_EXPLORAR_20261116.md. Sin autoaprobación/claim.
+- PR #2 fusionado por rebase en main (389dbc4) y desplegado por Hostinger:
+  build22d5b93c5a894540; los 12 .png.bin responden octet-stream con tamaños y
+  SHA-256 originales. Producción verificada en1440×900 y390×844:12/12 base,
+  detalle4/19, flujo12.0051 MJy/sr y sin pageerror. IRSA TAP sigue502/timeout
+  sin CORS, indisponibilidad externa comunicada por la interfaz.
