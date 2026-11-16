@@ -76,5 +76,16 @@ Evidencia de la revisión en el workspace principal:
   canales/export y móvil390×844. El servidor local las entrega como octet-stream,
   por lo que se comprueba la decodificación PNG desde la ruta binaria.
 - No se ejecutó la batería completa de navegador ni hardware Android/VR.
-  Falta desplegar el build y comprobar que Hostinger entregue los binarios sin
-  transformación. La disponibilidad de TAP/IRSA sigue siendo independiente.
+
+## Despliegue verificado
+
+- PR #2 fusionado por rebase en `main` (commit `389dbc4`). Hostinger publicó el
+  build `22d5b93c5a894540`, idéntico al `dist` local.
+- Los 12 archivos `datasets/immersive-sky/*.png.bin` responden HTTP 200 con
+  `content-type: application/octet-stream`; tamaño y SHA-256 coinciden uno a uno
+  con los originales del repositorio (Npix0: 84624 bytes, `a857dd2f…`).
+- Recorrido real sobre la URL pública (1440×900 y 390×844): `12/12 base ·
+  detalle 4/19`, cielo visible y flujo `12.0051 MJy/sr`, sin errores de página.
+- La consulta TAP de IRSA continúa devolviendo 502 o agotando el tiempo sin CORS.
+  La interfaz lo comunica como "IRSA no respondió"; es una indisponibilidad
+  externa y no un fallo de las teselas locales.
