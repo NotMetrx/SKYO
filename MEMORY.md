@@ -319,3 +319,8 @@
 
 - `npm run build:wasm` verifica WASM precompilado y ejecuta `web:build` para generar `dist/`; `wasm:build` conserva la opción de solo verificar o regenerar el núcleo.
 - Validación sin Cargo en PATH: build y validate:build pasan con 55 recursos precache; npm test 63/63. Persisten advertencias de CSS/paquete grande de Vite ajenas a este ajuste.
+
+## Entrada al espacio inmersivo
+
+- La integración dejó el plano focal como subvista inicial, por lo que el iframe inmersivo permanecía en about:blank hasta pulsar su pestaña. Se restableció el cielo inmersivo como predeterminado, conservando la selección al volver y la descarga del iframe al salir.
+- Verificado en Chromium con 12 teselas base, selección y regreso al plano focal en raíz y /skyo/, sin errores de página; build y validate:build pasan, npm test 63/63. La batería Playwright completa no se ejecutó: la ejecución enfocada se interrumpió tras tardar en las escenas 3D.

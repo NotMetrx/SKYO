@@ -23,7 +23,7 @@ import { triggerKryoGesture } from './hera3d.js';
 const STORAGE_KEY = 'skyo_bitacora_v1';
 
 let initialized = false;
-let currentSubView = 'boveda';
+let currentSubView = 'espectral';
 let collectionFilter = 'all';
 let activeFilter = 'Todos';
 let currentEpoch = 0;
@@ -1094,7 +1094,7 @@ export function startExplorar(heraHandler, initialSub) {
   }
   if (initialSub) {
     setSubView(initialSub);
-  } else if (currentSubView && currentSubView !== 'boveda') {
+  } else if (currentSubView) {
     setSubView(currentSubView);
   }
 }
