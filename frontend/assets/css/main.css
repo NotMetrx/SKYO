@@ -2506,59 +2506,107 @@ body[data-route]:not([data-route="inicio"]) .agent-2d-emblem {
 }
 
 /* ==========================================================================
-   Asistente H.E.R.A 7 (Flotación espacial sin gravedad sobre #07070a)
+   Asistente Navegante Heras7 (Sin marco circular · Libre vuelo sobre #000000)
    ========================================================================== */
 #hera {
+  --hera-size: 148px;
   position: fixed;
-  right: 20px;
-  bottom: 20px;
+  left: 0;
+  top: 0;
+  width: var(--hera-size);
+  height: var(--hera-size);
   z-index: 45;
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
   pointer-events: none;
+  will-change: transform;
 }
 
 .hera-avatar-wrap {
   position: relative;
-  pointer-events: auto;
-  display: inline-flex;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
 
 #ha {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  cursor: grab;
+  touch-action: none;
+  pointer-events: auto;
+  position: relative;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), filter 0.24s ease;
+}
+
+#ha::after {
+  content: '';
+  position: absolute;
+  inset: 16% 14% 6%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 64%, rgba(91, 184, 255, 0.28) 0%, rgba(181, 123, 255, 0.14) 44%, transparent 72%);
+  filter: blur(11px);
+  opacity: 0.72;
+  pointer-events: none;
+  z-index: -1;
+  transition: opacity 0.24s ease, transform 0.24s ease;
+}
+
+#ha:hover {
+  transform: translate3d(0, -4px, 0) scale(1.03);
+}
+
+#ha:hover::after {
+  opacity: 1;
+  transform: scale(1.08);
+}
+
+#hera.is-dragging #ha {
+  cursor: grabbing;
+  transform: scale(1.05);
+}
+
+#hera.is-flying #ha::after {
+  opacity: 1;
+  transform: scale(1.18);
+  background: radial-gradient(circle at 50% 66%, rgba(255, 134, 82, 0.44) 0%, rgba(91, 184, 255, 0.36) 40%, rgba(181, 123, 255, 0.16) 66%, transparent 76%);
+}
+
+#ha:focus-visible {
+  outline: none;
+  filter: drop-shadow(0 0 14px rgba(143, 212, 255, 0.85));
+}
+
+#ha.has-custom-avatar {
   width: 96px;
   height: 96px;
-  border: 1px solid var(--ln);
+  border: 1px solid var(--ln-ac);
   border-radius: 50%;
   background: var(--gl);
   backdrop-filter: var(--gl-filter);
   -webkit-backdrop-filter: var(--gl-filter);
   box-shadow: var(--gl-inset), 0 10px 28px rgba(0, 0, 0, 0.45);
   padding: 4px;
-  cursor: pointer;
-  position: relative;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
 }
 
-#ha:hover {
-  border-color: var(--ac);
-  box-shadow: var(--gl-inset), 0 0 20px rgba(91, 184, 255, 0.35);
-}
-
-#ha.is-kryo {
-  padding: 0;
-  border-color: rgba(91, 184, 255, 0.58);
-  background: radial-gradient(circle at 50% 35%, rgba(28, 52, 92, 0.45), rgba(6, 10, 20, 0.88));
-  box-shadow: var(--gl-inset), 0 0 26px rgba(91, 184, 255, 0.28), 0 10px 28px rgba(0, 0, 0, 0.55);
+#ha.has-custom-avatar::after {
+  display: none;
 }
 
 #ha.is-kryo .kryo-dock-3d {
+  filter: drop-shadow(0 12px 26px rgba(0, 0, 0, 0.65));
   transition: opacity 0.24s ease-out, transform 0.36s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -2569,31 +2617,16 @@ body[data-route]:not([data-route="inicio"]) .agent-2d-emblem {
 
 @keyframes heraDockPulse {
   0% {
-    transform: scale(0.92);
-    border-color: rgba(255, 255, 255, 0.96);
-    box-shadow:
-      var(--gl-inset),
-      0 0 0 0 rgba(127, 216, 255, 0.78),
-      0 0 0 0 rgba(181, 123, 255, 0.62),
-      0 0 42px rgba(91, 184, 255, 0.72);
+    transform: scale(0.9);
+    filter: drop-shadow(0 0 28px rgba(127, 216, 255, 0.92)) drop-shadow(0 0 48px rgba(181, 123, 255, 0.58));
   }
-  42% {
-    transform: scale(1.07);
-    border-color: rgba(143, 212, 255, 0.92);
-    box-shadow:
-      var(--gl-inset),
-      0 0 0 14px rgba(127, 216, 255, 0.22),
-      0 0 0 26px rgba(181, 123, 255, 0.14),
-      0 0 38px rgba(91, 184, 255, 0.56);
+  44% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 20px rgba(91, 184, 255, 0.65));
   }
   100% {
     transform: scale(1);
-    border-color: rgba(91, 184, 255, 0.58);
-    box-shadow:
-      var(--gl-inset),
-      0 0 0 24px rgba(127, 216, 255, 0),
-      0 0 0 40px rgba(181, 123, 255, 0),
-      0 0 26px rgba(91, 184, 255, 0.28);
+    filter: drop-shadow(0 0 0 rgba(91, 184, 255, 0));
   }
 }
 
@@ -2601,35 +2634,55 @@ body[data-route]:not([data-route="inicio"]) .agent-2d-emblem {
   animation: heraDockPulse 1.05s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.hera-sound-btn {
-  position: absolute;
-  left: -10px;
-  bottom: 2px;
-  width: 28px;
-  height: 28px;
+.hb-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.hb-head #hb-title {
+  margin-bottom: 0;
+}
+
+.hb-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.hb-tool-btn {
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  background: var(--gl-strong);
-  border: 1px solid rgba(91, 184, 255, 0.42);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  background: rgba(16, 28, 50, 0.72);
+  border: 1px solid rgba(91, 184, 255, 0.34);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: var(--fg);
-  font-size: 13px;
+  font-size: 11.5px;
   line-height: 1;
   cursor: pointer;
-  z-index: 3;
   padding: 0;
-  transition: transform 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  position: relative;
+  transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease, opacity 0.15s ease;
 }
 
-.hera-sound-btn:hover {
+.hb-tool-btn:hover {
   transform: scale(1.1);
   border-color: var(--ac);
+  background: rgba(91, 184, 255, 0.22);
+}
+
+.hb-tool-btn[hidden] {
+  display: none !important;
 }
 
 .hera-sound-btn[aria-pressed="true"] {
-  opacity: 0.7;
+  opacity: 0.65;
   border-color: rgba(255, 255, 255, 0.25);
 }
 
@@ -2661,47 +2714,22 @@ body[data-route]:not([data-route="inicio"]) .agent-2d-emblem {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 2px;
   color: var(--mut);
   text-align: center;
   user-select: none;
-}
-
-.hera-placeholder svg {
-  color: var(--ac);
+  filter: drop-shadow(0 10px 22px rgba(91, 184, 255, 0.34));
 }
 
 .hera-placeholder .slot-text {
-  font-size: 9.5px;
-  letter-spacing: 0.04em;
+  font-size: 10px;
+  letter-spacing: 0.08em;
   font-weight: 600;
   color: var(--fg);
-}
-
-.hera-upload-badge {
-  position: absolute;
-  right: -2px;
-  bottom: 0px;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--gl-strong);
-  border: 1px solid var(--ac);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--ac);
-  font-size: 14px;
-  cursor: pointer;
-  z-index: 3;
-  transition: transform 0.15s ease, background-color 0.15s ease, color 0.15s ease;
-}
-
-.hera-upload-badge:hover {
-  transform: scale(1.12);
-  background: var(--ac);
-  color: #000000;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(8, 16, 32, 0.72);
+  border: 1px solid rgba(91, 184, 255, 0.28);
 }
 
 .hera-upload-badge input {
@@ -2713,27 +2741,11 @@ body[data-route]:not([data-route="inicio"]) .agent-2d-emblem {
 }
 
 .hera-reset-btn {
-  position: absolute;
-  right: -2px;
-  top: 0px;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: rgba(18, 10, 24, 0.85);
-  border: 1px solid var(--err-ln, rgba(255, 138, 168, 0.5));
+  border-color: var(--err-ln, rgba(255, 138, 168, 0.5));
   color: var(--err, #ff8aa8);
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 3;
-  padding: 0;
-  transition: transform 0.15s ease, background 0.15s ease;
 }
 
 .hera-reset-btn:hover {
-  transform: scale(1.12);
   background: var(--err, #ff8aa8);
   color: #000000;
 }
@@ -2744,10 +2756,12 @@ body[data-route]:not([data-route="inicio"]) .agent-2d-emblem {
 }
 
 #hb {
-  position: relative;
+  position: absolute;
+  right: calc(100% + 14px);
+  bottom: 10px;
   z-index: 48;
-  max-width: 312px;
-  background: rgba(6, 11, 22, 0.90);
+  width: min(322px, calc(100vw - 44px));
+  background: rgba(6, 11, 22, 0.92);
   backdrop-filter: blur(22px) saturate(165%);
   -webkit-backdrop-filter: blur(22px) saturate(165%);
   border: 1px solid rgba(91, 184, 255, 0.42);
@@ -2764,6 +2778,22 @@ body[data-route]:not([data-route="inicio"]) .agent-2d-emblem {
     opacity 0.24s var(--ease-panel),
     transform 0.24s var(--ease-panel),
     visibility 0s linear 0.24s;
+}
+
+#hera[data-hb-side="right"] #hb {
+  left: calc(100% + 14px);
+  right: auto;
+  border-radius: 18px 18px 18px 4px;
+}
+
+#hera[data-hb-v="bottom"] #hb {
+  top: 10px;
+  bottom: auto;
+  border-radius: 18px 4px 18px 18px;
+}
+
+#hera[data-hb-side="right"][data-hb-v="bottom"] #hb {
+  border-radius: 4px 18px 18px 18px;
 }
 
 #hb.show {
@@ -2961,47 +2991,42 @@ body[data-route]:not([data-route="inicio"]) .agent-2d-emblem {
   }
 
   #hera {
-    right: 12px;
+    --hera-size: 58px;
+    left: auto;
+    right: 10px;
     bottom: auto;
-    top: calc(6px + env(safe-area-inset-top, 0px));
+    top: calc(4px + env(safe-area-inset-top, 0px));
+    width: 58px;
+    height: 58px;
+    transform: none !important;
   }
 
   #ha {
+    width: 58px;
+    height: 58px;
+    cursor: pointer;
+  }
+
+  #ha.has-custom-avatar {
     width: 46px;
     height: 46px;
   }
 
-  .hera-sound-btn {
-    left: -34px;
-    top: 50%;
-    bottom: auto;
-    transform: translateY(-50%);
-    width: 26px;
-    height: 26px;
-    font-size: 12px;
-  }
-
-  .hera-sound-btn:hover {
-    transform: translateY(-50%) scale(1.08);
+  .hera-placeholder svg {
+    width: 46px;
+    height: 46px;
   }
 
   .hera-placeholder .slot-text {
     display: none;
   }
 
-  .hera-upload-badge {
-    width: 24px;
-    height: 24px;
-    right: -4px;
-    bottom: -2px;
-    font-size: 11px;
-  }
-
   #hb {
     position: fixed;
-    top: calc(58px + env(safe-area-inset-top, 0px));
+    top: calc(64px + env(safe-area-inset-top, 0px));
     right: 12px;
     left: 12px;
+    bottom: auto;
     width: auto;
     max-width: 340px;
     margin-left: auto;
@@ -4084,6 +4109,10 @@ body[data-route]:not([data-route="inicio"]) .agent-2d-emblem {
 }
 
 @media (min-width: 781px) and (max-height: 760px) {
+  #hera {
+    --hera-size: 124px;
+  }
+
   .hero-craft-grid {
     max-width: 460px;
   }
@@ -4235,18 +4264,6 @@ body[data-explore-view="espectral"] .bitacora-panel {z-index:43;}
 }
 
 /* Panel #nosotros alineado a la paleta oscura universal de SKYO (Obsidian · Chrome · Sky Blue · Violet) */
-@media (min-width: 781px) {
-  body[data-route="nosotros"] #hera {
-    right: 16px;
-    bottom: 12px;
-  }
-
-  body[data-route="nosotros"] #ha {
-    width: 64px;
-    height: 64px;
-  }
-}
-
 #nosotros {
   --nx-bg: var(--obsidian-2);
   --nx-card: linear-gradient(160deg, rgba(14, 22, 40, 0.88), rgba(7, 11, 22, 0.94));
@@ -4463,9 +4480,8 @@ body[data-explore-view="espectral"] .bitacora-panel {z-index:43;}
 
 @media (min-width: 781px) {
   .nx-foot {
-    padding-right: 136px;
     padding-bottom: 18px;
-    min-height: 52px;
+    min-height: 44px;
   }
 }
 

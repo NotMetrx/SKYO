@@ -8,6 +8,22 @@
 
 const scriptPromises = new Map();
 let dockController = null;
+const liveFlight = {
+  bankTarget: 0,
+  pitchFlyTarget: 0,
+  thrusterTarget: 0,
+  flying: false,
+  lookAt: null
+};
+
+export function setHeraFlightState({ vx = 0, vy = 0, speed = 0, flying = false, lookAt = null } = {}) {
+  liveFlight.bankTarget = Math.max(-0.34, Math.min(0.34, -vx * 0.00055));
+  liveFlight.pitchFlyTarget = Math.max(-0.18, Math.min(0.22, vy * 0.00038));
+  liveFlight.thrusterTarget = flying ? Math.min(1, 0.35 + speed / 520) : 0;
+  liveFlight.flying = Boolean(flying);
+  liveFlight.lookAt = lookAt || null;
+  dockController?.onFlightUpdate?.();
+}
 
 function loadScriptOnce(src, isReady) {
   if (isReady?.()) return Promise.resolve();
@@ -163,7 +179,7 @@ export function initKryoDock(button, { initialGesture = 'Wave_Hello', onInteract
         return;
       }
 
-      let lastSize = getBoxSize(button, 96);
+      let lastSize = getBoxSize(button, 148);
       let lastDpr = Math.min(window.devicePixelRatio || 1, 2.5);
       renderer.setPixelRatio(lastDpr);
       renderer.setSize(lastSize, lastSize, false);
@@ -184,17 +200,17 @@ export function initKryoDock(button, { initialGesture = 'Wave_Hello', onInteract
         scene.environment = envRT.texture;
       }
 
-      const keyLight = new T.DirectionalLight(0xfff4e6, 2.15);
+      const keyLight = new T.DirectionalLight(0xfff4e6, 2.25);
       keyLight.position.set(2.8, 3.8, 4.4);
-      const rimCyan = new T.DirectionalLight(0x38bdf8, 1.85);
+      const rimCyan = new T.DirectionalLight(0x38bdf8, 1.95);
       rimCyan.position.set(-3.2, 2.1, -2.0);
-      const rimCoral = new T.PointLight(0xff784f, 1.0, 9);
+      const rimCoral = new T.PointLight(0xff784f, 1.15, 9);
       rimCoral.position.set(0.2, -1.4, 1.3);
-      const hemi = new T.HemisphereLight(0xdbeafe, 0x0b1224, 0.85);
+      const hemi = new T.HemisphereLight(0xdbeafe, 0x0b1224, 0.9);
       scene.add(keyLight, rimCyan, rimCoral, hemi);
 
-      const cam = new T.PerspectiveCamera(32, 1, 0.1, 30);
-      cam.position.set(0, 0.04, 4.75);
+      const cam = new T.PerspectiveCamera(33, 1, 0.1, 30);
+      cam.position.set(0, 0.03, 5.25);
 
       const pivot = new T.Group();
       scene.add(pivot);
@@ -208,11 +224,18 @@ export function initKryoDock(button, { initialGesture = 'Wave_Hello', onInteract
       const actions = {};
       let currentAction = null;
       let headNode = null;
+      const thrusterMats = [];
+      const cyanMats = [];
+      let microLifeTimer = 0;
       const st = {
         ty: -0.18,
         tp: 0.04,
         yaw: -0.18,
         pitch: 0.04,
+        bank: 0,
+        flyPitch: 0,
+        thrusterMix: 0,
+        floatPhase: 0,
         bounce: 0,
         gestureLeft: 0,
         last: 0
@@ -223,10 +246,51 @@ export function initKryoDock(button, { initialGesture = 'Wave_Hello', onInteract
         renderer.render(scene, cam);
       };
 
+      const syncLookTarget = () => {
+        if (!liveFlight.lookAt) return false;
+        const r = cv.getBoundingClientRect();
+        if (!r.width) return false;
+        const cx = r.left + r.width * 0.5;
+        const cy = r.top + r.height * 0.5;
+        const dx = (liveFlight.lookAt.x - cx) / Math.max(260, window.innerWidth * 0.6);
+        const dy = (liveFlight.lookAt.y - cy) / Math.max(260, window.innerHeight * 0.6);
+        st.ty = Math.max(-0.68, Math.min(0.68, dx * 0.95));
+        st.tp = Math.max(-0.34, Math.min(0.38, dy * 0.65));
+        return true;
+      };
+
+      const scheduleMicroLife = () => {
+        clearTimeout(microLifeTimer);
+        if (disposed || document.hidden || window.__skyReducedMotion || document.body.dataset.route === 'inicio') return;
+        microLifeTimer = setTimeout(() => {
+          microLifeTimer = 0;
+          if (disposed || document.hidden || window.__skyReducedMotion || document.body.dataset.route === 'inicio') return;
+          if (liveFlight.flying || st.gestureLeft > 0.1 || !mixer) {
+            scheduleMicroLife();
+            return;
+          }
+          playClip('Scan_Sky', {
+            fade: 0.35,
+            loopOnce: true,
+            timeScale: 0.9,
+            duration: 1.25,
+            fromAutoReturn: true
+          });
+        }, 7600);
+      };
+
       const wake = () => {
         if (disposed || rafId || document.hidden || document.body.dataset.route === 'inicio') return;
+        clearTimeout(microLifeTimer);
         st.last = performance.now();
         rafId = requestAnimationFrame(tick);
+      };
+
+      controller.onFlightUpdate = () => {
+        syncLookTarget();
+        if (liveFlight.flying || liveFlight.thrusterTarget > 0.02 || st.thrusterMix > 0.02 || liveFlight.lookAt) {
+          wake();
+        }
       };
 
       const playClip = (name, { fade = 0.24, loopOnce = true, timeScale = 1, duration = 1.45, fromAutoReturn = false } = {}) => {
@@ -266,49 +330,69 @@ export function initKryoDock(button, { initialGesture = 'Wave_Hello', onInteract
         const dt = Math.min((now - st.last) / 1000, 0.05);
         st.last = now;
 
+        syncLookTarget();
         st.yaw += (st.ty - st.yaw) * 0.14;
         st.pitch += (st.tp - st.pitch) * 0.14;
+        st.bank += (liveFlight.bankTarget - st.bank) * 0.16;
+        st.flyPitch += (liveFlight.pitchFlyTarget - st.flyPitch) * 0.16;
+        st.thrusterMix += (liveFlight.thrusterTarget - st.thrusterMix) * 0.16;
+        st.floatPhase += dt * (liveFlight.flying ? 3.2 : 1.9);
 
         let sc = 1;
-        let roll = 0;
+        let roll = st.bank;
         if (st.bounce > 0) {
           st.bounce = Math.max(0, st.bounce - dt);
           const k = 1 - st.bounce / 0.72;
           sc = 1 + Math.abs(Math.sin(k * 16)) * 0.045 * (1 - k);
-          roll = Math.sin(k * 20) * 0.055 * (1 - k);
+          roll += Math.sin(k * 20) * 0.055 * (1 - k);
         }
 
-        pivot.rotation.set(st.pitch, st.yaw, roll, 'YXZ');
+        const bobY = Math.sin(st.floatPhase) * (liveFlight.flying ? 0.06 : 0.032);
+        pivot.position.y = bobY;
+        pivot.rotation.set(st.pitch + st.flyPitch, st.yaw, roll, 'YXZ');
         pivot.scale.setScalar(sc);
 
+        for (const m of thrusterMats) {
+          if (m.emissiveIntensity !== undefined) {
+            m.emissiveIntensity = 2.1 + st.thrusterMix * 2.4;
+          }
+        }
+        for (const m of cyanMats) {
+          if (m.emissiveIntensity !== undefined) {
+            m.emissiveIntensity = 1.75 + st.thrusterMix * 0.95;
+          }
+        }
+        rimCoral.intensity = 1.15 + st.thrusterMix * 1.1;
+
         if (headNode && !window.__skyReducedMotion) {
-          headNode.rotation.y = (st.ty + 0.18) * 0.45;
-          headNode.rotation.x = (st.tp - 0.04) * 0.35;
+          headNode.rotation.y = Math.max(-0.38, Math.min(0.38, (st.ty + 0.14) * 0.48));
+          headNode.rotation.x = Math.max(-0.24, Math.min(0.28, (st.tp - 0.04) * 0.36));
         }
 
-        if (mixer && st.gestureLeft > 0) {
+        if (mixer && (st.gestureLeft > 0 || liveFlight.flying)) {
           mixer.update(dt);
-          st.gestureLeft = Math.max(0, st.gestureLeft - dt);
+          if (st.gestureLeft > 0) st.gestureLeft = Math.max(0, st.gestureLeft - dt);
         }
 
         renderFrame();
 
-        const rotSettled = Math.abs(st.ty - st.yaw) < 0.002 && Math.abs(st.tp - st.pitch) < 0.002;
-        if (st.bounce > 0 || st.gestureLeft > 0 || !rotSettled) {
+        const rotSettled = Math.abs(st.ty - st.yaw) < 0.002 && Math.abs(st.tp - st.pitch) < 0.002 && Math.abs(st.bank) < 0.003 && Math.abs(st.flyPitch) < 0.003 && st.thrusterMix < 0.02;
+        if (st.bounce > 0 || st.gestureLeft > 0 || liveFlight.flying || !rotSettled) {
           rafId = requestAnimationFrame(tick);
         } else {
           rafId = 0;
+          scheduleMicroLife();
         }
       }
 
       const handlePointerMove = e => {
-        if (window.__skyReducedMotion || document.body.dataset.route === 'inicio') return;
+        if (window.__skyReducedMotion || document.body.dataset.route === 'inicio' || liveFlight.lookAt) return;
         const r = cv.getBoundingClientRect();
         if (!r.width) return;
         const dx = (e.clientX - (r.left + r.width * 0.5)) / Math.max(320, window.innerWidth);
         const dy = (e.clientY - (r.top + r.height * 0.5)) / Math.max(320, window.innerHeight);
-        st.ty = Math.max(-0.56, Math.min(0.32, -0.18 + dx * 0.95));
-        st.tp = Math.max(-0.26, Math.min(0.34, 0.04 + dy * 0.65));
+        st.ty = Math.max(-0.62, Math.min(0.45, -0.18 + dx * 0.95));
+        st.tp = Math.max(-0.28, Math.min(0.36, 0.04 + dy * 0.65));
         wake();
       };
 
@@ -319,7 +403,12 @@ export function initKryoDock(button, { initialGesture = 'Wave_Hello', onInteract
       };
 
       const handleVis = () => {
-        if (!document.hidden && document.body.dataset.route !== 'inicio') renderFrame();
+        if (document.hidden) {
+          clearTimeout(microLifeTimer);
+        } else if (document.body.dataset.route !== 'inicio') {
+          renderFrame();
+          if (!rafId) scheduleMicroLife();
+        }
       };
 
       window.addEventListener('pointermove', handlePointerMove, { passive: true });
@@ -328,7 +417,7 @@ export function initKryoDock(button, { initialGesture = 'Wave_Hello', onInteract
 
       if (typeof ResizeObserver === 'function') {
         ro = new ResizeObserver(() => {
-          const nextSize = getBoxSize(button, 96);
+          const nextSize = getBoxSize(button, 148);
           const nextDpr = Math.min(window.devicePixelRatio || 1, 2.5);
           if (nextSize !== lastSize || nextDpr !== lastDpr) {
             lastSize = nextSize;
@@ -343,6 +432,7 @@ export function initKryoDock(button, { initialGesture = 'Wave_Hello', onInteract
 
       button._heraCleanup = () => {
         disposed = true;
+        clearTimeout(microLifeTimer);
         if (rafId) cancelAnimationFrame(rafId);
         rafId = 0;
         window.removeEventListener('pointermove', handlePointerMove);
@@ -368,16 +458,21 @@ export function initKryoDock(button, { initialGesture = 'Wave_Hello', onInteract
           box.getSize(size);
           box.getCenter(center);
 
-          const normScale = 2.02 / Math.max(size.y, 0.5);
-          model.position.set(-center.x * normScale, -center.y * normScale + 0.06, -center.z * normScale);
+          const normScale = 1.92 / Math.max(size.y, 0.5);
+          model.position.set(-center.x * normScale, -center.y * normScale + 0.04, -center.z * normScale);
           model.scale.setScalar(normScale);
 
           model.traverse(obj => {
             if (!obj.isMesh || !obj.material) return;
             const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
             for (const m of mats) {
-              if (m.name === 'Mat_InfraredThruster' && m.emissiveIntensity !== undefined) m.emissiveIntensity = 2.1;
-              else if ((m.name === 'Mat_CyanGlow' || m.name === 'Mat_CyanRing') && m.emissiveIntensity !== undefined) m.emissiveIntensity = 1.75;
+              if (m.name === 'Mat_InfraredThruster') {
+                if (m.emissiveIntensity !== undefined) m.emissiveIntensity = 2.1;
+                thrusterMats.push(m);
+              } else if (m.name === 'Mat_CyanGlow' || m.name === 'Mat_CyanRing') {
+                if (m.emissiveIntensity !== undefined) m.emissiveIntensity = 1.75;
+                cyanMats.push(m);
+              }
               if (m.name === 'Mat_VisorGlass') m.envMapIntensity = 1.6;
               else if (m.envMapIntensity !== undefined) m.envMapIntensity = 1.2;
             }

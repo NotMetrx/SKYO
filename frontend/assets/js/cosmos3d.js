@@ -1664,9 +1664,9 @@ function getHeraDockTarget() {
     }
   }
   const isNarrow = w <= 780;
-  const size = isNarrow ? 46 : 96;
-  const cx = w - (isNarrow ? 12 : 20) - size * 0.5;
-  const cy = isNarrow ? 6 + size * 0.5 : h - 20 - size * 0.5;
+  const size = isNarrow ? 58 : 148;
+  const cx = w - (isNarrow ? 10 : 24) - size * 0.5;
+  const cy = isNarrow ? 6 + size * 0.5 : h - 24 - size * 0.5;
   return {
     cx,
     cy,

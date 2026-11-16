@@ -11,6 +11,19 @@ let activeIndex = 0;
 let subView = 'roadmap'; // 'roadmap' | 'pipeline' | 'equipo'
 let onHeraSpeak = null;
 
+function bindPhaseHeraButton(message) {
+  const heraBtn = document.getElementById('phase-hera');
+  if (!heraBtn) return;
+  heraBtn.onclick = () => {
+    document.dispatchEvent(new CustomEvent('skyo:hera-focus', {
+      detail: { target: '#phase-panel', preferredSide: 'right', durationMs: 6500 }
+    }));
+    if (typeof onHeraSpeak === 'function') {
+      onHeraSpeak(message, true);
+    }
+  };
+}
+
 function renderPanelContent() {
   const panel = document.getElementById('phase-panel');
   if (!panel) return;
@@ -43,14 +56,7 @@ function renderPanelContent() {
         </div>
       `;
 
-      const heraBtn = document.getElementById('phase-hera');
-      if (heraBtn) {
-        heraBtn.onclick = () => {
-          if (typeof onHeraSpeak === 'function') {
-            onHeraSpeak('Un cuerpo muy lejano se mueve poco en seis meses. SKYO distingue «confirmado» (JPL) de «candidato» para cuidar el rigor científico.', true);
-          }
-        };
-      }
+      bindPhaseHeraButton('Un cuerpo muy lejano se mueve poco en seis meses. SKYO distingue «confirmado» (JPL) de «candidato» para cuidar el rigor científico.');
     } else if (subView === 'equipo') {
       panel.innerHTML = `
         <div class="phase-head">
@@ -119,14 +125,7 @@ function renderPanelContent() {
         </div>
       `;
 
-      const heraBtn = document.getElementById('phase-hera');
-      if (heraBtn) {
-        heraBtn.onclick = () => {
-          if (typeof onHeraSpeak === 'function') {
-            onHeraSpeak('El Grupo Neois (Edwin Lizana, Valentín García, Aron Ayala y Jhoao Lopez) creó SKYO para NASA Space Apps 2026, abriendo los datos de SPHEREx a todos.', true);
-          }
-        };
-      }
+      bindPhaseHeraButton('El Grupo Neois (Edwin Lizana, Valentín García, Aron Ayala y Jhoao Lopez) creó SKYO para NASA Space Apps 2026, abriendo los datos de SPHEREx a todos.');
     } else {
       const phase = FASES_PROYECTO[activeIndex];
       panel.innerHTML = `
@@ -156,14 +155,7 @@ function renderPanelContent() {
         </div>
       `;
 
-      const heraBtn = document.getElementById('phase-hera');
-      if (heraBtn) {
-        heraBtn.onclick = () => {
-          if (typeof onHeraSpeak === 'function') {
-            onHeraSpeak(`Fase ${phase.num} (${phase.title}): ${phase.summary}`, true);
-          }
-        };
-      }
+      bindPhaseHeraButton(`Fase ${phase.num} (${phase.title}): ${phase.summary}`);
     }
 
     requestAnimationFrame(() => panel.classList.remove('swapping'));

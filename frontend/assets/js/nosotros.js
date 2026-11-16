@@ -59,6 +59,7 @@ function renderNosotros() {
   `;
 
   document.getElementById('nosotros-hera').onclick = () => {
+    document.dispatchEvent(new CustomEvent('skyo:hera-focus', { detail: { target: '.nx-cta', fly: false, durationMs: 6500 } }));
     onHeraSpeak?.('Somos el Grupo Neois: Edwin Lizana, Valentín García, Aron Ayala y Jhoao Lopez. Abajo encuentras nuestros perfiles de LinkedIn y GitHub.', true);
   };
 }

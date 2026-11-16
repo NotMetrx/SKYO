@@ -10,6 +10,7 @@ import { startSistema3D } from './sistema3d.js';
 import { startFases } from './fases.js';
 import { startNosotros } from './nosotros.js';
 import { initHera3d, triggerKryoGesture } from './hera3d.js';
+import { initHeraPilot } from './hera-pilot.js';
 import { unlockAudio, isSoundMuted, setSoundMuted, playUiCue } from './sound.js';
 
 // 1. Detección reactiva de preferencia de movimiento reducido
@@ -86,6 +87,14 @@ if (soundToggleBtn) {
   });
 }
 
+const HERA_TOPIC_TARGETS = {
+  blink: '#blink',
+  bandas: '#bandas',
+  planeta_x: '#info.is-open, #mission-bar',
+  que_es: '#explore-view-tabs',
+  neois: '#nav a[data-s="nosotros"]'
+};
+
 if (heraChipsEl) {
   heraChipsEl.addEventListener('click', e => {
     const btn = e.target.closest('button[data-topic]');
@@ -98,6 +107,10 @@ if (heraChipsEl) {
     playUiCue(topicKey === 'planeta_x' ? 'candidate' : 'guide');
     triggerKryoGesture(topic.clip, { duration: 1.55, timeScale: 1.1 });
     hera.say(topic.text, true);
+    const focusSel = HERA_TOPIC_TARGETS[topicKey];
+    if (focusSel) {
+      pilot?.flyNearElement(focusSel, { durationMs: 6500 });
+    }
   });
 }
 
@@ -105,12 +118,23 @@ const heraImg = document.getElementById('hera-img');
 const heraPlaceholder = document.getElementById('hera-placeholder');
 const avatarInput = document.getElementById('avatar-input');
 const avatarResetBtn = document.getElementById('avatar-reset-btn');
+const pilotResetBtn = document.getElementById('pilot-reset-btn');
+
+const pilot = initHeraPilot({
+  asideEl: heraAside,
+  buttonEl: heraAvatarBtn,
+  bubbleEl: heraBubble,
+  resetBtn: pilotResetBtn,
+  onToggleClick: () => hera.toggle()
+});
 
 function setCustomAvatar(dataUrl) {
   const canMountNow = currentRoute
     ? currentRoute !== 'inicio'
     : ['explorar', '3d', 'fases', 'nosotros'].includes(window.location.hash.slice(1));
-  if (dataUrl && heraImg) {
+  const hasCustom = Boolean(dataUrl);
+  heraAvatarBtn?.classList.toggle('has-custom-avatar', hasCustom);
+  if (hasCustom && heraImg) {
     heraImg.src = dataUrl;
     heraImg.hidden = false;
     if (heraPlaceholder) heraPlaceholder.hidden = true;
@@ -170,12 +194,16 @@ if (avatarResetBtn) {
   });
 }
 
-if (heraAvatarBtn) {
+if (!pilot && heraAvatarBtn) {
   heraAvatarBtn.onclick = () => hera.toggle();
 }
 
 // 3. Router Reactivo por Hash con Transiciones GPU + Vuelo de Cámara 3D
 let cosmosReady = null;
+let lastPilotAnchorKey = '';
+let warnedBlindChannel = false;
+let lastImmersiveDetector = '';
+
 function syncCosmosVisibility() {
   const view = document.body.dataset.exploreView || 'boveda';
   const frame = document.getElementById('hips-frame');
@@ -186,7 +214,43 @@ function syncCosmosVisibility() {
   if(spectralFrame && spectralFrame.getAttribute('src')!==spectralSrc)spectralFrame.src=spectralSrc;
   const warping = document.body.classList.contains('warp-zoom') || Boolean(warpReturnSubView);
   setCosmosVisible(!document.hidden && (warping || currentRoute === 'inicio' || currentRoute === '3d' || currentRoute === 'fases' || currentRoute === 'nosotros' || (currentRoute === 'explorar' && view === 'boveda')));
+  const anchorKey = `${currentRoute}:${view}`;
+  if (pilot && currentRoute && anchorKey !== lastPilotAnchorKey) {
+    const prevWasInicio = !lastPilotAnchorKey || lastPilotAnchorKey.startsWith('inicio:');
+    lastPilotAnchorKey = anchorKey;
+    pilot.setContextAnchor(currentRoute, view, { immediate: currentRoute === 'inicio' || prevWasInicio });
+  }
 }
+
+document.addEventListener('skyo:hera-focus', e => {
+  const detail = e.detail || {};
+  pilot?.flyNearElement(detail.target, detail);
+});
+
+window.addEventListener('message', e => {
+  if (e.origin !== window.location.origin) return;
+  const data = e.data;
+  if (!data || data.source !== 'skyo-immersive') return;
+  const view = document.body.dataset.exploreView || getSubView();
+  if (currentRoute !== 'explorar' || view !== 'espectral') return;
+  if (data.event === 'channel') {
+    if (data.blind) {
+      pilot?.flyToZone('spectral-slider', { durationMs: 6800 });
+      triggerKryoGesture('Scan_Sky', { duration: 1.45, timeScale: 1.05 });
+      if (!warnedBlindChannel) {
+        warnedBlindChannel = true;
+        const wl = Number.isFinite(Number(data.wavelengthUm)) ? ` (${Number(data.wavelengthUm).toFixed(2)} µm)` : '';
+        hera.say(`Canal ${Number(data.channel) + 1}/102${wl}: transición ciega entre detectores sin captura instrumental en SPHEREx.`);
+      }
+    } else {
+      warnedBlindChannel = false;
+      if (data.detector && data.detector !== lastImmersiveDetector) {
+        lastImmersiveDetector = data.detector;
+        pilot?.lookAtPoint({ x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 }, 3200);
+      }
+    }
+  }
+});
 async function enableCosmos() {
   try {
     cosmosReady ||= initCosmos3D(currentRoute).then(() => {

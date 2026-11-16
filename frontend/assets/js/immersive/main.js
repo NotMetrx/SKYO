@@ -31,6 +31,11 @@ function textLines(){
   const shown=sky?.stats.displayChannel;
   return [`ICRS RA ${aim.ra.toFixed(5)}° · Dec ${aim.dec.toFixed(5)}°`,`Canal ${channel+1}/102 · λ ${wave?.toFixed(3)} µm${d?` · L2 real ${d.wavelength.toFixed(4)} µm`:''}${shown!=null&&shown!==channel?` · cargando, imagen canal ${shown+1}`:''}`,s?`Flujo ${s.value===null?'sin dato':s.value.toPrecision(6)} ${d?'MJy/sr · observación L2':cube.header.BUNIT}`:'Flujo pendiente: seleccionar / leer FITS',epochText(),'Vuelo visual · distancias físicas desconocidas','Gatillo selecciona · palancas vuelan / giro45°'];
 }
+function notifyParent(payload){
+  if(window.parent!==window){
+    try{window.parent.postMessage({source:'skyo-immersive',...payload},window.location.origin);}catch{}
+  }
+}
 function hud(){
   const lines=textLines();$('position').textContent=lines[0];$('wave').textContent=lines[1];$('flux').textContent=[50,51].includes(channel)?'Canal vacío por diseño instrumental':lines[2];$('epoch').textContent=lines[3];
   $('sky').dataset.ra=aim.ra.toFixed(5);$('sky').dataset.dec=aim.dec.toFixed(5);$('sky').dataset.travel=player.position.length().toFixed(2);
@@ -87,6 +92,7 @@ function setChannel(value){
   queryController?.abort();$('observations').replaceChildren();$('updates-title').textContent='Publicaciones IRSA';
   $('channel').value=channel;$('channel-label').textContent=`${channel+1}/102`;sky.setChannel(channel,{fresh:freshMosaic});hud();wake();
   $('read').disabled=[50,51].includes(channel);$('channel-preview').textContent=`D${Math.floor(channel/17)+1}, canal ${channel%17+1} · vista λ ${manifest.wavelengths_um[channel].toFixed(3)} µm${[50,51].includes(channel)?' · sin datos':''}`;
+  notifyParent({event:'channel',channel,detector:Math.floor(channel/17)+1,blind:[50,51].includes(channel),wavelengthUm:manifest?.wavelengths_um?.[channel]??null});
   refresh();
 }
 async function refresh(){

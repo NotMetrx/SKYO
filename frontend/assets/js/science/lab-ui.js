@@ -72,6 +72,7 @@ export function mountLab({integrated=false,onNotify=()=>{},onAdd=()=>{}}={}){
         rows([['Estado',report.control.identicalInputs?'Control negativo: entradas idénticas':'Comparación exploratoria; no es una detección validada'],['Observaciones',report.observations.map(o=>`${o.fileName} (${o.sourceKind})`).join(' / ')],['Motor',kernelLabel(report.kernelVersion)],['Cobertura válida',`${report.validPixels} píxeles`],['Fondo',`${report.background.method}: ${report.background.offset} · ZODI ${report.background.zodiApplied?'restado':'no restado'}`],['Compatibilidad espectral',report.spectralCompatibility.reason],['Incertidumbre','Significancia no calibrada; PSF y covarianza pendientes'],['Procedencia',report.observations.map(o=>o.provenanceTrust).join(' / ')]]);
         playUiCue('mission');
         triggerKryoGesture('Found_PlanetX',{duration:1.65});
+        document.dispatchEvent(new CustomEvent('skyo:hera-focus',{detail:{target:`#${ids.diff}`,preferredSide:'left',durationMs:7000}}));
         notify('Sustracción diferencial TAN-SIP completada localmente: los residuos positivos muestran posibles cambios entre épocas, sujetos a verificación de PSF y JPL.');
       }
     }

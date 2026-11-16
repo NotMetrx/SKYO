@@ -268,6 +268,9 @@ function evaluateMission(loggedNow = false) {
     if (typeof onHeraSpeak === 'function') {
       onHeraSpeak(m.closure, true);
     }
+    document.dispatchEvent(new CustomEvent('skyo:hera-focus', {
+      detail: { target: '#mission-bar', preferredSide: 'bottom', durationMs: 6500 }
+    }));
   }
 }
 
@@ -639,6 +642,9 @@ export function selectObject(index) {
         : `${o[0]} (${o[7]}): ${o[5]}`;
       onHeraSpeak(note);
     }
+    document.dispatchEvent(new CustomEvent('skyo:hera-focus', {
+      detail: { target: '#info.is-open', preferredSide: 'left', durationMs: 7400 }
+    }));
   }
 }
 

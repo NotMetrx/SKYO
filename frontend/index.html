@@ -503,10 +503,21 @@
     </section>
   </main>
 
-  <!-- Asistente Heras7 / H.E.R.A 7 (oculta en #inicio; Heras7 en 3D por defecto con opción de avatar personalizado) -->
+  <!-- Asistente navegante Heras7 / H.E.R.A 7 (oculta en #inicio; libre de marco y desplazable en pantalla) -->
   <aside id="hera">
     <div id="hb" role="dialog" aria-label="Guía SPHEREx de Heras7" aria-live="polite" aria-atomic="true">
-      <b id="hb-title">Heras7 · Guía SPHEREx</b>
+      <div class="hb-head">
+        <b id="hb-title">Heras7 · Guía SPHEREx</b>
+        <div class="hb-tools">
+          <button type="button" id="pilot-reset-btn" class="hb-tool-btn" title="Devolver a Heras7 a su ruta guiada" aria-label="Reanclar Heras7" hidden>↺</button>
+          <button type="button" id="sound-toggle-btn" class="hb-tool-btn hera-sound-btn" title="Silenciar o activar audio espacial" aria-label="Silenciar sonido espacial" aria-pressed="false">🔊</button>
+          <label class="hb-tool-btn hera-upload-badge" for="avatar-input" title="Subir avatar personalizado">
+            <span class="badge-icon" aria-hidden="true">↥</span>
+            <input type="file" id="avatar-input" accept="image/*" aria-label="Subir avatar personalizado">
+          </label>
+          <button type="button" id="avatar-reset-btn" class="hb-tool-btn hera-reset-btn" title="Volver a Heras7 3D" hidden aria-label="Volver a Heras7 3D">✕</button>
+        </div>
+      </div>
       <p id="ht"></p>
       <div class="hera-chips" id="hera-chips" role="group" aria-label="Temas rápidos sobre SPHEREx">
         <button type="button" class="hera-chip" data-topic="que_es">¿Qué es SPHEREx?</button>
@@ -517,25 +528,33 @@
       </div>
     </div>
     <div class="hera-avatar-wrap">
-      <button type="button" id="sound-toggle-btn" class="hera-sound-btn" title="Silenciar o activar audio espacial" aria-label="Silenciar sonido espacial" aria-pressed="false">🔊</button>
-      <button type="button" id="ha" aria-label="Abrir guía Heras7 de SPHEREx">
+      <button type="button" id="ha" aria-label="Abrir guía Heras7 de SPHEREx o arrastrar por pantalla">
         <img id="hera-img" alt="Avatar del asistente" hidden width="96" height="96">
         <span id="hera-placeholder" class="hera-placeholder" aria-hidden="true">
-          <svg viewBox="0 0 48 48" width="38" height="38" fill="none">
-            <circle cx="24" cy="24" r="21" stroke="currentColor" stroke-dasharray="4 4" stroke-width="1.8" stroke-opacity="0.45"/>
-            <circle cx="24" cy="18" r="7.5" stroke="currentColor" stroke-width="2"/>
-            <path d="M12 36 C13 27, 35 27, 36 36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="35" cy="13" r="5" fill="#b57bff"/>
-            <path d="M35 10.5 V15.5 M32.5 13 H37.5" stroke="#000000" stroke-width="1.6" stroke-linecap="round"/>
+          <svg viewBox="0 0 80 80" width="76" height="76" fill="none">
+            <defs>
+              <linearGradient id="heraHoloBody" x1="20%" y1="15%" x2="80%" y2="85%">
+                <stop offset="0%" stop-color="#e8f4ff"/>
+                <stop offset="55%" stop-color="#7fd4ff"/>
+                <stop offset="100%" stop-color="#3568b8"/>
+              </linearGradient>
+              <linearGradient id="heraHoloWing" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#5bb8ff" stop-opacity="0.88"/>
+                <stop offset="100%" stop-color="#b57bff" stop-opacity="0.72"/>
+              </linearGradient>
+            </defs>
+            <polygon points="8,36 22,30 22,50 8,44" fill="url(#heraHoloWing)" stroke="#9be2ff" stroke-width="1"/>
+            <polygon points="72,36 58,30 58,50 72,44" fill="url(#heraHoloWing)" stroke="#9be2ff" stroke-width="1"/>
+            <rect x="24" y="16" width="32" height="24" rx="11" fill="url(#heraHoloBody)"/>
+            <rect x="28" y="21" width="24" height="14" rx="7" fill="#071122" stroke="#7fd4ff" stroke-width="1.2"/>
+            <circle cx="35" cy="28" r="2.2" fill="#8be6ff"/>
+            <circle cx="45" cy="28" r="2.2" fill="#8be6ff"/>
+            <path d="M30 42 C30 39, 50 39, 50 42 L47 55 C45 59, 35 59, 33 55 Z" fill="url(#heraHoloBody)"/>
+            <ellipse cx="40" cy="63" rx="10" ry="3.5" fill="#5bb8ff" opacity="0.32"/>
           </svg>
           <span class="slot-text">Heras7</span>
         </span>
       </button>
-      <label class="hera-upload-badge" for="avatar-input" title="Subir o cambiar avatar personalizado">
-        <span class="badge-icon">↥</span>
-        <input type="file" id="avatar-input" accept="image/*" aria-label="Subir avatar personalizado">
-      </label>
-      <button type="button" id="avatar-reset-btn" class="hera-reset-btn" title="Volver a Heras7 3D" hidden aria-label="Volver a Heras7 3D">✕</button>
     </div>
   </aside>
 
