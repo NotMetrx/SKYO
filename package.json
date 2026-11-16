@@ -17,7 +17,7 @@
     "demo:generate": "node scripts/generate_demo_fits.mjs",
     "demo:preview": "node scripts/export_demo_preview.mjs",
     "wasm:build": "node scripts/build-wasm.mjs",
-    "build:wasm": "node scripts/build-wasm.mjs",
+    "build:wasm": "node scripts/build-wasm.mjs && npm run web:build",
     "web:build": "vite build && node scripts/postbuild.mjs",
     "preweb:build": "npm run sync:curated",
     "preview": "vite preview --host 127.0.0.1 --port 4174",

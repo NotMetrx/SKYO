@@ -48,6 +48,9 @@ en el repositorio. Para forzar su regeneración tras cambiar código Rust usa
 de `node_modules` la versión fijada en Cargo.lock; necesita acceso a crates.io.
 Si existe una versión distinta en PATH, informa el conflicto y se detiene:
 
+El comando de publicación `npm run build:wasm` verifica WASM y ejecuta también
+`npm run web:build` para generar `dist/` con Vite y el postbuild.
+
 ```sh
 npm run wasm:build
 ```

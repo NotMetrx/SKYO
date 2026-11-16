@@ -314,3 +314,8 @@
 
 - El build verifica y reutiliza WASM y glue versionados sin Cargo; `--rebuild` fuerza la regeneración. Se comprueban hashes, lockfile, versión y carga funcional; si falla la verificación se intenta compilar y se informa si falta Cargo.
 - Pruebas: 63/63, ejecución sin Cargo y regeneración explícita con Rust pasan. Cambiar código Rust requiere regenerar los artefactos y registrarlos.
+
+## Salida de publicación con build:wasm
+
+- `npm run build:wasm` verifica WASM precompilado y ejecuta `web:build` para generar `dist/`; `wasm:build` conserva la opción de solo verificar o regenerar el núcleo.
+- Validación sin Cargo en PATH: build y validate:build pasan con 55 recursos precache; npm test 63/63. Persisten advertencias de CSS/paquete grande de Vite ajenas a este ajuste.
