@@ -65,6 +65,7 @@ const server = http.createServer((req, res) => {
       '/explorar': '/#explorar',
       '/3d': '/#3d',
       '/fases': '/#fases',
+      '/nosotros': '/#nosotros',
       '/lab': '/lab.html',
       '/inmersivo': '/inmersivo.html',
       '/espectral': '/espectral.html',

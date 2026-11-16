@@ -372,6 +372,10 @@ export function addExternalBitacoraEntry(entry) {
   renderBitacora();
 }
 
+export function getSubView() {
+  return currentSubView;
+}
+
 export function setSubView(view) {
   currentSubView = view;
   document.body.dataset.exploreView = view;

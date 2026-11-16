@@ -344,3 +344,18 @@
   restante20/25, con fallos en L2 integrado, navegación de prueba obsoleta y
   exportación offline raíz/subruta. L2 repetido sigue agotando espera. No publicar
   a producción con estos pendientes; conservar correcciones en rama audit/design-fixes.
+
+## Integración `origin/feat/nosotros` (`a75840d`) y correcciones sobre `0af244d` — 2026-11-15
+
+- Sincronizado `origin/main` (`0af244d`) e integrada la rama `origin/feat/nosotros` (`c723525`, `a75840d`) sin modificar `#inicio` (Opción 2 + **Heras7**):
+  - Panel `#nosotros` (`frontend/index.html`, `frontend/assets/js/nosotros.js`, `frontend/assets/css/main.css`, `frontend/assets/js/data.js`, `frontend/assets/js/cosmos3d.js`, `backend/server/dev-server.mjs`, `scripts/audit-visual.mjs`) con enlace `#nosotros` (`04 · Nosotros`), tarjetas/enlaces LinkedIn, GitHub y correo de `EQUIPO_NEOIS`, y presentación con **Heras7**.
+- Correcciones de integración sobre `0af244d`:
+  - Movidas las importaciones CSS exclusivas de Vite (`import './*.css'`) desde módulos ES a `<link rel="stylesheet">` en `frontend/inmersivo.html`, `frontend/espectral.html` y `frontend/contexto.html` (retiradas de `frontend/assets/js/immersive/main.js`, `frontend/assets/js/fpa.js` y `frontend/assets/js/contexto.js`), eliminando el error de MIME `text/css` al ejecutar con `npm start` (`backend/server/dev-server.mjs`).
+  - Coordinada la transición continua `#inicio → #explorar` en `frontend/assets/js/app.js`, `frontend/assets/js/explorar.js` (`getSubView()`) y `frontend/assets/css/main.css` (`#view-espectral:not([hidden])` con `espectralFadeIn`): durante el salto warp y vuelo orbital de **Heras7** se mantiene activa la Bóveda 3D hasta el acoplamiento en `#ha` (`setKryoDockHandler`, con respaldo de seguridad `2800 ms`), y tras completar `Takeoff_Launch` cambia suavemente a `espectral` (*Espacio inmersivo*), manteniendo entrada directa en `espectral` al navegar sin warp o bajo movimiento reducido.
+- Verificación observada tras la última edición:
+  - `node --check` en `frontend/assets/js/*.js`, `frontend/assets/js/immersive/*.js`, `backend/server/dev-server.mjs`, `scripts/audit-visual.mjs`, `scripts/build-wasm.mjs`: OK.
+  - `npm test`: **65/65** pruebas unitarias pasando (15 suites).
+  - `npm run validate:docs`: OK (`SPEC SHA-256 9cb76403fc0d845d8ab1c6aba7292b83b817cbd9159bd8dee58b2fa7b543fcfb`).
+  - `npm run wasm:build`: OK (`WASM precompilado verificado: 112331 bytes, SHA256 c61e0668dea746c4ddaacbbc9e7923c7faa1f7411994c6054d4c89ee3bf2cac2`). `npm run build:wasm`/`web:build` omitidos por ausencia de `node_modules`/`vite` en el workspace.
+  - Auditoría Firefox headless BiDi contra `node backend/server/dev-server.mjs`: `0` errores de consola/página en `#inicio` (5 viewports `1440×900`–`320×568` + hover), salto warp completado (`eclipse.phase="done"`, `kryo.phase="done"`, destino final `exploreView="espectral"` con `inmersivo.html` cargado y oscuro), `#3d`, `#fases`, `#nosotros` (escritorio `1440×900` y móvil `390×844` sin overflow), `espectral.html`, `contexto.html` y `lab.html`, además de `test_no_webgl.mjs` (`blocked` 2D fallback y `no-msaa`).
+- `scienceReady=false`. Listo en `main` local para revisión/push y validación `npm run build:wasm` en entorno con Vite instalado.

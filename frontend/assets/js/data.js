@@ -17,7 +17,8 @@ export const MSG = {
   inicio: 'Soy Heras7, tu copiloto en SKYO. Pulsa Enter o tócame para despegar hacia la Bóveda SPHEREx.',
   explorar: '¡En órbita ICRS! Estás viendo el Plano Focal de SPHEREx: toca una píldora abajo para que te explique sus bandas infrarrojas o cómo detectar candidatos.',
   '3d': 'Arrastra para girar el sistema solar. Usa la rueda o ＋ y － para comparar dónde orbitan el Cinturón, los cometas y las regiones lejanas.',
-  fases: 'Recorre la constelación 3D o elige una fase (0–6) para ver cómo SPHEREx, WCS TAN-SIP y el cruce con JPL separan candidatos reales.'
+  fases: 'Recorre la constelación 3D o elige una fase (0–6) para ver cómo SPHEREx, WCS TAN-SIP y el cruce con JPL separan candidatos reales.',
+  nosotros: 'Panel Acerca de nosotros: conoce al Grupo Neois (Edwin, Valentín, Aron y Jhoao), nuestros perfiles de GitHub y LinkedIn y el propósito abierto de SKYO.'
 };
 
 export const GUIA_SPHEREX = {
@@ -365,20 +366,23 @@ export const EQUIPO_NEOIS = [
     role: 'Estudiante · Neois',
     initials: 'EL',
     bio: 'Investigación astronómica y desarrollo computacional en SKYO.',
-    contact: 'Grupo Neois · NASA Space Apps 2026'
+    contact: 'Grupo Neois · NASA Space Apps 2026',
+    linkedin: 'https://www.linkedin.com/in/edwin-lizana-85a133334?utm_source=share_via&utm_content=profile&utm_medium=member_android'
   },
   {
     name: 'Valentín García',
     role: 'Estudiante · Neois',
     initials: 'VG',
     bio: 'Modelado y simulación de sistemas celestes y análisis espectral.',
-    contact: 'Grupo Neois · NASA Space Apps 2026'
+    email: 'metrx.189@gmail.com',
+    contact: 'metrx.189@gmail.com'
   },
   {
     name: 'Aron Ayala',
     role: 'Estudiante · Neois',
     initials: 'AA',
     bio: 'Arquitectura de software interactivo y procesamiento de datos astronómicos.',
+    email: 'aronemilioayalalopez11@gmail.com',
     contact: 'aronemilioayalalopez11@gmail.com',
     github: 'https://github.com/aronemilio'
   },
@@ -387,7 +391,8 @@ export const EQUIPO_NEOIS = [
     role: 'Estudiante · Neois',
     initials: 'JL',
     bio: 'Diseño de experiencia interactiva y divulgación científica del cosmos.',
-    contact: 'Grupo Neois · NASA Space Apps 2026'
+    contact: 'Grupo Neois · NASA Space Apps 2026',
+    linkedin: 'https://www.linkedin.com/in/jhoao-didier-763210309'
   }
 ];
 

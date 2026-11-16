@@ -1,4 +1,3 @@
-import './style.css';
 import {createSky,parseProperties,tileGeometry,HIPS_URL,sameEdition} from './hips.js';
 import {skyCoordinates,sphereHit} from './sky-math.js';
 import {cubePixel} from './cube.js';

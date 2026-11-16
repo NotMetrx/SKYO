@@ -4214,6 +4214,22 @@ export function setCosmosRoute(route) {
       inicioGroup.scale.set(1, 1, 1);
     }
     focusPhaseNode(fasesState.activeIdx);
+  } else if (route === 'nosotros') {
+    pointerClient.overEclipse = false;
+    resetWordmarkCss();
+    canvas.style.cursor = 'default';
+    isWarpingFromInicio = false;
+    eclipsePhase = 'done';
+    kryoPhase = 'done';
+    stopFlightAudio();
+    if (eclipseRig) eclipseRig.visible = false;
+    stopKryoVisuals();
+    if (scene) scene.environment = null;
+    if (inicioGroup) {
+      inicioGroup.visible = false;
+      inicioGroup.scale.set(1, 1, 1);
+    }
+    Object.assign(camGoal, { t: 0.9, p: 1.38, r: getRouteFitRadius('nosotros'), tx: 0, ty: 0, tz: 0 });
   }
 
   if (!hasRoutedOnce) {
@@ -4528,6 +4544,8 @@ function renderLoop(now = performance.now()) {
       }
       if (!activePointers.size) camGoal.t += 0.0008 * frameScale;
     }
+  } else if (activeRoute === 'nosotros' && !reduced) {
+    if (!activePointers.size) camGoal.t += 0.00045 * frameScale;
   }
 
   // Decaimiento suave de hiper-zoom warp sincronizado con el vuelo orbital de KRYO-9

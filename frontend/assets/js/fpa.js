@@ -1,5 +1,3 @@
-import './fpa.css';
-import './archive.css';
 import {mountFitsInspector} from './fits-inspector.js';
 import {coveragePaths} from './science/archive-data.js';
 import {cutoutUrl} from './immersive/detail-data.js';

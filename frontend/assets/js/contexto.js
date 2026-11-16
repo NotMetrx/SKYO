@@ -1,4 +1,3 @@
-import './contexto.css';
 let aladin;
 const status = document.getElementById('sky-status');
 const loadButton = document.getElementById('sky-retry');

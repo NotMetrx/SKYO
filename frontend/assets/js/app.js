@@ -5,9 +5,10 @@
 
 import { MSG, GUIA_SPHEREX } from './data.js';
 import { initCosmos3D, setCosmosRoute, setCosmosVisible, triggerWarpZoom, setKryoDockHandler } from './cosmos3d.js';
-import { startExplorar, pauseExplorarBlink } from './explorar.js';
+import { startExplorar, pauseExplorarBlink, getSubView, setSubView } from './explorar.js';
 import { startSistema3D } from './sistema3d.js';
 import { startFases } from './fases.js';
+import { startNosotros } from './nosotros.js';
 import { initHera3d, triggerKryoGesture } from './hera3d.js';
 import { unlockAudio, isSoundMuted, setSoundMuted, playUiCue } from './sound.js';
 
@@ -20,7 +21,7 @@ motionQuery.addEventListener('change', e => {
 });
 
 // 2. Estado de ruta y asistente KRYO-9 / H.E.R.A 7 (oculta en #inicio)
-const ROUTES = ['inicio', 'explorar', '3d', 'fases'];
+const ROUTES = ['inicio', 'explorar', '3d', 'fases', 'nosotros'];
 let currentRoute = '';
 let leaveTimer = 0;
 
@@ -108,7 +109,7 @@ const avatarResetBtn = document.getElementById('avatar-reset-btn');
 function setCustomAvatar(dataUrl) {
   const canMountNow = currentRoute
     ? currentRoute !== 'inicio'
-    : ['explorar', '3d', 'fases'].includes(window.location.hash.slice(1));
+    : ['explorar', '3d', 'fases', 'nosotros'].includes(window.location.hash.slice(1));
   if (dataUrl && heraImg) {
     heraImg.src = dataUrl;
     heraImg.hidden = false;
@@ -183,7 +184,8 @@ function syncCosmosVisibility() {
   const spectralFrame=document.getElementById('spectral-frame');
   const spectralSrc=!document.hidden && currentRoute==='explorar' && view==='espectral' ? 'inmersivo.html' : 'about:blank';
   if(spectralFrame && spectralFrame.getAttribute('src')!==spectralSrc)spectralFrame.src=spectralSrc;
-  setCosmosVisible(!document.hidden && (currentRoute === 'inicio' || currentRoute === '3d' || currentRoute === 'fases' || (currentRoute === 'explorar' && view === 'boveda')));
+  const warping = document.body.classList.contains('warp-zoom') || Boolean(warpReturnSubView);
+  setCosmosVisible(!document.hidden && (warping || currentRoute === 'inicio' || currentRoute === '3d' || currentRoute === 'fases' || currentRoute === 'nosotros' || (currentRoute === 'explorar' && view === 'boveda')));
 }
 async function enableCosmos() {
   try {
@@ -233,10 +235,14 @@ function navigate() {
     inicio: 'SKYO · Explora el cosmos con SPHEREx',
     explorar: 'SKYO · Explorar · SPHEREx',
     '3d': 'SKYO · Sistema Solar 3D',
-    fases: 'SKYO · Fases & Misión Neois'
+    fases: 'SKYO · Fases & Misión Neois',
+    nosotros: 'SKYO · Acerca de nosotros · Grupo Neois'
   };
   if (ROUTE_TITLES[currentRoute]) {
     document.title = ROUTE_TITLES[currentRoute];
+  }
+  if (currentRoute !== 'explorar') {
+    cancelPendingWarpSubView();
   }
   clearTimeout(leaveTimer);
 
@@ -290,10 +296,11 @@ function navigate() {
 
   heraChipsEl?.querySelectorAll('.hera-chip').forEach(b => b.classList.remove('on'));
 
-  // En móvil (<= 780px) o en #inicio ocultamos el globo de H.E.R.A 7 / KRYO-9
-  if (isInicio) {
+  // En móvil (<= 780px), #inicio o #nosotros ocultamos el globo de H.E.R.A 7 / Heras7
+  if (isInicio || currentRoute === 'nosotros') {
     clearTimeout(heraTimer);
     if (heraBubble) heraBubble.classList.remove('show');
+    if (currentRoute === 'nosotros' && heraText && MSG.nosotros) heraText.textContent = MSG.nosotros;
   } else if (MSG[currentRoute] && window.innerWidth > 780) {
     hera.say(MSG[currentRoute]);
   } else if (heraBubble && window.innerWidth <= 780) {
@@ -310,17 +317,23 @@ function navigate() {
   }
   setCosmosRoute(currentRoute);
   syncCosmosVisibility();
-  if (currentRoute === '3d') enableCosmos();
+  if (['inicio', '3d', 'fases', 'nosotros'].includes(currentRoute)) enableCosmos();
 
   if (currentRoute === 'explorar') {
-    startExplorar(hera.say.bind(hera));
+    if (warpReturnSubView) {
+      startExplorar(hera.say.bind(hera), 'boveda');
+    } else {
+      startExplorar(hera.say.bind(hera));
+    }
   } else if (currentRoute === '3d') {
     startSistema3D();
     triggerKryoGesture('Scan_Sky', { duration: 1.35 });
   } else if (currentRoute === 'fases') {
-    enableCosmos();
     startFases(hera.say.bind(hera));
     triggerKryoGesture('Scan_Sky', { duration: 1.35 });
+  } else if (currentRoute === 'nosotros') {
+    startNosotros(hera.say.bind(hera));
+    triggerKryoGesture('Wave_Hello', { duration: 1.4 });
   }
 }
 
@@ -334,6 +347,34 @@ let isWarping = false;
 let dockRevealFallback = 0;
 let brandArrivalTimer = 0;
 let dockPulseTimer = 0;
+let warpReturnSubView = '';
+let warpSubViewTimer = 0;
+let warpSubViewFallbackTimer = 0;
+
+function cancelPendingWarpSubView() {
+  warpReturnSubView = '';
+  clearTimeout(warpSubViewTimer);
+  clearTimeout(warpSubViewFallbackTimer);
+}
+
+function schedulePostWarpSubView(delayMs = 260) {
+  if (!warpReturnSubView || currentRoute !== 'explorar') return;
+  const targetView = warpReturnSubView;
+  clearTimeout(warpSubViewTimer);
+  clearTimeout(warpSubViewFallbackTimer);
+  warpSubViewTimer = setTimeout(() => {
+    if (warpReturnSubView === targetView && currentRoute === 'explorar') {
+      warpReturnSubView = '';
+      setSubView(targetView);
+    }
+  }, delayMs);
+}
+
+document.getElementById('explore-view-tabs')?.addEventListener('click', e => {
+  if (e.target.closest('.view-tab[data-view]')) {
+    cancelPendingWarpSubView();
+  }
+});
 
 function flashBrandArrival() {
   if (!brandLink || window.__skyReducedMotion) return;
@@ -362,6 +403,7 @@ setKryoDockHandler(() => {
   if (heraAvatarBtn) heraAvatarBtn.classList.remove('is-kryo-incoming');
   flashKryoDockArrival();
   triggerKryoGesture('Wave_Hello', { duration: 1.5, timeScale: 1.15 });
+  schedulePostWarpSubView(240);
 });
 
 function launchFromInicio(event) {
@@ -374,6 +416,8 @@ function launchFromInicio(event) {
     window.location.hash = '#explorar';
     return;
   }
+  const activeSub = getSubView();
+  warpReturnSubView = ['espectral', 'contexto'].includes(activeSub) ? activeSub : '';
   isWarping = true;
   if (promptText) promptText.textContent = 'Secuencia de despegue en curso…';
   let hasCustomAvatar = false;
@@ -394,12 +438,17 @@ function launchFromInicio(event) {
     flashBrandArrival();
   }, 210);
   setTimeout(() => {
-    if (promptText) promptText.textContent = 'Explorar el cielo';
+    if (promptText) promptText.textContent = 'Iniciar secuencia de despegue';
     isWarping = false;
   }, 560);
   setTimeout(() => {
     document.body.classList.remove('warp-zoom');
+    syncCosmosVisibility();
   }, 780);
+  if (warpReturnSubView) {
+    clearTimeout(warpSubViewFallbackTimer);
+    warpSubViewFallbackTimer = setTimeout(() => schedulePostWarpSubView(0), 2800);
+  }
 }
 
 window.addEventListener('keydown', e => {
