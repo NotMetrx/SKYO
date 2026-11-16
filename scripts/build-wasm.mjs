@@ -7,6 +7,25 @@ import path from 'node:path';
 
 const lock=await fs.readFile('backend/science-core/Cargo.lock','utf8');
 const expected=lock.match(/name = "wasm-bindgen"\nversion = "([^"]+)"/)[1];
+const dir='frontend/assets/js/science/wasm/pkg';
+if(!process.argv.includes('--rebuild')){
+  try {
+    const info=JSON.parse(await fs.readFile(dir+'/build-info.json','utf8'));
+    const bytes=await fs.readFile(dir+'/skyo_wasm_bg.wasm');
+    assert.equal(info.generator,`wasm-bindgen ${expected}`);
+    assert.equal(info.cargoLockSha256,createHash('sha256').update(lock).digest('hex'));
+    assert.equal(info.wasmSha256,createHash('sha256').update(bytes).digest('hex'));
+    assert.ok(WebAssembly.validate(bytes));
+    const module=await import(pathToFileURL(path.resolve(dir+'/skyo_wasm.js')));
+    assert.equal(module.SKYO_BUILD?.wasmSha256,info.wasmSha256);
+    await module.default({module_or_path:bytes});
+    assert.equal(module.compare_flux(new Float32Array([12]),new Float32Array([7]),new Float32Array([4]),new Float32Array([5]),new Uint8Array([1]),2)[0],3);
+    console.log(`WASM precompilado verificado: ${bytes.length} bytes, SHA256 ${info.wasmSha256}. Usa --rebuild para regenerarlo con Rust.`);
+    process.exit(0);
+  } catch(error) {
+    console.warn(`WASM precompilado no disponible o inválido (${error.message}); se intentará compilar con Rust.`);
+  }
+}
 let executable='wasm-bindgen';
 let generator;
 try {
@@ -31,7 +50,7 @@ try {
 }
 assert.equal(generator,`wasm-bindgen ${expected}`,'Instala wasm-bindgen-cli de la misma versión que Cargo.lock');
 execFileSync('cargo',['build','--locked','--manifest-path','backend/science-core/Cargo.toml','--target','wasm32-unknown-unknown','--release'],{stdio:'inherit'});
-const dir='frontend/assets/js/science/wasm/pkg';await fs.mkdir(dir,{recursive:true});
+await fs.mkdir(dir,{recursive:true});
 execFileSync(executable,['backend/science-core/target/wasm32-unknown-unknown/release/skyo_wasm.wasm','--target','web','--out-dir',dir],{stdio:'inherit'});
 const bytes=await fs.readFile(dir+'/skyo_wasm_bg.wasm');
 assert.ok(WebAssembly.validate(bytes));

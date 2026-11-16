@@ -309,3 +309,8 @@
   - `npm run validate:docs`: OK (`SPEC SHA-256 9cb76403fc0d845d8ab1c6aba7292b83b817cbd9159bd8dee58b2fa7b543fcfb`). `vite` no instalado localmente (`npm run web:build`/`validate:build` omitidos en este entorno).
   - Auditoría Firefox headless BiDi (`bidi_audit.mjs` y `test_no_webgl.mjs`) contra `node backend/server/dev-server.mjs`: 0 errores de consola/página, 0 desbordamiento horizontal en `1440×900`–`320×568`, transición warp-zoom + 5 subvistas de `#explorar` + `#3d` + `#fases` (`equipo`) + `lab.html` + favicons/manifiesto HTTP 200 y escenarios WebGL `blocked` y `no-msaa` verificados.
 - `scienceReady=false`; sin autoaprobación ni detección astronómica declarada. Siguiente paso: `npm run web:build` / `npm run validate:build` en entorno con Vite/dependencias instaladas y continuar T01–T08.
+
+## WASM precompilado en hosting
+
+- El build verifica y reutiliza WASM y glue versionados sin Cargo; `--rebuild` fuerza la regeneración. Se comprueban hashes, lockfile, versión y carga funcional; si falla la verificación se intenta compilar y se informa si falta Cargo.
+- Pruebas: 63/63, ejecución sin Cargo y regeneración explícita con Rust pasan. Cambiar código Rust requiere regenerar los artefactos y registrarlos.

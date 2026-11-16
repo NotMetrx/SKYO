@@ -41,7 +41,9 @@ cargo test --locked --manifest-path science-core/Cargo.toml
 rustup target add wasm32-unknown-unknown
 ```
 
-Para regenerar el kernel opcional se requieren Cargo y el target
+`npm run wasm:build` verifica y reutiliza los artefactos precompilados incluidos
+en el repositorio. Para forzar su regeneración tras cambiar código Rust usa
+`npm run wasm:build -- --rebuild`. Para regenerar se requieren Cargo y el target
 `wasm32-unknown-unknown`. Si falta la CLI, el script instala en la caché local
 de `node_modules` la versión fijada en Cargo.lock; necesita acceso a crates.io.
 Si existe una versión distinta en PATH, informa el conflicto y se detiene:
