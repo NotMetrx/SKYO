@@ -135,7 +135,7 @@ function exportSelection(){
 async function start(){
   try{
     const r=await fetch(new URL('datasets/immersive-sky/manifest.json',location.href));if(!r.ok)throw Error(`Manifiesto HTTP${r.status}`);manifest=await r.json();
-    if(manifest.schema!=='skyo-immersive-hips-1'||manifest.source_url!==HIPS_URL||manifest.wavelengths_um.length!==102||manifest.items.length!==12||new Set(manifest.items.map(i=>i.pixel)).size!==12||!manifest.items.every(i=>Number.isInteger(i.pixel)&&i.pixel>=0&&i.pixel<12&&/^Npix\d+_62\.png$/.test(i.file)&&/^[a-f0-9]{64}$/.test(i.sha256)))throw Error('Panorama curado incompatible');
+    if(manifest.schema!=='skyo-immersive-hips-1'||manifest.source_url!==HIPS_URL||manifest.wavelengths_um.length!==102||manifest.items.length!==12||new Set(manifest.items.map(i=>i.pixel)).size!==12||!manifest.items.every(i=>Number.isInteger(i.pixel)&&i.pixel>=0&&i.pixel<12&&/^Npix\d+_62\.png(?:\.bin)?$/.test(i.file)&&/^[a-f0-9]{64}$/.test(i.sha256)))throw Error('Panorama curado incompatible');
     renderer=new T.WebGLRenderer({canvas:$('sky'),antialias:false,powerPreference:'high-performance'});renderer.setClearColor(0x02040a);
     scene=new T.Scene();player=new T.Group();scene.add(player);camera=new T.PerspectiveCamera(70,1,.1,2200);player.add(camera);
     inspector=createInspector(T,{getReport:selectionReport,wake});

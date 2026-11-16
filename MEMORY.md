@@ -387,3 +387,20 @@
 - Verificación: `npm test` 65/65, `web:build` + `validate:build` OK e integración
   raíz/subruta 2/2. El resto de la auditoría (L2, laboratorio offline, export)
   sigue sin cambios y `scienceReady=false`.
+
+## Explorar en Hostinger: integridad PNG — 2026-11-16
+
+- Revisada URL ghostwhite-panther-667811.hostingersite.com/#explorar,
+  build62733fd1ce84de64. Pantalla negra:0/12 teselas base, sin pageerror.
+- Recompresión de PNG confirmada: Npix0 cambia84624→49465bytes y SHA-256,
+  preservando píxeles RGBA. El manifiesto exige correctamente bytes originales.
+  Prueba controlada suministrando originales:12/12, cielo visible, flujo12.0051;
+  laboratorio demo habilita informe. IRSA TAP502 sin CORS es fallo independiente.
+- Rama fix/hostinger-hips-integrity, worktree /tmp/skyo-hostinger-explorar.
+  Postbuild publica PNG como .png.bin, sin cambiar bytes/hashes; manifiesto
+  generado y caché runtime actualizados. Originales y FITS intactos; portada3D intacta.
+  validate:build falla antes y pasa después; build y validate:docs pasan.
+- Baseline y repetición npm65/65 pasan. Navegador del build binario3/3 pasa:
+  escritorio/subruta, flujoNASA, canales, export y controles móviles. science-gaps4/4.
+  Falta desplegar dist y verificar respuesta binaria real en Hostinger.
+  Detalle: docs/REVISION_HOSTINGER_EXPLORAR_20261116.md. Sin autoaprobación/claim.
